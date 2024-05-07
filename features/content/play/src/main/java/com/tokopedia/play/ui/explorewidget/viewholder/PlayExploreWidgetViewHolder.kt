@@ -21,7 +21,6 @@ class PlayExploreWidgetViewHolder {
         companion object {
             fun create(
                 binding: ViewPlayGridBinding,
-                coordinator: PlayExploreWidgetCoordinator
             ) = Widget(binding)
         }
     }

@@ -49,6 +49,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.ResultState
@@ -83,7 +84,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             setAnalyticListener(this@PlayExploreWidgetFragment)
         }
 
-    private val widgetAdapter = WidgetAdapter(coordinator)
+    private val widgetAdapter = WidgetAdapter()
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         StaggeredGridLayoutManager(SPAN_SHIMMER, StaggeredGridLayoutManager.VERTICAL)
@@ -97,7 +98,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 if (binding.rvWidgets.getChildAt(0) != null) {
-                    binding.srExploreWidget.isEnabled = widgetLayoutManager.findFirstVisibleItemPosition() == 0 && binding.rvWidgets.getChildAt(0).top == 0
+//                    binding.srExploreWidget.isEnabled = widgetLayoutManager.findFirstVisibleItemPosition() == 0 && binding.rvWidgets.getChildAt(0).top == 0
                 }
                 super.onScrolled(view, dx, dy)
             }
@@ -110,13 +111,13 @@ class PlayExploreWidgetFragment @Inject constructor(
 
             override fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
                 if (dx < 0 && dy < 0) return
-                val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
-                val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
-                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage) {
-                    loadMoreNextPage()
-                } else {
-                    super.checkLoadMore(view, dx, dy)
-                }
+//                val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
+//                val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
+//                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage) {
+//                    loadMoreNextPage()
+//                } else {
+//                    super.checkLoadMore(view, dx, dy)
+//                }
             }
         }
     }
@@ -231,13 +232,13 @@ class PlayExploreWidgetFragment @Inject constructor(
                 }
 
                 if (cachedState.isAnyChanged(
-                        { it.exploreWidget.data.widgets },
+                        { it.exploreWidget.data.data },
                         { it.exploreWidget.data.state }
                     )
                 ) {
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
-                        cachedState.value.exploreWidget.data.widgets
+                        cachedState.value.exploreWidget.data.data
                     )
                 }
 
@@ -292,7 +293,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private fun renderWidgets(
         state: ExploreWidgetState,
-        widget: List<WidgetUiModel>
+        widget: List<PlayWidgetItemUiModel>
     ) {
         showEmpty(state is ExploreWidgetState.Empty)
 
@@ -303,7 +304,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
 
             ExploreWidgetState.Loading -> {
-                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
+//                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
 
             is ExploreWidgetState.Fail -> {

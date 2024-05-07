@@ -2949,23 +2949,23 @@ class PlayViewModel @AssistedInject constructor(
                 val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
                 _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
-                    _exploreWidget.update {
-                        it.copy(
-                            widgets = it.widgets.map {
-                                it.copy(
-                                    item = it.item.copy(
-                                        items = it.item.items.map { widget ->
-                                            if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
-                                                widget.copy(reminderType = reminderType)
-                                            } else {
-                                                widget
-                                            }
-                                        }
-                                    )
-                                )
-                            }
-                        )
-                    }
+//                    _exploreWidget.update {
+//                        it.copy(
+//                            widgets = it.widgets.map {
+//                                it.copy(
+//                                    item = it.item.copy(
+//                                        items = it.item.items.map { widget ->
+//                                            if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
+//                                                widget.copy(reminderType = reminderType)
+//                                            } else {
+//                                                widget
+//                                            }
+//                                        }
+//                                    )
+//                                )
+//                            }
+//                        )
+//                    }
                 } else {
                     throw MessageErrorException()
                 }
