@@ -11,9 +11,10 @@ import com.tokopedia.bmsm_widget.presentation.adapter.GiftWidgetAdapter
 import com.tokopedia.bmsm_widget.presentation.model.ProductGiftUiModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-
 
 /**
  * Created by @ilhamsuaib on 06/12/23.
@@ -93,6 +94,14 @@ class GwpGiftWidget : LinearLayout {
                 onReloadClicked?.invoke()
             }
         }
+    }
+
+    fun show() {
+        binding?.root?.show()
+    }
+
+    fun hide() {
+        binding?.root?.hide()
     }
 
     private fun dismissLoadingState() {

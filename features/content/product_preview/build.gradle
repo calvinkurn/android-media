@@ -87,6 +87,22 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+        exclude group: 'com.google.android.gms'
+        exclude group: 'com.google.firebase'
+    }
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    androidTestImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 }
 
 

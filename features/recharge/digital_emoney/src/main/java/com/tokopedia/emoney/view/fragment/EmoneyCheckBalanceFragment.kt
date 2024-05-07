@@ -373,6 +373,13 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 showError(errorMessage.first.orEmpty())
             }
         })
+
+        bcaBalanceViewModel.errorTagLog.observe(viewLifecycleOwner, Observer {
+            context?.let { context ->
+                sendLogDebugBCAFlazz(it)
+            }
+        }
+        )
     }
 
     private fun processGen2BCA(isoDep: IsoDep, MID: String, TID: String, bRawPublicKey: String,

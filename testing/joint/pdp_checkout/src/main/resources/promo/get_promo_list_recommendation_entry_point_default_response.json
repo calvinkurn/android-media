@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "GetPromoListRecommendation": {
+        "data": {
+          "result_status": {
+            "success": true,
+            "message": "OK",
+            "code": "200"
+          },
+          "promo_recommendation": {
+            "codes": [
+              "CCBPLS103A4ZF08X2E8"
+            ]
+          },
+          "entry_point_info": {
+            "messages": [
+              "Yuk, pakai promo biar hemat \u003cb\u003eRp10.000\u003c/b\u003e!"
+            ],
+            "state": "green",
+            "icon_url": "https://images.tokopedia.net/img/promo/icon/Coupon-1.png",
+            "clickable": true
+          },
+          "user_group_metadata": "[{\"key\":\"promo_revamp_ab_test_user_group\",\"value\":\"variant_a\"}]"
+        }
+      }
+    }
+  }
+]

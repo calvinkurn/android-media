@@ -625,6 +625,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 offerID
               }
             }
+            sdui {
+              name
+              data {
+                template
+              }
+            }
           }
         }
         """.trimIndent()

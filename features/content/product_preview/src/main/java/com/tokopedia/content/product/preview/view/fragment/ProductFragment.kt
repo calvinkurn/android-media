@@ -26,7 +26,6 @@ import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_NAME
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
@@ -274,7 +273,7 @@ class ProductFragment @Inject constructor(
     }
 
     override fun onImpressedImage() {
-        analytics.onImpressImage(ProductPreviewTabUiModel.TAB_PRODUCT_KEY)
+        analytics.onImpressImage(TAB_PRODUCT_NAME)
     }
 
     override fun onImageInteraction(isScalingMode: Boolean) {

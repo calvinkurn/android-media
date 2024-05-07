@@ -63,8 +63,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                     )
                 }
                 return@withContext OccGlobalEvent.AtcSuccess(
-                    response.data.message.firstOrNull()
-                        ?: ""
+                    message = response.data.message.firstOrNull() ?: "",
+                    shouldGoToCheckoutPage = response.isNewCheckoutPaymentPage()
                 )
             } catch (t: Throwable) {
                 return@withContext OccGlobalEvent.AtcError(t.cause ?: t)

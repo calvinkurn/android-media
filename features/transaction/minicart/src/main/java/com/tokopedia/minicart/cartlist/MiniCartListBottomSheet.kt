@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.dialog.DialogUnify
@@ -31,6 +32,8 @@ import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartGwpGiftViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartProgressiveInfoViewHolder.MiniCartProgressiveInfoListener
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomTracker
@@ -79,9 +82,12 @@ class MiniCartListBottomSheet @Inject constructor(
         private const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
 
         private const val BSP_PAGE_SOURCE = "minicart"
+
+        private const val MINI_CART_GIFT_LIST_BOTTOM_SHEET_TAG = "Mini Cart Gift List"
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
+    private var fragmentManager: FragmentManager? = null
     private var viewModel: MiniCartViewModel? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartListAdapter? = null
@@ -116,6 +122,7 @@ class MiniCartListBottomSheet @Inject constructor(
             if (!isShow) {
                 this.bottomSheetListener = bottomSheetListener
                 val viewBinding = LayoutBottomsheetMiniCartListBinding.inflate(LayoutInflater.from(context))
+                this.fragmentManager = fragmentManager
                 this.viewBinding = viewBinding
                 initializeView(it, viewBinding, fragmentManager)
                 initializeViewModel(viewBinding, fragmentManager, viewModel, lifecycleOwner)
@@ -223,7 +230,7 @@ class MiniCartListBottomSheet @Inject constructor(
     }
 
     private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartListBinding) {
-        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, multiProductBundleCallback(), singleProductBundleCallback())
+        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, multiProductBundleCallback(), singleProductBundleCallback(), progressiveInfoCallback(), gwpGiftCallback())
         adapter = MiniCartListAdapter(adapterTypeFactory)
         viewBinding.rvMiniCartList.adapter = adapter
         viewBinding.rvMiniCartList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
@@ -416,6 +423,74 @@ class MiniCartListBottomSheet @Inject constructor(
                 priceCut = selectedSingleBundle.displayPrice,
                 state = STATE_PRODUCT_BUNDLE_RECOM_IMPRESSED
             )
+        }
+    }
+
+    private fun progressiveInfoCallback() = object : MiniCartProgressiveInfoListener {
+        override fun onClickRefreshIcon(offerId: Long) {
+            viewModel?.refreshGwpWidget(offerId)
+        }
+
+        override fun onClickChevronIcon(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int
+        ) {
+            analytics.gwpAnalytics.sendClickCardOnGwpEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
+        }
+
+        override fun onImpressProgressiveInfo(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int
+        ) {
+            analytics.gwpAnalytics.sendImpressionGwpCardEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
+        }
+    }
+
+    private fun gwpGiftCallback() = object : MiniCartGwpGiftViewHolder.MiniCartGwpGiftListener {
+        override fun onImpressProductGiftWidget(
+            offerId: Long,
+            offerTypeId: Long,
+            productIds: List<String>,
+            progressiveInfoText: String,
+            position: Int
+        ) {
+            analytics.gwpAnalytics.sendImpressionGwpCardGiftListEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                productIds = productIds,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
+        }
+
+        override fun onClickCta(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int,
+            bottomSheet: GiftListBottomSheet
+        ) {
+            analytics.gwpAnalytics.sendClickSeeOnGwpCardGiftListEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
+            fragmentManager?.let { bottomSheet.show(it, MINI_CART_GIFT_LIST_BOTTOM_SHEET_TAG) }
         }
     }
 
@@ -859,11 +934,11 @@ class MiniCartListBottomSheet @Inject constructor(
         bottomSheetListener?.hideProgressLoading()
     }
 
-    private fun updateCart() {
+    private fun updateCart(productId: String, offerId: Long, newQty: Int? = null) {
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(LONG_DELAY)
-            viewModel?.updateCart()
+            viewModel?.updateCart(offerId, productId, newQty)
         }
     }
 
@@ -917,12 +992,19 @@ class MiniCartListBottomSheet @Inject constructor(
     override fun onQuantityChanged(element: MiniCartProductUiModel, newQty: Int) {
         viewModel?.updateProductQty(element, newQty)
         calculateProduct()
-        updateCart()
+        updateCart(element.productId, element.offerId, newQty)
     }
 
-    override fun onNotesChanged(productId: String, isBundlingItem: Boolean, bundleId: String, bundleGroupId: String, newNotes: String) {
+    override fun onNotesChanged(
+        productId: String,
+        isBundlingItem: Boolean,
+        bundleId: String,
+        bundleGroupId: String,
+        offerId: Long,
+        newNotes: String
+    ) {
         viewModel?.updateProductNotes(productId, isBundlingItem, bundleId, bundleGroupId, newNotes)
-        updateCart()
+        updateCart(productId, offerId)
     }
 
     override fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel) {

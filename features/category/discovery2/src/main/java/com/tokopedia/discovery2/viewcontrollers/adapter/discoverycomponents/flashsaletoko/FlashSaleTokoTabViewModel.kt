@@ -16,9 +16,9 @@ import kotlin.coroutines.CoroutineContext
 
 class FlashSaleTokoTabViewModel(
     val application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
 
     private val tabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val notifyTargetedComponent: MutableLiveData<Pair<String, String>> = MutableLiveData()

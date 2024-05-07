@@ -54,6 +54,7 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
         exclude "**/module-info.class"
+        pickFirst "**/libc++_shared.so"
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion

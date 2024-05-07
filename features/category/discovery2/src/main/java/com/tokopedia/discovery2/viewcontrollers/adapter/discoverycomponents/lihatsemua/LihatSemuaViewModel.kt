@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import java.util.*
 
-class LihatSemuaViewModel(application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class LihatSemuaViewModel(application: Application, component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(component) {
     private val itemData: MutableLiveData<ComponentsItem> = MutableLiveData()
     var timerWithBannerCounter: CountDownTimer? = null
     private val restartStoppedTimerEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()

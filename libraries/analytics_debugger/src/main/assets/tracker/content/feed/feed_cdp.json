@@ -1,0 +1,44 @@
+{
+  "readme": "Feed - CDP",
+  "mode": "subset",
+  "query": [
+    {
+      "event":"view_item",
+      "eventAction":"view - search bar",
+      "eventCategory":"unified feed",
+      "eventLabel":"cdp",
+      "businessUnit":"content",
+      "trackerId": "50786",
+      "currentSite":"tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "search bar in cdp",
+          "creative_slot": "0",
+          "item_id": ".*",
+          "item_name": "search-bar-cdp"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"select_content",
+      "eventAction":"click - search bar",
+      "eventCategory":"unified feed",
+      "eventLabel":"cdp",
+      "businessUnit":"content",
+      "trackerId": "50787",
+      "currentSite":"tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "search bar in cdp",
+          "creative_slot": "0",
+          "item_id": ".*",
+          "item_name": "search-bar-cdp"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    }
+  ]
+}

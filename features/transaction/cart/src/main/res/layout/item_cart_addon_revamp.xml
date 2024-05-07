@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_cart_addon"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -11,19 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        app:typographyWeight="reguler"
-        app:typographyType="display_3"
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/price_addon"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_default="wrap"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/price_addon"
-        android:text="Jasa Pasang Standard"/>
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="Jasa Pasang Tidak Standard Dengan Asuransi Seumur Hidup" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price_addon"
@@ -31,28 +32,31 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="4dp"
-        app:typographyWeight="reguler"
-        app:typographyType="display_3"
-        android:textColor="@color/Unify_NN600"
+        android:layout_marginBottom="8dp"
         android:lines="1"
+        android:textColor="@color/Unify_NN600"
         app:layout_constrainedWidth="true"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/iv_addon_chevron"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/desc_addon"
-        app:layout_constraintEnd_toStartOf="@id/iv_addon_chevron" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="(Rp 1.000.000.000)" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_addon_chevron"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:contentDescription="@string/promo_checkout_icon_chev_desc"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="@id/desc_addon"
-        app:layout_constraintTop_toTopOf="@id/desc_addon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:icon_name="CHEVRON_DOWN" />
+        app:layout_constraintStart_toEndOf="@+id/price_addon"
+        app:layout_constraintTop_toTopOf="@id/desc_addon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
