@@ -69,30 +69,6 @@ class HomeNavFragment : Fragment() {
 
             setShowShadowEnabled(true)
         }
-
-        val fragmentContainer = childFragmentManager.findFragmentById(R.id.fragment_container)?.view
-        try {
-            val theme = activity?.theme ?: error("No theme found")
-            val styledAttributes: TypedArray = theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-            val mActionBarSize = styledAttributes.getDimension(0, 0f).toInt()
-            styledAttributes.recycle()
-
-            val layoutParams = fragmentContainer?.layoutParams as FrameLayout.LayoutParams
-            layoutParams.setMargins(
-                layoutParams.leftMargin,
-                16f.toDpInt() + mActionBarSize,
-                layoutParams.rightMargin,
-                layoutParams.bottomMargin
-            )
-        } catch (e: Exception) {
-            val layoutParams = fragmentContainer?.layoutParams as FrameLayout.LayoutParams
-            layoutParams.setMargins(
-                layoutParams.leftMargin,
-                200f.toDpInt(),
-                layoutParams.rightMargin,
-                layoutParams.bottomMargin
-            )
-        }
     }
 
     override fun onDestroyView() {
