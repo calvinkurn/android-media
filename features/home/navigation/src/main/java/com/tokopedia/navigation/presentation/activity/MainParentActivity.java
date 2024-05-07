@@ -460,11 +460,11 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext(), true);
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
-        setAdsLogData();
 
         populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
         bottomNavigation.setHomeForYouMenuClickListener(this);
+        setAdsLogData();
     }
 
     @NotNull
@@ -646,6 +646,7 @@ public class MainParentActivity extends BaseActivity implements
     private void setAdsLogData() {
         AppLogAnalytics.currentPageName = getPageName();
         AppLogAnalytics.putAdsPageData(PAGE_NAME, getPageName());
+        AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, getPageName());
     }
 
     private void openFragment(Fragment fragment) {
