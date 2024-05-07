@@ -59,7 +59,7 @@ data class RecommendationItem(
     val appLogImpressHolder: ImpressHolder = ImpressHolder(),
     // for tokonow
     val parentID: Long = 0L,
-    var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
+    var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity,
 ) : ImpressHolder() {
 
     enum class AddToCartType {
