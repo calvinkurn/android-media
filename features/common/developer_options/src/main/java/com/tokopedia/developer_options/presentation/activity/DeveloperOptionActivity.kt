@@ -237,7 +237,7 @@ class DeveloperOptionActivity :
                 isHomeMacrobenchmarkApplink =
                     uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_HOME_MACROBENCHMARK
                 isCassava =
-                    uri.pathSegments.size == 3 && uri.pathSegments[1] == "cassava"
+                    uri.pathSegments.size == 2 && uri.pathSegments[1] == "cassava"
             }
         }
         when {
@@ -248,9 +248,15 @@ class DeveloperOptionActivity :
                 setContentView(R.layout.activity_developer_option)
                 setRecyclerView()
                 setSearchBar()
-                if (isCassava) startActivity(MainValidatorActivity.newInstance(this))
+                if (isCassava) processCassavaShortcut()
             }
         }
+    }
+
+    private fun processCassavaShortcut() {
+        val path = intent.data?.getQueryParameter("p")
+        if (path.isNullOrEmpty()) return
+        startActivity(MainValidatorActivity.newInstance(this, path))
     }
 
     private fun setSearchBar() {
