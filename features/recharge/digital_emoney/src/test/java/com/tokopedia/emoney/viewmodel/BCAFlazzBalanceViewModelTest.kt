@@ -4361,6 +4361,16 @@ class BCAFlazzBalanceViewModelTest {
                 true
             )
         )
+
+        Assert.assertEquals((bcaBalanceViewModel.errorTagLog.value) as RechargeEmoneyInquiryLogRequest, RechargeEmoneyInquiryLogRequest(
+            log = EmoneyInquiryLogRequest(
+                5L,
+                0,
+                cardNumber,
+                "PROCESS_SDK_TOP_UP_2: 0000",
+                2000.0
+            )
+        ))
     }
 
     @Test
@@ -4517,6 +4527,7 @@ class BCAFlazzBalanceViewModelTest {
         coEvery {
             bcaFlazzUseCase.execute(paramGetBCALastQuery)
         } returns responseBCALastEnc
+
 
         //when
         bcaBalanceViewModel.processBCATagBalance(
