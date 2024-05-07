@@ -34,14 +34,20 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
-        AppLogAnalytics.send("testapp_event", JSONObject().also {
-            it.put("greeting","helloworld")
-            it.put("key2",2)
-            it.put("key3",2.22f)
-            it.put("key4", JSONObject().also {
-                it.put("inner_key1","value2")
-            })
-        })
+        AppLogAnalytics.send(
+            "testapp_event",
+            JSONObject().also {
+                it.put("greeting", "helloworld")
+                it.put("key2", 2)
+                it.put("key3", 2.22f)
+                it.put(
+                    "key4",
+                    JSONObject().also {
+                        it.put("inner_key1", "value2")
+                    }
+                )
+            }
+        )
         model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
 
         setContent {
@@ -153,12 +159,12 @@ class MainActivity : BaseActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-//        if (model.value.applink.isNotBlank()) {
-//            RouteManager.route(this, model.value.applink)
-//        } else {
-//            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-//        }
-        RouteManager.route(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+        if (model.value.applink.isNotBlank()) {
+            RouteManager.route(this, model.value.applink)
+        } else {
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        }
+//        RouteManager.route(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
     }
 
     private fun getDefaultAppLink(): String {
