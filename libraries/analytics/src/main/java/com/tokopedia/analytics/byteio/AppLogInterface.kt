@@ -10,7 +10,3 @@ interface AppLogInterface {
 
     fun shouldTrackEnterPage() : Boolean = false
 }
-
-interface AppLogFragmentInterface {
-    fun getFragmentName(): String
-}

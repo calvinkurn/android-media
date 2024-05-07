@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
+import android.graphics.Rect
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +61,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var interval: Int = 500
     private var isFullFilment: Boolean = false
     private var isRecommendation = false
+
+    private val itemViewRect by lazy { Rect() }
 
     init {
         itemView.addOnAttachStateChangeListener(

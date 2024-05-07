@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view.adapter.viewholder
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes

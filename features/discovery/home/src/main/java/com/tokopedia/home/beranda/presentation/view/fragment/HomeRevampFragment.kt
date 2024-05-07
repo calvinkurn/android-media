@@ -33,7 +33,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.AppLogFragmentInterface
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.EnterMethod

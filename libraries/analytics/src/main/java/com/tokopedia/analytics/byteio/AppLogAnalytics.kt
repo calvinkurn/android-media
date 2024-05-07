@@ -58,6 +58,9 @@ object AppLogAnalytics {
     @JvmField
     var currentActivityName: String = ""
 
+    @JvmField
+    var currentPageName: String = ""
+
     /**
      * key = activity name
      * value = page name.
@@ -66,6 +69,11 @@ object AppLogAnalytics {
      */
     @JvmField
     var pageNames = mutableListOf<Pair<String, Int?>>()
+
+    //key = PAGE_NAME, Pair(activityName, fragmentName)
+    private val _adsPageDataList = ArrayList<HashMap<String, Pair<String, Any>>>()
+    val adsPageDataList: List<Map<String, Pair<String, Any>>>
+        get() = _adsPageDataList.toList()
 
     @JvmField
     var activityCount: Int = 0
@@ -227,7 +235,7 @@ object AppLogAnalytics {
             params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
             Cassava.save(params, event, "ByteIO")
             AppLog.onEventV3(event, params)
-            Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
+//            Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
         }
     }
 
@@ -304,6 +312,52 @@ object AppLogAnalytics {
 
     private fun clearCurrentPageData() {
         _pageDataList.lastOrNull()?.clear()
+    }
+
+    /**
+     * To update current page data
+     */
+    fun putAdsPageData(key: String, value: Any) {
+        val adsMap = hashMapOf(key to Pair(currentActivityName, value))
+        _adsPageDataList.add(adsMap)
+    }
+
+
+    @JvmStatic
+    fun updateAdsFragmentPageData(key: String, value: Any) {
+        val currentActivityIdx = getCurrentAdsActivityIdx()
+        if (currentActivityIdx >= 0) {
+            val adsPageLastData = _adsPageDataList.getOrNull(currentActivityIdx)
+            adsPageLastData?.let { updatedData ->
+                updatedData[key] = Pair(updatedData[key]?.first.orEmpty(), value)
+                _adsPageDataList[currentActivityIdx] = updatedData
+            }
+        }
+    }
+
+    private fun getCurrentAdsActivityIdx(): Int {
+        val currentActivityIdx = _adsPageDataList.indexOfFirst { map ->
+            map.values.any { it.first == currentActivityName }
+        }
+        return currentActivityIdx
+    }
+
+    fun removeLastAdsPageData() {
+        val lastIndex = _adsPageDataList.lastIndex
+        if (lastIndex >= 0) _adsPageDataList.removeAt(lastIndex)
+    }
+
+    fun getLastAdsDataBeforeCurrent(key: String): Any? {
+        if (_adsPageDataList.isEmpty()) return null
+        var idx = _adsPageDataList.lastIndex - 1
+        while (idx >= 0) {
+            val map = _adsPageDataList[idx]
+            map[key]?.let {
+                return it.second
+            }
+            idx--
+        }
+        return null
     }
 
     /**

@@ -118,6 +118,10 @@ object QueryListProductRecommendation {
         "                        parentID\n" +
         "                        gridPosition\n" +
         "                        recParam\n" +
+        "                        adsLog {\n"+
+        "                           creativeID\n" +
+        "                           logExtra\n" +
+        "                        }\n" +
         "                        countSold\n" +
         "                      }\n" +
         "                    }\n" +

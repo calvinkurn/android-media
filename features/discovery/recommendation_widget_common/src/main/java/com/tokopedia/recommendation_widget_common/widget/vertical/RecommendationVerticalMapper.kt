@@ -25,6 +25,7 @@ object RecommendationVerticalMapper {
                 trackingModel = model.trackingModel,
                 componentName = model.widget.pageName,
                 widgetTracking = model.widgetTracking,
+                listener = model.listener
             )
         }
     }

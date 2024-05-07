@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 
 data class HomeRecommendationItemDataModel(
@@ -12,7 +13,7 @@ data class HomeRecommendationItemDataModel(
     val layoutName: String = "",
     val position: Int = -1,
     val tabName: String = "",
-    val appLog: RecommendationAppLog = RecommendationAppLog(),
+    val appLog: RecommendationAppLog = RecommendationAppLog()
 ) : BaseHomeRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
@@ -60,6 +61,7 @@ data class HomeRecommendationItemDataModel(
         val wishListUrl: String = "",
         val shop: Shop = Shop(),
         val recParam: String = "",
+        val recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
     ) {
         data class LabelGroup(
             val position: String = "",

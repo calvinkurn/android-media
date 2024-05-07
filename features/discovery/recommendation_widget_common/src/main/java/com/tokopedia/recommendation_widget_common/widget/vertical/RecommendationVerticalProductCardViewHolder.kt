@@ -64,11 +64,11 @@ class RecommendationVerticalProductCardViewHolder(
     }
 
     override fun onViewAttachedToWindow(element: RecommendationVerticalProductCardModel?) {
-        element?.recomItem?.sendShowAdsByteIo(itemView.context)
+        element?.listener?.onViewAttachedToWindow(bindingAdapterPosition, element.recomItem)
     }
 
     override fun onViewDetachedFromWindow(element: RecommendationVerticalProductCardModel?, visiblePercentage: Int) {
-        element?.recomItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+        element?.listener?.onViewDetachedFromWindow(bindingAdapterPosition, element.recomItem, visiblePercentage)
         setVisiblePercentage(Int.ZERO)
     }
 
