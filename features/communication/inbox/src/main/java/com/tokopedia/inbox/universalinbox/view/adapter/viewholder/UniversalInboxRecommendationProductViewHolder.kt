@@ -40,15 +40,10 @@ class UniversalInboxRecommendationProductViewHolder(
     private val binding: UniversalInboxRecommendationProductItemBinding? by viewBinding()
     private var recTriggerObject = RecommendationTriggerObject()
 
-    private val itemViewRect by lazy(LazyThreadSafetyMode.NONE) {
-        Rect()
-    }
-
     init {
         itemView.setAdsTrackListener(
             onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) },
-            setVisiblePercentage = { setVisiblePercentage(getCalculateVisibleViewArea(itemView, itemViewRect)) }
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
         )
     }
 
