@@ -811,6 +811,7 @@ class NewMainParentActivity :
             run hideActiveFragment@{
                 if (activeFragment == null) return@hideActiveFragment
                 hide(activeFragment)
+                activeFragment.userVisibleHint = false
                 FragmentLifecycleObserver.onFragmentUnSelected(activeFragment)
             }
             if (!fragment.isAdded) {
@@ -818,6 +819,7 @@ class NewMainParentActivity :
             }
             run showFragment@{
                 show(fragment)
+                fragment.userVisibleHint = true
                 FragmentLifecycleObserver.onFragmentSelected(fragment)
             }
         }
