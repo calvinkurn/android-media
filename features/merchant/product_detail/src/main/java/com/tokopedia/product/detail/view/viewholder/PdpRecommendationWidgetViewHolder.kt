@@ -2,6 +2,9 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -16,7 +19,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class PdpRecommendationWidgetViewHolder(
     view: View,
     private val listener: ProductDetailListener
-) : AbstractViewHolder<PdpRecommendationWidgetDataModel>(view) {
+) : AbstractViewHolder<PdpRecommendationWidgetDataModel>(view), AppLogRecTriggerInterface {
 
     companion object {
         val LAYOUT = R.layout.item_recom_view_holder
@@ -46,5 +49,13 @@ class PdpRecommendationWidgetViewHolder(
     override fun onViewRecycled() {
         super.onViewRecycled()
         binding?.recomWidget?.recycle()
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject? {
+        return binding?.recomWidget?.getRecommendationTriggerObject()
+    }
+
+    override fun isEligibleToTrack(): Boolean {
+        return binding?.recomWidget?.isEligibleToTrack().orFalse()
     }
 }

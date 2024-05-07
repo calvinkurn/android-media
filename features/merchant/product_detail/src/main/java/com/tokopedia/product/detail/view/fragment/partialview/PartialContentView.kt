@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
@@ -32,7 +33,9 @@ class PartialContentView(
     fun renderData(
         data: ProductContentMainData,
         isUpcomingNplType: Boolean,
-        freeOngkirImgUrl: String
+        freeOngkirImgUrl: String,
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
     ) = with(binding) {
         txtMainPrice.contentDescription =
             context.getString(R.string.content_desc_txt_main_price, data.price.value)
@@ -41,7 +44,7 @@ class PartialContentView(
             MethodChecker.fromHtml(data.productName)
         )
 
-        renderProductName(data = data)
+        renderProductName(data = data, listener = listener, componentTrackData = componentTrackData)
 
         renderPriceCampaignSection(
             data = data,
@@ -67,12 +70,19 @@ class PartialContentView(
     }
 
     private fun renderProductName(data: ProductContentMainData) = with(binding) {
-        productNameDelegate.setTitle(title = data.productName, labelIcons = data.labelIcons)
+        productNameDelegate.setTitle(
+            title = data.productName,
+            labelIcons = data.labelIcons,
+            collapse = data.productNameCollapsed,
+            listener = listener,
+            componentTrackData = componentTrackData
+        )
+
         pdpContentContainer.post {
             if (productName.lineCount == 2) {
-                pdpContentContainer.updatePadding(bottom = 6.toPx())
+                pdpContentContainer.setPadding(0, 0, 0, 6.toPx())
             } else {
-                pdpContentContainer.updatePadding(bottom = 2.toPx())
+                pdpContentContainer.setPadding(0, 0, 0, 2.toPx())
             }
         }
     }

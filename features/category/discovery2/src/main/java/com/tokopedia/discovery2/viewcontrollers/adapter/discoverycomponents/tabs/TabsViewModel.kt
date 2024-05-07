@@ -11,6 +11,8 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.tabsusecase.DynamicTabsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,14 +20,12 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-const val TAB_DEFAULT_BACKGROUND = "plain"
-
-class TabsViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class TabsViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setTabIcons: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
-    private val setTabImage: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private var shouldAddSpace = MutableLiveData<Boolean>()
+    private var moveToOtherTab: MutableLiveData<Int> = MutableLiveData()
 
     @JvmField
     @Inject
@@ -41,13 +41,9 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         components.getComponentsItem()?.let {
             it as ArrayList<ComponentsItem>
 
-            val isIconTabs = components.name == ComponentNames.TabsIcon.componentName
-            val isImageTabs = components.name == ComponentNames.TabsImage.componentName
-
-            when {
-                isIconTabs -> setTabIcons.value = it
-                isImageTabs -> setTabImage.value = it
-                isPlainTab() -> setUnifyTabs.value = it
+            when (components.name) {
+                ComponentNames.TabsIcon.componentName -> setTabIcons.value = it
+                ComponentNames.PlainTab.componentName -> setUnifyTabs.value = it
                 else -> setColorTabs.value = it
             }
         }
@@ -85,12 +81,12 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         return setTabIcons
     }
 
-    fun getImageTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
-        return setTabImage
-    }
-
     fun getTabMargin(): LiveData<Boolean> {
         return shouldAddSpace
+    }
+
+    fun redirectToOther(): LiveData<Int> {
+        return moveToOtherTab
     }
 
     override val coroutineContext: CoroutineContext
@@ -145,5 +141,13 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         return components.isFromCategory
     }
 
-    fun isPlainTab() = components.properties?.background == TAB_DEFAULT_BACKGROUND
+    fun selectTab(position: Int) {
+        if (position.isZero() || position.isLessThanZero()) return
+
+        moveToOtherTab.postValue(position - 1)
+    }
+
+    fun isBackgroundAvailable(): Boolean {
+        return components.data?.find { dataItem -> !dataItem.boxColor.isNullOrEmpty() } != null
+    }
 }

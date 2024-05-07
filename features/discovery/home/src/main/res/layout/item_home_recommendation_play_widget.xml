@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play.widget.ui.PlayVideoWidgetView android:id="@+id/homeRecomPlayWidgetVideo"
+<com.tokopedia.play.widget.ui.PlayVideoWidgetView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/homeRecomPlayWidgetVideo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
+    app:card_corner_radius="4dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    app:sizeMode="custom"
+    app:widthToHeightRatio="79:145"
+    />
 

@@ -348,7 +348,7 @@ class ShopOpenRevampInputShopFragment :
                         userSession.shopName = shopNameValue
                         EspressoIdlingResource.increment()
                         fragmentNavigationInterface?.navigateToNextPage(
-                            PageNameConstant.SPLASH_SCREEN_PAGE,
+                            PageNameConstant.QUISIONER_PAGE,
                             FIRST_FRAGMENT_TAG
                         )
                         shopOpenRevampTracking?.clickCreateShop()

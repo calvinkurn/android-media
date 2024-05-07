@@ -8,8 +8,10 @@ import com.tokopedia.shareexperience.test.robot.channelResult
 import com.tokopedia.shareexperience.test.robot.channelRobot
 import com.tokopedia.shareexperience.test.robot.propertiesResult
 import com.tokopedia.shareexperience.test.robot.propertiesRobot
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class ShareExAppLinkTest : ShareExBaseTest() {
 
     @Test

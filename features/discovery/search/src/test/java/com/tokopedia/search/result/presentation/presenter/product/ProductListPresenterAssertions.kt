@@ -70,6 +70,7 @@ fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: Pr
     productListView.sendTrackingEventMoEngageSearchAttempt(any(), any(), any())
     productListView.previousKeyword
     productListView.sendTrackingGTMEventSearchAttempt(any())
+    productListView.sendTrackingByteIO(true)
 }
 
 fun MockKVerificationScope.verifyProcessingNextPage(

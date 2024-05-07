@@ -7,5 +7,10 @@
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:label">
 
+        <activity
+            android:name="com.tokopedia.tkpd.feed_component.browse.container.FeedBrowseTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
     </application>
 </manifest>

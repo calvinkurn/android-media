@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.usecase.getdynamicfilter
 import com.tokopedia.search.result.data.mapper.dynamicfilter.DynamicFilterGqlMapperModule
 import dagger.Provides
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import rx.functions.Func1
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -16,8 +17,13 @@ class GetDynamicFilterGqlUseCaseModule {
     @Provides
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
     fun provideGetDynamicFilterGqlUseCase(
-            dynamicFilterModelMapper: Func1<GraphqlResponse?, DynamicFilterModel?>
+            dynamicFilterModelMapper: Func1<GraphqlResponse?, DynamicFilterModel?>,
+            reimagineRollence: ReimagineRollence,
     ): UseCase<DynamicFilterModel> {
-        return GetDynamicFilterGqlUseCase(GraphqlUseCase(), dynamicFilterModelMapper)
+        return GetDynamicFilterGqlUseCase(
+            GraphqlUseCase(),
+            dynamicFilterModelMapper,
+            reimagineRollence
+        )
     }
 }

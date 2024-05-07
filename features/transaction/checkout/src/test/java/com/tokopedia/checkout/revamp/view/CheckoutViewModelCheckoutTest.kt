@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.revamp.view
 
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
@@ -19,12 +21,16 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -48,6 +54,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.verify
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import java.io.IOException
 
@@ -80,6 +87,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -136,6 +144,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -161,6 +170,62 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         verify {
             mTrackerShipment.sendEnhancedECommerceCheckout(any(), match { it.keys.size == 3 }, any(), any(), any(), CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN, any(), any(), "4")
         }
+    }
+
+    @Test
+    fun checkoutSuccessPayment_ShouldGoToPaymentPage() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(true, invokeSuccess)
     }
 
     @Test
@@ -192,6 +257,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -236,7 +302,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.",
+                source = "local"
             ),
             latestToaster
         )
@@ -269,6 +336,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -329,6 +397,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -371,7 +440,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(false, invokeSuccess)
-        assertEquals(CheckoutPageToaster(Toaster.TYPE_ERROR, errorMessage), latestToaster)
+        assertEquals(CheckoutPageToaster(Toaster.TYPE_ERROR, errorMessage, source = "checkout"), latestToaster)
         verify {
             mTrackerShipment.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(
                 errorMessage
@@ -406,6 +475,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -451,7 +521,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                "Terjadi kesalahan. Ulangi beberapa saat lagi",
+                source = "checkout"
             ),
             latestToaster
         )
@@ -489,6 +560,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -565,6 +637,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -577,7 +650,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_NORMAL,
-                "Pilih pengiriman dulu yuk sebelum lanjut bayar."
+                "Pilih pengiriman dulu yuk sebelum lanjut bayar.",
+                source = "local"
             ),
             latestToaster
         )
@@ -634,6 +708,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -716,6 +791,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -796,6 +872,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                 )
             ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -872,6 +949,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -998,6 +1076,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1067,7 +1146,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO,
+                source = "cancel-promo"
             ),
             latestToaster
         )
@@ -1100,6 +1180,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1160,6 +1241,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel(codes = listOf("code"))),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1190,7 +1272,8 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(
             CheckoutPageToaster(
                 Toaster.TYPE_ERROR,
-                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO,
+                source = "local"
             ),
             latestToaster
         )
@@ -1236,6 +1319,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1310,6 +1394,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1341,5 +1426,269 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             CheckoutPageToaster(Toaster.TYPE_ERROR, throwable = ioException),
             latestToaster
         )
+    }
+
+    @Test
+    fun checkoutPaymentFailedUpdateCart_ShouldShowToasterAndReloadSaf() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = false))
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        assertNotNull(latestToaster)
+        coVerify {
+            updateCartUseCase.get().executeOnBackground()
+        }
+        coVerify(exactly = 1) {
+            getShipmentAddressFormV4UseCase(any())
+        }
+        coVerify(inverse = true) {
+            checkoutGqlUseCase(any())
+        }
+    }
+
+    @Test
+    fun checkoutPaymentNoData_ShouldShowToaster() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = null),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = false))
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        assertNotNull(latestToaster)
+        coVerify(inverse = true) {
+            updateCartUseCase.get().executeOnBackground()
+        }
+        coVerify(inverse = true) {
+            checkoutGqlUseCase(any())
+        }
+        coVerify(inverse = true) {
+            getShipmentAddressFormV4UseCase(any())
+        }
+    }
+
+    @Test
+    fun checkoutPaymentNotValid_ShouldShowToaster() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Error), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = false))
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        assertNotNull(latestToaster)
+        coVerify(inverse = true) {
+            updateCartUseCase.get().executeOnBackground()
+        }
+        coVerify(inverse = true) {
+            checkoutGqlUseCase(any())
+        }
+        coVerify(inverse = true) {
+            getShipmentAddressFormV4UseCase(any())
+        }
+    }
+
+    @Test
+    fun checkoutPaymentNotValidState_ShouldShowToaster() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal, isDescriptionRed = true), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = false))
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        assertNotNull(latestToaster)
+        coVerify(inverse = true) {
+            updateCartUseCase.get().executeOnBackground()
+        }
+        coVerify(inverse = true) {
+            checkoutGqlUseCase(any())
+        }
+        coVerify(inverse = true) {
+            getShipmentAddressFormV4UseCase(any())
+        }
     }
 }

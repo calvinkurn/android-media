@@ -1,10 +1,12 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
@@ -16,16 +18,16 @@ import com.tokopedia.tokopedianow.searchcategory.assertQuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class SearchFirstPageTest: BaseSearchPageLoadTest() {
+class SearchFirstPageTest : BaseSearchPageLoadTest() {
 
     override fun setUp() {}
 
@@ -33,8 +35,24 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     fun `test first page is last page 2h`() {
         val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
 
+        val chooseAddressData = LocalCacheModel(
+            address_id = "12257",
+            city_id = "12345",
+            district_id = "2274",
+            lat = "1.1000",
+            long = "37.002",
+            postal_code = "15123",
+            shop_id = "549621",
+            warehouse_id = "11299001123",
+            warehouses = listOf(
+                LocalWarehouseModel(1, "2h"),
+                LocalWarehouseModel(2, "fc")
+            ),
+            service_type = "2h"
+        )
+
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
-        `Given choose address data`()
+        `Given choose address data`(chooseAddressData)
         `Given search view model`()
         `Given remote config`(
             defaultValue = EXPERIMENT_DISABLED,
@@ -53,6 +71,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
         `Then assert first page success trigger is Unit`()
+        `Then assert isEmptyResult false`()
+        `Then assert serviceType 2h`()
     }
 
     @Test
@@ -60,7 +80,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
 
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
-        `Given choose address data`(dummyChooseAddressData.copy(service_type = NOW_15M))
+        `Given choose address data`(dummyChooseAddressData.copy(service_type = NOW_2H))
         `Given search view model`()
         `Given remote config`(
             defaultValue = EXPERIMENT_DISABLED,
@@ -74,7 +94,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
-        `Then assert visitable list footer 15m`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
@@ -82,16 +101,16 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     }
 
     private fun `Then assert first page visitables`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
     }
 
     private fun `Then assert visitable list header`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel,
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         val mapParameter = tokoNowSearchViewModel.queryParam
 
@@ -112,8 +131,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     }
 
     private fun `Then assert visitable list contents`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel,
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         val expectedProductList = searchModel.searchProduct.data.productList
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
@@ -130,8 +149,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     }
 
     private fun `Then assert visitable list footer 2h`(
-            visitableList: List<Visitable<*>>,
-            searchModel: SearchModel
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
     ) {
         val lastProductIndex = visitableList.indexOfLast { it is ProductItemDataView }
         val footerStartIndex = lastProductIndex + 1
@@ -140,23 +159,8 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         footerList.last().assertCTATokopediaNowHomeDataView()
     }
 
-    private fun `Then assert visitable list footer 15m`(
-        visitableList: List<Visitable<*>>,
-        searchModel: SearchModel
-    ) {
-        val lastProductIndex = visitableList.indexOfLast { it is ProductItemDataView }
-        val footerStartIndex = lastProductIndex + 1
-        val footerList = visitableList.subList(footerStartIndex, visitableList.size)
-
-        footerList.first().assertSwitcherWidgetDataView()
-    }
-
     private fun Visitable<*>.assertCTATokopediaNowHomeDataView() {
         assertThat(this, instanceOf(CTATokopediaNowHomeDataView::class.java))
-    }
-
-    private fun Visitable<*>.assertSwitcherWidgetDataView() {
-        assertThat(this, instanceOf(SwitcherWidgetDataView::class.java))
     }
 
     private fun `Then assert get first page success interactions`(searchModel: SearchModel) {
@@ -199,5 +203,13 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
     private fun `Then assert first page success trigger is Unit`() {
         assertThat(tokoNowSearchViewModel.firstPageSuccessTriggerLiveData.value, shouldBe(Unit))
+    }
+
+    private fun `Then assert isEmptyResult false`() {
+        MatcherAssert.assertThat(tokoNowSearchViewModel.isEmptyResult, shouldBe(false))
+    }
+
+    private fun `Then assert serviceType 2h`() {
+        MatcherAssert.assertThat(tokoNowSearchViewModel.serviceType, shouldBe("2h"))
     }
 }

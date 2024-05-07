@@ -72,24 +72,29 @@ object ProductCartHelper {
         }
     }
 
-    fun generateButtonAction(it: String, atcButton: Boolean): Int {
+    fun generateButtonAction(cartType: String, atcButton: Boolean): Int {
         return when {
             atcButton -> ProductDetailCommonConstant.ATC_BUTTON
-            it == ProductDetailCommonConstant.KEY_NORMAL_BUTTON -> {
+            cartType == ProductDetailCommonConstant.KEY_NORMAL_BUTTON -> {
                 ProductDetailCommonConstant.BUY_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_OCS_BUTTON -> {
+
+            cartType == ProductDetailCommonConstant.KEY_OCS_BUTTON -> {
                 ProductDetailCommonConstant.OCS_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_OCC_BUTTON -> {
+
+            cartType == ProductDetailCommonConstant.KEY_OCC_BUTTON -> {
                 ProductDetailCommonConstant.OCC_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_REMIND_ME -> {
+
+            cartType == ProductDetailCommonConstant.KEY_REMIND_ME -> {
                 ProductDetailCommonConstant.REMIND_ME_BUTTON
             }
-            it == ProductDetailCommonConstant.KEY_CHECK_WISHLIST -> {
+
+            cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST -> {
                 ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON
             }
+
             else -> ProductDetailCommonConstant.BUY_BUTTON
         }
     }
@@ -98,6 +103,12 @@ object ProductCartHelper {
         val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.CHECKOUT)
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
+        activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
+    fun goToCheckoutWithAutoApplyPromo(activity: Activity, listPromoAutoApply: ArrayList<PromoExternalAutoApply>) {
+        val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.CHECKOUT)
+        intent.putParcelableArrayListExtra(ARGS_LIST_AUTO_APPLY_PROMO, listPromoAutoApply)
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 

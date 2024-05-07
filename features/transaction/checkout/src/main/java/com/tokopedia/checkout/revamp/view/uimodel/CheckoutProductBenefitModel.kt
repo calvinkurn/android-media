@@ -13,6 +13,7 @@ data class CheckoutProductBenefitModel(
     val weight: Int = 0,
     val weightActual: Int = 0,
     val shopId: String = "",
+    val cartStringOrder: String = "",
 
     val headerText: String = "",
     val shouldShowHeader: Boolean = false,

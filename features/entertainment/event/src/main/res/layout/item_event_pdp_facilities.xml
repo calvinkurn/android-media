@@ -18,7 +18,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:src="@drawable/ic_add_photo" />
+        android:src="@drawable/common_ic_add_photo" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_event_pdp_facilitites"

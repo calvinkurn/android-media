@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
@@ -142,6 +143,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         val selectedTierId = tiersGift.keys.firstOrNull().orZero()
         val shopId = param.shopIds.firstOrNull().orZero().toString()
         val userId = viewModel.getUserId()
+        val mainProducts = data.products.map { MainProduct(it.productId.toLongOrZero(), it.productQuantity) }
 
         val bottomSheet = GiftListBottomSheet.newInstance(
             offerId = selectedOfferId,
@@ -156,7 +158,8 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
             },
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
-            shopId = shopId
+            shopId = shopId,
+            mainProducts = mainProducts
         )
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) return
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

@@ -523,7 +523,7 @@ object ProductDetailMapper {
                         GWPUiModel(type = component.type, name = component.componentName)
                     )
                 }
-                ProductDetailConstant.SDUI_VIEW -> {
+                ProductDetailConstant.SDUI -> {
                     val sduiData = component.componentData.firstOrNull() ?: return@forEachIndexed
                     listOfComponent.add(
                         SDUIDataModel(
@@ -534,6 +534,7 @@ object ProductDetailMapper {
                     )
                 }
             }
+
         }
         return listOfComponent
     }
@@ -648,7 +649,10 @@ object ProductDetailMapper {
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
             promoPrice = promoPriceData.promoPrice,
-            liveIndicator = mediaData.liveIndicator
+            liveIndicator = mediaData.liveIndicator,
+            socialProof = data.components.find {
+                it.type == ProductDetailConstant.MINI_SOCIAL_PROOF
+            }?.componentData?.firstOrNull()?.socialProof ?: emptyList()
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
@@ -1081,10 +1085,10 @@ object ProductDetailMapper {
     fun generateShareExBottomSheetArg(
         productId: String,
         productUrl: String,
-        campaignId: String
+        campaignId: String,
+        productImageUrl: String
     ): ShareExBottomSheetArg {
-        return ShareExBottomSheetArg(
-            identifier = productId,
+        return ShareExBottomSheetArg.Builder(
             pageTypeEnum = ShareExPageTypeEnum.PDP,
             defaultUrl = productUrl,
             trackerArg = ShareExTrackerArg(
@@ -1093,10 +1097,13 @@ object ProductDetailMapper {
                 labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
                 labelActionClickChannel = "${ShareExTrackerArg.CHANNEL_KEY} - ${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId - ${ShareExTrackerArg.IMAGE_TYPE_KEY}",
-                labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
-                labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
+                labelImpressionAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId",
+                labelActionClickAffiliateRegistration = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId"
             )
         )
+            .withProductId(productId)
+            .withDefaultImageUrl(productImageUrl)
+            .build()
     }
 
     private fun generateAffiliateEligibilityRequest(
@@ -1295,6 +1302,7 @@ object ProductDetailMapper {
             stockWording = data.stock.stockWording,
             isVariant = data.variant.isVariant,
             productName = data.name,
+            productNameCollapsed= true,
             isShowPrice = data.isShowPrice
         )
         return OngoingCampaignUiModel(

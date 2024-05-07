@@ -16,7 +16,7 @@
         android:layout_height="24dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        tools:srcCompat="@drawable/ic_calendar_grey" />
+        tools:srcCompat="@drawable/ic_shop_setting_calendar_grey" />
 
     <LinearLayout
         android:layout_width="match_parent"

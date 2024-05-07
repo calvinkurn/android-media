@@ -12,6 +12,7 @@ apply from: "buildconfig/aar/local-aar.gradle"
 
 buildscript {
     apply from: 'buildconfig/dependencies/dependencies.gradle'
+    apply from: 'buildconfig/kotlin/repository.gradle'
 
     repositories {
         maven {
@@ -21,14 +22,6 @@ buildscript {
         gradlePluginPortal()
         mavenLocal()
         mavenCentral()
-        maven {
-            url "${gcp_artifactory_url}" + "/libs-release-temporary"
-            credentials {
-                username = "${gcp_artifactory_username}"
-                password = "${gcp_artifactory_password}"
-            }
-            allowInsecureProtocol = true
-        }
         maven {
             url "${gcp_artifactory_url}" + "/libs-release-local"
             credentials {
@@ -66,6 +59,10 @@ buildscript {
         classpath "com.tokopedia.plugin:codebasereader:0.0.1"
         classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion"
         classpath rootProject.ext.gradlePlugin.composeCompilerReportGenerator
+
+        if (project.findProperty("resRepo") == 'bits') {
+            classpath "com.bytedance.security:ByteSignPlugin:2.3.1"
+        }
     }
 }
 
@@ -78,6 +75,7 @@ if (hasProperty('buildScan')) {
 
 apply from: 'buildproj.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
+apply from: 'buildconfig/kotlin/repository.gradle'
 
 //Installing Git Hooks
 task installGitHooks {
@@ -95,6 +93,7 @@ apply plugin: "org.jetbrains.dokka"
 // --- Codebase reader ---
 // to read df module in applink unit test
 apply plugin: 'com.tokopedia.codebasereader'
+
 
 /**
  * Override the default value of Dokka styles.

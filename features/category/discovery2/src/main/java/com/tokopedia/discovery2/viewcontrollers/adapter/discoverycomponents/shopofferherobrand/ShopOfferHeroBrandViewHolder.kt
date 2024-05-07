@@ -192,7 +192,6 @@ class ShopOfferHeroBrandViewHolder(
     }
 
     private fun setupRecyclerView() {
-        mAdapter.setHasStableIds(true)
         rvProductCarousel.layoutManager = mLayoutManager
         rvProductCarousel.adapter = mAdapter
         mLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT

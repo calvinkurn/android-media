@@ -6,4 +6,6 @@
     <string name="completion_update_message">Update telah berhasil didowload.</string>
     <string name="update_install_see_notif">Update sedang didownload. Silakan lihat notifikasi.</string>
     <string name="restart_app">Restart</string>
+    <string name="appupdate_update">Update</string>
+    <string name="appupdate_close">Tutup</string>
 </resources>

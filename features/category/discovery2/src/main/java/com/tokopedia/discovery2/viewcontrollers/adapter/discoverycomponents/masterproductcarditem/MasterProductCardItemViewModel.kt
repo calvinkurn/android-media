@@ -4,11 +4,16 @@ import android.app.Application
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
+import com.tokopedia.discovery2.analytics.TrackingMapper
+import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
@@ -37,7 +42,11 @@ private const val UNREGISTER = "UNREGISTER"
 private const val SOURCE = "discovery"
 private const val CAROUSEL_NOT_FOUND = -1
 
-class MasterProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class MasterProductCardItemViewModel(
+    val application: Application,
+    components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val productCardModelLiveData: MutableLiveData<ProductCardModel> = MutableLiveData()
@@ -47,6 +56,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private val showNotifyToast: SingleLiveEvent<Pair<Boolean, String?>> = SingleLiveEvent()
     private val scrollToSimilarProductComponentID: SingleLiveEvent<String> = SingleLiveEvent()
     private var lastQuantity: Int = 0
+    // hacky way to store binding adapter position in onDetachedView
+    var detachedBindingAdapterPosition = 0
 
     @JvmField
     @Inject
@@ -65,9 +76,12 @@ class MasterProductCardItemViewModel(val application: Application, val component
         components.shouldRefreshComponent = null
         componentPosition.value = position
         components.data?.let {
-            if (!it.isNullOrEmpty()) {
+            if (it.isNotEmpty()) {
                 val productData = it.first()
-                productData.hasNotifyMe = getNotifyText(productData.notifyMe).isNotEmpty()
+                productData.apply {
+                    hasNotifyMe = getNotifyText(productData.notifyMe).isNotEmpty()
+                    setTopLevelTabOnRecommendationProduct()
+                }
                 dataItem.value = productData
                 setProductStockWording(productData)
                 lastQuantity = productData.quantity
@@ -75,10 +89,17 @@ class MasterProductCardItemViewModel(val application: Application, val component
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         productData,
                         components.name,
-                        components.properties?.cardType
+                        components.properties?.cardType,
+                        getNotifyText(productData.notifyMe)
                     )
             }
         }
+    }
+
+    private fun DataItem.setTopLevelTabOnRecommendationProduct() {
+        if (source != ComponentSourceData.Recommendation) return
+
+        topLevelTab = TrackingMapper.getTopLevelParentComponent(components)
     }
 
     private fun setProductStockWording(dataItem: DataItem) {
@@ -148,6 +169,19 @@ class MasterProductCardItemViewModel(val application: Application, val component
         }
     }
 
+    fun trackShowProductCard() {
+        dataItem.value?.let {
+            if(!components.byteIoTrackingStatus) {
+                if (it.isEligibleToTrack()) {
+                    AppLogRecommendation.sendProductShowAppLog(
+                        it.asProductTrackModel(getComponentName())
+                    )
+                    components.byteIoTrackingStatus = true
+                }
+            }
+        }
+    }
+
     fun getProductCardOptionsModel(): ProductCardOptionsModel {
         return components.data?.firstOrNull()?.let {
             ProductCardOptionsModel(
@@ -197,22 +231,29 @@ class MasterProductCardItemViewModel(val application: Application, val component
             dataItem.value?.let { productItemData ->
                 productItemData.notifyMe?.let {
                     launchCatchError(block = {
-                        val campaignNotifyResponse = campaignNotifyUserCase?.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
+                        val campaignNotifyResponse =
+                            campaignNotifyUserCase?.subscribeToCampaignNotifyMe(
+                                getNotifyRequestBundle(productItemData)
+                            )
                         campaignNotifyResponse?.checkCampaignNotifyMeResponse?.let { campaignResponse ->
                             if (campaignResponse.success == true) {
                                 productItemData.notifyMe = !it
                                 dataItem.value = productItemData
                                 notifyMeCurrentStatus.value = productItemData.notifyMe
                                 showNotifyToast.value = Pair(false, campaignResponse.message)
-                                this@MasterProductCardItemViewModel.syncData.value = productCardItemUseCase?.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)
+                                this@MasterProductCardItemViewModel.syncData.value =
+                                    productCardItemUseCase?.notifyProductComponentUpdate(
+                                        components.parentComponentId,
+                                        components.pageEndPoint
+                                    )
                             } else {
                                 showNotifyToast.value = Pair(true, campaignResponse.errorMessage)
                             }
                         }
                     }, onError = {
-                            showNotifyToast.value = Pair(true, "")
-                            it.printStackTrace()
-                        })
+                        showNotifyToast.value = Pair(true, "")
+                        it.printStackTrace()
+                    })
                 }
             }
         } else {
@@ -252,14 +293,17 @@ class MasterProductCardItemViewModel(val application: Application, val component
                         customStock == 0 -> {
                             stockWordTitle = getStockText(R.string.terjual_habis)
                         }
+
                         customStock == 1 -> {
                             stockWordTitle = getStockText(R.string.stok_terakhir_beli_sekarang)
                         }
+
                         customStock <= threshold -> {
                             stockWordTitle = getStockText(R.string.tersisa)
                             stockAvailableCount = customStock.toString()
                             stockWordTitleColour = getStockColor(unifyprinciplesR.color.Unify_RN500)
                         }
+
                         else -> {
                             stockWordTitle = getStockText(R.string.terjual)
                             stockAvailableCount = campaignSoldCount.toString()

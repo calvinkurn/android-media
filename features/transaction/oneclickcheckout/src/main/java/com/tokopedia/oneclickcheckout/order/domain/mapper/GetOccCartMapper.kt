@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.oneclickcheckout.order.data.get.Address
@@ -39,7 +40,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdd
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardsNumber
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessageButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoActionData

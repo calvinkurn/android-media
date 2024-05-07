@@ -13,12 +13,10 @@ import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.referral.view.bottomsheet.BottomSheetView;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by ashwanityagi on 02/05/18.

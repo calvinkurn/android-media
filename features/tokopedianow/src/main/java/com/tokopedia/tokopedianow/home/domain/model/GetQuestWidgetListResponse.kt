@@ -37,7 +37,16 @@ data class QuestList(
     @SerializedName("task")
     @Expose
     val task: List<Task>,
-)
+) {
+
+    companion object {
+        private const val STATUS_IDLE = "Idle"
+    }
+
+    fun isIdle(): Boolean {
+        return questUser.status == STATUS_IDLE
+    }
+}
 
 data class QuestUser(
     @SerializedName("id")

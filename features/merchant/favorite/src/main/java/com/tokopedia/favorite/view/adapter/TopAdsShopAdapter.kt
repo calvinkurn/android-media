@@ -29,6 +29,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import java.util.*
 import kotlin.collections.ArrayList
+import com.tokopedia.topads.sdk.R.drawable
 
 /**
  * @author by erry on 30/01/17.
@@ -109,8 +110,8 @@ class TopAdsShopAdapter(
             Glide.with(context!!)
                     .load(shopItem.shopCoverEcs)
                     .dontAnimate()
-                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
-                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
+                    .placeholder(drawable.loading_page_topads)
+                    .error(drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .override(SHOP_COVER_WIDTH, SHOP_COVER_HEIGHT)

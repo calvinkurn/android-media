@@ -21,15 +21,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/sah_new_other_item_shop_info_margin"
+        android:drawablePadding="4dp"
+        android:text="@string/sah_new_other_rm_transaction_label"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_sah_new_other_shop_transaction_desc"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="body_3"
-        tools:text="Sejak Bergabung"/>
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_new_other_shop_transaction_desc"

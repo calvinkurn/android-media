@@ -23,9 +23,9 @@ import kotlin.coroutines.CoroutineContext
 
 class SingleAutomateCouponViewModel(
     val application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
 
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
     private val ctaStateAfterClaim = MutableLiveData<AutomateCouponCtaState>()
@@ -75,11 +75,9 @@ class SingleAutomateCouponViewModel(
 
     fun fetch(isDarkMode: Boolean) {
         launchCatchError(block = {
-            val state = useCase?.execute(component.id, component.pageEndPoint, isDarkMode)
-            if (state == GetAutomateCouponUseCase.State.LOADED) {
-                if (component.getComponentsItem()?.isNotEmpty() == true) {
-                    componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
-                }
+            useCase?.execute(component.id, component.pageEndPoint, isDarkMode)
+            if (component.getComponentsItem()?.isNotEmpty() == true) {
+                componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
             }
         }, onError = {
             Timber.e(it)

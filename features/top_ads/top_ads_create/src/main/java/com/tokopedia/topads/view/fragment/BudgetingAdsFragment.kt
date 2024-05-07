@@ -18,7 +18,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -46,8 +45,8 @@ import com.tokopedia.topads.view.activity.KeywordSuggestionActivity
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapter
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapterTypeFactoryImpl
-import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
-import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
+import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyUiModel
+import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemUiModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.ChooseKeyBottomSheet
 import com.tokopedia.topads.view.sheet.InfoBottomSheet
@@ -156,8 +155,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun onDeleteItem(position: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_EDIT_KEYWORD_DELETE, "")
         ticker.gone()
-        bidInfoAdapter.items.removeAt(position)
-        bidInfoAdapter.notifyItemRemoved(position)
+        if (position >= 0 && position < bidInfoAdapter.itemCount){
+            bidInfoAdapter.items.removeAt(position)
+            bidInfoAdapter.notifyItemRemoved(position)
+        }
         updateString()
         setCount()
         view?.let {
@@ -180,7 +181,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun getItemSelected(): MutableList<KeywordDataItem> {
         val list: MutableList<KeywordDataItem> = mutableListOf()
         bidInfoAdapter.items.forEach {
-            if (it is BidInfoItemViewModel) {
+            if (it is BidInfoItemUiModel) {
                 list.add(it.data)
             }
         }
@@ -198,7 +199,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, position ->
-            (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.bidSuggest = bid
+            (bidInfoAdapter.items[position] as BidInfoItemUiModel).data.bidSuggest = bid
             bidInfoAdapter.notifyItemChanged(position)
         }
     }
@@ -207,14 +208,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID, userID)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_EDIT_KEYWORD_TYPE, "")
         val sheet = ChooseKeyBottomSheet.newInstance()
-        val type = (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType
+        val type = (bidInfoAdapter.items[pos] as BidInfoItemUiModel).data.keywordType
         val typeInt = if (type == BROAD_TYPE)
             BROAD_POSITIVE
         else
             EXACT_POSITIVE
         sheet.show(childFragmentManager, typeInt)
         sheet.onSelect = { typeKey ->
-            (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType = typeKey
+            (bidInfoAdapter.items[pos] as BidInfoItemUiModel).data.keywordType = typeKey
             bidInfoAdapter.notifyItemChanged(pos)
         }
     }
@@ -227,7 +228,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bundle.putString(SUGGESTION_BID, suggestedKeywordBid)
         bundle.putBoolean(FROM_CREATE, true)
         bundle.putString(KEYWORD_BUDGET, keywordBudget)
-        bundle.putString(KEYWORD_NAME, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keyword)
+        bundle.putString(KEYWORD_NAME, (bidInfoAdapter.items[pos] as BidInfoItemUiModel).data.keyword)
         bundle.putInt(ITEM_POSITION, pos)
         return bundle
     }
@@ -346,7 +347,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 if (count >= COUNT_TO_BE_SHOWN) {
                     return@forEachIndexed
                 }
-                bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+                bidInfoAdapter.items.add(BidInfoItemUiModel(it))
                 keyList.add(it)
             }
         }
@@ -356,7 +357,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun setCount() {
-        if (bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyViewModel) {
+        if (bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyUiModel) {
             selectedkeyword.text = String.format(getString(topadscommonR.string.topads_common_selected_keyword), 0)
         } else {
             selectedkeyword.text = String.format(getString(topadscommonR.string.topads_common_selected_keyword), bidInfoAdapter.items.count())
@@ -370,7 +371,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             onEmptySuggestion()
         } else {
             stepperModel?.selectedKeywordStage?.forEach { it ->
-                bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+                bidInfoAdapter.items.add(BidInfoItemUiModel(it))
             }
             bidInfoAdapter.notifyDataSetChanged()
         }
@@ -386,7 +387,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun onEmptySuggestion() {
         ticker.gone()
-        bidInfoAdapter.items.add(BidInfoEmptyViewModel())
+        bidInfoAdapter.items.add(BidInfoEmptyUiModel())
         bidInfoAdapter.notifyDataSetChanged()
     }
 
@@ -537,7 +538,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             stepperModel?.selectedKeywordStage?.forEach {
                 if (it.bidSuggest == "0")
                     it.bidSuggest = DEFAULT_NEW_KEYWORD_VALUE
-                bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+                bidInfoAdapter.items.add(BidInfoItemUiModel(it))
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(
                 CLICK_ADDED_KEYWORD, "", stepperModel?.selectedKeywordStage!!

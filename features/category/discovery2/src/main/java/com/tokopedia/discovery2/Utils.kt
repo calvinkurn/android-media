@@ -22,6 +22,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -31,6 +32,7 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -51,7 +53,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
-
 
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
@@ -89,6 +90,9 @@ class Utils {
         const val DEVICE = "device"
         const val DEVICE_VALUE = "Android"
         const val FILTERS = "filters"
+        const val REFRESH_TYPE = "refresh_type"
+        const val REFRESH_TYPE_VALUE = "-1"
+        const val SESSION_ID = "current_session_id"
         const val VERSION = "version"
         const val SRE_IDENTIFIER = "l_name"
         const val SRE_VALUE = "sre"
@@ -215,13 +219,16 @@ class Utils {
         fun getComponentsGQLParams(
             componentId: String,
             pageIdentifier: String,
-            queryString: String
+            queryString: String,
+            sessionId: String = String.EMPTY
         ): MutableMap<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
             if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString
+            queryParameterMap[SESSION_ID] = sessionId
+            queryParameterMap[REFRESH_TYPE] = REFRESH_TYPE_VALUE
             return queryParameterMap
         }
 
@@ -305,6 +312,32 @@ class Utils {
                 currentSystemTime.time < parsedDate.time
             } else {
                 false
+            }
+        }
+
+
+        /**
+         * queryValue: activeTab=3&key=abc
+         * key: activeTab
+         * value: 4
+         * Output: activeTab=4&key=abc
+         */
+        fun upsertQueryParam(
+            queryValue: String,
+            key: String,
+            value: String
+        ): String {
+            return if (queryValue.isEmpty()) {
+                "$key=$value"
+            } else {
+                try {
+                    val map = UriUtil.stringQueryParamsToMap(queryValue)
+                    map.remove(key)
+                    map[key] = value
+                    UriUtil.buildQueryParamToString(map)
+                } catch (e: Exception) {
+                    "$key=$value"
+                }
             }
         }
 
@@ -801,7 +834,7 @@ class Utils {
 
         internal fun ShapeableImageView.verticalScrollAnimation(
             duration: Long,
-            isReverse: Boolean,
+            isReverse: Boolean
         ): ValueAnimator {
             val animator = if (isReverse) {
                 ValueAnimator.ofInt(height, 0)
@@ -822,8 +855,10 @@ class Utils {
             imageView: ShapeableImageView,
             imageTier: String
         ) {
-            val animOut: Animation = AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_out)
-            val animIn: Animation = AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_in)
+            val animOut: Animation =
+                AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_out)
+            val animIn: Animation =
+                AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_in)
             animOut.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
                 override fun onAnimationRepeat(animation: Animation?) {}
@@ -834,6 +869,7 @@ class Utils {
                         override fun onAnimationStart(animation: Animation?) {
                             this@flipImage.visible()
                         }
+
                         override fun onAnimationRepeat(animation: Animation?) {}
                         override fun onAnimationEnd(animation: Animation?) {}
                     })

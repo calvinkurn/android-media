@@ -55,7 +55,9 @@ data class RatesParam(
     var shopShipments: List<ShopShipment> = listOf(),
 
     // O2O
-    var groupMetadata: String = ""
+    var groupMetadata: String = "",
+
+    var actionMetadata: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -92,7 +94,8 @@ data class RatesParam(
         group_type = builder.groupType,
         shopShipments = builder.shopShipments,
         groupMetadata = builder.groupMetadata,
-        grouping_state = builder.groupingState
+        grouping_state = builder.groupingState,
+        actionMetadata = builder.actionMetadata
     )
 
     @Deprecated("please use RatesV3Param or RatesV3ApiParam")
@@ -134,7 +137,8 @@ data class RatesParam(
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
-        "cart_data" to cart_data
+        "cart_data" to cart_data,
+        "action_metadata" to actionMetadata
     )
 
     fun toBoAffordabilityMap(appVersion: String): Map<String, Any?> = mapOf(
@@ -177,7 +181,7 @@ data class RatesParam(
 
     fun toRatesV3Param(): RatesV3Param = RatesV3Param(
         data = toOngkirRatesV3Input(),
-        metadata = RatesMetadata(cart_data)
+        metadata = RatesMetadata(cart_data, actionMetadata)
     )
 
     fun toRatesV3ApiParam(): RatesV3ApiParam = RatesV3ApiParam(
@@ -291,6 +295,9 @@ data class RatesParam(
         var groupingState: Int = shipping.groupingState
             private set
 
+        var actionMetadata: String = ""
+            private set
+
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
 
         fun codHistory(history: Int) = apply { this.userHistory = history }
@@ -308,7 +315,7 @@ data class RatesParam(
         fun warehouseId(warehouseId: String) = apply { this.warehouseId = warehouseId }
 
         fun groupMetadata(groupMetadata: String) = apply { this.groupMetadata = groupMetadata }
-
+        fun actionMetadata(actionMetadata: String) = apply { this.actionMetadata = actionMetadata }
         fun build() = RatesParam(this)
     }
 }

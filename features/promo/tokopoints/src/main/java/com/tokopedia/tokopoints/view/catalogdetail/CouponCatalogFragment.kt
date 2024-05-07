@@ -448,23 +448,23 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             } else {
                 layoutCouponCode?.hide()
             }
-            data.globalPromoCodes?.first().let { promoCode ->
+            data.globalPromoCodes?.firstOrNull()?.let { promoCode ->
                 run {
-                    val code = promoCode?.code
+                    val code = promoCode.code
                     tv_code?.setOnClickListener {
                         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText("Coupon Code", code)
                         clipboard.setPrimaryClip(clip)
-                        promoCode?.toasters?.get(0)?.message?.let { it1 ->
+                        promoCode.toasters?.get(0)?.message?.let { it1 ->
                             view?.let {
                                 Toaster.build(it, it1).show()
                             }
                         }
                     }
-                    tv_code?.text = promoCode?.code
-                    tv_coupon_title?.text = promoCode?.title
+                    tv_code?.text = promoCode.code
+                    tv_coupon_title?.text = promoCode.title
                     val sb = java.lang.StringBuilder()
-                    promoCode?.dynamicInfos?.forEach {
+                    promoCode.dynamicInfos?.forEach {
                         sb.append("\u25CF $it")
                     }
                     tv_dynamic_infos?.text = sb

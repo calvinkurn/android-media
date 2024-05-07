@@ -6,8 +6,6 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -16,10 +14,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
-import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
@@ -27,7 +23,6 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.Data
@@ -44,11 +39,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
-import com.tokopedia.unifycomponents.ticker.TickerData
 
 fun createHomeLayoutList(): List<HomeLayoutResponse> {
     return listOf(
@@ -473,18 +465,6 @@ fun createCategoryGridDataModel(
     return TokoNowCategoryMenuUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
 }
 
-fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoNowTickerUiModel {
-    return TokoNowTickerUiModel(id = "1", tickers = tickers)
-}
-
-fun createTickerData(
-    title: String = "Welcome to Tokonow",
-    description: String = "Tokonow is one of the best feature",
-    type: Int = TYPE_ANNOUNCEMENT
-): TickerData {
-    return TickerData(title = title, description = description, type = type)
-}
-
 fun createHomeProductCardUiModel(
     channelId: String = "",
     productId: String = "",
@@ -514,40 +494,4 @@ fun createHomeProductCardUiModel(
         headerName = headerName,
         blockAddToCart = blockAddToCart
     )
-}
-
-fun createLocalCacheModel(
-    warehouseId: String = "111111",
-    warehouses: List<LocalWarehouseModel> = listOf(
-        LocalWarehouseModel(
-            warehouse_id = 111111,
-            service_type = ServiceType.NOW_2H
-        ),
-        LocalWarehouseModel(
-            warehouse_id = 222222,
-            service_type = ServiceType.NOW_15M
-        )
-    ),
-    serviceType: String = ServiceType.NOW_2H
-): LocalCacheModel {
-    return LocalCacheModel(
-        warehouse_id = warehouseId,
-        warehouses = warehouses,
-        service_type = serviceType
-    )
-}
-
-fun createHomeProductCardUiModel(
-    channelId: String = "",
-    productId: String = "",
-    shopId: String = "",
-    quantity: Int = 0,
-    stock: Int = 0,
-    parentId: String = "",
-    product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
-    position: Int = 0,
-    headerName: String = ""
-): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, stock, parentId, product, type, position, headerName)
 }

@@ -5,10 +5,12 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -52,6 +54,8 @@ interface CheckoutAdapterListener {
     fun onClickAddOnGiftingProductLevel(product: CheckoutProductModel)
 
     fun onImpressionAddOnGiftingProductLevel(productId: String)
+
+    fun onEditProductNote(note: String, position: Int)
 
     fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel)
 
@@ -167,4 +171,14 @@ interface CheckoutAdapterListener {
     fun onSendImpressionDropshipWidgetAnalytics()
 
     fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel)
+
+    fun onRetryGetPayment()
+
+    fun onChangePayment(payment: CheckoutPaymentModel)
+
+    fun onChangeInstallment(payment: CheckoutPaymentModel)
+
+    fun onPaymentAction(payment: CheckoutPaymentModel)
+
+    fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee)
 }

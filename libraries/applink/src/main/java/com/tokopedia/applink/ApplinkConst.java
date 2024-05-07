@@ -3,8 +3,6 @@ package com.tokopedia.applink;
 import static com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST;
 import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE;
 
-import com.tokopedia.applink.internal.ApplinkConstInternalContent;
-
 /**
  * @author ricoharisin .
  * <p>
@@ -71,6 +69,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String POST_ATC = "tokopedia://post-atc/{productId}";
+    String PRODUCT_WEBVIEW_BS = "tokopedia://product-webview-bs";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String PRODUCT_REVIEW_GALLERY = "tokopedia://product/{id}/review/gallery";
@@ -644,8 +643,8 @@ public interface ApplinkConst {
         String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
         String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
-        String OLD_CATEGORY = "tokopedia://now/category";
-        String CATEGORY = "tokopedia://now/category/l1";
+        String CATEGORY = "tokopedia://now/category";
+        String CATEGORY_L1 = "tokopedia://now/category/l1";
         String CATEGORY_L2 = "tokopedia://now/category/l2";
         String REPURCHASE = "tokopedia://now/repurchase-page";
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
@@ -655,6 +654,7 @@ public interface ApplinkConst {
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
         String SEE_ALL_CATEGORY = "tokopedia://now/see-all-category";
         String ALL_ANNOTATION = "tokopedia://now/all-annotation";
+        String SHOPPING_LIST = "tokopedia://now/list-belanja";
     }
 
     interface TokoFood {
@@ -895,5 +895,18 @@ public interface ApplinkConst {
 
     interface Som {
         String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
+        String SELLER_ORDER_EXTENSION_REQUEST = "tokopedia://seller/seller-order-extension-request";
+    }
+
+    interface ProductPreview {
+        String SHARE_PRODUCT_PREVIEW = "tokopedia://product-preview" +
+                "/%1s" + // productId
+                "?review_id=%2s" +
+                "&attachment_id=%3s" +
+                "&source=%4s";
+    }
+
+    interface ShareExperience {
+        String SHARE_EXPERIENCE = "tokopedia://share";
     }
 }
