@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 
 internal val TAG = "BYTEIO"
 
@@ -274,36 +275,20 @@ object AppLogParam {
 }
 
 data class ButtonShowAnalyticData(
-    val buttonName: ButtonName,
+    val buttonName: String,
     val productId: String,
     val isSingleSku: Boolean,
-    val buyType: BuyType,
+    val buyType: AtcBuyType,
     val shopId: String
-) {
-    enum class ButtonName(val value: String) {
-        BUY_NOW("buy now")
-    }
-
-    enum class BuyType(val value: Int) {
-        OCS(3)
-    }
-}
+)
 
 data class ButtonClickAnalyticData(
-    val buttonName: ButtonName,
+    val buttonName: String,
     val productId: String,
     val isSingleSku: Boolean,
-    val buyType: BuyType,
+    val buyType: AtcBuyType,
     val shopId: String
-) {
-    enum class ButtonName(val value: String) {
-        BUY_NOW("buy now")
-    }
-
-    enum class BuyType(val value: Int) {
-        OCS(3)
-    }
-}
+)
 
 data class ButtonClickCompletedAnalyticData(
     val productId: String,
@@ -314,16 +299,12 @@ data class ButtonClickCompletedAnalyticData(
     val originalPrice: Double,
     val salePrice: Double,
     val followStatus: FollowStatus,
-    val buyType: BuyType,
+    val buyType: AtcBuyType,
     val cartId: String,
     val shopId: String
 ) {
     enum class FollowStatus(val value: Int) {
         UNFOLLOWED(0),
         FOLLOWED(3)
-    }
-
-    enum class BuyType(val value: Int) {
-        OCS(3)
     }
 }

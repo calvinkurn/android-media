@@ -3,12 +3,13 @@ package com.tokopedia.product.detail.common.buttons_byte_io_tracker
 import com.tokopedia.analytics.byteio.ButtonClickAnalyticData
 import com.tokopedia.analytics.byteio.ButtonClickCompletedAnalyticData
 import com.tokopedia.analytics.byteio.ButtonShowAnalyticData
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
 @Suppress("LateinitUsage")
-class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsByteIOTrackerDataProvider {
+class CartRedirectionButtonsByteIOTrackerDataProvider :
+    ICartRedirectionButtonsByteIOTrackerDataProvider {
 
     private lateinit var _mediator: ICartRedirectionButtonsByteIOTrackerDataProvider.Mediator
 
@@ -17,33 +18,27 @@ class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsB
     }
 
     override fun getButtonShowTrackData(cartType: String): ButtonShowAnalyticData? {
+        if (cartType != AtcBuyType.OCS.funnel) return null
+        val buttonType = AtcBuyType.getBuyType(cartType = cartType) ?: return null
+
         return ButtonShowAnalyticData(
-            buttonName = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.ButtonName.BUY_NOW
-                else -> return null
-            },
+            buttonName = buttonType.buttonName,
             productId = _mediator.getParentProductId() ?: return null,
             isSingleSku = _mediator.isSingleSku(),
-            buyType = when (cartType) {
-                ProductDetailCommonConstant.KEY_OCS_BUTTON -> ButtonShowAnalyticData.BuyType.OCS
-                else -> return null
-            },
+            buyType = buttonType,
             shopId = _mediator.getShopId()
         )
     }
 
     override fun getButtonClickTrackData(buttonAction: Int): ButtonClickAnalyticData? {
+        if (buttonAction != AtcBuyType.OCS.code) return null
+
+        val buttonType = AtcBuyType.getBuyType(actionType = buttonAction) ?: return null
         return ButtonClickAnalyticData(
-            buttonName = when (buttonAction) {
-                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickAnalyticData.ButtonName.BUY_NOW
-                else -> return null
-            },
+            buttonName = buttonType.buttonName,
             productId = _mediator.getParentProductId() ?: return null,
             isSingleSku = _mediator.isSingleSku(),
-            buyType = when (buttonAction) {
-                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickAnalyticData.BuyType.OCS
-                else -> return null
-            },
+            buyType = buttonType,
             shopId = _mediator.getShopId()
         )
     }
@@ -52,6 +47,8 @@ class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsB
         buttonActionType: Int,
         data: AddToCartDataModel
     ): ButtonClickCompletedAnalyticData? {
+        if (buttonActionType != AtcBuyType.OCS.code) return null
+
         return ButtonClickCompletedAnalyticData(
             productId = _mediator.getParentProductId() ?: return null,
             isSingleSku = _mediator.isSingleSku(),
@@ -65,10 +62,7 @@ class CartRedirectionButtonsByteIOTrackerDataProvider : ICartRedirectionButtonsB
             } else {
                 ButtonClickCompletedAnalyticData.FollowStatus.UNFOLLOWED
             },
-            buyType = when (buttonActionType) {
-                ProductDetailCommonConstant.OCS_BUTTON -> ButtonClickCompletedAnalyticData.BuyType.OCS
-                else -> return null
-            },
+            buyType = AtcBuyType.getBuyType(actionType = buttonActionType) ?: return null,
             cartId = data.data.cartId,
             shopId = data.data.shopId
         )

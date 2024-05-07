@@ -16,9 +16,30 @@ enum class AtcBuyType(val code: Int) {
             OCS -> "ocs"
             REPURCHASE -> "repurchase" // not used in this phase
         }
+
+    val buttonName: String
+        get() = when (this) {
+            OCS -> CartRedirButtonName.BUY_NOW.value
+            // other cases not defined on this phase
+            else -> ""
+        }
+
+    companion object {
+        fun getBuyType(actionType: Int): AtcBuyType? {
+            return AtcBuyType.values().find { it.code == actionType }
+        }
+
+        fun getBuyType(cartType: String): AtcBuyType? {
+            return AtcBuyType.values().find { it.funnel == cartType }
+        }
+    }
 }
 
 object ThanksDataEventLabel {
     const val REGULAR = "regular checkout"
     const val OCC = "occ"
+}
+
+enum class CartRedirButtonName(val value: String) {
+    BUY_NOW("buy now");
 }
