@@ -1,0 +1,13 @@
+{
+  "readme": "click product recom and pdp byteio tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "page_name" : "homepage",
+      "previous_page" : "homepage",
+      "list_name" : "for_you",
+      "enter_from" : "homepage",
+      "entrance_form" : "pure_goods_card"
+    }
+  ]
+}
