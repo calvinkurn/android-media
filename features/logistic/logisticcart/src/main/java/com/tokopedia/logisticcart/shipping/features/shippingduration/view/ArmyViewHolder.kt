@@ -4,7 +4,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemArmyBinding
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -111,12 +110,6 @@ class ArmyViewHolder(val binding: ItemArmyBinding) : RecyclerView.ViewHolder(bin
                 flImageContainer.foreground =
                     ContextCompat.getDrawable(itemView.context, logisticcartR.drawable.fg_disabled_item)
                 itemView.setOnClickListener(null)
-            }
-
-            if (data.isLast) {
-                vSeparator.invisible()
-            } else {
-                vSeparator.visible()
             }
 
             if (data.isApplied) {
