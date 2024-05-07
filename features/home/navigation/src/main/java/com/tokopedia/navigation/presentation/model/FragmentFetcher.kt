@@ -18,6 +18,7 @@ private const val DISCOVERY_APPLINK_TARGET = "tokopedia://discovery/sos"
 private const val DISCOVERY_PAGE_SOURCE = "discovery_page_source"
 private const val DISCOVERY_END_POINT = "end_point"
 private const val DISCOVERY_SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
+private const val DISCOVERY_ADDITIONAL_QUERY_PARAMS = "additional_query_params"
 private const val DISCOVERY_SOS_END_POINT = "sos"
 
 private const val PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection"
@@ -33,13 +34,12 @@ private const val PARAM_HOME = "home"
 
 private const val KEY_DISCO_ID = "disco_id"
 private const val KEY_SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
+private const val KEY_QUERY_PARAMS = "query_params"
 
 data class FragmentCreator(
     val requireLogin: Boolean,
     val create: FragmentManager.(AppCompatActivity, Bundle) -> Fragment
 )
-
-//typealias FragmentCreator = FragmentManager.(AppCompatActivity, Bundle) -> Fragment
 
 val BottomNavHomeType = BottomNavBarItemType("home")
 val BottomNavFeedType = BottomNavBarItemType("feed")
@@ -80,6 +80,7 @@ val DiscoFragmentCreator = FragmentCreator(
         putString(DISCOVERY_PAGE_SOURCE, PARAM_HOME)
         putString(DISCOVERY_END_POINT, args.discoId.value)
         putBoolean(DISCOVERY_SHOULD_SHOW_GLOBAL_NAV, args.shouldShowGlobalNav)
+        putString(DISCOVERY_ADDITIONAL_QUERY_PARAMS, args.queryParams)
     }
     RouteManager.instantiateFragment(activity, FragmentConst.DISCOVERY_FRAGMENT, extras)
 }
@@ -142,3 +143,10 @@ internal fun Bundle.putShouldShowGlobalNav(shouldShowGlobalNav: Boolean) {
 
 private val Bundle.shouldShowGlobalNav: Boolean
     get() = getBoolean(KEY_SHOULD_SHOW_GLOBAL_NAV, true)
+
+internal fun Bundle.putQueryParams(queryParams: String) {
+    putString(KEY_QUERY_PARAMS, queryParams)
+}
+
+private val Bundle.queryParams: String
+    get() = getString(KEY_QUERY_PARAMS, "")

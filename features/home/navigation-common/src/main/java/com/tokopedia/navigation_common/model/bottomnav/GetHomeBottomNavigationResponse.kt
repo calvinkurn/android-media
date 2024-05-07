@@ -30,6 +30,9 @@ data class GetHomeBottomNavigationResponse(
 
         @SerializedName("discoID")
         val discoId: String = "",
+
+        @SerializedName("queryParams")
+        val queryParams: String = ""
     )
 
     data class Image(

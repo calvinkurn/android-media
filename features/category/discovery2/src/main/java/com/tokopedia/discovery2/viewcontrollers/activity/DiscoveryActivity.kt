@@ -70,6 +70,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppL
         const val AFFILIATE_UNIQUE_ID = "aff_unique_id"
         const val CHANNEL = "channel"
         const val FORCED_NAVIGATION = "forcedNavigation"
+        const val ADDITIONAL_QUERY_PARAMS = "additional_query_params"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {

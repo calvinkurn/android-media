@@ -94,6 +94,7 @@ import com.tokopedia.discovery2.di.DiscoveryComponent
 import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ADDITIONAL_QUERY_PARAMS
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -690,7 +691,8 @@ open class DiscoveryFragment :
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
-        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "").orEmpty()
+        discoveryViewModel.additionalQueryParamsString = arguments?.getString(ADDITIONAL_QUERY_PARAMS, "").orEmpty()
         pageEndPoint = discoveryViewModel.pageIdentifier
         checkForSamePageOpened()
         fetchDiscoveryPageData()
@@ -1609,7 +1611,8 @@ open class DiscoveryFragment :
             discoveryViewModel.getQueryParameterMapFromBundle(
                 arguments
             ),
-            userAddressData
+            userAddressData,
+
         )
     }
 

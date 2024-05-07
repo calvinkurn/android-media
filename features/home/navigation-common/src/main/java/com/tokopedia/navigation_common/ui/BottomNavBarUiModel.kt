@@ -16,7 +16,9 @@ data class BottomNavBarUiModel(
     @SerializedName("assets")
     val assets: Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type>,
     @SerializedName("discoId")
-    val discoId: DiscoId
+    val discoId: DiscoId,
+    @SerializedName("queryParams")
+    val queryParams: String,
 ) {
     val uniqueId = BottomNavItemId(type, discoId)
 }

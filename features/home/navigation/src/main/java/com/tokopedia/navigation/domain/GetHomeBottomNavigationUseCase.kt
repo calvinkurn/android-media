@@ -50,6 +50,7 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
                             }
                         }
                         discoID
+                        queryParams
                     }
                 }
             }
@@ -91,7 +92,8 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
                     null
                 },
                 assets = data.imageList.toAssetsMap(),
-                discoId = DiscoId(data.discoId)
+                discoId = DiscoId(data.discoId),
+                queryParams = data.queryParams,
             )
         }
     }

@@ -82,6 +82,7 @@ import com.tokopedia.navigation.presentation.model.BottomNavFeedId
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
 import com.tokopedia.navigation.presentation.model.BottomNavProfileType
 import com.tokopedia.navigation.presentation.model.putDiscoId
+import com.tokopedia.navigation.presentation.model.putQueryParams
 import com.tokopedia.navigation.presentation.model.putShouldShowGlobalNav
 import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
@@ -702,7 +703,7 @@ class NewMainParentActivity :
         sendEnterPage(tabId)
     }
 
-    private fun getFragmentById(id: BottomNavItemId): Fragment? {
+    private fun getFragmentById(id: BottomNavItemId, model: BottomNavBarUiModel? = null): Fragment? {
         return supportFragmentManager.findFragmentByTag(id.value) ?: run createFragment@{
             val fragmentCreator = supportedMainFragments[id.type] ?: return null
             val create = fragmentCreator.create
@@ -721,7 +722,9 @@ class NewMainParentActivity :
                     Bundle().apply {
                         putDiscoId(id.discoId)
                         putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
-//                    putShouldShowGlobalNav(false)
+
+                        val navBarModel = model ?: return@apply
+                        putQueryParams(navBarModel.queryParams)
                     }
                 )
 
@@ -838,7 +841,7 @@ class NewMainParentActivity :
                     true
                 }
                 else {
-                    val fragment = getFragmentById(model.uniqueId)
+                    val fragment = getFragmentById(model.uniqueId, model)
                     fragment?.let { selectFragment(it, model.uniqueId) }
                     fragment != null
                 }
