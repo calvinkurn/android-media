@@ -11,7 +11,6 @@ def read_code_owners():
 					module_owner = line.replace(" ", "").split("@")
 					module = module_owner[0].strip()
 					owner = module_owner[1].strip()
-					print(module + " and " + owner)
 					if (owner == "tokopedia/android-minionsolo-dev"):
 						owner = "tokopedia/android-minionkevin-dev"
 					members = list_team.get(owner, "")
