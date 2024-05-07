@@ -538,7 +538,7 @@ object AppLogAnalytics {
         }
     }
 
-    private fun getPreviousDataFrom(name: String, key: String): Any? {
+    fun getPreviousDataFrom(name: String, key: String): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
