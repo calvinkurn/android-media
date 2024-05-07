@@ -102,6 +102,7 @@ import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.BottomNavItemId
 import com.tokopedia.navigation_common.ui.DiscoId
 import com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
+import com.tokopedia.navigation_common.util.inDarkMode
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.telemetry.ITelemetryActivity
@@ -201,6 +202,8 @@ class NewMainParentActivity :
 
     private var selectJob: Job? = null
 
+    private val darkModeContext by lazy { inDarkMode }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring()
@@ -279,6 +282,7 @@ class NewMainParentActivity :
 
         val fragment = getCurrentActiveFragment()
         if (fragment != null) {
+            configureBackgroundBasedOnFragment(fragment)
             configureStatusBarBasedOnFragment(fragment)
             FragmentLifecycleObserver.onFragmentSelected(fragment)
         }
@@ -730,10 +734,21 @@ class NewMainParentActivity :
     }
 
     private fun selectFragment(fragment: Fragment, itemId: BottomNavItemId) {
+        configureBackgroundBasedOnFragment(fragment)
         configureStatusBarBasedOnFragment(fragment)
         configureNavigationBarBasedOnFragment(fragment)
         openFragment(fragment, itemId)
         setBadgeNotificationCounter(fragment)
+    }
+
+    private fun configureBackgroundBasedOnFragment(fragment: Fragment) {
+        val isForceDarkMode = isFragmentForceDarkModeNavigationBar(fragment)
+        binding.root.setBackgroundColor(
+            ContextCompat.getColor(
+                if (isForceDarkMode) darkModeContext else this,
+                unifyprinciplesR.color.Unify_NN0
+            )
+        )
     }
 
     private fun configureStatusBarBasedOnFragment(fragment: Fragment) {
