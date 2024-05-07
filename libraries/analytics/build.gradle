@@ -86,6 +86,7 @@ dependencies {
 //    implementation 'com.bytedance.android.btm:btm-devtool:2.0.3.cn-rc.15'
 //    implementation 'com.bytedance.android.btm:btm-impl:2.0.3.cn-rc.15'
     api files(project.rootDir.absolutePath + '/aars/btm-api.aar')
+    implementation files(project.rootDir.absolutePath + '/aars/lazydata.aar')
     implementation files(project.rootDir.absolutePath + '/aars/btm-impl.aar')
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
