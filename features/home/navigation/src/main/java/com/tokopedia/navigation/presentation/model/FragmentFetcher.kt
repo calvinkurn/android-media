@@ -115,8 +115,8 @@ val ProfileFragmentCreator = FragmentCreator(
 )  { activity, _ ->
     val extras = activity.intent.extras ?: Bundle()
     with (extras) {
-        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, "")
-        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH, "")
+        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, "HOME_NAV")
+        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH, "home navigation")
     }
     RouteManager.instantiateFragment(activity, FragmentConst.HOME_NAV_FRAGMENT, extras)
 }
@@ -126,8 +126,9 @@ val supportedMainFragments = mapOf(
     BottomNavFeedType to FeedFragmentCreator,
     BottomNavDiscoType to DiscoFragmentCreator,
     BottomNavWishlistType to WishlistFragmentCreator,
-    BottomNavTransactionType to TransactionFragmentCreator,
-    BottomNavProfileType to ProfileFragmentCreator,
+//    BottomNavTransactionType to TransactionFragmentCreator,
+//    BottomNavProfileType to ProfileFragmentCreator,
+    BottomNavTransactionType to ProfileFragmentCreator,
 )
 
 internal fun Bundle.putDiscoId(discoId: DiscoId) {

@@ -136,7 +136,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
-            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE) {
+            it.setBackButtonType(
+                if (pageSource != NavSource.HOME_NAV) NavToolbar.Companion.BackType.BACK_TYPE_CLOSE else NavToolbar.Companion.BackType.BACK_TYPE_NONE
+            ) {
                 TrackingOthers.onClickCloseButton(pageSource, pageSourcePath)
             }
             navToolbar = it

@@ -11,6 +11,7 @@ enum class NavSource {
     DT,
     FEED,
     HOME,
+    HOME_NAV,
     HOME_WISHLIST,
     HOME_UOH,
     MVC,

@@ -1,17 +1,14 @@
 package com.tokopedia.homenav.view.fragment
 
-import android.content.res.TypedArray
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.FragmentHomeNavBinding
 import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
@@ -37,6 +34,10 @@ class HomeNavFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        pageSource = arguments?.getString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE).orEmpty()
+        pageSourcePath = arguments?.getString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH).orEmpty()
+
         setupNavigation()
         setupView()
     }
@@ -52,9 +53,6 @@ class HomeNavFragment : Fragment() {
     }
 
     private fun setupView() {
-        pageSource = arguments?.getString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE).orEmpty()
-        pageSourcePath = arguments?.getString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH).orEmpty()
-
         with(binding.toolbar) {
             setToolbarTitle(getString(R.string.title_main_nav))
 
