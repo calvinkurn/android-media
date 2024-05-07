@@ -339,6 +339,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onTabSelected(tab: TabLayout.Tab) {
         tabsViewModel?.let { tabsViewModel ->
             selectedTab = tab
+            CURRENT_TAB_NAME = tabsViewModel.components.data?.get(tab.position)?.name ?: ""
+            CURRENT_TAB_INDEX = tab.position
             if (tabsViewModel.setSelectedState(tab.position, true)) {
                 if (tabsViewModel.isFromCategory()) {
                     tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
@@ -349,8 +351,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 tabsViewModel.onTabClick()
                 val tabPosition = tab.position.inc()
                 mFragment.setCurrentTabPosition(tabPosition)
-                CURRENT_TAB_NAME = tabsViewModel.components.data?.get(tab.position)?.name ?: ""
-                CURRENT_TAB_INDEX = tab.position
                 trackTabsGTMStatus(tab)
                 tabsViewModel.switchThematicHeaderData(tabPosition)
             }
