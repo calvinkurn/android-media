@@ -317,6 +317,7 @@ object AppLogAnalytics {
     /**
      * To update current page data
      */
+    @JvmStatic
     fun putAdsPageData(key: String, value: Any) {
         val adsMap = hashMapOf(key to Pair(currentActivityName, value))
         _adsPageDataList.add(adsMap)

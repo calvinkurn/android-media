@@ -57,7 +57,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.EnterMethod;
-import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -154,8 +153,7 @@ public class MainParentActivity extends BaseActivity implements
         ITelemetryActivity,
         InAppCallback,
         HomeCoachmarkListener,
-        HomeBottomNavListener,
-        IAppLogActivity {
+        HomeBottomNavListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -462,6 +460,7 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext(), true);
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
+        setAdsLogData();
 
         populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
@@ -642,6 +641,11 @@ public class MainParentActivity extends BaseActivity implements
         configureNavigationBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
+    }
+
+    private void setAdsLogData() {
+        AppLogAnalytics.currentPageName = getPageName();
+        AppLogAnalytics.putAdsPageData(PAGE_NAME, getPageName());
     }
 
     private void openFragment(Fragment fragment) {
@@ -1554,7 +1558,6 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
 
-    @Override
     public String getPageName() {
         if (currentFragment instanceof AppLogInterface) {
             return ((AppLogInterface) currentFragment).getPageName();
