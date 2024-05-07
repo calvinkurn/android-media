@@ -67,7 +67,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     init {
         itemView.addOnAttachStateChangeListener(
             onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) },
+            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
         )
     }
 
