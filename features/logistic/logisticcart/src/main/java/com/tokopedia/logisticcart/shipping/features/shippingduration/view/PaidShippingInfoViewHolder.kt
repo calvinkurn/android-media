@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemPaidShippingTitleBinding
@@ -18,6 +19,11 @@ class PaidShippingInfoViewHolder(val binding: ItemPaidShippingTitleBinding) :
     fun bindData(data: PaidSectionInfoUiModel, listener: ShippingDurationAdapterListener?) {
         binding.run {
             if (data.showCollapsableIcon) {
+                if (data.isCollapsed) {
+                    iconPaidShippingCollapse.setImage(IconUnify.CHEVRON_UP)
+                } else {
+                    iconPaidShippingCollapse.setImage(IconUnify.CHEVRON_DOWN)
+                }
                 iconPaidShippingCollapse.setOnClickListener {
                     listener?.onCollapseClicked(!data.isCollapsed)
                 }
