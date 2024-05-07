@@ -62,15 +62,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var isFullFilment: Boolean = false
     private var isRecommendation = false
 
-    private val itemViewRect by lazy(LazyThreadSafetyMode.NONE) {
-        Rect()
-    }
+    private val itemViewRect by lazy { Rect() }
 
     init {
         itemView.addOnAttachStateChangeListener(
             onViewAttachedToWindow = { onViewAttachedToWindow() },
             onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) },
-            setVisiblePercentage = { setVisiblePercentage(getCalculateVisibleViewArea(itemView, itemViewRect)) }
         )
     }
 
