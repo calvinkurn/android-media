@@ -6,6 +6,7 @@ import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
 import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.unifycomponents.R.color
 import com.tokopedia.unifycomponents.UnifyButton
 
 object MapperUtils {
@@ -81,7 +82,7 @@ object MapperUtils {
                             styleList = listOf(
                                 ProductCardModel.LabelGroup.Style(
                                     key = LabelGroupStyle.BACKGROUND_COLOR,
-                                    value = LabelGroupStyle.BACKGROUND_COLOR_VALUE
+                                    value = color.Unify_Static_Black.toString()
                                 ),
                                 ProductCardModel.LabelGroup.Style(
                                     key = LabelGroupStyle.BACKGROUND_OPACITY,
@@ -89,7 +90,7 @@ object MapperUtils {
                                 ),
                                 ProductCardModel.LabelGroup.Style(
                                     key = LabelGroupStyle.TEXT_COLOR,
-                                    value = LabelGroupStyle.TEXT_COLOR_VALUE
+                                    value = color.Unify_Static_White.toString()
                                 )
                             ),
                         )
@@ -109,20 +110,9 @@ object MapperUtils {
                             title = it.title,
                             type = it.type,
                             imageUrl = it.imageUrl,
-                            styleList = listOf(
-                                ProductCardModel.LabelGroup.Style(
-                                    key = LabelGroupStyle.BACKGROUND_COLOR,
-                                    value = LabelGroupStyle.BACKGROUND_COLOR_VALUE
-                                ),
-                                ProductCardModel.LabelGroup.Style(
-                                    key = LabelGroupStyle.BACKGROUND_OPACITY,
-                                    value = LabelGroupStyle.BACKGROUND_OPACITY_VALUE
-                                ),
-                                ProductCardModel.LabelGroup.Style(
-                                    key = LabelGroupStyle.TEXT_COLOR,
-                                    value = LabelGroupStyle.TEXT_COLOR_VALUE
-                                )
-                            ),
+                            styleList = it.styleList.map { style ->
+                                ProductCardModel.LabelGroup.Style(style.key, style.value)
+                            },
                         )
                     )
                 }
