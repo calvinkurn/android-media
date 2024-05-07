@@ -41,7 +41,7 @@ class UniversalInboxRecommendationProductViewHolder(
     private var recTriggerObject = RecommendationTriggerObject()
 
     init {
-        itemView.setAdsTrackListener(
+        itemView.addOnAttachStateChangeListener(
             onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
             onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
         )
