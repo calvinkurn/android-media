@@ -325,6 +325,32 @@ class StatisticActivityViewModelTest {
         }
     }
 
+    private fun fetchPaywallAccessTestScope(
+        testBody: TestScope.(mockShopId: String, elementKey: String, source: String, results: List<Boolean>) -> Unit
+    ) {
+        runTest {
+            val results = mutableListOf<Boolean>()
+            val job = launch(UnconfinedTestDispatcher()) {
+                viewModel.paywallAccess.collectLatest {
+                    results.add(it)
+                }
+            }
+
+            val mockShopId = "12345"
+            val elementKey = GetElementBenefitByKeyBulkUseCase.Companion.Keys.STATISTIC_PAYWALL_ACCESS
+            val source = GetElementBenefitByKeyBulkUseCase.Companion.Sources.STATISTIC
+
+            every {
+                userSession.shopId
+            } returns mockShopId
+
+            testBody(mockShopId, elementKey, source, results)
+
+            job.cancel()
+            results.clear()
+        }
+    }
+
     private fun getMockParams(whiteListName: String): RequestParams {
         return RequestParams.create().apply {
             putString(TestConst.KEY_WHITE_LIST_NAME, whiteListName)
