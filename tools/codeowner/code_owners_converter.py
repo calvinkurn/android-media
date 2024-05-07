@@ -4,7 +4,8 @@ def read_code_owners():
 	file = open('tools/codeowner/team.json')
 	list_team = json.load(file)
 	with open('./CODEOWNERS') as code_owners:
-		with open('./OWNERS.bits.yml', 'a') as yml:
+		with open('./OWNERS.bits.yml', 'w') as yml:
+			yml.write("code_review_rule:\r\n  files:")
 			for line in code_owners:
 				if line != "\n":
 					module_owner = line.replace(" ", "").split("@")
