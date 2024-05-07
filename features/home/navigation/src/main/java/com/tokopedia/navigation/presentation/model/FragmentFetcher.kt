@@ -46,7 +46,7 @@ val BottomNavFeedType = BottomNavBarItemType("feed")
 val BottomNavDiscoType = BottomNavBarItemType("discopage")
 val BottomNavWishlistType = BottomNavBarItemType("wishlist")
 val BottomNavTransactionType = BottomNavBarItemType("transaction")
-val BottomNavProfileType = BottomNavBarItemType("me-page")
+val BottomNavProfileType = BottomNavBarItemType("me_page")
 
 val BottomNavHomeId = BottomNavItemId(BottomNavHomeType)
 val BottomNavFeedId = BottomNavItemId(BottomNavFeedType)
