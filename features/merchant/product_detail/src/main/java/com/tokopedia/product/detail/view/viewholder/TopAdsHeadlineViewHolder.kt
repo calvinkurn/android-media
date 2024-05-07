@@ -12,8 +12,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.databinding.PdpItemTopadsHeadlineInboxBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE

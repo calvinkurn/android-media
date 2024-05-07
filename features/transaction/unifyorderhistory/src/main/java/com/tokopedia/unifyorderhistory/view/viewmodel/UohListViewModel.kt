@@ -12,18 +12,19 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_digital.common.data.model.RechargeSetFailData
+import com.tokopedia.common_digital.common.usecase.RechargeSetFailUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
 import com.tokopedia.unifyorderhistory.data.model.LsPrintData
 import com.tokopedia.unifyorderhistory.data.model.PmsNotification
-import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
 import com.tokopedia.unifyorderhistory.data.model.TrainResendEmail
 import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
 import com.tokopedia.unifyorderhistory.data.model.UohAtcBuyAgainWidgetData
@@ -36,7 +37,6 @@ import com.tokopedia.unifyorderhistory.domain.FlightResendEmailUseCase
 import com.tokopedia.unifyorderhistory.domain.GetUohFilterCategoryUseCase
 import com.tokopedia.unifyorderhistory.domain.GetUohPmsCounterUseCase
 import com.tokopedia.unifyorderhistory.domain.LsPrintFinishOrderUseCase
-import com.tokopedia.unifyorderhistory.domain.RechargeSetFailUseCase
 import com.tokopedia.unifyorderhistory.domain.TrainResendEmailUseCase
 import com.tokopedia.unifyorderhistory.domain.UohFinishOrderUseCase
 import com.tokopedia.unifyorderhistory.domain.UohListUseCase
@@ -120,8 +120,8 @@ class UohListViewModel @Inject constructor(
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private val _tdnBannerResult = MutableLiveData<Result<TopAdsImageViewModel>>()
-    val tdnBannerResult: LiveData<Result<TopAdsImageViewModel>>
+    private val _tdnBannerResult = MutableLiveData<Result<TopAdsImageUiModel>>()
+    val tdnBannerResult: LiveData<Result<TopAdsImageUiModel>>
         get() = _tdnBannerResult
 
     private val _getUohPmsCounterResult = MutableLiveData<Result<PmsNotification>>()

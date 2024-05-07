@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "com.tokopedia.developer_options";
+option java_multiple_files = true;
+
+message StringIntIntPair {
+  string string_value = 1;
+  int32 int_value = 2;
+  int32 cnt_value = 3;
+}

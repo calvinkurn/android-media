@@ -53,6 +53,8 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(model: WidgetFeeServiceUiModel): Int = FeeServiceWidget.RES_LAYOUT
 
+    override fun type(model: WidgetShopExploreUiModel): Int = ShopExploreWidget.RES_LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(
@@ -101,6 +103,7 @@ class WidgetAdapterFactoryImpl(
                 widgetListener,
                 powerMerchantTracking
             )
+            ShopExploreWidget.RES_LAYOUT -> ShopExploreWidget(parent, widgetListener)
             else -> super.createViewHolder(parent, type)
         }
     }

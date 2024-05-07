@@ -38,6 +38,8 @@ data class BmGmData(
         return isGiftWithPurchase() && (tierProductList.firstOrNull()?.productsBenefit?.isNotEmpty() == true)
     }
 
+    fun getOfferMessage() = offerMessage.joinToString(" • ")
+
     companion object {
         private const val GWP_OFFER_TYPE_ID = 2L
     }

@@ -3,11 +3,11 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 data class BannerTopAdsModel(
-    val topAdsImageViewModel: TopAdsImageViewModel? = null,
+    val topAdsImageUiModel: TopAdsImageUiModel? = null,
     val cardId: String,
     val layoutCard: String,
     val layoutItem: String,
@@ -25,7 +25,7 @@ data class BannerTopAdsModel(
 
     override fun areItemsTheSame(other: Any): Boolean {
         return other is BannerTopAdsModel &&
-            topAdsImageViewModel?.bannerId == other.topAdsImageViewModel?.bannerId
+            topAdsImageUiModel?.bannerId == other.topAdsImageUiModel?.bannerId
     }
 
     override fun areContentsTheSame(other: Any): Boolean {
@@ -38,7 +38,7 @@ data class BannerTopAdsModel(
 
         other as BannerTopAdsModel
 
-        if (topAdsImageViewModel != other.topAdsImageViewModel) return false
+        if (topAdsImageUiModel != other.topAdsImageUiModel) return false
 
         return true
     }

@@ -74,7 +74,7 @@ import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingData
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
@@ -1478,7 +1478,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             topAdsImageViewUseCase.getImageData(any())
-        } returns arrayListOf(TopAdsImageViewModel())
+        } returns arrayListOf(TopAdsImageUiModel())
     }
 
     @Test

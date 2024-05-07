@@ -30,7 +30,11 @@ class GetOfferingProductListRequestParam(
         @SerializedName("version")
         val version: String = GlobalConfig.VERSION_NAME,
         @SerializedName("device")
-        val device: String = "android"
+        val device: String = "android",
+        @SerializedName("now_info")
+        val nowInfo: OfferingNowInfoParam? = null,
+        @SerializedName("shop_id")
+        val shopId: Long? = null
     )
 
     data class ProductAnchor(

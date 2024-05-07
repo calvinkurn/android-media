@@ -262,7 +262,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             SlardarInit.INSTANCE.initApm(this);
             SlardarInit.INSTANCE.initNpth(this, SLARDAR_AID, getSlardarChannel(),
                     getUserSession().getUserId());
-            SlardarInit.INSTANCE.startApm(SLARDAR_AID, getSlardarChannel());
+            SlardarInit.INSTANCE.startApm(SLARDAR_AID, getSlardarChannel(), userSession.getUserId());
         }
     }
 
@@ -511,7 +511,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     }
                 });
                 if (!activity.isFinishing() && !activity.isDestroyed()) {
-                    appUpdateDialogBuilder.getAlertDialog().show();
+                    appUpdateDialogBuilder.getAlertDialogAndShowPopUpUpdate();
                     if (finalInAppCallback != null) {
                         finalInAppCallback.onNeedUpdateInApp(detail);
                     }

@@ -1,7 +1,7 @@
 package com.tokopedia.notifcenter.view.viewmodel.test
 
 import com.tokopedia.notifcenter.view.viewmodel.base.NotificationViewModelTestFixture
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
@@ -11,7 +11,7 @@ class NotificationTopAdsViewModelTest : NotificationViewModelTestFixture() {
     @Test
     fun should_load_not_change_topAdsBanner_value_when_empty_result() {
         // Given
-        val expectedResult: ArrayList<TopAdsImageViewModel> = arrayListOf()
+        val expectedResult: ArrayList<TopAdsImageUiModel> = arrayListOf()
         coEvery {
             topAdsImageViewUseCase.getImageData(any())
         } returns expectedResult

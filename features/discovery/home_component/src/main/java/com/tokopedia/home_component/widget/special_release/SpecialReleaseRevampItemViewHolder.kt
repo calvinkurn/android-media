@@ -3,7 +3,6 @@ package com.tokopedia.home_component.widget.special_release
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
@@ -15,6 +14,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 
 /**

@@ -15,11 +15,9 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
-import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -80,9 +78,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
 
     @RelaxedMockK
-    lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
-
-    @RelaxedMockK
     lateinit var affiliateService: NowAffiliateService
 
     @RelaxedMockK
@@ -112,7 +107,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
             getMiniCartUseCase,
             getCategoryListUseCase,
             getChooseAddressWarehouseLocUseCase,
-            setUserPreferenceUseCase,
             userSession,
             addToCartUseCase,
             updateCartUseCase,
@@ -317,14 +311,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         every { userSession.isLoggedIn } returns isLoggedIn
     }
 
-    protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreference.SetUserPreferenceData) {
-        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
-    }
-
-    protected fun onSetUserPreference_thenReturn(error: Throwable) {
-        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
-    }
-
     protected fun verifyGetCategoryListUseCaseCalled(warehouses: List<WarehouseData>, times: Int = 1) {
         coVerify(exactly = times) { getCategoryListUseCase.execute(warehouses, TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
     }
@@ -373,17 +359,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         val data = (viewModel.getLayout.value as Success<RepurchaseLayoutUiModel>).data
         val condition = data.layoutList.firstOrNull { it::class.java == layout::class.java } != null
         assertTrue(condition)
-    }
-
-    protected fun verifySetUserPreferenceUseCaseCalled(
-        localCacheModel: LocalCacheModel,
-        serviceType: String
-    ) {
-        coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
-    }
-
-    protected fun verifySetUserPreferenceUseCaseNotCalled() {
-        coVerify(exactly = 0) { setUserPreferenceUseCase.execute(any(), any()) }
     }
 
     protected fun callPrivateLoadMoreProduct() {

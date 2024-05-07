@@ -182,18 +182,18 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addSourceModulePdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getLastDataExactStep(SOURCE_MODULE, 2)
+            getDataLast(SOURCE_MODULE, 2)
         } else {
-            getLastDataExactStep(SOURCE_MODULE)
+            getDataLast(SOURCE_MODULE)
         }
         put(SOURCE_MODULE, sourceModule)
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getLastDataExactStep(ENTER_METHOD, 2)
+            getDataLast(ENTER_METHOD, 2)
         } else {
-            getLastDataExactStep(ENTER_METHOD)
+            getDataLast(ENTER_METHOD)
         }
         put(ENTER_METHOD, sourceModule)
     }
@@ -346,7 +346,7 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getLastDataExactStep(key: String, step: Int = 1): Any? {
+    fun getDataLast(key: String, step: Int = 1): Any? {
         val idx = _pageDataList.lastIndex - step
         val map = _pageDataList.getOrNull(idx)
         return map?.get(key)
