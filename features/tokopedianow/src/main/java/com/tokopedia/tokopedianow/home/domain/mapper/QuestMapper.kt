@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.home.domain.model.QuestList
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 
 object QuestMapper {
     private const val BANNER_TITLE = "banner_title"
@@ -69,8 +70,8 @@ object QuestMapper {
         questId: Int,
         result: (HomeQuestCardItemUiModel) -> HomeQuestCardItemUiModel
     ) {
-        find { it?.layout is com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel && it.layout.id == channelId }?.let { itemUiModel ->
-            val questWidget = itemUiModel.layout as com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
+        find { it?.layout is HomeQuestWidgetUiModel && it.layout.id == channelId }?.let { itemUiModel ->
+            val questWidget = itemUiModel.layout as HomeQuestWidgetUiModel
             val questList = questWidget.questList.toMutableList()
             val questItem = questList.first { it.id == questId.toString() }
             val questWidgetIndex = indexOf(itemUiModel)
