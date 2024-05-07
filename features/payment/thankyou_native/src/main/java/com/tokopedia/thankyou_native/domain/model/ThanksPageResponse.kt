@@ -643,5 +643,5 @@ data class CtaDetails(
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("hide_button")
-    val hideButton: Boolean = false,
+    val hideButton: Boolean = true,
 ) : Parcelable

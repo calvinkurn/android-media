@@ -23,6 +23,7 @@ import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_SELEC
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_VIEW_ITEM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_MERCHANT_CODE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_ID
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_METHOD
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PROMOTIONS
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_SCROOGE_ID
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_TRACKER_ID
@@ -488,7 +489,7 @@ class ThankYouPageAnalytics @Inject constructor(
         }
     }
 
-    fun sendCtaClickAnalytic(isPrimary: Boolean, text: String, applink: String, paymentId: String, merchantCode: String?) {
+    fun sendCtaClickAnalytic(isPrimary: Boolean, text: String, applink: String, paymentId: String, merchantCode: String?, paymentMethod: String) {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_CLICK_PAMENT,
             EVENT_CATEGORY_ORDER_COMPLETE,
@@ -500,6 +501,7 @@ class ThankYouPageAnalytics @Inject constructor(
         map[KEY_CURRENT_SITE] = CURRENT_SITE_MARKETPLACE
         map[KEY_MERCHANT_CODE] = merchantCode.orEmpty()
         map[KEY_SCROOGE_ID] = String.EMPTY
+        map[KEY_PAYMENT_METHOD] = paymentMethod
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -558,6 +560,7 @@ object ParentTrackingKey {
     val PROMO_CLICK = "promoClick"
     val PROMO_VIEW = "promoView"
     val KEY_SCROOGE_ID = "scroogeId"
+    val KEY_PAYMENT_METHOD = "paymentMethod"
 
     val KEY_SHOP_ID = "shopId"
     val KEY_SHOP_TYPE = "shopType"

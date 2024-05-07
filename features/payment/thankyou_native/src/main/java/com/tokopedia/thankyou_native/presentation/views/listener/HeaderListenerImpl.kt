@@ -97,7 +97,8 @@ class HeaderListenerImpl(
             text,
             applink,
             thanksPageData.paymentID,
-            thanksPageData.merchantCode
+            thanksPageData.merchantCode,
+            thanksPageData.gatewayName
         )
         if (CtaTypeMapper.getType(type) == Redirect) {
             openApplink(applink)
