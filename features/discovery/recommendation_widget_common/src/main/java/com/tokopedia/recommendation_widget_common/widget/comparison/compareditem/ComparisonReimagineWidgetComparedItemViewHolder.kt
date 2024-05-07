@@ -45,27 +45,12 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
 
     val context: Context = view.context
 
-    init {
+//    init {
 //        itemView.addOnAttachStateChangeListener(
 //            onViewAttachedToWindow = { onViewAttachedToWindow() },
 //            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
 //        )
-
-//        binding?.productCardView?.apply {
-//            setVisiblePercent(
-//                this,
-//                onVisibilityChange = { v, h ->
-//                    Log.i("VIEW_PERCENT", "${recommendationItem?.name} v:${v} h:${h}")
-//                },
-//                onShow = {
-//                    onViewAttachedToWindow()
-//                },
-//                onShowOver = { percent ->
-//                    onViewDetachedFromWindow(percent)
-//                }
-//            )
-//        }
-    }
+//    }
 
     override fun bind(
         comparisonModel: ComparisonModel,
