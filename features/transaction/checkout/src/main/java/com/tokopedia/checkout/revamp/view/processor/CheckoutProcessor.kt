@@ -365,8 +365,12 @@ class CheckoutProcessor @Inject constructor(
         payment: Payment,
         cartType: String
     ): CheckoutRequest {
-        val atcBuyType =
-            if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) AtcBuyType.OCC else AtcBuyType.ATC
+        val atcBuyType = when {
+            isOneClickShipment -> AtcBuyType.OCS
+            cartType == CartShipmentAddressFormData.CART_TYPE_OCC -> AtcBuyType.OCC
+            else -> AtcBuyType.ATC
+        }
+
         return CheckoutRequest(
             carts,
             isOneClickShipment.toString(),

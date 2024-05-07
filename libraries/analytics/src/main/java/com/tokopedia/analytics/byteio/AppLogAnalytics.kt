@@ -213,9 +213,11 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        val enterMethod = if(pageDataList.size > 1)
+        val enterMethod = if (pageDataList.size > 1) {
             getLastDataBeforeCurrent(ENTER_METHOD)
-        else getLastData(ENTER_METHOD)
+        } else {
+            getLastData(ENTER_METHOD)
+        }
         put(ENTER_METHOD, enterMethod)
     }
 
@@ -304,7 +306,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-                ?.get(IS_SHADOW) == true
+            ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -509,22 +511,26 @@ object AppLogAnalytics {
 
     fun getEntranceInfoForCheckout(buyType: AtcBuyType, cartIds: List<String>): String {
         return JSONObject().also {
-            it.put("funnel", if (buyType == AtcBuyType.ATC) "regular" else "occ")
+            it.put("funnel", buyType.funnel)
             it.put("buy_type", buyType.code.toString())
             it.put("os_name", "android")
-            it.put("cart_item", JSONArray().also { item ->
-                cartIds.forEach { id ->
-                    item.put(JSONObject().also { j ->
-                        j.put("cart_id", id)
-                        if (buyType == AtcBuyType.ATC) {
-                            j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
-                        } else {
-                            j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutOcc())
-                        }
-
-                    })
+            it.put(
+                "cart_item",
+                JSONArray().also { item ->
+                    cartIds.forEach { id ->
+                        item.put(
+                            JSONObject().also { j ->
+                                j.put("cart_id", id)
+                                if (buyType == AtcBuyType.ATC) {
+                                    j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
+                                } else { // occ & ocs
+                                    j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutInstant())
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }.toString()
     }
 
@@ -532,7 +538,7 @@ object AppLogAnalytics {
      * This method should be refactored to the normal getEntranceInfoJson, this is separated
      * to minimize changes and avoid regression during hotfix
      * */
-    internal fun getEntranceInfoJsonForCheckoutOcc(): JSONObject {
+    internal fun getEntranceInfoJsonForCheckoutInstant(): JSONObject {
         return JSONObject().also {
             it.addEnterFromInfo()
             it.addEntranceForm()
