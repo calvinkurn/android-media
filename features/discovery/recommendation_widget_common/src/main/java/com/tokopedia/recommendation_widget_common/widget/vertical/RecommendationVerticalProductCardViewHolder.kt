@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.widget.vertical
 
-import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -12,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalProductcardBinding
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
@@ -20,7 +20,6 @@ import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.utils.view.PercentVisibleLayout
 
 class RecommendationVerticalProductCardViewHolder(
     itemView: View,
@@ -71,17 +70,13 @@ class RecommendationVerticalProductCardViewHolder(
     }
 
     private fun setupProductCardListener(element: RecommendationVerticalProductCardModel) {
-        binding.percentLayout.setOnVisibilityPercentChangedListener(object: PercentVisibleLayout.OnVisibilityPercentChanged {
+        binding.productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged{
             override fun onShow() {
-                if(element.recomItem.isTopAds) {
-                    element.recomItem.sendShowAdsByteIo(itemView.context)
-                }
+                element.recomItem.sendShowAdsByteIo(itemView.context)
             }
 
-            override fun onShowOver(percent: Int) {
-                if(element.recomItem.isTopAds) {
-                    element.recomItem.sendShowOverAdsByteIo(itemView.context, percent)
-                }
+            override fun onShowOver(maxPercentage: Int) {
+                element.recomItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
             }
         })
         with(binding.productCardView) {

@@ -1,13 +1,16 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison.compareditem
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonReimagineComparedWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
@@ -29,7 +32,7 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
     val view: View,
     private val adsViewListener: AdsViewListener?,
     private val adsItemClickListener: AdsItemClickListener?,
-): RecyclerView.ViewHolder(view), ComparisonViewHolder, IAdsViewHolderTrackListener {
+) : RecyclerView.ViewHolder(view), ComparisonViewHolder, IAdsViewHolderTrackListener {
 
     private var binding: ItemComparisonReimagineComparedWidgetBinding? by viewBinding()
 
@@ -43,10 +46,25 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
     val context: Context = view.context
 
     init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
+//        itemView.addOnAttachStateChangeListener(
+//            onViewAttachedToWindow = { onViewAttachedToWindow() },
+//            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
+//        )
+
+//        binding?.productCardView?.apply {
+//            setVisiblePercent(
+//                this,
+//                onVisibilityChange = { v, h ->
+//                    Log.i("VIEW_PERCENT", "${recommendationItem?.name} v:${v} h:${h}")
+//                },
+//                onShow = {
+//                    onViewAttachedToWindow()
+//                },
+//                onShowOver = { percent ->
+//                    onViewDetachedFromWindow(percent)
+//                }
+//            )
+//        }
     }
 
     override fun bind(
@@ -57,11 +75,20 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
         trackingQueue: TrackingQueue?,
         userSession: UserSessionInterface,
     ) {
-
+        recommendationItem = comparisonModel.recommendationItem
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
+        binding?.productCardView?.setVisibilityPercentListener(object: ProductConstraintLayout.OnVisibilityPercentChanged{
+            override fun onShow() {
+                comparisonModel.recommendationItem.sendShowAdsByteIo(context)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                comparisonModel.recommendationItem.sendShowOverAdsByteIo(context, maxPercentage)
+            }
+        })
         if (comparisonModel.isClickable) {
-            binding?.productCardView?.setOnClickListener(object: ProductCardClickListener {
+            binding?.productCardView?.setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
                     if (comparisonModel.recommendationItem.isTopAds) {
                         val product = comparisonModel.recommendationItem
@@ -141,4 +168,3 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
     override val visiblePercentage: Int
         get() = viewVisiblePercentage
 }
-

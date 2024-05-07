@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
@@ -33,18 +34,26 @@ class GridProductItemViewHolder(
     override val videoPlayer: VideoPlayer?
         get() = binding?.searchProductCardGridReimagine?.video
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
+//    init {
+//        itemView.addOnAttachStateChangeListener(
+//            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
+//            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
+//        )
+//    }
 
     override fun bind(productItemData: ProductItemDataView) {
         this.elementItem = productItemData
         binding?.searchProductCardGridReimagine?.run {
             setProductModel(productCardModel(productItemData))
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    onViewAttachedToWindow(productItemData)
+                }
 
+                override fun onShowOver(maxPercentage: Int) {
+                    onViewDetachedFromWindow(productItemData, maxPercentage)
+                }
+            })
             setThreeDotsClickListener {
                 productListener.onThreeDotsClick(productItemData, bindingAdapterPosition)
             }
