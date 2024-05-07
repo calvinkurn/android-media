@@ -895,5 +895,18 @@ public interface ApplinkConst {
 
     interface Som {
         String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
+        String SELLER_ORDER_EXTENSION_REQUEST = "tokopedia://seller/seller-order-extension-request";
+    }
+
+    interface ProductPreview {
+        String SHARE_PRODUCT_PREVIEW = "tokopedia://product-preview" +
+                "/%1s" + // productId
+                "?review_id=%2s" +
+                "&attachment_id=%3s" +
+                "&source=%4s";
+    }
+
+    interface ShareExperience {
+        String SHARE_EXPERIENCE = "tokopedia://share";
     }
 }

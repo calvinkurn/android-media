@@ -121,9 +121,7 @@ class HomeAtfUseCase @Inject constructor(
         positionObserverJob = launch(homeDispatcher.io) {
             dynamicPositionRepository.flow.collect { value ->
                 if (value != null) {
-                    if (value.isPositionReady() || value.isDataError()) {
-                        emit(value)
-                    }
+                    conditionalEmitPosition(value)
                     if (value.needToFetchComponents) {
                         value.listAtfData.forEach { data ->
                             conditionalFetchAtfData(data.atfMetadata)
@@ -169,6 +167,17 @@ class HomeAtfUseCase @Inject constructor(
             AtfKey.TYPE_MISSION_V2,
             AtfKey.TYPE_MISSION_V3 -> launch { missionWidgetRepository.getData(metadata) }
             AtfKey.TYPE_TODO -> launch { todoWidgetRepository.getData(metadata) }
+        }
+    }
+
+    private fun conditionalEmitPosition(value: AtfDataList) {
+        flow.value?.let {
+            // prevent emitting cache data after refresh
+            if (value.isCache && !it.isCache) return
+        }
+        // only emit data if list is not empty or status = error
+        if (value.isPositionReady() || value.isDataError()) {
+            emit(value)
         }
     }
 

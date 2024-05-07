@@ -28,6 +28,7 @@ object CheckoutConstant {
     const val PARAM_DEFAULT = "default"
     const val PARAM_CHECKOUT = "checkout"
     const val PARAM_OCC_MULTI = "occmulti"
+    const val PARAM_NEW_OCC = "default_occ"
     const val RESULT_CODE_COUPON_STATE_CHANGED = 735
     const val KERO_TOKEN = "token"
     const val EXTRA_REF = "EXTRA_REF"
@@ -35,6 +36,7 @@ object CheckoutConstant {
     const val REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET = 555
     const val ADD_ON_PRODUCT_LEVEL = "product"
     const val ADD_ON_ORDER_LEVEL = "order"
+    const val EXTRA_ATC_OCC_MESSAGE = "EXTRA_ATC_OCC_MESSAGE"
 
     const val EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN"
     const val EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS"

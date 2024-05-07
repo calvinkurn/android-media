@@ -15,9 +15,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bytedance.apm.trace.fps.FpsTracer
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -73,8 +75,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -206,6 +208,8 @@ class HomeRecommendationFragment :
         initListeners()
         observeStateFlow()
         observeLiveData()
+
+        recyclerView?.bindFpsTracer(FPS_TRACER_HOME_RECOM)
     }
 
     override fun onPause() {
@@ -583,7 +587,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -592,14 +596,14 @@ class HomeRecommendationFragment :
         val rvContext = recyclerView?.context
 
         rvContext?.let {
-            RouteManager.route(it, model.topAdsImageViewModel?.applink)
+            RouteManager.route(it, model.topAdsImageUiModel?.applink)
         }
     }
 
     override fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -609,7 +613,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -625,7 +629,7 @@ class HomeRecommendationFragment :
         rvContext?.let {
             RouteManager.route(
                 it,
-                model.topAdsImageViewModel?.applink
+                model.topAdsImageUiModel?.applink
             )
         }
     }
@@ -633,7 +637,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -967,6 +971,8 @@ class HomeRecommendationFragment :
 
         private const val MAX_RECYCLED_VIEWS = 20
         private const val BASE_POSITION = 10
+
+        private const val FPS_TRACER_HOME_RECOM = "Home Recommendation Scene"
 
         fun newInstance(
             tabIndex: Int,

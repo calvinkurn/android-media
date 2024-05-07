@@ -74,8 +74,6 @@ class FlashSaleTokoTabViewHolder(
         val position = viewModel?.getTabLiveData()?.value
             ?.indexOfFirst { it.data?.first()?.filterValue == element.id } ?: -1
 
-        (fragment as? DiscoveryFragment)?.currentTabPosition = position + 1
-
         return position
     }
 

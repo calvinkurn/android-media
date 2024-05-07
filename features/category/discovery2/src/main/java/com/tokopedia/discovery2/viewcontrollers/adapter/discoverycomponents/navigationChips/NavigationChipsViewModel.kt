@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class NavigationChipsViewModel (application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class NavigationChipsViewModel (application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {

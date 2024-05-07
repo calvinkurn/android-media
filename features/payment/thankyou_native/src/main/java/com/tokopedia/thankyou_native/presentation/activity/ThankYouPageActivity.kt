@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.transition.R.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -20,6 +23,7 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -62,9 +66,12 @@ import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFrag
 import com.tokopedia.thankyou_native.presentation.fragment.ThankYouBaseFragment
 import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
+import com.tokopedia.unifycomponents.fade
+import com.tokopedia.unifyprinciples.UnifyMotion
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 var idlingResource: TkpdIdlingResource? = null
 
@@ -117,7 +124,7 @@ class ThankYouPageActivity :
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 
-    override fun getParentViewResourceID(): Int = R.id.thank_parent_view
+    override fun getParentViewResourceID(): Int = R.id.thank_loader_view
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -129,7 +136,6 @@ class ThankYouPageActivity :
                 bundle.putAll(intent.extras)
             }
         }
-        showToolbarBeforeLoading()
         return LoaderFragment.getLoaderFragmentInstance(bundle)
     }
 
@@ -149,11 +155,34 @@ class ThankYouPageActivity :
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
+
+        val header = findViewById<ImageView>(R.id.header_background)
+        when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType, thanksPageData.paymentStatus)) {
+            InstantPaymentPage -> {
+                this.let {
+                    header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_GN500))
+                }
+            }
+            ProcessingPaymentPage -> {
+                this.let {
+                    header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_TN50))
+                }
+            }
+            WaitingPaymentPage -> {
+                this.let {
+                    header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_YN50))
+                }
+            }
+            null -> {
+                // no op
+            }
+        }
+
         val fragmentByPaymentMode = getGetFragmentByPaymentMode(thanksPageData)
         fragmentByPaymentMode?.let {
             showToolbarAfterLoading(fragmentByPaymentMode.title)
-            supportFragmentManager.beginTransaction()
-                .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.thank_parent_view, fragmentByPaymentMode.fragment, "asdasd")
                 .commit()
             showAppFeedbackBottomSheet(thanksPageData)
         } ?: run { gotoHomePage() }
@@ -168,6 +197,11 @@ class ThankYouPageActivity :
             findViewById<View>(R.id.toolbarBackground).gone()
         }
         idlingResource?.decrement()
+        findViewById<FrameLayout>(getParentViewResourceID()).animate().alpha(0f).setDuration(UnifyMotion.T5).withEndAction {
+            supportFragmentManager.findFragmentById(getParentViewResourceID())?.let {
+                supportFragmentManager.beginTransaction().remove(it).commit()
+            }
+        }.start()
     }
 
     fun cancelGratifDialog() {
@@ -271,15 +305,8 @@ class ThankYouPageActivity :
         }
     }
 
-    private fun showToolbarBeforeLoading() {
-        globalNabToolbar.gone()
-    }
-
     private fun showToolbarAfterLoading(title: String) {
         if (isGlobalNavEnable()) {
-            if (isV2Enabled()) {
-                globalNabToolbar.alpha = 0f
-            }
             globalNabToolbar.show()
             initializeGlobalNav(title)
         } else {

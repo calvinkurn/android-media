@@ -13,6 +13,7 @@ object ApplinkConstInternalContent {
     const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     const val HOST_PLAY_SHORTS = "play-shorts"
     const val HOST_STORIES = "stories"
+    const val HOST_PRODUCT_PREVIEW = "product-preview"
 
     const val PATH_STORIES_CREATION = "/creation"
 
@@ -20,10 +21,13 @@ object ApplinkConstInternalContent {
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
     const val INTERNAL_FEED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED"
     const val INTERNAL_FEED_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/detail/"
+    const val INTERNAL_FEED_LOCAL_BROWSE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/search"
+    const val INTERNAL_FEED_SEARCH_RESULT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FEED/search-result"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
     const val INTERNAL_PLAY_SHORTS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_SHORTS"
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
     const val INTERNAL_STORIES = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_STORIES"
+    const val INTERNAL_PRODUCT_PREVIEW = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PRODUCT_PREVIEW"
     const val INTERNAL_STORIES_SHOP = "$INTERNAL_STORIES/shop"
     const val INTERNAL_STORIES_CREATION = "$INTERNAL_STORIES$PATH_STORIES_CREATION"
 

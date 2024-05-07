@@ -23,9 +23,9 @@ const val PRODUCT_PER_PAGE = 1
 
 class ProductCardSingleViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val productData: MutableLiveData<ComponentsItem?> = MutableLiveData()
     fun getProductData(): LiveData<ComponentsItem?> = productData

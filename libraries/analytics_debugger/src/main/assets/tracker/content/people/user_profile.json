@@ -1,6 +1,6 @@
 {
   "readme": "User Profile - Analytics",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "openScreen",
