@@ -10,9 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
@@ -20,11 +20,11 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
-import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
 import com.tokopedia.play.ui.explorewidget.adapter.ChipsWidgetAdapter
 import com.tokopedia.play.ui.explorewidget.adapter.WidgetAdapter
 import com.tokopedia.play.ui.explorewidget.itemdecoration.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.viewholder.ChipsViewHolder
+import com.tokopedia.play.ui.explorewidget.viewholder.PlayExploreWidgetViewHolder
 import com.tokopedia.play.util.isAnyChanged
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
@@ -33,7 +33,6 @@ import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.ExploreWidgetState
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.TabMenuUiModel
-import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.uimodel.action.EmptyPageWidget
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
@@ -44,11 +43,7 @@ import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.getChipsShimmering
 import com.tokopedia.play.view.uimodel.getWidgetShimmering
-import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.ui.PlayWidgetLargeView
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
@@ -72,22 +67,15 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val analyticFactory: PlayAnalytic2.Factory
 ) : BasePlayFragment(),
     ChipsViewHolder.Chips.Listener,
-    PlayWidgetListener,
-    PlayWidgetAnalyticListener {
+    PlayExploreWidgetViewHolder.Widget.Listener {
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
 
-    private val coordinator: PlayExploreWidgetCoordinator =
-        PlayExploreWidgetCoordinator(this).apply {
-            setListener(this@PlayExploreWidgetFragment)
-            setAnalyticListener(this@PlayExploreWidgetFragment)
-        }
-
-    private val widgetAdapter = WidgetAdapter()
+    private val widgetAdapter = WidgetAdapter(this)
 
     private val widgetLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        StaggeredGridLayoutManager(SPAN_SHIMMER, StaggeredGridLayoutManager.VERTICAL)
+        GridLayoutManager(binding.rvWidgets.context, SPAN_COUNT)
     }
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
@@ -98,7 +86,10 @@ class PlayExploreWidgetFragment @Inject constructor(
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 if (binding.rvWidgets.getChildAt(0) != null) {
-//                    binding.srExploreWidget.isEnabled = widgetLayoutManager.findFirstVisibleItemPosition() == 0 && binding.rvWidgets.getChildAt(0).top == 0
+                    binding.srExploreWidget.isEnabled =
+                        widgetLayoutManager.findFirstVisibleItemPosition() == 0 && binding.rvWidgets.getChildAt(
+                            0
+                        ).top == 0
                 }
                 super.onScrolled(view, dx, dy)
             }
@@ -111,13 +102,13 @@ class PlayExploreWidgetFragment @Inject constructor(
 
             override fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
                 if (dx < 0 && dy < 0) return
-//                val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
-//                val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
-//                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage) {
-//                    loadMoreNextPage()
-//                } else {
-//                    super.checkLoadMore(view, dx, dy)
-//                }
+                val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
+                val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
+                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage) {
+                    loadMoreNextPage()
+                } else {
+                    super.checkLoadMore(view, dx, dy)
+                }
             }
         }
     }
@@ -143,7 +134,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val clickableSpan by lazy(LazyThreadSafetyMode.NONE) {
         object : ClickableSpan() {
             override fun updateDrawState(tp: TextPaint) {
-                tp.color = MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_GN500)
+                tp.color =
+                    MethodChecker.getColor(requireContext(), unifyprinciplesR.color.Unify_GN500)
                 tp.isUnderlineText = false
                 tp.typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
                     requireContext(),
@@ -179,6 +171,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         setupView()
         fetchWidget()
         observeState()
+        observeEvent()
     }
 
     private fun setupView() {
@@ -261,6 +254,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                             view = requireView()
                         )
                     }
+
                     else -> {}
                 }
             }
@@ -304,7 +298,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
 
             ExploreWidgetState.Loading -> {
-//                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
+                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
 
             is ExploreWidgetState.Fail -> {
@@ -321,9 +315,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 )
             }
 
-            else -> {
-                // no-op
-            }
+            else -> {}
         }
     }
 
@@ -344,8 +336,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     /**
      * Card Widget
      */
+
     override fun onToggleReminderClicked(
-        view: PlayWidgetLargeView,
         channelId: String,
         reminderType: PlayWidgetReminderType,
         position: Int
@@ -354,28 +346,22 @@ class PlayExploreWidgetFragment @Inject constructor(
         analytic?.clickRemind(channelId)
     }
 
-    override fun onClickChannelCard(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int
-    ) {
+    override fun onClickChannelCard(item: PlayWidgetChannelUiModel, channelPositionInList: Int) {
         analytic?.clickContentCard(
             selectedChannel = item,
             position = channelPositionInList,
-            widgetInfo = viewModel.widgetInfo.copy(exploreWidgetConfig = viewModel.widgetInfo.exploreWidgetConfig.copy(categoryName = viewModel.selectedChips)),
+            widgetInfo = viewModel.widgetInfo.copy(
+                exploreWidgetConfig = viewModel.widgetInfo.exploreWidgetConfig.copy(
+                    categoryName = viewModel.selectedChips
+                )
+            ),
             config = viewModel.exploreWidgetConfig,
             type = ExploreWidgetType.Default
         )
         router.route(context, item.appLink)
     }
 
-    override fun onImpressChannelCard(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int
-    ) {
+    override fun onImpressChannelCard(item: PlayWidgetChannelUiModel, channelPositionInList: Int) {
         analytic?.impressChannelCard(
             item = item,
             position = channelPositionInList,
@@ -424,7 +410,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     companion object {
         private const val TAG = "PlayExploreWidgetFragment"
 
-        private const val SPAN_SHIMMER = 2
+        private const val SPAN_COUNT = 2
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment

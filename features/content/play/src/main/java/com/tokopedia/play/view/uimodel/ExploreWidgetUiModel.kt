@@ -124,10 +124,10 @@ internal val List<WidgetUiModel>.getConfig: PageConfig
         return this.filterIsInstance<PageConfig>().firstOrNull() ?: PageConfig.Empty
     }
 
-internal val getWidgetShimmering: List<ExploreWidgetPlaceholder>
+internal val getWidgetShimmering: List<PlayWidgetShimmerUiModel>
     get() {
         return List(6) {
-            ExploreWidgetPlaceholder
+            PlayWidgetShimmerUiModel
         }
     }
 

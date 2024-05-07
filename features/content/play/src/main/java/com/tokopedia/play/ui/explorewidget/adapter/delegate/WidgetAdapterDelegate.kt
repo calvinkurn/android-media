@@ -18,6 +18,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 class WidgetAdapterDelegate private constructor() {
     internal class Widget(
+        private val listener: PlayExploreWidgetViewHolder.Widget.Listener
     ) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayExploreWidgetViewHolder.Widget>(
         playR.layout.view_play_grid
     ) {
@@ -26,6 +27,8 @@ class WidgetAdapterDelegate private constructor() {
             item: PlayWidgetChannelUiModel,
             holder: PlayExploreWidgetViewHolder.Widget
         ) {
+            val space8 = holder.itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
+            holder.itemView.setPadding(space8, space8, space8, space8)
             holder.bind(item)
         }
 
@@ -35,7 +38,7 @@ class WidgetAdapterDelegate private constructor() {
         ): PlayExploreWidgetViewHolder.Widget {
             val binding =
                 ViewPlayGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return PlayExploreWidgetViewHolder.Widget.create(binding)
+            return PlayExploreWidgetViewHolder.Widget.create(binding, listener)
         }
     }
 
@@ -46,10 +49,9 @@ class WidgetAdapterDelegate private constructor() {
 
         override fun onBindViewHolder(
             item: PlayWidgetShimmerUiModel,
-            holder: PlayWidgetCardPlaceholderViewHolder //todo() change into card
+            holder: PlayWidgetCardPlaceholderViewHolder
         ) {
-            val space8 =
-                holder.itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
+            val space8 = holder.itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
             holder.bind()
             holder.itemView.setPadding(space8, space8, space8, space8)
             holder.setType(PlayWidgetCardPlaceholderViewHolder.Type.MEDIUM)
