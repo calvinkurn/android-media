@@ -2,6 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/Unify_GN500"/>
     <item>
-        <bitmap android:gravity="center" android:src="@drawable/sre_splash_screen"/>
+        <bitmap android:gravity="center" android:src="@drawable/logo_tkpd_white"/>
     </item>
 </layer-list>

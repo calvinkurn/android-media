@@ -486,7 +486,6 @@ class ThankYouPageActivity :
     }
 
     private fun isV2Enabled(): Boolean {
-        return true
         return try {
             val remoteConfig = FirebaseRemoteConfigImpl(this)
             return remoteConfig.getBoolean(ANDROID_ENABLE_THANKYOUPAGE_V2, true)

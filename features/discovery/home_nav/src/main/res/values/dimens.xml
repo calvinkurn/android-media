@@ -8,4 +8,6 @@
     <dimen name="nav_card_me_page_size">254dp</dimen>
 
     <dimen name="nav_mepage_divider_height">8dp</dimen>
+
+    <dimen name="corner_radius_light_product_card">8dp</dimen>
 </resources>

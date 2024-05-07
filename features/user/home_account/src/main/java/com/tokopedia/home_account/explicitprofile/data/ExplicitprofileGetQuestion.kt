@@ -39,11 +39,19 @@ data class TemplateDataModel(
     var name: String = "",
     @SerializedName("description")
     var description: String = "",
+    @SerializedName("rules")
+    var rules: Rules = Rules(),
     @SerializedName("property")
     var property: Property = Property(),
     @SerializedName("sections")
     var sections: MutableList<SectionsDataModel> = mutableListOf()
 ) {
+    data class Rules(
+        @SerializedName("minAnswer")
+        var minAnswer: Int? = null,
+        @SerializedName("maxAnswer")
+        var maxAnswer: Int? = null
+    )
     data class Property(
         @SerializedName("title")
         var title: String = "",
@@ -89,7 +97,9 @@ data class QuestionDataModel(
     @SerializedName("answerId")
     var answerId: Int = 0,
     @SerializedName("answerValue")
-    var answerValue: String = ""
+    var answerValue: String = "",
+    @SerializedName("answerValueList")
+    var answerValueList: List<String> = emptyList(),
 ) : Parcelable {
 
     @Parcelize
@@ -115,7 +125,13 @@ data class QuestionDataModel(
             @SerializedName("caption")
             var caption: String = "",
             @SerializedName("message")
-            var message: String = ""
+            var message: String = "",
+            @SerializedName("applink")
+            val applink: String = "",
+            @SerializedName("textApplink")
+            val textApplink: String = "",
+
+            var isSelected: Boolean = false,
         ): Parcelable
     }
 }

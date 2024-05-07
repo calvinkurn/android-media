@@ -908,4 +908,8 @@ public interface ApplinkConst {
                 "&attachment_id=%3s" +
                 "&source=%4s";
     }
+
+    interface ShareExperience {
+        String SHARE_EXPERIENCE = "tokopedia://share";
+    }
 }

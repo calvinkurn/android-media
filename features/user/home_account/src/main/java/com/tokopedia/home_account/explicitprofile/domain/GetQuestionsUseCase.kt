@@ -2,20 +2,32 @@ package com.tokopedia.home_account.explicitprofile.domain
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.explicitprofile.data.ExplicitprofileGetQuestion
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class GetQuestionsUseCase @Inject constructor(
-    @ApplicationContext private val repository: GraphqlRepository
-) : CoroutineUseCase<GetQuestionsUseCase.QuestionParams, ExplicitprofileGetQuestion>(Dispatchers.IO) {
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<GetQuestionsUseCase.QuestionParams, ExplicitprofileGetQuestion>(dispatchers.io) {
 
     override suspend fun execute(params: QuestionParams): ExplicitprofileGetQuestion {
-        return repository.request(graphqlQuery(), params.toMapParam())
+        val response : ExplicitprofileGetQuestion = repository.request(graphqlQuery(), params.toMapParam())
+
+        response.explicitProfileQuestionDataModel.template.sections.forEach {
+            it.questions.forEach { question ->
+                val listAnswer = question.answerValueList
+                question.property.options.forEach { option ->
+                    option.isSelected = listAnswer.contains(option.value)
+                }
+            }
+        }
+
+        return response
     }
 
     override fun graphqlQuery(): String {
@@ -33,6 +45,10 @@ class GetQuestionsUseCase @Inject constructor(
                   id
                   name
                   description
+                  rules {
+                    minAnswer
+                    maxAnswer
+                  }
                   property {
                     title
                     image
@@ -50,6 +66,7 @@ class GetQuestionsUseCase @Inject constructor(
                       answerId
                       questionType
                       answerValue
+                      answerValueList
                       property {
                         name
                         title
