@@ -3,10 +3,8 @@ package com.tokopedia.content.product.picker.seller.view.viewholder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
-import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -18,9 +16,10 @@ import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.view.adapter.ProductSummaryAdapter
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -43,16 +42,16 @@ class ProductSummaryViewHolder private constructor() {
                         itemView.context.getString(R.string.ongoing_campaign)
                     )
                     binding.tvProductSummaryLabelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
-                    binding.tvProductSummaryLabelStatus.visibility = View.VISIBLE
+                    binding.tvProductSummaryLabelStatus.visible()
                 }
                 CampaignStatus.Ready, CampaignStatus.ReadyLocked -> {
                     binding.tvProductSummaryLabelStatus.setLabel(
                         itemView.context.getString(R.string.upcoming_campaign)
                     )
                     binding.tvProductSummaryLabelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
-                    binding.tvProductSummaryLabelStatus.visibility = View.VISIBLE
+                    binding.tvProductSummaryLabelStatus.visible()
                 }
-                else -> binding.tvProductSummaryLabelStatus.visibility = View.GONE
+                else -> binding.tvProductSummaryLabelStatus.gone()
             }
         }
 
@@ -86,20 +85,12 @@ class ProductSummaryViewHolder private constructor() {
         @SuppressLint("ResourceType")
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
+            binding.tvProductSummaryStock.text = String.format(ctx.getString(R.string.product_stock), item.product.stock)
             binding.tvProductSummaryName.text = item.product.name
 
             binding.tvCommissionFmt.text = ctx.getString(R.string.product_affiliate_commission_fmt, item.product.commissionFmt)
             binding.tvCommissionFmt.showWithCondition(item.product.hasCommission)
             binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
-
-            binding.tvPinnedProductCarouselInfo.apply {
-                text = buildSpannedString {
-                    if(item.product.pinStatus.isPinned) {
-                        append(ctx.getString(R.string.product_pinned_product_info), fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
-                    }
-                }
-                visibility = if(text.isNullOrEmpty()) View.GONE else View.VISIBLE
-            }
 
             binding.ivProductSummaryCover.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
@@ -114,8 +105,8 @@ class ProductSummaryViewHolder private constructor() {
             when(val productPrice = item.product.price) {
                 is OriginalPrice -> {
                     binding.tvProductSummaryPrice.text = productPrice.price
-                    binding.labelProductSummaryDiscount.visibility = View.GONE
-                    binding.tvProductSummaryOriginalPrice.visibility = View.GONE
+                    binding.labelProductSummaryDiscount.gone()
+                    binding.tvProductSummaryOriginalPrice.gone()
                 }
                 is DiscountedPrice -> {
                     binding.tvProductSummaryPrice.text = productPrice.discountedPrice
@@ -124,20 +115,19 @@ class ProductSummaryViewHolder private constructor() {
                         R.string.product_discount_template,
                         productPrice.discountPercent
                     )
-                    binding.labelProductSummaryDiscount.visibility = View.VISIBLE
-                    binding.tvProductSummaryOriginalPrice.visibility = View.VISIBLE
+                    binding.labelProductSummaryDiscount.visible()
+                    binding.tvProductSummaryOriginalPrice.visible()
                 }
                 else -> {
                     binding.tvProductSummaryPrice.text = ""
-                    binding.labelProductSummaryDiscount.visibility = View.GONE
-                    binding.tvProductSummaryOriginalPrice.visibility = View.GONE
+                    binding.labelProductSummaryDiscount.gone()
+                    binding.tvProductSummaryOriginalPrice.gone()
                 }
             }
 
             binding.icProductSummaryDelete.setOnClickListener {
                 listener.onProductDeleteClicked(item.product)
             }
-            binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
             if (item.product.pinStatus.isPinned) listener.onImpressPinnedProduct(item.product)
 
             binding.viewPinProduct.showWithCondition(item.product.pinStatus.canPin && item.isEligibleForPin)
