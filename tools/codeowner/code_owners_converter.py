@@ -1,10 +1,10 @@
 import json
 
 def read_code_owners():
-	file = open('team.json')
+	file = open('tools/codeowner/team.json')
 	list_team = json.load(file)
-	with open('../CODEOWNERS') as code_owners:
-		with open('../OWNERS.bits.yml', 'a') as yml:
+	with open('./CODEOWNERS') as code_owners:
+		with open('./OWNERS.bits.yml', 'a') as yml:
 			for line in code_owners:
 				if line != "\n":
 					module_owner = line.replace(" ", "").split("@")
