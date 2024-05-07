@@ -14,7 +14,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.ktx.Firebase
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop_widget.R
 import com.tokopedia.unifycomponents.toPx
