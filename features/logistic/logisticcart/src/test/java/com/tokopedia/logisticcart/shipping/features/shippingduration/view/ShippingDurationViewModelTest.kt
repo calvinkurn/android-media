@@ -12,11 +12,13 @@ import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPaid
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoAndPreOrderModel
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaErrorAndTextEta
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceUiRatesHidden
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithoutEligibleCourierPromo
 import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
@@ -365,6 +367,23 @@ class ShippingDurationViewModelTest {
     }
 
     @Test
+    fun `When onCollapseClicked Then change collapse flag and refresh list`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPaidSection()
+        setRatesResponse(shippingRecommendationData)
+        viewModel.loadDuration(0, 0, ratesParam, false, false)
+        val initialList = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
+
+        // When
+        viewModel.onCollapseClicked(!shippingRecommendationData.paidSectionInfoUiModel.isCollapsed, isOcc = false)
+
+        // Then
+        val result = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
+        assert(initialList != result)
+        assert(!(result.find { it is PaidSectionInfoUiModel } as PaidSectionInfoUiModel).isCollapsed)
+    }
+
+    @Test
     fun `When rates v3 response has promo logistic Then show divider in bottomsheet`() {
         // Given
         val shippingRecommendationData = getShippingDataWithServiceUiRatesHidden()
@@ -409,6 +428,20 @@ class ShippingDurationViewModelTest {
         // Then
         assert(actual.first() is ProductShipmentDetailModel)
         assert((actual.first() as ProductShipmentDetailModel).preOrderModel != null)
+    }
+
+    @Test
+    fun `When in checkout and all paid shipping ETA is error Then show notifier model`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithServiceError()
+        setRatesResponse(shippingRecommendationData)
+
+        // When
+        viewModel.loadDuration(0, 0, ratesParam, false, false)
+        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
+
+        // Then
+        assert(actual.find { it is NotifierModel } != null)
     }
 
     @Test

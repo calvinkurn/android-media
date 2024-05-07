@@ -93,8 +93,7 @@ internal object DummyProvider {
     fun getShippingDataWithServiceError(errorCode: Int = 1): ShippingRecommendationData {
         val ratesData = getRatesResponseWithPromo()
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
-        val errorService = shippingRecomData.shippingDurationUiModels.first()
-        errorService.etaErrorCode = errorCode
+        shippingRecomData.shippingDurationUiModels.forEach { it.etaErrorCode = errorCode }
         return shippingRecomData
     }
 
