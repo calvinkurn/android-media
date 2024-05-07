@@ -57,8 +57,6 @@ class ShopStatusViewHolder(
         itemView?.findViewById(R.id.icKycNotVerified)
     private val shopStatusDescTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_status_desc)
-    private val shopStatusEligiblePmIcon: IconUnify? =
-        itemView?.findViewById(R.id.ic_sah_new_other_status_eligible_pm)
     private val loadingLayout: ConstraintLayout? =
         itemView?.findViewById(R.id.shimmer_sah_new_other_shop_status)
     private val errorLayout: ConstraintLayout? =
@@ -115,20 +113,6 @@ class ShopStatusViewHolder(
         setTitle(sellermenucommonR.string.regular_merchant)
 
         val pmProEligibleIcon = userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
-        val pmEligibleIcon = userShopInfoUiModel?.getPowerMerchantEligibleIcon()
-
-        when (regularMerchant) {
-            is RegularMerchant.Verified -> {
-                when {
-                    pmProEligibleIcon != null -> setRegularMerchantVerification(pmProEligibleIcon)
-                    pmEligibleIcon != null -> setRegularMerchantVerification(pmEligibleIcon)
-                    else -> setRegularMerchantVerification()
-                }
-            }
-
-            is RegularMerchant.Pending -> setRegularMerchantPending()
-            else -> {/* no-op */}
-        }
 
         pmIcon?.gone()
         pmProIcon?.gone()
@@ -145,19 +129,6 @@ class ShopStatusViewHolder(
                 onGoToPowerMerchant(TAB_PM, false)
             }
         }
-    }
-
-    private fun setRegularMerchantVerification(icon: Int? = null) {
-        shopStatusEligiblePmIcon?.run {
-            if (icon == null) hide() else show()
-            setImage(icon)
-        }
-    }
-
-    private fun setRegularMerchantPending() {
-        shopStatusEligiblePmIcon?.hide()
-
-        shopStatusDescTextView?.isClickable = false
     }
 
     private fun setPowerMerchantLayout(isKyc: Boolean) {
