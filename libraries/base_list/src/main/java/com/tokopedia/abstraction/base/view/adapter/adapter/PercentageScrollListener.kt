@@ -1,7 +1,9 @@
 package com.tokopedia.abstraction.base.view.adapter.adapter
 
 import android.content.Context
+import android.graphics.Point
 import android.graphics.Rect
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -15,10 +17,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.baselist.R
 import com.tokopedia.config.GlobalConfig
-import java.lang.StringBuilder
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
+
 
 open class PercentageScrollListener : OnScrollListener() {
 
@@ -37,9 +38,7 @@ open class PercentageScrollListener : OnScrollListener() {
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        if (abs(dy) > 0 || abs(dx) > 0 ) {
-            setVisiblePercentageOnScrollChanged(recyclerView)
-        }
+        setVisiblePercentageOnScrollChanged(recyclerView)
     }
 
     private fun addDebugView(v: View) {
@@ -66,6 +65,7 @@ open class PercentageScrollListener : OnScrollListener() {
                 val firstVisiblePosition = IntArray(layoutManager.spanCount)
                 layoutManager.findFirstVisibleItemPositions(firstVisiblePosition).minOrNull()
             }
+
             is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
             else -> (layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
         } ?: return
@@ -75,6 +75,7 @@ open class PercentageScrollListener : OnScrollListener() {
                 val lastVisiblePosition = IntArray(layoutManager.spanCount)
                 layoutManager.findLastVisibleItemPositions(lastVisiblePosition).maxOrNull()
             }
+
             is GridLayoutManager -> layoutManager.findLastVisibleItemPosition()
             else -> (layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
         } ?: return
@@ -85,29 +86,28 @@ open class PercentageScrollListener : OnScrollListener() {
 
         val totalLastPosition = lastPosition + (layoutManager.itemCount - lastPosition)
 
-        for (pos in firstPosition..lastPosition) {
-            setItemViewVisiblePercentage(layoutManager, pos, recyclerView)
+        for (pos in firstPosition..totalLastPosition) {
+            setItemViewVisiblePercentage(pos, layoutManager, recyclerView)
         }
     }
 
-    private fun setItemViewVisiblePercentage(layoutManager: RecyclerView.LayoutManager?, i: Int, recyclerView: RecyclerView) {
+    private fun setItemViewVisiblePercentage(i: Int, layoutManager: RecyclerView.LayoutManager?, recyclerView: RecyclerView) {
         val itemView = layoutManager?.findViewByPosition(i) ?: return
         addDebugView(itemView)
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(i) as? IAdsViewHolderTrackListener
+        val adsViewHolder = recyclerView.findViewHolderForAdapterPosition(i) as? IAdsViewHolderTrackListener
             ?: return
 
-        val visibleAreaPercentage = getCalculateVisibleViewArea(itemView, itemVisibleRect)
+        addDebugView(itemView)
 
-        val prevValue = viewHolder.visiblePercentage
+        val maxPercentageResult = getCalculateVisibleViewArea(itemView, itemVisibleRect, adsViewHolder.visiblePercentage)
 
-        val maxPercentageResult = max(prevValue, visibleAreaPercentage)
-        viewHolder.setVisiblePercentage(maxPercentageResult)
+        adsViewHolder.setVisiblePercentage(maxPercentageResult)
 
         setPercentageViewText(maxPercentageResult, percentText)
     }
 }
 
-fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect): Int {
+fun getCalculateVisibleViewArea(itemView: View, itemVisibleRect: Rect, prevPercentage: Int): Int {
 
     itemView.getGlobalVisibleRect(itemVisibleRect)
 
