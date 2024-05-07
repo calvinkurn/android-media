@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.toPx
 
@@ -129,41 +130,35 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     private fun renderFestiveForeground(imageUrl: String) {
         festiveForeground.show()
 
-        itemView.postDelayed({
-            addHeightForeground(festiveForeground)
-            festiveForeground.loadImageWithoutPlaceholder(
-                imageUrl,
-                listener = object : ImageLoaderStateListener {
-                    override fun successLoad(view: ImageView) {
-                        festiveForeground.minimumHeight = 0
-                    }
-
-                    override fun failedLoad(view: ImageView) {
-                        view.hide()
-                    }
-                }
-            )
-        }, 350)
+        // the delay is needed so the children can layout first, and get its height,
+        // before we render the background in wrap content
+        imageUrl.getBitmapImageUrl(itemView.context, properties = {
+            listener(onSuccess = { bitmap, _ ->
+                itemView.postDelayed({
+                    festiveForeground.setImageBitmap(bitmap)
+                    addHeightForeground(festiveForeground)
+                    festiveForeground.minimumHeight = 0
+                }, 100)
+            },
+                onError = { festiveForeground.hide() })
+        })
     }
 
     private fun renderFestiveBackground(imageUrl: String) {
         festiveBackground.show()
 
-        itemView.postDelayed({
-            addHeightBgOnce(festiveBackground)
-            festiveBackground.loadImageWithoutPlaceholder(
-                imageUrl,
-                listener = object : ImageLoaderStateListener {
-                    override fun successLoad(view: ImageView) {
-                        festiveBackground.minimumHeight = 0
-                    }
-
-                    override fun failedLoad(view: ImageView) {
-                        view.hide()
-                    }
-                }
-            )
-        }, 350)
+        // the delay is needed so the children can layout first, and get its height,
+        // before we render the background in wrap content
+        imageUrl.getBitmapImageUrl(itemView.context, properties = {
+            listener(onSuccess = { bitmap, _ ->
+                itemView.postDelayed({
+                    festiveBackground.setImageBitmap(bitmap)
+                    addHeightBgOnce(festiveBackground)
+                    festiveBackground.minimumHeight = 0
+                }, 100)
+            },
+                onError = { festiveBackground.hide() })
+        })
     }
 
     private fun addHeightBgOnce(view: View) {
