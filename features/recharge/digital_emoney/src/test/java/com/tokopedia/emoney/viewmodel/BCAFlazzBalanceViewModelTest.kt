@@ -301,6 +301,15 @@ class BCAFlazzBalanceViewModelTest {
         "0000"
     )
 
+    private val session1SizePrefixResult = JNIResult(
+        0,
+        "0000",
+        0,
+        balance,
+        cardNumber,
+        "0000"
+    )
+
     private val session2Result = JNIResult(
         1,
         "0000$strLogSession2",
@@ -2127,6 +2136,95 @@ class BCAFlazzBalanceViewModelTest {
                     0,
                     checkBalanceResult.cardNo,
                     "${BCABalanceViewModel.TAG_PROCESS_SDK_SESSION_1}: 9498",
+                    checkBalanceResult.balance.toDouble()
+                )
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Fail_JNI_PrefixSize() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1SizePrefixResult
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
+            ERROR_MESSAGE
+        )
+
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).second,
+            RechargeEmoneyInquiryLogRequest(
+                log = EmoneyInquiryLogRequest(
+                    5,
+                    0,
+                    checkBalanceResult.cardNo,
+                    "${BCABalanceViewModel.TAG_PROCESS_SDK_SESSION_1}: 0000",
                     checkBalanceResult.balance.toDouble()
                 )
             )

@@ -439,7 +439,7 @@ class BCABalanceViewModel @Inject constructor(
             val payloadGetSessionKeyQuery = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataSession1Key), lastBalance,
                 strTransactionId, cardType,
-                separateResponseFromCardData(cardDataSession1Key)
+                separateResponseCodeFromCardData(cardDataSession1Key)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -686,7 +686,7 @@ class BCABalanceViewModel @Inject constructor(
             val payloadGetBetweenTopUpQuery = BCAFlazzRequestMapper.createGetBCADataBetweenTopUp(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataTopUp1), bcaFlazzData.attributes.amount,
                 lastBalance, strTransactionId, cardType,
-                separateResponseFromCardData(cardDataTopUp1)
+                separateResponseCodeFromCardData(cardDataTopUp1)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -898,7 +898,7 @@ class BCABalanceViewModel @Inject constructor(
             val payloadGetACKQuery = BCAFlazzRequestMapper.createGetBCADataACKTopUp(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataTopUp2),
                 updatedBalance, strTransactionId, cardType,
-                separateResponseFromCardData(cardDataTopUp2)
+                separateResponseCodeFromCardData(cardDataTopUp2)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -1041,7 +1041,7 @@ class BCABalanceViewModel @Inject constructor(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataReversal),
                 bcaFlazzData.attributes.amount, lastBalance,
                 strTransactionId, cardType,
-                separateResponseFromCardData(cardDataReversal)
+                separateResponseCodeFromCardData(cardDataReversal)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -1192,14 +1192,6 @@ class BCABalanceViewModel @Inject constructor(
     private fun separateCardDataFromResponseCode(strLogResp: String): String {
         return if (strLogResp.length > PREFIX_SIZE) {
             strLogResp.substring(PREFIX_SIZE, strLogResp.length)
-        } else {
-            strLogResp
-        }
-    }
-
-    private fun separateResponseFromCardData(strLogResp: String): String {
-        return if (strLogResp.length > PREFIX_SIZE) {
-            strLogResp.substring(Int.ZERO, PREFIX_SIZE)
         } else {
             strLogResp
         }
