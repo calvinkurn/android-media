@@ -7,6 +7,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Estim
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.logisticcart.FileUtils
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
@@ -62,6 +63,13 @@ internal object DummyProvider {
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
         val hiddenService = shippingRecomData.shippingDurationUiModels.first()
         hiddenService.serviceData.isUiRatesHidden = true
+        return shippingRecomData
+    }
+
+    fun getShippingDataWithPaidSection(): ShippingRecommendationData {
+        val ratesData = getRatesResponseWithPromo()
+        val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
+        shippingRecomData.paidSectionInfoUiModel = PaidSectionInfoUiModel(title = "Pengiriman tanpa Bebas Ongkir", isCollapsed = true)
         return shippingRecomData
     }
 

@@ -225,7 +225,6 @@ class ShippingDurationViewModel @Inject constructor(
         paidSectionInfoUiModel: PaidSectionInfoUiModel,
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
-        // TODO map ticker
         val eligibleServices = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }
         if (!isOcc && promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
             initiateShowcase(eligibleServices)

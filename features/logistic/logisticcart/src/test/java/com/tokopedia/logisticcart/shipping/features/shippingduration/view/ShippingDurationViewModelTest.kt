@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticcart.datamock.DummyProvider
 import com.tokopedia.logisticcart.datamock.DummyProvider.getRatesResponseWithPromo
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPaidSection
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoAndPreOrderModel
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaErrorAndTextEta
@@ -16,6 +17,7 @@ import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithoutE
 import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
@@ -345,6 +347,21 @@ class ShippingDurationViewModelTest {
         // Then
         val result = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
         assertFalse(result.any { it is ShippingDurationUiModel && it.serviceData.isUiRatesHidden })
+    }
+
+    @Test
+    fun `When paid section info title is not empty Then show paid section info`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPaidSection()
+        setRatesResponse(shippingRecommendationData)
+
+        // When
+        viewModel.loadDuration(0, 0, ratesParam, false, false)
+
+        // Then
+        val result = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
+        assert(result.any { it is PaidSectionInfoUiModel })
+        assert(result.indexOfFirst { it is PaidSectionInfoUiModel } < result.indexOfFirst { it is ShippingDurationUiModel })
     }
 
     @Test
