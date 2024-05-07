@@ -533,7 +533,7 @@ class DeveloperOptionActivity :
 
     override fun onClickLogin() {
         val builder = LarkSSO.Builder().setAppId(getString(keysR.string.sso_lark_key))
-            .setServer("Lark")
+            .setServer("Feishu")
             .setChallengeMode(true)
             .setForceWeb(false)
             .setEnv("normal")
