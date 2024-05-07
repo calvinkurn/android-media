@@ -17,13 +17,17 @@ object TrackingConstant {
     const val PHYSICAL_GOODS = "physicalgoods"
     const val PHYSICAL_GOODS_NEW = "physical goods"
     const val BECOME_RM = "become RM"
+    const val PHYSICAL_GOODS_VERIF = "Physical Goods"
+    const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val BECOME_PM = "become pm"
+    const val PM_PAGE = "pm page"
 
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val KEY_CURRENT_SITE = "currentSite"
     const val KEY_SHOP_ID = "shopId"
     const val KEY_USER_ID = "userId"
     const val KEY_PAGE_SOURCE = "pageSource"
+    const val KEY_TRACKER_ID = "trackerId"
 
     const val SHOP_TYPE = "shop_type"
     const val SHOP_SCORE = "shop_score"
@@ -79,9 +83,11 @@ object TrackingConstant {
     const val ACTION_CLICK_DETAIL_KEANGGOTAAN_PAGE = "click tab progress bar - detail keanggotaan"
     const val ACTION_CLICK_SHOP_PERFORMANCE = "click performa toko - detail keanggotaan"
     const val ACTION_CLICK_TOOLTIP_SHOP_LEVEL = "click tooltip level toko"
+    const val ACTION_CLICK_VERIFICATION = "seller click verification"
 
     const val EVENT_CLICK_PG = "clickPG"
     const val VIEW_PG_IRIS = "viewPGIris"
+    const val TRACKER_ID_VERIFICATION = "50570"
 
     fun getPowerMerchantCategory(): String = if (GlobalConfig.isSellerApp()) {
         "$CATEGORY_SELLER_APP - $POWER_MERCHANT_PRO"
