@@ -92,7 +92,7 @@ class ProductSummaryViewHolder private constructor() {
             binding.tvCommissionFmt.showWithCondition(item.product.hasCommission)
             binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
 
-            binding.ivProductSummaryCover.showWithCondition(item.product.stock.isLessThanEqualZero())
+            binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.text = ctx.getString(
                 if (item.product.pinStatus.isPinned) {

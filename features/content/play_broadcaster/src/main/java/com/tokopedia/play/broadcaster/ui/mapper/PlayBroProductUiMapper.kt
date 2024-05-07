@@ -121,10 +121,10 @@ class PlayBroProductUiMapper @Inject constructor(
                         ),
                         pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
                         number = product.productNumber.toString(),
-                        shopBadge = "",
-                        shopName = "",
-                        ratingFmt = "",
-                        countSoldFmt = "",
+                        shopBadge = product.shopBadge,
+                        shopName = product.shopName,
+                        ratingFmt = product.ratingFmt,
+                        countSoldFmt = product.countSoldFmt,
                     )
                 }
             )

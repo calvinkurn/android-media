@@ -15,21 +15,10 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:scaleType="fitCenter"
+        app:unify_image_corner_radius="4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_product_summary_cover"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/iv_product_summary_image"
-        app:layout_constraintEnd_toEndOf="@id/iv_product_summary_image"
-        app:layout_constraintStart_toStartOf="@id/iv_product_summary_image"
-        app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"
-        app:srcCompat="@drawable/bg_play_product_tag_empty_stock"
-        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_summary_empty_stock"
@@ -39,10 +28,10 @@
         android:textColor="@color/Unify_Static_White"
         android:visibility="gone"
         android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@id/iv_product_summary_cover"
-        app:layout_constraintStart_toStartOf="@id/iv_product_summary_cover"
-        app:layout_constraintTop_toTopOf="@id/iv_product_summary_cover"
-        app:layout_constraintEnd_toEndOf="@id/iv_product_summary_cover"
+        app:layout_constraintBottom_toBottomOf="@id/iv_product_summary_image"
+        app:layout_constraintStart_toStartOf="@id/iv_product_summary_image"
+        app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"
+        app:layout_constraintEnd_toEndOf="@id/iv_product_summary_image"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="@string/product_tag_stock_empty"
@@ -141,7 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        app:labelType="general_light_red"
+        app:labelType="highlight_light_red"
         app:layout_constraintBottom_toBottomOf="@id/tv_product_summary_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_product_summary_original_price"
