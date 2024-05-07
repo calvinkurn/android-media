@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.utils
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -53,7 +54,6 @@ object MapperUtils {
     ): ProductCardModel {
 
         val labelGroupList = mappingLabelGroupList(product)
-
         if (isAvailAble) {
             return if (!product.campaign.originalPrice.isNullOrEmpty()) {
                 productCardModel.copy(
@@ -78,9 +78,20 @@ object MapperUtils {
                             title = it.title,
                             type = it.type,
                             imageUrl = it.imageUrl,
-                            styleList = it.styleList.map { style ->
-                                ProductCardModel.LabelGroup.Style(style.key, style.value)
-                            }
+                            styleList = listOf(
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.BACKGROUND_COLOR,
+                                    value = LabelGroupStyle.BACKGROUND_COLOR_VALUE
+                                ),
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.BACKGROUND_OPACITY,
+                                    value = LabelGroupStyle.BACKGROUND_OPACITY_VALUE
+                                ),
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.TEXT_COLOR,
+                                    value = LabelGroupStyle.TEXT_COLOR_VALUE
+                                )
+                            ),
                         )
                     )
                 }
@@ -98,9 +109,20 @@ object MapperUtils {
                             title = it.title,
                             type = it.type,
                             imageUrl = it.imageUrl,
-                            styleList = it.styleList.map { style ->
-                                ProductCardModel.LabelGroup.Style(style.key, style.value)
-                            },
+                            styleList = listOf(
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.BACKGROUND_COLOR,
+                                    value = LabelGroupStyle.BACKGROUND_COLOR_VALUE
+                                ),
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.BACKGROUND_OPACITY,
+                                    value = LabelGroupStyle.BACKGROUND_OPACITY_VALUE
+                                ),
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.TEXT_COLOR,
+                                    value = LabelGroupStyle.TEXT_COLOR_VALUE
+                                )
+                            ),
                         )
                     )
                 }

@@ -22,4 +22,7 @@ object LabelGroupStyle {
     const val TEXT_COLOR = "text-color"
     const val OUTLINE_COLOR = "outline-color"
     const val WIDTH = "width"
+    const val BACKGROUND_COLOR_VALUE = "#000000"
+    const val BACKGROUND_OPACITY_VALUE = "0.5"
+    const val TEXT_COLOR_VALUE = "#FFFFFF"
 }
