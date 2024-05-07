@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Paint
 import android.view.View
-import androidx.core.view.updatePadding
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -15,6 +14,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 import com.tokopedia.product.detail.view.widget.productNameDelegate
 import com.tokopedia.unifycomponents.toPx
@@ -69,7 +69,11 @@ class PartialContentView(
         }
     }
 
-    private fun renderProductName(data: ProductContentMainData) = with(binding) {
+    private fun renderProductName(
+        data: ProductContentMainData,
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
+    ) = with(binding) {
         productNameDelegate.setTitle(
             title = data.productName,
             labelIcons = data.labelIcons,

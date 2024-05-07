@@ -1408,11 +1408,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 text = item.text,
                 applink = item.applink,
                 separator = item.separator,
-                icon = item.icon,
+                icon     = item.icon,
                 status = item.status,
                 chevronPos = item.chevronPos,
                 paddingTop = item.padding.top,
-                paddingBottom = item.padding.bottom
+                paddingBottom = item.padding.bottom,
+                imageHeight = item.imageSize.height,
+                imageWidth = item.imageSize.width
             )
         }
     }
