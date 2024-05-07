@@ -26,7 +26,6 @@ object QuestMapper {
         return HomeLayoutItemUiModel(uiModel, state)
     }
 
-
     fun mapQuestCardData(
         channelId: String,
         questListResponse: List<QuestList>
@@ -57,10 +56,11 @@ object QuestMapper {
         channelId: String,
         questId: Int,
         isLoading: Boolean = false,
-        showStartBtn: Boolean = true
+        showStartBtn: Boolean = true,
+        isIdle: Boolean = true
     ) {
         updateQuestWidgetUiModel(channelId, questId) {
-            it.copy(showStartBtn = showStartBtn, isLoading = isLoading)
+            it.copy(showStartBtn = showStartBtn, isLoading = isLoading, isIdle = isIdle)
         }
     }
 

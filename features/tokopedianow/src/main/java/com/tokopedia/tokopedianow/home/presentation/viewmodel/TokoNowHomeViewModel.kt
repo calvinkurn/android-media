@@ -656,7 +656,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 channelId = channelId,
                 questId = questId,
                 isLoading = false,
-                showStartBtn = false
+                showStartBtn = false,
+                isIdle = false
             )
 
             _startQuestResult.postValue(Success(response))
