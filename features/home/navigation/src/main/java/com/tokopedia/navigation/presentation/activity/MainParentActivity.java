@@ -1556,16 +1556,9 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public String getPageName() {
-
-        String pageName = switch (currentSelectedFragmentPosition) {
-            case HOME_MENU -> PageName.HOME;
-            case FEED_MENU -> PageName.FEED;
-            case OS_MENU -> PageName.OFFICIAL_STORE;
-            case WISHLIST_MENU -> PageName.WISHLIST;
-            case UOH_MENU -> PageName.UOH;
-            default -> "";
-        };
-
-        return pageName;
+        if (currentFragment instanceof AppLogInterface) {
+            return ((AppLogInterface) currentFragment).getPageName();
+        }
+        return "";
     }
 }
