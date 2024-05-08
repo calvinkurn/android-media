@@ -1,15 +1,11 @@
 package com.tokopedia.navigation.presentation.activity
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ShortcutInfo
-import android.content.pm.ShortcutManager
 import android.graphics.Color
-import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,12 +13,10 @@ import android.os.Handler
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -30,7 +24,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -60,11 +53,9 @@ import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadMan
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.DeeplinkDFMapper
-import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -81,7 +72,6 @@ import com.tokopedia.navigation.databinding.ActivityMainParentBinding
 import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
 import com.tokopedia.navigation.presentation.model.BottomNavFeedId
-import com.tokopedia.navigation.presentation.model.BottomNavFeedType
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
 import com.tokopedia.navigation.presentation.model.BottomNavProfileType
 import com.tokopedia.navigation.presentation.model.putDiscoId
@@ -239,7 +229,7 @@ class NewMainParentActivity :
         pltPerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS)
 
         super.onCreate(savedInstanceState)
-        HomeRollenceController.fetchIconJumperValue() //TODO("Is this still valid after revamp?")
+        HomeRollenceController.fetchIconJumperValue() // TODO("Is this still valid after revamp?")
         initInjector()
         if (savedInstanceState != null) {
             adjustIntentFromSavedState(savedInstanceState)
@@ -376,7 +366,7 @@ class NewMainParentActivity :
         setIntent(intent)
         setDownloadManagerParameter()
         showSelectedPage()
-        handleAppLinkBottomNavigation(false);
+        handleAppLinkBottomNavigation(false)
     }
 
     override fun onRequestPermissionsResult(
@@ -412,8 +402,9 @@ class NewMainParentActivity :
         ).putExtra(ARGS_TAB_ID, id.type.value)
             .putExtra(ARGS_DISCO_ID, id.discoId.value)
 
-        if (isFeed) recreate()
-        else {
+        if (isFeed) {
+            recreate()
+        } else {
             finish()
             startActivity(intent)
         }
@@ -514,7 +505,7 @@ class NewMainParentActivity :
     }
 
     override fun onHomeCoachMarkFinished() {
-        //Feed Coachmark has been deprecated, so this is expected to be empty as of now
+        // Feed Coachmark has been deprecated, so this is expected to be empty as of now
     }
 
     override fun setForYouToHomeMenuTabSelected() {
@@ -561,7 +552,7 @@ class NewMainParentActivity :
             if (bottomNavList == null) return@observe
             binding.dynamicNavbar.setModelList(bottomNavList)
 
-            //TODO("Ask Dave about this")
+            // TODO("Ask Dave about this")
             if (bottomNavList.isEmpty()) return@observe
             val homeBottomNav = bottomNavList.firstOrNull { it.uniqueId == BottomNavHomeId } ?: return@observe
             if (homeBottomNav.jumper != null) setHomeToForYouTabSelected()
@@ -822,7 +813,6 @@ class NewMainParentActivity :
         }
     }
 
-    // TODO()
     private fun setupStatusBar() {
         // apply inset to allow recyclerview scrolling behind status bar
         binding.container.fitsSystemWindows = false
@@ -836,9 +826,6 @@ class NewMainParentActivity :
 
         // make full transparent statusBar
         requestStatusBarLight()
-//        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//        setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-//        window.statusBarColor = Color.TRANSPARENT
     }
 
     private fun isFragmentLightStatusBar(fragment: Fragment): Boolean {
@@ -872,7 +859,6 @@ class NewMainParentActivity :
     }
 
     private fun getCurrentActiveFragment(): Fragment? {
-//        TODO()
         return supportFragmentManager.fragments.firstOrNull {
             it.isAdded && it.isVisible
         }
@@ -884,13 +870,12 @@ class NewMainParentActivity :
                 view: DynamicHomeNavBarView,
                 model: BottomNavBarUiModel,
                 isReselected: Boolean,
-                isJumper: Boolean,
+                isJumper: Boolean
             ): Boolean {
                 return if (isReselected) {
                     onItemReselected(model, isJumper)
                     true
-                }
-                else {
+                } else {
                     val fragment = getFragmentById(model.uniqueId, model)
                     fragment?.let { selectFragment(it, model.uniqueId) }
                     fragment != null
@@ -981,7 +966,7 @@ class NewMainParentActivity :
         NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
     }
 
-    //TODO("Ask account team")
+    // TODO("Ask account team")
 //    private fun goToNewUserZonePage() {
 //        val intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER)
 //        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
