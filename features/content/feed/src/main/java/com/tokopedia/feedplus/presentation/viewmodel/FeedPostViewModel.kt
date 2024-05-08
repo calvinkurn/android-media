@@ -1238,13 +1238,11 @@ class FeedPostViewModel @Inject constructor(
 
         viewModelScope.launchCatchError(dispatchers.io, block = {
             trackReportTrackViewerUseCase.apply {
-                setRequestParams(
-                    BroadcasterReportTrackViewerUseCase.createParams(
-                        channelId = playChannelId,
-                        productIds = productIds,
-                        event = event,
-                        type = TrackContentType.Play
-                    )
+                params = BroadcasterReportTrackViewerUseCase.createParams(
+                    channelId = playChannelId,
+                    productIds = productIds,
+                    event = event,
+                    type = TrackContentType.Play
                 )
             }.executeOnBackground()
         }) {}

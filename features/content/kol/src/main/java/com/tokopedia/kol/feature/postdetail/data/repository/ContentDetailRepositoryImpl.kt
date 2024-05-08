@@ -233,17 +233,16 @@ class ContentDetailRepositoryImpl @Inject constructor(
     ): VisitContentModel {
         return withContext(dispatcher.io) {
             trackPerformanceUseCase.apply {
-                setRequestParams(
-                    BroadcasterReportTrackViewerUseCase.createParams(
-                        channelId = channelId,
-                        productIds = productIds,
-                        event = event,
-                        type = TrackContentType.Play
-                    )
+                params = BroadcasterReportTrackViewerUseCase.createParams(
+                    channelId = channelId,
+                    productIds = productIds,
+                    event = event,
+                    type = TrackContentType.Play
                 )
             }.executeOnBackground()
             mapper.mapVisitChannel(rowNumber)
-        }    }
+        }
+    }
 
     override suspend fun trackViewer(contentId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
