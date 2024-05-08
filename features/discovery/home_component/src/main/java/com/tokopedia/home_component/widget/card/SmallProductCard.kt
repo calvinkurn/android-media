@@ -13,7 +13,7 @@ import com.tokopedia.home_component.widget.card.ProductStockBar.Companion.MIN_TH
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -44,8 +44,27 @@ class SmallProductCard @JvmOverloads constructor(
         renderCardContainer(model.ribbon())
         setupProductBannerImage(model.bannerImageUrl)
 
-        binding.txtTitle.shouldTypographyStyleApplied(model.title())
-        binding.txtSubtitle.shouldTypographyStyleApplied(model.subtitle())
+        shouldHandleTitleStyle(model)
+        shouldHandleSubtitleStyle(model)
+    }
+
+    private fun shouldHandleTitleStyle(model: SmallProductModel) {
+        val (text, style) = model.title()
+        basicTextStyle(binding.txtTitle, text, style)
+
+        if (style.url.isEmpty()) {
+            hideCampaignIcon()
+        }
+
+        binding.icCampaign.shouldShowWithAction(style.url.isNotEmpty()) {
+            binding.icCampaign.loadImage(style.url)
+            binding.txtTitle.setCustomMargin(MarginArea.Start(2.toPx()))
+        }
+    }
+
+    private fun shouldHandleSubtitleStyle(model: SmallProductModel) {
+        val (text, style) = model.subtitle()
+        basicTextStyle(binding.txtSubtitle, text, style)
     }
 
     private fun renderStockBar(data: SmallProductModel.StockBar) {
@@ -104,27 +123,18 @@ class SmallProductCard @JvmOverloads constructor(
         )
     }
 
-    private fun Typography?.shouldTypographyStyleApplied(
-        content: Pair<String, SmallProductModel.TextStyle>
-    ) {
-        val (title, style) = content
+    private fun basicTextStyle(typography: Typography?, text: String, style: SmallProductModel.TextStyle) {
+        typography?.text = if (style.shouldRenderHtmlFormat.not()) text else HtmlUtil.fromHtml(text)
 
-        this?.text = if (style.shouldRenderHtmlFormat) HtmlUtil.fromHtml(title) else title
-        this?.setWeight(if (style.isBold) Typography.BOLD else Typography.REGULAR)
+        val weight = if (style.isBold) Typography.BOLD else Typography.REGULAR
+        typography?.setWeight(weight)
 
-        if (style.isTextStrikethrough) this?.strikethrough()
-        if (style.textColor.isNotEmpty()) this?.setTextColor(Color.parseColor(style.textColor))
+        if (style.isTextStrikethrough) {
+            typography?.strikethrough()
+        }
 
-        shouldHandleCampaignIconVisibility(style)
-    }
-
-    private fun shouldHandleCampaignIconVisibility(style: SmallProductModel.TextStyle) {
-        if (style.url.isNotEmpty()) {
-            binding.icCampaign.show()
-            binding.icCampaign.loadImage(style.url)
-            binding.txtTitle.setCustomMargin(MarginArea.Start(2.toPx()))
-        } else {
-            hideCampaignIcon()
+        if (style.textColor.isNotEmpty()) {
+            typography?.setTextColor(Color.parseColor(style.textColor))
         }
     }
 
