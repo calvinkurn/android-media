@@ -49,6 +49,8 @@ import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.model.MatchPattern
 import com.tokopedia.applink.model.StartsWith
 import com.tokopedia.applink.model.or
+import com.tokopedia.applink.notifsetting.DeeplinkMapperNotifSetting
+import com.tokopedia.applink.notifsetting.NotifSettingType
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -1031,13 +1033,27 @@ object DeeplinkMainApp {
         ),
         "settings" to mutableListOf(
             DLP.matchPattern("notification") { _: String ->
-                ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink()
+            },
+            DLP.matchPattern("notification/push_notification") { _: String ->
+                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.PushNotification)
+            },
+            DLP.matchPattern("notification/email") { _: String ->
+                DeeplinkMapperNotifSetting.getEmailNotifSettingInternalDeepLink()
+            },
+            DLP.matchPattern("notification/sms") { _: String ->
+                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.Sms)
             },
             DLP.matchPattern("bankaccount") { _: String ->
                 ApplinkConstInternalGlobal.SETTING_BANK
             },
             DLP.matchPattern("haspassword") { _: String ->
                 ApplinkConstInternalUserPlatform.HAS_PASSWORD
+            }
+        ),
+        "share" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
             }
         ),
         "share_address" to mutableListOf(

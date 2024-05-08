@@ -131,7 +131,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.35'
+    unifyIconsVersion = '1.0.38'
     unifyPrinciplesVersion = '1.4.18'
     unifyComponentsVersion = '1.2.59'
     unifyCoachMarkVersion = '1.2.23'
@@ -282,6 +282,7 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
+            lottieCompose         : "com.airbnb.android:lottie-compose:$lottieVersion",
             hansel                : "io.hansel.preprocessor:preprocessor:10.0.0",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
