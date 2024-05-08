@@ -11,8 +11,10 @@ import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.stories.analytics.StoriesAnalytics
 import com.tokopedia.stories.analytics.StoriesRoomAnalytic
 import com.tokopedia.stories.analytics.StoriesRoomAnalyticImpl
@@ -21,6 +23,7 @@ import com.tokopedia.stories.analytics.StoriesSharingAnalyticsImpl
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.factory.StoriesFragmentFactoryUITest
 import com.tokopedia.stories.utils.StoriesPreference
+import com.tokopedia.stories.utils.containsEventAction
 import com.tokopedia.stories.utils.delay
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
@@ -30,6 +33,7 @@ import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
+import org.junit.Rule
 import com.tokopedia.empty_state.R as empty_stateR
 import com.tokopedia.stories.R as storiesR
 
@@ -39,6 +43,11 @@ internal class StoriesRobotUITest(
     private val userSession: UserSessionInterface,
     private val storiesPref: StoriesPreference,
 ) {
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+
+    private val analyticStoriesMainTracker = "tracker/content/stories/stories_main_tracker.json"
 
     private val viewModel: StoriesViewModel by lazy {
         StoriesViewModel(
@@ -181,6 +190,13 @@ internal class StoriesRobotUITest(
         Espresso.onView(withId(storiesR.id.stories_group_view_pager))
             .perform(swipeLeft())
             .perform(swipeRight())
+    }
+
+    fun assertEventAction(eventAction: String) = chainable {
+        ViewMatchers.assertThat(
+            cassavaTestRule.validate(analyticStoriesMainTracker),
+            containsEventAction(eventAction)
+        )
     }
 
     private fun chainable(fn: () -> Unit): StoriesRobotUITest {

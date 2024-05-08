@@ -24,11 +24,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class StoriesUITest {
 
-    @get:Rule
-    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
-
-    private val analyticStoriesMainTracker = "tracker/content/stories/stories_main_tracker.json"
-
     private val args: StoriesArgsModel = StoriesArgsModel(
         authorId = "123",
         authorType = "shop",
@@ -60,16 +55,8 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .moveToDestroyState()
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("view - story circle")
-        )
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - exit story room")
-        )
+            .assertEventAction("view - story circle")
+            .assertEventAction("click - exit story room")
     }
 
     @Test
@@ -82,11 +69,7 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .doNothingUntilNextGroup(duration)
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other category")
-        )
+            .assertEventAction("click - move to other category")
     }
 
     @Test
@@ -98,16 +81,8 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .tapNextUntilNextGroup()
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - tap next content"),
-        )
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other category")
-        )
+            .assertEventAction("click - tap next content")
+            .assertEventAction("click - move to other category")
     }
 
     @Test
@@ -122,16 +97,8 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .tapPrevUntilPrevGroup()
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - tap previous content"),
-        )
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other category")
-        )
+            .assertEventAction("click - tap previous content")
+            .assertEventAction("click - move to other category")
     }
 
     @Test
@@ -154,16 +121,8 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .tapGroup()
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - story circle"),
-        )
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other category")
-        )
+            .assertEventAction("click - move to other category")
+            .assertEventAction("click - move to other category")
     }
 
     @Test
@@ -175,11 +134,7 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .swipeGroup()
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesMainTracker),
-            containsEventAction("click - move to other category")
-        )
+            .assertEventAction("click - move to other category")
     }
 
 }
