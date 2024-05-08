@@ -75,12 +75,12 @@ class WishlistRecommendationCarouselViewHolder(
                     },
                     carouselProductCardOnItemViewListener = object : CarouselProductCardListener.OnViewListener {
                         override fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            val recommendationItem = element.dataObject.listRecommendationItem.getOrNull(bindingAdapterPosition) ?: return
+                            val recommendationItem = element.dataObject.listRecommendationItem.getOrNull(carouselProductCardPosition) ?: return
                             recommendationItem.sendShowAdsByteIo(itemView.context)
                         }
 
                         override fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int) {
-                            val recommendationItem = element.dataObject.listRecommendationItem.getOrNull(bindingAdapterPosition) ?: return
+                            val recommendationItem = element.dataObject.listRecommendationItem.getOrNull(carouselProductCardPosition) ?: return
                             recommendationItem.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
                         }
                     }

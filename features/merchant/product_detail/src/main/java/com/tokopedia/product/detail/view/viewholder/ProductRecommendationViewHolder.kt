@@ -231,12 +231,12 @@ class ProductRecommendationViewHolder(
             },
             carouselProductCardOnItemViewListener = object: CarouselProductCardListener.OnViewListener {
                 override fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                    val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
+                    val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                     productRecommendation.sendShowAdsByteIo(itemView.context)
                 }
 
                 override fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int) {
-                    val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
+                    val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                     productRecommendation.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
                 }
             },
