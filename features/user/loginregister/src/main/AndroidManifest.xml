@@ -223,6 +223,26 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
+        <activity
+            android:name="com.tokopedia.loginregister.managename.view.activity.AddNameActivity"
+            android:label="@string/title_add_name_empty"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_manage_name"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".seamlesslogin.RemoteService"
             android:permission="com.tokopedia.sellerapp.REMOTE_SERVICE_SEAMLESS"
