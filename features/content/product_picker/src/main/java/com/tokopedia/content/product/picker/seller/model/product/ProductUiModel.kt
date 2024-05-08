@@ -23,6 +23,6 @@ data class ProductUiModel(
     val number: String,
     val shopName: String,
     val shopBadge: String,
-    val ratingFmt: String,
-    val countSoldFmt: String,
+    val rating: String,
+    val countSold: String,
 ) : Parcelable

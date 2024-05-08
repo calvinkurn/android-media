@@ -66,8 +66,8 @@ class ProductPickerUserBottomSheet @Inject constructor(
                             number = "",
                             shopBadge = "",
                             shopName = "",
-                            ratingFmt = "",
-                            countSoldFmt = "",
+                            rating = "",
+                            countSold = "",
                         )
                     }
                 )

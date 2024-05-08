@@ -8,8 +8,6 @@ import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.domain.model.LiveDuration
 import com.tokopedia.play.broadcaster.ui.model.EventUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
@@ -311,8 +309,8 @@ class WebSocketUiModelBuilder {
                     pinStatus = PinProductUiModel.Empty,
                     shopName = "",
                     shopBadge = "",
-                    ratingFmt = "",
-                    countSoldFmt = ""
+                    rating = "",
+                    countSold = ""
                 )
             }
         )

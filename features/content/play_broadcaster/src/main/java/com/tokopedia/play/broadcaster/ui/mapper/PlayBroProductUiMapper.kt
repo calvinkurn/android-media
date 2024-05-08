@@ -43,8 +43,8 @@ class PlayBroProductUiMapper @Inject constructor(
                     number = "",
                     shopBadge = "",
                     shopName = "",
-                    ratingFmt = "",
-                    countSoldFmt = "",
+                    rating = "",
+                    countSold = "",
                 )
             },
             hasNextPage = response.wrapper.pagerCursor.hasNext,
@@ -84,8 +84,8 @@ class PlayBroProductUiMapper @Inject constructor(
                         extraCommission = false,
                         shopBadge = "",
                         shopName = "",
-                        ratingFmt = "",
-                        countSoldFmt = "",
+                        rating = "",
+                        countSold = "",
                     )
                 }
             )
@@ -123,8 +123,8 @@ class PlayBroProductUiMapper @Inject constructor(
                         number = product.productNumber.toString(),
                         shopBadge = product.shopBadge,
                         shopName = product.shopName,
-                        ratingFmt = product.ratingFmt,
-                        countSoldFmt = product.countSoldFmt,
+                        rating = product.ratingFmt,
+                        countSold = product.countSoldFmt,
                     )
                 }
             )

@@ -44,8 +44,8 @@ class ProductChooserAnalyticTest {
             number = "",
             shopName = "",
             shopBadge = "",
-            ratingFmt = "",
-            countSoldFmt = ""
+            rating = "",
+            countSold = ""
         )
     }
 

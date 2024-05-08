@@ -73,8 +73,8 @@ class ProductPickerSellerCommonMapper @Inject constructor() {
                     number = "",
                     shopBadge = "",
                     shopName = "",
-                    ratingFmt = "",
-                    countSoldFmt = "",
+                    rating = "",
+                    countSold = "",
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),

@@ -17,7 +17,9 @@ import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.view.adapter.ProductSummaryAdapter
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play_common.view.loadImage
@@ -140,32 +142,42 @@ class ProductSummaryViewHolder private constructor() {
             binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
             binding.tvSummaryProductTagNumber.text = item.product.number
 
-            binding.productTagRateFmt.text = item.product.ratingFmt
-            binding.productTagSoldFmt.text = item.product.countSoldFmt
+            binding.productTagRateFmt.text = item.product.rating
+            binding.productTagSoldFmt.text = item.product.countSold
             binding.productTagShopBadge.loadImage(item.product.shopBadge)
             binding.productTagShopName.text = item.product.shopName
 
-            // hide star icon and rate text when rateFmt empty
-            binding.productTagRateIcon.showWithCondition(item.product.ratingFmt.isNotBlank())
-            binding.productTagRateFmt.showWithCondition(item.product.ratingFmt.isNotBlank())
+            setProductUserInfo(item)
+        }
 
-            // hide dots when rateFmt or soldCountFmt is empty
-            binding.productTagDots.showWithCondition(
-                item.product.ratingFmt.isNotBlank() &&
-                    item.product.countSoldFmt.isNotBlank()
-            )
+        private fun setProductUserInfo(item: ProductSummaryAdapter.Model.Body) {
+            if (!item.selectedAccount.isUser) {
+                binding.groupUgcInfo.hide()
+            } else {
+                binding.groupUgcInfo.show()
 
-            // hide sold fmt text when countSoldFmt empty
-            binding.productTagSoldFmt.showWithCondition(item.product.countSoldFmt.isNotBlank())
+                // hide star icon and rate text when rate empty
+                binding.productTagRateIcon.showWithCondition(item.product.rating.isNotBlank())
+                binding.productTagRateFmt.showWithCondition(item.product.rating.isNotBlank())
 
-            // hide shop name when shop name empty
-            binding.productTagShopName.showWithCondition(item.product.shopName.isNotBlank())
+                // hide dots when rate or soldCount is empty
+                binding.productTagDots.showWithCondition(
+                    item.product.rating.isNotBlank() &&
+                        item.product.countSold.isNotBlank()
+                )
 
-            // hide shop badge icon when shop badge empty or shop name empty
-            binding.productTagShopBadge.showWithCondition(
-                item.product.shopName.isNotBlank() &&
-                    item.product.shopBadge.isNotBlank()
-            )
+                // hide sold fmt text when countSoldFmt empty
+                binding.productTagSoldFmt.showWithCondition(item.product.countSold.isNotBlank())
+
+                // hide shop name when shop name empty
+                binding.productTagShopName.showWithCondition(item.product.shopName.isNotBlank())
+
+                // hide shop badge icon when shop badge empty or shop name empty
+                binding.productTagShopBadge.showWithCondition(
+                    item.product.shopName.isNotBlank() &&
+                        item.product.shopBadge.isNotBlank()
+                )
+            }
         }
 
         companion object {

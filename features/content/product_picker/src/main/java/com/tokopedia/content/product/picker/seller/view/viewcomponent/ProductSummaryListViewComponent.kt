@@ -3,13 +3,14 @@ package com.tokopedia.content.product.picker.seller.view.viewcomponent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.product.picker.seller.view.adapter.ProductSummaryAdapter
-import com.tokopedia.content.product.picker.seller.view.viewholder.ProductSummaryViewHolder
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.view.adapter.ProductSummaryAdapter
+import com.tokopedia.content.product.picker.seller.view.viewholder.ProductSummaryViewHolder
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -40,7 +41,12 @@ internal class ProductSummaryListViewComponent(
         view.layoutManager = LinearLayoutManager(view.context)
     }
 
-    fun setProductList(productSectionList: List<ProductTagSectionUiModel>, isEligibleForPin: Boolean, isProductNumerationShown: Boolean) {
+    fun setProductList(
+        productSectionList: List<ProductTagSectionUiModel>,
+        isEligibleForPin: Boolean,
+        isProductNumerationShown: Boolean,
+        selectedAccount: ContentAccountUiModel,
+        ) {
         var productIdx = 0 //Product Index
         val finalList = buildList {
             productSectionList.forEachIndexed { idx, section ->
@@ -51,7 +57,12 @@ internal class ProductSummaryListViewComponent(
 
                 addAll(section.products.map { product ->
                     productIdx += 1 //if numeration is not available / in prep page use hard-coded
-                    ProductSummaryAdapter.Model.Body(product.copy(number = product.number.ifBlank { "$productIdx" }), isEligibleForPin, isProductNumerationShown)
+                    ProductSummaryAdapter.Model.Body(
+                        product = product.copy(number = product.number.ifBlank { "$productIdx" }),
+                        isEligibleForPin = isEligibleForPin,
+                        isNumerationShown = isProductNumerationShown,
+                        selectedAccount = selectedAccount
+                    )
                 })
             }
         }

@@ -38,8 +38,8 @@ class ProductSummaryAnalyticTest {
             number = "",
             shopName = "",
             shopBadge = "",
-            ratingFmt = "",
-            countSoldFmt = ""
+            rating = "",
+            countSold = ""
         )
     }
 

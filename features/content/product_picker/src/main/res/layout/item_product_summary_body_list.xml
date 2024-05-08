@@ -125,18 +125,18 @@
         app:typographyType="display_3"
         tools:text="Rp349.000" />
 
-    <com.tokopedia.unifycomponents.Label
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_product_summary_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        app:labelType="highlight_light_red"
         app:layout_constraintBottom_toBottomOf="@id/tv_product_summary_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_product_summary_original_price"
         app:layout_constraintTop_toTopOf="@id/tv_product_summary_price"
         app:typographyType="small"
         app:typographyWeight="bold"
+        android:textColor="@color/Unify_RN500"
         tools:text="57%" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -178,6 +178,12 @@
         app:layout_constraintTop_toTopOf="@+id/iv_product_summary_image"
         app:typographyType="small"
         tools:text="1" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_ugc_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="product_tag_rate_container, product_tag_shop_info_container"/>
 
     <LinearLayout
         android:id="@+id/product_tag_rate_container"

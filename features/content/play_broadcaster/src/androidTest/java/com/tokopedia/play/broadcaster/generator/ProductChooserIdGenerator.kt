@@ -80,8 +80,8 @@ class ProductChooserIdGenerator {
             number = "",
             shopName = "",
             shopBadge = "",
-            ratingFmt = "",
-            countSoldFmt = ""
+            rating = "",
+            countSold = ""
         )
     )
 
