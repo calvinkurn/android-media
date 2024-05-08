@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
@@ -99,7 +100,8 @@ class SearchActivity :
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
     ITelemetryActivity,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null

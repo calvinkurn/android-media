@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.buyerorderdetail.R
@@ -20,7 +20,7 @@ import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 import com.tokopedia.tokochat.config.util.TokoChatConnection
 
-open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent>, AppLogInterface {
+open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent>, IAdsLog {
 
     var buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring? = null
 
