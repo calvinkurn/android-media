@@ -2,8 +2,10 @@ package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
@@ -150,9 +152,24 @@ object ShopPageWidgetMapper {
                         )
                     }
                 ),
-                it.options
+                handleOptions(it.options)
             )
         }
+    }
+
+    private fun handleOptions(options: List<ShopPageWidgetRequestModel.Option>): List<ShopPageWidgetRequestModel.Option> {
+        return if (ProductCardExperiment.isReimagine()) {
+            options
+        } else {
+            options.useProductCardV4()
+        }
+    }
+
+    private fun List<ShopPageWidgetRequestModel.Option>.useProductCardV4(): List<ShopPageWidgetRequestModel.Option> {
+        val options = this
+        val modifiedOptions = options.toMutableList()
+        modifiedOptions.removeFirst { option -> option.key == "product_card_ver" }
+        return modifiedOptions
     }
 
     fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule?): DynamicRule {

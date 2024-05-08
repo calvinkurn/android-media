@@ -25,10 +25,10 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
 import com.tokopedia.shop.common.constant.ShopParamApiConstant
@@ -42,13 +42,11 @@ import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -64,10 +62,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -92,8 +88,8 @@ class ShopPageProductListResultViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     @GqlGetShopInfoForHeaderUseCaseQualifier
     private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
-    ) : BaseViewModel(dispatcherProvider.main) {
+    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>
+) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
 
@@ -290,7 +286,11 @@ class ShopPageProductListResultViewModel @Inject constructor(
                         widgetUserAddressLocalData.lat,
                         widgetUserAddressLocalData.long,
                         shopProductFilterParameter.getExtraParam(),
-                        usecase = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+                        usecase = if (ProductCardExperiment.isReimagine()) {
+                            ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+                        } else {
+                            ""
+                        }
                     ),
                     etalaseType,
                     isEnableDirectPurchase
@@ -828,7 +828,6 @@ class ShopPageProductListResultViewModel @Inject constructor(
                     null
                 }
             )
-
 
             affiliate.await()?.let {
                 _resultAffiliate.value = Success(it)

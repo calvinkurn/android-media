@@ -26,6 +26,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.constant.ShopParamApiConstant
@@ -38,12 +39,10 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
@@ -349,7 +348,11 @@ class ShopPageProductListViewModel @Inject constructor(
                 userLat = widgetUserAddressLocalData.lat,
                 userLong = widgetUserAddressLocalData.long,
                 extraParam = extraParam,
-                usecase = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+                usecase = if (ProductCardExperiment.isReimagine()) {
+                    ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+                } else {
+                    ""
+                }
             )
         )
         val productListResponse = useCase.executeOnBackground()
