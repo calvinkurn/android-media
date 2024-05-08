@@ -8,6 +8,7 @@ import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.robot.StoriesRobotUITest
 import com.tokopedia.stories.utils.containsEventAction
 import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -17,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @UiTest
+@CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class StoriesUITest {
 
