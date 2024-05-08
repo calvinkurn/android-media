@@ -72,6 +72,9 @@ open class ShopHomeProductViewHolder(
             )
         }
         shopHomeProductViewModel?.let { shopHomeProductViewModel ->
+            productCard?.setGenericCtaButtonOnClickListener {
+                shopHomeEndlessProductListener?.onProductAtcVariantClick(shopHomeProductViewModel)
+            }
             productCard?.setImageProductViewHintListener(
                 shopHomeProductViewModel,
                 object : ViewHintListener {

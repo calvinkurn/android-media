@@ -319,7 +319,12 @@ object ShopPageHomeMapper {
                 shopHomeProductViewModel.productInCart
             ),
             nonVariant = null,
-            hasAddToCartButton = false
+            hasAddToCartButton = false,
+            productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                copyWriting = "+ Keranjang",
+                mainButtonVariant = UnifyButton.Variant.GHOST,
+                mainButtonType = UnifyButton.Type.MAIN
+            )
         )
     }
 
