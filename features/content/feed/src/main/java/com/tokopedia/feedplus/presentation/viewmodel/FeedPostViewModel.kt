@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -1305,9 +1306,11 @@ class FeedPostViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
+                if (isNextPage && _feedTagProductList.value.hasNextPage.not()) return@launch
+
                 if (!isNextPage) _feedTagProductList.value = FeedProductPaging.Empty
                 else _feedTagProductList.update { state -> state.copy(state = ResultState.Loading) }
-
+                
                 val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     else -> emptyList()
@@ -1316,8 +1319,6 @@ class FeedPostViewModel @Inject constructor(
                     _feedTagProductList.value.hasNextPage -> _feedTagProductList.value.cursor
                     else -> ""
                 }
-
-                if (isNextPage && cursor.isEmpty()) return@launch
 
                 val response = withContext(dispatchers.io) {
                     feedXGetActivityProductsUseCase(
