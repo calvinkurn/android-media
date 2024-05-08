@@ -126,9 +126,8 @@ val supportedMainFragments = mapOf(
     BottomNavFeedType to FeedFragmentCreator,
     BottomNavDiscoType to DiscoFragmentCreator,
     BottomNavWishlistType to WishlistFragmentCreator,
-//    BottomNavTransactionType to TransactionFragmentCreator,
-//    BottomNavProfileType to ProfileFragmentCreator,
-    BottomNavTransactionType to ProfileFragmentCreator,
+    BottomNavTransactionType to TransactionFragmentCreator,
+    BottomNavProfileType to ProfileFragmentCreator,
 )
 
 internal fun Bundle.putDiscoId(discoId: DiscoId) {

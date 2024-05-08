@@ -275,11 +275,13 @@ public class MainParentActivity extends BaseActivity implements
 
     private AppDownloadManagerHelper appDownloadManagerHelper;
 
+    //MIGRATED
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
+    //MIGRATED
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
         WindowManager.LayoutParams winParams = win.getAttributes();
@@ -450,6 +452,7 @@ public class MainParentActivity extends BaseActivity implements
         saveInstanceState(outState);
     }
 
+    //MIGRATED
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         try {
@@ -464,6 +467,7 @@ public class MainParentActivity extends BaseActivity implements
         return userSession.get().isFirstTimeUser();
     }
 
+    //MIGRATED
     private void createView(Bundle savedInstanceState) {
         isFirstNavigationImpression = true;
         setContentView(R.layout.activity_main_parent);
@@ -617,6 +621,7 @@ public class MainParentActivity extends BaseActivity implements
                 .inject(this);
     }
 
+    //NO NEED?
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void reInitInjector(GlobalNavComponent globalNavComponent) {
         globalNavComponent.inject(this);
@@ -740,18 +745,21 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void scrollToHomeHeader(Fragment fragment) {
         if (fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
     }
 
+    //MIGRATED
     private void scrollToHomeForYou(Fragment fragment) {
         if (fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
     }
 
+    //MIGRATED
     private Integer getRecommendationForYouIndex(Fragment fragment) {
         if (fragment instanceof HomeScrollViewListener) {
             return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
@@ -998,6 +1006,7 @@ public class MainParentActivity extends BaseActivity implements
         return fragmentList;
     }
 
+    //NOT NEEDED?
     @RestrictTo(RestrictTo.Scope.TESTS)
     public Fragment getFragment(int index) {
         return getSupportFragmentManager().findFragmentById(R.id.container);
@@ -1011,18 +1020,22 @@ public class MainParentActivity extends BaseActivity implements
             setBadgeNotifCounter(currentFragment);
     }
 
+    //NOT NEEDED?
     @Override
     public void onStartLoading() {
     }
 
+    //NOT NEEDED?
     @Override
     public void onError(String message) {
     }
 
+    //NOT NEEDED?
     @Override
     public void onHideLoading() {
     }
 
+    //NOT NEEDED?
     @Override
     public Context getContext() {
         return this;
@@ -1033,6 +1046,7 @@ public class MainParentActivity extends BaseActivity implements
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
+    //MIGRATED
     @Override
     public void onBackPressed() {
         doubleTapExit();
@@ -1088,6 +1102,7 @@ public class MainParentActivity extends BaseActivity implements
         this.viewModel.fetchNotificationData();
     }
 
+    //MIGRATED
     private void saveInstanceState(Bundle outState) {
         if (getIntent() != null) {
             outState.putBoolean(IS_RECURRING_APPLINK, presenter.get().isRecurringApplink());
@@ -1103,11 +1118,13 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private Boolean isFirstTime() {
         LocalCacheHandler cache = new LocalCacheHandler(this, GlobalNavConstant.Cache.KEY_FIRST_TIME);
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
+    //NOT NEEDED
     protected InAppCallback getInAppCallback() {
         return new InAppCallback() {
             @Override
@@ -1160,11 +1177,13 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //NOT NEEDED
     @RestrictTo(RestrictTo.Scope.TESTS)
     public MainParentPresenter getPresenter() {
         return (MainParentPresenter) presenter;
     }
 
+    //NOT NEEDED
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setPresenter(MainParentPresenter presenter) {
         this.presenter = (Lazy<MainParentPresenter>) presenter;
@@ -1269,6 +1288,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public void onRefreshNotification() {
         presenter.get().getNotificationData();
@@ -1371,6 +1391,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public boolean menuClicked(int index, int id) {
         int position = getPositionFragmentByMenu(index);
@@ -1508,6 +1529,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public String currentVisibleFragment() {
         return embracePageName;
@@ -1522,6 +1544,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //NOT NEEDED
     public void populateBottomNavigationView() {
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), getIconJumper(), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), null, R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
@@ -1532,6 +1555,7 @@ public class MainParentActivity extends BaseActivity implements
         handleAppLinkBottomNavigation(true);
     }
 
+    //MIGRATED
     private IconJumper getIconJumper() {
         if (HomeRollenceController.isIconJumper()) {
             if (HomeRollenceController.isIconJumperSRE()) {
@@ -1544,6 +1568,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private IconJumper getForYouIconJumper() {
         return new IconJumper(
                 getResources().getString(R.string.for_you),
@@ -1554,6 +1579,8 @@ public class MainParentActivity extends BaseActivity implements
         );
     }
 
+    //NOT NEEDED
+    //TODO("Delete the SRE Icon Jumper")
     private IconJumper getSREIconJumper() {
         return new IconJumper(
                 getResources().getString(R.string.for_you),

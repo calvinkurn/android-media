@@ -12,6 +12,7 @@ import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.util.CompletableTask
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
+import com.tokopedia.navigation_common.ui.BottomNavItemId
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -38,6 +39,11 @@ internal class MainParentViewModel @Inject constructor(
     fun hasTabType(type: BottomNavBarItemType): Boolean {
         val bottomNav = dynamicBottomNav.value ?: return false
         return bottomNav.any { it.type == type }
+    }
+
+    fun getModelById(id: BottomNavItemId): BottomNavBarUiModel? {
+        val bottomNav = dynamicBottomNav.value ?: return null
+        return bottomNav.firstOrNull { it.uniqueId == id }
     }
 
     fun fetchNotificationData() {

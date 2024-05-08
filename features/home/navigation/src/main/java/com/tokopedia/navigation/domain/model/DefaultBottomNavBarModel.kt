@@ -9,6 +9,7 @@ import com.tokopedia.navigation.presentation.model.BottomNavWishlistType
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Key
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Type
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset.Variant
+import com.tokopedia.navigation_common.ui.BottomNavBarJumper
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.DiscoId
 import com.tokopedia.navigation_common.ui.plus
@@ -19,7 +20,21 @@ internal val defaultBottomNavModel = listOf(
         id = 1,
         title = "Home",
         type = BottomNavHomeType,
-        jumper = null,
+        jumper = BottomNavBarJumper(
+            id = 1,
+            title = "Buat Kamu",
+            assets = mapOf(
+                (Key.ImageInactive + Variant.Light) to Type.ImageRes(navigationR.drawable.ic_bottom_nav_home_enabled),
+                (Key.ImageInactive + Variant.Dark) to Type.ImageRes(navigationR.drawable.ic_bottom_nav_home_enabled),
+
+                (Key.AnimActive + Variant.Light) to Type.LottieRes(navigationR.raw.bottom_nav_home_to_thumb),
+                (Key.AnimInactive + Variant.Light) to Type.LottieRes(navigationR.raw.bottom_nav_thumb_to_home),
+                (Key.AnimIdle + Variant.Light) to Type.LottieRes(navigationR.raw.bottom_nav_thumb_idle),
+                (Key.AnimActive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_home_to_thumb),
+                (Key.AnimInactive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_thumb_to_home),
+                (Key.AnimIdle + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_thumb_idle),
+            )
+        ),
         assets = mapOf(
             (Key.ImageActive + Variant.Light) to Type.ImageRes(navigationR.drawable.ic_bottom_nav_home_active),
             (Key.ImageInactive + Variant.Light) to Type.ImageRes(navigationR.drawable.ic_bottom_nav_home_enabled),
@@ -31,7 +46,8 @@ internal val defaultBottomNavModel = listOf(
             (Key.AnimActive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_home_dark),
             (Key.AnimInactive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_home_to_enabled_dark),
         ),
-        discoId = DiscoId.Empty
+        discoId = DiscoId.Empty,
+        queryParams = "",
     ),
     BottomNavBarUiModel(
         id = 2,
@@ -49,7 +65,8 @@ internal val defaultBottomNavModel = listOf(
             (Key.AnimActive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_feed_dark),
             (Key.AnimInactive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_feed_to_enabled_dark),
         ),
-        discoId = DiscoId.Empty
+        discoId = DiscoId.Empty,
+        queryParams = "",
     ),
     BottomNavBarUiModel(
         id = 3,
@@ -67,7 +84,8 @@ internal val defaultBottomNavModel = listOf(
             (Key.AnimActive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_official_dark),
             (Key.AnimInactive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_os_to_enabled_dark),
         ),
-        discoId = BottomNavOfficialStoreId.discoId
+        discoId = BottomNavOfficialStoreId.discoId,
+        queryParams = "ref=bottomnavigation"
     ),
     BottomNavBarUiModel(
         id = 4,
@@ -85,7 +103,8 @@ internal val defaultBottomNavModel = listOf(
             (Key.AnimActive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_wishlist_dark),
             (Key.AnimInactive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_wishlist_to_enabled_dark),
         ),
-        discoId = DiscoId.Empty
+        discoId = DiscoId.Empty,
+        queryParams = ""
     ),
     BottomNavBarUiModel(
         id = 5,
@@ -103,7 +122,8 @@ internal val defaultBottomNavModel = listOf(
             (Key.AnimActive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_transaction_dark),
             (Key.AnimInactive + Variant.Dark) to Type.LottieRes(navigationR.raw.bottom_nav_transaction_to_enabled_dark),
         ),
-        discoId = DiscoId.Empty
+        discoId = DiscoId.Empty,
+        queryParams = ""
     ),
 )
 

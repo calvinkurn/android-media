@@ -17,6 +17,7 @@ import android.os.Handler
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -29,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -79,6 +81,7 @@ import com.tokopedia.navigation.databinding.ActivityMainParentBinding
 import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
 import com.tokopedia.navigation.presentation.model.BottomNavFeedId
+import com.tokopedia.navigation.presentation.model.BottomNavFeedType
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
 import com.tokopedia.navigation.presentation.model.BottomNavProfileType
 import com.tokopedia.navigation.presentation.model.putDiscoId
@@ -86,6 +89,11 @@ import com.tokopedia.navigation.presentation.model.putQueryParams
 import com.tokopedia.navigation.presentation.model.putShouldShowGlobalNav
 import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
+import com.tokopedia.navigation.presentation.util.EmbraceNavAnalyticsProcessor
+import com.tokopedia.navigation.presentation.util.GlobalNavAnalyticsProcessor
+import com.tokopedia.navigation.presentation.util.TabSelectedListener
+import com.tokopedia.navigation.presentation.util.VisitFeedProcessor
+import com.tokopedia.navigation.presentation.util.createTabSelectedListener
 import com.tokopedia.navigation.util.AssetPreloadManager
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.CartNotifyListener
@@ -149,7 +157,23 @@ class NewMainParentActivity :
     lateinit var assetPreloadManager: Lazy<AssetPreloadManager>
 
     @Inject
-    lateinit var dispatchers: CoroutineDispatchers
+    lateinit var dispatchers: Lazy<CoroutineDispatchers>
+
+    @Inject
+    lateinit var globalAnalyticsProcessor: Lazy<GlobalNavAnalyticsProcessor>
+
+    @Inject
+    lateinit var visitFeedProcessor: Lazy<VisitFeedProcessor>
+
+    private val onTabSelected: List<TabSelectedListener> by lazy {
+        listOf(
+            createTabSelectedListener(globalAnalyticsProcessor.get(), true, { !it }, { false }),
+            createTabSelectedListener(visitFeedProcessor.get()),
+            createTabSelectedListener(EmbraceNavAnalyticsProcessor()),
+            createTabSelectedListener { updateAppLogPageData(it.uniqueId, false) },
+            createTabSelectedListener { sendEnterPage(it.uniqueId) }
+        )
+    }
 
     private val pltPerformanceCallback by lazy {
         PageLoadTimePerformanceCallback(
@@ -214,6 +238,7 @@ class NewMainParentActivity :
         HomeRollenceController.fetchIconJumperValue() //TODO("Is this still valid after revamp?")
         initInjector()
         if (savedInstanceState != null) {
+            adjustIntentFromSavedState(savedInstanceState)
             viewModel.isRecurringAppLink = savedInstanceState.getBoolean(KEY_IS_RECURRING_APPLINK, false)
         }
         initDownloadManagerDialog()
@@ -301,15 +326,15 @@ class NewMainParentActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode)
-        run handleByRequestCode@{
-            when (requestCode) {
-                REQUEST_CODE_LOGIN -> {
-                    if (resultCode != Activity.RESULT_OK || data == null) return@handleByRequestCode
-                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-                    if (isSuccessRegister) goToNewUserZonePage()
-                }
-            }
-        }
+//        run handleByRequestCode@{
+//            when (requestCode) {
+//                REQUEST_CODE_LOGIN -> {
+//                    if (resultCode != Activity.RESULT_OK || data == null) return@handleByRequestCode
+//                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
+//                    if (isSuccessRegister) goToNewUserZonePage()
+//                }
+//            }
+//        }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -321,6 +346,14 @@ class NewMainParentActivity :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         saveInstanceState(outState)
+    }
+
+    private fun adjustIntentFromSavedState(savedInstanceState: Bundle) {
+        val type = savedInstanceState.getString(ARGS_TAB_TYPE) ?: return
+        val discoId = savedInstanceState.getString(ARGS_DISCO_ID, "")
+        intent
+            .putExtra(ARGS_TAB_TYPE, type)
+            .putExtra(ARGS_DISCO_ID, discoId)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -372,7 +405,8 @@ class NewMainParentActivity :
         val intent = intent.putExtra(
             ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
             isFeed && isJustLoggedIn
-        ).putExtra(ARGS_TAB_ID, id.value)
+        ).putExtra(ARGS_TAB_ID, id.type.value)
+            .putExtra(ARGS_DISCO_ID, id.discoId.value)
 
         if (isFeed) recreate()
         else {
@@ -450,8 +484,9 @@ class NewMainParentActivity :
     }
 
     override fun currentVisibleFragment(): String {
-//        TODO("Not yet implemented")
-        return ""
+        val tag = getCurrentActiveFragment()?.tag ?: return ""
+        val id = BottomNavItemId(tag)
+        return viewModel.getModelById(id)?.title.orEmpty()
     }
 
     override fun getTelemetrySectionName(): String {
@@ -502,17 +537,12 @@ class NewMainParentActivity :
     }
 
     private fun saveInstanceState(outState: Bundle) {
-        val intent = this.intent ?: return
         outState.putBoolean(KEY_IS_RECURRING_APPLINK, viewModel.isRecurringAppLink)
 
-        // only save position when feed page is active and remove only if it is not feed
-//        boolean isCurrentFragmentFeed = currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE);
-//        if (!isCurrentFragmentFeed) {
-//            if (getIntent().getIntExtra(ARGS_TAB_POSITION, 0) != FEED_MENU) return;
-//            getIntent().removeExtra(ARGS_TAB_POSITION);
-//        } else {
-//            getIntent().putExtra(ARGS_TAB_POSITION, FEED_MENU);
-//        }
+        val currentFragmentTag = getCurrentActiveFragment()?.tag ?: return
+        val tabId = BottomNavItemId(currentFragmentTag)
+        outState.putString(ARGS_TAB_TYPE, tabId.type.value)
+        outState.putString(ARGS_DISCO_ID, tabId.discoId.value)
     }
 
     private fun observeData() {
@@ -719,18 +749,27 @@ class NewMainParentActivity :
                     }
                 )
 
-                run feedPlusArguments@{
-                    if (!fragment::class.java.name.equals(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, true)) return@feedPlusArguments
-                    runCatching {
-                        val oldArgs = fragment.arguments ?: Bundle()
-                        intent.extras?.let { extras -> oldArgs.putAll(extras) }
-                        fragment.arguments = oldArgs
-                    }.onFailure { it.printStackTrace() }
-                }
-
+                onFragmentCreated(fragment)
                 fragment
             }
         }
+    }
+
+    private fun onFragmentCreated(fragment: Fragment) {
+        when (fragment.tag) {
+            BottomNavFeedId.value -> onFeedFragmentCreated(fragment)
+            else -> {}
+        }
+    }
+
+    private fun onFeedFragmentCreated(fragment: Fragment) {
+        runCatching {
+            val oldArgs = fragment.arguments ?: Bundle()
+            intent.extras?.let { extras -> oldArgs.putAll(extras) }
+            fragment.arguments = oldArgs
+        }.onFailure { it.printStackTrace() }
+
+        intent.putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT, ApplinkConstInternalContent.NAV_BUTTON_ENTRY_POINT)
     }
 
     private fun selectFragment(fragment: Fragment, itemId: BottomNavItemId) {
@@ -739,6 +778,9 @@ class NewMainParentActivity :
         configureNavigationBarBasedOnFragment(fragment)
         openFragment(fragment, itemId)
         setBadgeNotificationCounter(fragment)
+
+        val model = viewModel.getModelById(itemId) ?: return
+        onTabSelected.forEach { it.onSelected(model) }
     }
 
     private fun configureBackgroundBasedOnFragment(fragment: Fragment) {
@@ -935,14 +977,15 @@ class NewMainParentActivity :
         NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
     }
 
-    private fun goToNewUserZonePage() {
-        val intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER)
-        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
-        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
-        startActivities(arrayOf(intentHome, intentNewUser))
-        finish()
-    }
+    //TODO("Ask account team")
+//    private fun goToNewUserZonePage() {
+//        val intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER)
+//        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
+//        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//
+//        startActivities(arrayOf(intentHome, intentNewUser))
+//        finish()
+//    }
 
     private fun showDarkModeIntroBottomSheet() {
         DarkModeIntroductionLauncher
@@ -1200,7 +1243,7 @@ class NewMainParentActivity :
         private const val KEY_IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK"
         private const val KEY_MO_ENGAGE_COUPON_CODE = "coupon_code"
 
-        private const val REQUEST_CODE_LOGIN: Int = 12137
+//        private const val REQUEST_CODE_LOGIN: Int = 12137
 
         private const val EXIT_DELAY_MILLIS = 2_000L
 
