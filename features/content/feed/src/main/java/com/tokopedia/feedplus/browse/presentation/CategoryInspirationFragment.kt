@@ -162,7 +162,7 @@ internal class CategoryInspirationFragment @Inject constructor(
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            tracker.clickBackExitCategoryInspirationPage()
+            tracker.clickBackExit()
             requireActivity().finish()
         }
     }

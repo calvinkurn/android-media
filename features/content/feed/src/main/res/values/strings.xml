@@ -56,8 +56,8 @@
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
     <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
-    <string name="feed_onboarding_browse_entry_point_title">Temukan berbagai konten seru</string>
-    <string name="feed_onboarding_browse_entry_point_subtitle">Dapetin inspirasi belanja dari konten kreatif lainnya, yuk!</string>
+    <string name="feed_onboarding_browse_entry_point_title">Cari konten yang kamu sukain aja~</string>
+    <string name="feed_onboarding_browse_entry_point_subtitle">Cek juga siapa tahu ada produk hidden gem dan promo di kontennya!</string>
 
     <string name="feed_for_you_label">Untuk Kamu</string>
     <string name="feed_following_label">Following</string>
@@ -103,4 +103,25 @@
     <string name="feed_live_preview_end_label">Yaah, Live-nya telah berakhir</string>
 
     <string name="feed_product_highlight_atc">+</string>
+
+    <!-- Tooltip -->
+    <string name="feed_search_tooltip_user_affinity">Cara cepet cari konten favoritmu! ❤️</string>
+    <string name="feed_search_tooltip_creator">Cek konten dari para kreator inspiratif!</string>
+    <string name="feed_search_tooltip_story">Udah cek update Story hari ini?</string>
+    <string name="feed_search_tooltip_trending_and_viral_video">Ada konten yang lagi viral! 🔥</string>
+    <string name="feed_search_tooltip_promo">Ada promo hidden gem di konten!</string>
+
+
+    <!-- Feed Local Search -->
+    <string name="feed_local_search_page_text_placeholder_fallback">Cari konten di Feed</string>
+
+    <string name="feed_local_search_not_found_title">Oops, kontennya nggak ketemu</string>
+    <string name="feed_local_search_not_found_desc">Coba periksa lagi kata kuncinya, ya.</string>
+    <string name="feed_local_search_not_found_cta">Periksa Kata Kunci</string>
+
+    <string name="feed_local_search_restricted_title">Oops, kontennya nggak ada</string>
+    <string name="feed_local_search_restricted_desc">Coba cari kata kunci yang lain, atau pelajari info selengkapnya, ya.</string>
+    <string name="feed_local_search_restricted_cta">Pelajari Selengkapnya</string>
+
+    <string name="feed_content_tnc_link">https://www.tokopedia.com/terms?lang=id#konten</string>
 </resources>

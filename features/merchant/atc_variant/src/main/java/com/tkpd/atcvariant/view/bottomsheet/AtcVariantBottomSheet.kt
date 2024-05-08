@@ -48,6 +48,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATION
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -168,6 +169,10 @@ class AtcVariantBottomSheet :
         atcAnimator.setSourceView(view = container)
     }
 
+    private val aggregatorParams
+        get() = sharedViewModel.aggregatorParams.value
+            ?: ProductVariantBottomSheetParams()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
@@ -233,8 +238,7 @@ class AtcVariantBottomSheet :
             })
         }
 
-        viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
-        viewContent?.let {
+        viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null).also {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
             txtStock = it.findViewById(R.id.txt_variant_empty_stock)
         }
@@ -326,10 +330,23 @@ class AtcVariantBottomSheet :
         shouldSetActivityResult = data.saveAfterClose
     }
 
-    private fun dismissAfterAtc() {
-        val shouldDismiss = sharedViewModel.aggregatorParams.value?.dismissAfterTransaction ?: false
+    private fun dismissAfterTransaction() {
+        val shouldDismiss = aggregatorParams.dismissAfterTransaction
         if (shouldDismiss) {
             dismiss()
+        }
+    }
+
+    private fun dismissWhenTransactionError(
+        onDismissed: () -> Unit = {},
+        onNothing: () -> Unit = {}
+    ) {
+        val shouldDismiss = aggregatorParams.dismissWhenTransactionError
+        if (shouldDismiss) {
+            onDismissed()
+            dismiss()
+        } else {
+            onNothing()
         }
     }
 
@@ -441,12 +458,52 @@ class AtcVariantBottomSheet :
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             baseAtcBtn?.hideLoading()
 
-            when (it) {
-                is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
-                is Fail -> {
-                    showToasterError(getErrorMessage(it.throwable))
-                    logException(it.throwable)
-                }
+            when (aggregatorParams.pageSource) {
+                VariantPageSource.CART_CHANGE_VARIANT.source -> handleObserveUpdateCartByClient(it)
+                else -> handleObserveUpdateCartOnGeneral(result = it)
+            }
+        }
+    }
+
+    private fun handleObserveUpdateCartOnGeneral(result: Result<Data>) {
+        when (result) {
+            is Success -> {
+                showToasterSuccess(result.data.message, getString(R.string.atc_variant_oke_label))
+            }
+
+            is Fail -> {
+                showToasterError(getErrorMessage(result.throwable))
+                logException(result.throwable)
+            }
+        }
+    }
+
+    private fun handleObserveUpdateCartByClient(result: Result<Data>) {
+        when (result) {
+            is Success -> {
+                val data = result.data
+                viewModel.updateActivityResult(
+                    requestCode = ProductDetailCommonConstant.RC_VBS_UPDATE_VARIANT_SUCCESS,
+                    atcSuccessMessage = data.message,
+                    anchorCartId = data.anchorCartId.toString()
+                )
+                dismissAfterTransaction()
+            }
+
+            is Fail -> {
+                logException(result.throwable)
+
+                dismissWhenTransactionError(
+                    onDismissed = {
+                        viewModel.getActivityResultData().apply {
+                            requestCode = ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR
+                            atcMessage = getErrorMessage(result.throwable)
+                        }
+                    },
+                    onNothing = {
+                        showToasterError(getErrorMessage(result.throwable))
+                    }
+                )
             }
         }
     }
@@ -528,7 +585,7 @@ class AtcVariantBottomSheet :
                     is Success -> {
                         onSuccessTransaction(it.data)
                         trackOnButtonClickCompleted(it.data)
-                        dismissAfterAtc()
+                        dismissAfterTransaction()
                     }
 
                     is Fail -> {
@@ -586,9 +643,7 @@ class AtcVariantBottomSheet :
 
         trackSuccessAtc(cartId)
 
-        if (sharedViewModel.aggregatorParams.value?.showQtyEditor == true ||
-            sharedViewModel.aggregatorParams.value?.isTokoNow == true
-        ) {
+        if (aggregatorParams.showQtyEditor || aggregatorParams.isTokoNow) {
             onSuccessAtcTokoNow(result.errorMessage.firstOrNull(), cartId)
             return
         }
@@ -928,6 +983,11 @@ class AtcVariantBottomSheet :
                 )
                 viewModel.updateActivityResult(requestCode = REQUEST_CODE_TRADEIN_PDP)
                 onSaveButtonClicked()
+            }
+
+            ProductDetailCommonConstant.KEY_CART_TYPE_OF_VARIANT_EDITOR -> {
+                baseAtcBtn?.showLoading()
+                viewModel.updateCart(params = aggregatorParams)
             }
 
             else -> {

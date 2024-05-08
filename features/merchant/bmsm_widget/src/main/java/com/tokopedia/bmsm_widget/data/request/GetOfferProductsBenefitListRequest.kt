@@ -19,7 +19,9 @@ data class GetOfferProductsBenefitListRequest(
         val tierProduct: List<TierProduct> = emptyList(),
         @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
-        val warehouseId: Long = 0
+        val warehouseId: Long = 0,
+        @SerializedName("main_product")
+        val mainProducts: List<MainProduct> = emptyList()
     ) {
         data class TierProduct(
             @SerializedName("product_benefit")
@@ -36,6 +38,14 @@ data class GetOfferProductsBenefitListRequest(
                 val quantity: Int
             )
         }
+        
+        data class MainProduct(
+            @SerializedName("product_id")
+            val productId: Long,
+            @SerializedName("quantity")
+            val quantity: Int
+        )
+        
     }
 
     data class UserLocation(
