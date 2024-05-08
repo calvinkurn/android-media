@@ -1324,8 +1324,7 @@ class FeedPostViewModel @Inject constructor(
                     it.id
                 }
                 _feedTagProductList.value = Success(distinctData)
-                if (mediaType == TYPE_MEDIA_VIDEO)
-                    trackPerformance(activityId, distinctData.map(ContentTaggedProductUiModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
+                if (mediaType == TYPE_MEDIA_VIDEO) trackPerformance(activityId, distinctData.map(ContentTaggedProductUiModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
             } catch (t: Throwable) {
                 _feedTagProductList.value = Fail(t)
             }

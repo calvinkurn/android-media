@@ -853,7 +853,6 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel
     ) {
         feedPostViewModel.trackPerformance(model.playChannelId, model.products.map(FeedCardProductModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
-        feedPostViewModel.trackPerformance(model.playChannelId, model.products.map(FeedCardProductModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
         feedPostViewModel.getReportSummaries(model)
     }
 
