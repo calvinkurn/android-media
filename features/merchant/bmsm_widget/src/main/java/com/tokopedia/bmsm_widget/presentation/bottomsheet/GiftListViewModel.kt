@@ -44,7 +44,8 @@ class GiftListViewModel @Inject constructor(
                 source = event.source,
                 selectedTierId = event.selectedTierId,
                 userCache = event.userCache,
-                shopId = event.shopId
+                shopId = event.shopId,
+                mainProducts = event.mainProducts
             )
         }
         tracker.sendImpressionOpenGiftListBottomSheet(
@@ -65,7 +66,8 @@ class GiftListViewModel @Inject constructor(
                     filter = GetOfferProductsBenefitListUseCase.Param.Filter(
                         offerId = currentState.offerId,
                         warehouseId = currentState.warehouseId,
-                        tierProduct = currentState.tierProducts
+                        tierProduct = currentState.tierProducts,
+                        mainProducts = currentState.mainProducts
                     ),
                     userCache = currentState.userCache
                 )

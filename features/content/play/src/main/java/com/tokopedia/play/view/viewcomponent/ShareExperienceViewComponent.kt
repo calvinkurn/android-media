@@ -56,7 +56,6 @@ class ShareExperienceViewComponent(
         ivShareLink.setOnClickListener {
             listener.onShareIconClick(this)
         }
-        ivShareLink.setImage(newIconId = if (source == Source.Upcoming) IconUnify.SHARE_MOBILE else IconUnify.SHARE)
     }
 
     fun setIsShareable(isShow: Boolean) {

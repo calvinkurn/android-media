@@ -30,9 +30,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ShopOfferHeroBrandViewModel(
     val application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
     companion object {
         private const val PRODUCT_IMAGE_WIDTH = 165
 

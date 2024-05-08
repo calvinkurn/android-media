@@ -25,9 +25,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ShopOfferSupportingBrandViewModel(
     application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
 
     private val layout: ArrayList<ComponentsItem> = arrayListOf()
 

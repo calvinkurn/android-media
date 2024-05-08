@@ -32,7 +32,8 @@ class GetCartRevampV4UseCase @Inject constructor(
                 PARAM_KEY_ADDITIONAL to mapOf(
                     ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
                     PARAM_KEY_STATE to params.state,
-                    PARAM_KEY_IS_CART_REIMAGINE to params.isCartReimagine
+                    PARAM_KEY_IS_CART_REIMAGINE to params.isCartReimagine,
+                    PARAM_KEY_REQUEST_TOASTER to params.requestToaster
                 )
             )
         )
@@ -56,8 +57,11 @@ class GetCartRevampV4UseCase @Inject constructor(
         private const val PARAM_KEY_ADDITIONAL = "additional_params"
         private const val PARAM_KEY_STATE = "state"
         private const val PARAM_KEY_IS_CART_REIMAGINE = "is_cart_reimagine"
+        private const val PARAM_KEY_REQUEST_TOASTER = "request_toaster"
 
         private const val PARAM_VALUE_ID = "id"
+        internal const val PARAM_VALUE_TOASTER_DEFAULT = ""
+        internal const val PARAM_VALUE_TOASTER_CART_VARIANT = "variant_changed"
 
         private const val QUERY_CART_REVAMP_V4 = "CartRevampV4Query"
     }
@@ -66,5 +70,6 @@ class GetCartRevampV4UseCase @Inject constructor(
 class GetCartParam(
     val cartId: String,
     val state: Int,
-    val isCartReimagine: Boolean = false
+    val isCartReimagine: Boolean = false,
+    val requestToaster: String = ""
 )

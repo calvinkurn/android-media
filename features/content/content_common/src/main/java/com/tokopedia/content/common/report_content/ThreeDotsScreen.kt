@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by astidhiyaa on 31/07/23
@@ -64,6 +66,7 @@ fun ItemMenu(menu: ContentMenuItem, onMenuClicked: (ContentMenuItem) -> Unit) {
     NestTheme(isOverrideStatusBarColor = false) {
         ConstraintLayout(
             modifier = Modifier
+                .testTag(stringResource(id = contentcommonR.string.content_test_tag_three_dots_screen))
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .clickable {

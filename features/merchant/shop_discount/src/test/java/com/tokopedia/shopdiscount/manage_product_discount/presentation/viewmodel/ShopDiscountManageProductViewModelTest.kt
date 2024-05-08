@@ -1,6 +1,8 @@
 package com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel
 
+import android.text.format.DateUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
@@ -9,21 +11,30 @@ import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
+import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_START_DATE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
+import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 class ShopDiscountManageProductViewModelTest {
@@ -53,6 +64,11 @@ class ShopDiscountManageProductViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+    }
+
+    @After
+    fun finish() {
+        unmockkStatic(DateUtils::class)
     }
 
     @Test
@@ -356,11 +372,17 @@ class ShopDiscountManageProductViewModelTest {
     }
 
     @Test
-    fun `When call getDiscountPeriodDataBasedOnBenefit with vps but no vps package id, then discountPeriodDataBasedOnBenefitLiveData value should return vps package end date value of zero`() {
+    fun `When call getDiscountPeriodDataBasedOnBenefit with vps but no vps package id, then discountPeriodDataBasedOnBenefitLiveData value should return vps package end date value of next year`() {
         val mockSlashPriceBenefitData = getMockSlashPriceBenefitDataVpsWithNoVpsPackageId()
+        mockkStatic(DateUtils::class)
+        every { DateUtils.isToday(any()) } returns true
         viewModel.getDiscountPeriodDataBasedOnBenefit(mockSlashPriceBenefitData)
         val liveData = viewModel.discountPeriodDataBasedOnBenefitLiveData
-        assert(liveData.value?.second?.time == 0L)
+        val yearDiff = ChronoUnit.YEARS.between(
+            LocalDateTime.ofInstant(liveData.value?.first?.toInstant(), ZoneId.systemDefault()),
+            LocalDateTime.ofInstant(liveData.value?.second?.toInstant(), ZoneId.systemDefault())
+        )
+        assert(yearDiff == Int.ONE.toLong())
     }
 
     @Test
@@ -398,6 +420,7 @@ class ShopDiscountManageProductViewModelTest {
             listSlashPriceBenefitData = listOf(
                 ShopDiscountSellerInfoUiModel.SlashPriceBenefitData(
                     packageId = "1",
+                    expiredAt = mockEndDate.parseTo(DateConstant.DATE_TIME),
                     expiredAtUnix = mockEndDate.time / 1000L
                 )
             )

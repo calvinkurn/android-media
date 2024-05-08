@@ -31,9 +31,11 @@ object AtcVariantHelper {
     const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
     const val ATC_VARIANT_RESULT_CODE = 19202
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
+    const val KEY_DISMISS_WHEN_TRANSACTION_ERROR = "dismiss_when_transaction_error"
     const val KEY_EXT_PARAMS = "ext_params"
     const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
     const val KEY_SHOW_QTY_EDITOR = "show_qty_editor"
+    const val KEY_CHANGE_VARIANT = "change_variant"
 
     /**
      * For PDP and ProductBundle only
@@ -117,7 +119,7 @@ object AtcVariantHelper {
     fun onActivityResultAtcVariant(context: Context, requestCode: Int, data: Intent?, updateView: ProductVariantResult.() -> Unit) {
         if (requestCode != ATC_VARIANT_RESULT_CODE || data == null) return
         val cacheId = data.getStringExtra(ATC_VARIANT_CACHE_ID)
-        val cacheManager = SaveInstanceCacheManager(context, cacheId)
+        val cacheManager = SaveInstanceCacheManager(context.applicationContext, cacheId)
 
         val result: ProductVariantResult = cacheManager.get(PDP_PARCEL_KEY_RESULT, ProductVariantResult::class.java)
             ?: return
@@ -136,6 +138,8 @@ object AtcVariantHelper {
         dismissAfterTransaction: Boolean = false,
         saveAfterClose: Boolean = true,
         showQuantityEditor: Boolean = false,
+        changeVariant: ProductVariantBottomSheetParams.ChangeVariant? = null,
+        dismissWhenTransactionError: Boolean = false,
         startActivitResult: (Intent, Int) -> Unit
     ) {
         val intent = RouteManager.getIntent(
@@ -152,6 +156,8 @@ object AtcVariantHelper {
         intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
         intent.putExtra(KEY_EXT_PARAMS, extParams)
         intent.putExtra(KEY_SHOW_QTY_EDITOR, qtyEditorData)
+        intent.putExtra(KEY_CHANGE_VARIANT, changeVariant)
+        intent.putExtra(KEY_DISMISS_WHEN_TRANSACTION_ERROR, dismissWhenTransactionError)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 
@@ -218,6 +224,7 @@ enum class VariantPageSource(val source: String) {
     NOTIFCENTER_PAGESOURCE("notifcenter"),
     PLAY_PAGESOURCE("play"),
     HOMEPAGE_PAGESOURCE("homepage"),
+    ME_PAGE_PAGESOURCE("me-page"),
     DISCOVERY_PAGESOURCE("discovery page"),
     SHOP_PAGE_PAGESOURCE("shop-direct-purchase"),
     SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE("/shoppage reimagined"),
@@ -233,5 +240,6 @@ enum class VariantPageSource(val source: String) {
     BUY_MORE_GET_MORE("offerpage"),
     CATALOG_PAGESOURCE("catalog"),
     PRODUCT_PREVIEW_PAGESOURCE("fullscreen_media_pdp"),
-    STORIES_PAGESOURCE("stories")
+    STORIES_PAGESOURCE("stories"),
+    CART_CHANGE_VARIANT("cart_change_variant")
 }

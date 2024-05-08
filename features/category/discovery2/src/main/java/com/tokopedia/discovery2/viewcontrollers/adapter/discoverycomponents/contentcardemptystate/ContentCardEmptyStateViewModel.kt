@@ -5,7 +5,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class ContentCardEmptyStateViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class ContentCardEmptyStateViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
     fun getToastMessage(discoItemCount: Int?): String {
         if (discoItemCount != null) {
             if (position == discoItemCount - 1) {

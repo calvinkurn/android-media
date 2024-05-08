@@ -457,7 +457,7 @@ class OfferLandingPageViewModelTest {
                     tierId = 0
                 )
             )
-            val expected = Success(SelectedTierData(selectedTier, offerInfo, tierGifts))
+            val expected = Success(SelectedTierData(selectedTier, offerInfo, tierGifts, listOf()))
             mockGetMiniCartUseCaseGqlCall()
 
             // When
