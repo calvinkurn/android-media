@@ -64,6 +64,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortU
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageExperiment
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.setElement
@@ -974,11 +975,7 @@ class ShopHomeViewModel @Inject constructor(
                         shopProductFilterParameter,
                         widgetUserAddressLocalData,
                         isEnableDirectPurchase,
-                        useCase = if (ProductCardExperiment.isReimagine()) {
-                            ShopParamApiConstant.SHOP_GET_PRODUCT_V2
-                        } else {
-                            ""
-                        }
+                        useCase = ShopPageExperiment.determineProductCardUseCaseParam()
                     )
                 },
                 onError = { null }

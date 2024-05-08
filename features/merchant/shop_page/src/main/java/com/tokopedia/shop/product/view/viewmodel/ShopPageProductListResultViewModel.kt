@@ -28,10 +28,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
-import com.tokopedia.shop.common.constant.ShopParamApiConstant
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -44,6 +42,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
+import com.tokopedia.shop.common.util.ShopPageExperiment
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -286,11 +285,7 @@ class ShopPageProductListResultViewModel @Inject constructor(
                         widgetUserAddressLocalData.lat,
                         widgetUserAddressLocalData.long,
                         shopProductFilterParameter.getExtraParam(),
-                        usecase = if (ProductCardExperiment.isReimagine()) {
-                            ShopParamApiConstant.SHOP_GET_PRODUCT_V2
-                        } else {
-                            ""
-                        }
+                        usecase = ShopPageExperiment.determineProductCardUseCaseParam()
                     ),
                     etalaseType,
                     isEnableDirectPurchase
