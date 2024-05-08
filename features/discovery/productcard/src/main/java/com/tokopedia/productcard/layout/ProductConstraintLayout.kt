@@ -18,7 +18,7 @@ open class ProductConstraintLayout : ConstraintLayout {
     private var lastPercentageWidht = 0
     private var lastPercentageHeight = 0
     private var minHorizontalPercentage = 0
-    private var maxHorizontalPercentage = 101
+    private var maxHorizontalPercentage = 100
     private var minVerticalPercentage = 0
     private var maxVerticalPercentage = 100
     private var maxAreaPercentage = 0
