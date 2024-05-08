@@ -12,8 +12,8 @@ object LibraQuery : GqlQueryInterface {
 
     override fun getQuery() =
         """
-            query $OPERATION_NAME($${'$'}type: String) {
-                $OPERATION_NAME(type: ${'$'}${'$'}type)
+            query $OPERATION_NAME(${'$'}type: String!) {
+                $OPERATION_NAME(type: ${'$'}type)
             }
         """.trimIndent()
 }

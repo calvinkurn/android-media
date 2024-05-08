@@ -6,26 +6,37 @@ import com.tokopedia.libra.LibraOwner
 import com.tokopedia.libra.domain.model.LibraUiModel
 import javax.inject.Inject
 
-class CacheRepositoryImpl @Inject constructor(context: Context) : CacheRepository {
+class CacheRepositoryImpl @Inject constructor(
+    context: Context,
+    private val gson: Gson
+) : CacheRepository {
 
     private val preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     override fun get(owner: LibraOwner): LibraUiModel {
-        val json = preferences.getString(owner.type, "") ?: return LibraUiModel.default()
-        return Gson().fromJson(json, LibraUiModel::class.java)
+        val json = preferences.getString(owner.type, "")
+
+        return try {
+            gson.fromJson(json, LibraUiModel::class.java)
+        } catch (_: Throwable) {
+            LibraUiModel.default()
+        }
     }
 
     override fun save(owner: LibraOwner, data: LibraUiModel) {
         if (data.experiments.isEmpty()) return
 
-        val json = Gson().toJson(data)
         preferences
             .edit()
-            .putString(owner.type, json)
+            .putString(owner.type, gson.toJson(data))
             .apply()
     }
 
-    override fun dispose(owner: LibraOwner) {
+    override fun clear(owner: LibraOwner) {
+        preferences.edit().remove(owner.type).apply()
+    }
+
+    override fun clear() {
         preferences.edit().clear().apply()
     }
 

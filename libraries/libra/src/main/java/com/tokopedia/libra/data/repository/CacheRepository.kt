@@ -7,5 +7,6 @@ interface CacheRepository {
 
     fun save(owner: LibraOwner, data: LibraUiModel)
     fun get(owner: LibraOwner): LibraUiModel
-    fun dispose(owner: LibraOwner)
+    fun clear(owner: LibraOwner)
+    fun clear()
 }

@@ -3,14 +3,12 @@ package com.tokopedia.libra
 import android.content.Context
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.libra.di.DaggerLibraComponent
-import com.tokopedia.libra.domain.GetLibraCacheUseCase
-import com.tokopedia.libra.domain.SetLibraUseCase
+import com.tokopedia.libra.domain.usecase.GetLibraCacheUseCase
+import com.tokopedia.libra.domain.usecase.SetLibraUseCase
+import com.tokopedia.libra.domain.model.ItemLibraUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -28,39 +26,43 @@ class LibraInstance(context: Context) : Libra, CoroutineScope {
             .baseAppComponent((context.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
-
-        fetch()
     }
 
-    override fun getVariant(owner: LibraOwner, experiment: String): String {
-        return getLibraCacheUseCase(owner)
-            .experiments
-            .firstOrNull { it.experiment == experiment }
-            ?.variant
-            .orEmpty()
+    override suspend fun fetch(owner: LibraOwner) {
+        setLibraUseCase(owner)
     }
 
-    override fun cleanUp() {
-        if (!coroutineContext.isActive) return
-        cancel()
+    override fun variant(owner: LibraOwner, experiment: String): String {
+        return shouldGetExperiment(owner, experiment)?.variant.orEmpty()
     }
 
-    private fun fetch() {
-        // As of now, the LibraParameters service only support for home tribe.
-        shouldRequestAndStoreToCache(LibraOwner.Home)
-    }
+    override fun variantAsState(owner: LibraOwner, experiment: String): LibraState {
+        val variant = shouldGetExperiment(owner, experiment)?.variant.orEmpty()
 
-    private fun shouldRequestAndStoreToCache(owner: LibraOwner) {
-        launch {
-            setLibraUseCase(owner)
+        return when {
+            variant.isEmpty() -> LibraState.None
+            variant == CONTROL_VARIANT -> LibraState.Control
+            else -> LibraState.Variant(variant)
         }
     }
 
-    companion object {
+    override fun clear(owner: LibraOwner) {
+        getLibraCacheUseCase(owner, true)
+    }
 
+    private fun shouldGetExperiment(owner: LibraOwner, experiment: String): ItemLibraUiModel? {
+        return shouldGetExperimentList(owner).firstOrNull { it.experiment == experiment }
+    }
+
+    private fun shouldGetExperimentList(owner: LibraOwner): List<ItemLibraUiModel> {
+        return getLibraCacheUseCase(owner).experiments
+    }
+
+    companion object {
+        private const val CONTROL_VARIANT = "control"
         @Volatile var libra: LibraInstance? = null
 
-        fun getInstance(context: Context): LibraInstance {
+        fun get(context: Context): LibraInstance {
             return synchronized(this) {
                 libra ?: LibraInstance(context).also {
                     libra = it

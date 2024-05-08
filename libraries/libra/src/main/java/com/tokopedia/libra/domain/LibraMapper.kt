@@ -6,7 +6,7 @@ import com.tokopedia.libra.domain.model.LibraUiModel
 
 object LibraMapper {
 
-    operator fun invoke(response: LibraResponse): LibraUiModel {
+    fun map(response: LibraResponse): LibraUiModel {
         return LibraUiModel(
             experiments = response.experiments.map {
                 ItemLibraUiModel(
