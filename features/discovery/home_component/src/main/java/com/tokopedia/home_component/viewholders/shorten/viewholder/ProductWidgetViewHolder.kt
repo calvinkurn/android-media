@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponent2squareProductWidgetBinding
+import com.tokopedia.home_component.util.ShortenUtils.TWO_SQUARE_MAX_PRODUCT_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
-import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemContentCardAdapter
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
 import com.tokopedia.home_component_header.model.ChannelHeader
@@ -58,7 +58,10 @@ class ProductWidgetViewHolder(
 
     private fun setupRecyclerView() {
         mAdapter = ItemContentCardAdapter(ItemTwoSquareType.Product, listener)
-        binding?.lstProductCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
+        binding?.lstProductCard?.layoutManager = GridLayoutManager(
+            itemView.context,
+            TWO_SQUARE_MAX_PRODUCT_LIMIT
+        )
         binding?.lstProductCard?.adapter = mAdapter
         binding?.lstProductCard?.setHasFixedSize(true)
     }

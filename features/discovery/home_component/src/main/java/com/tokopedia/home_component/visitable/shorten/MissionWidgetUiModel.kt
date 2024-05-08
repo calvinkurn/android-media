@@ -20,6 +20,8 @@ data class MissionWidgetUiModel(
     override fun type(typeFactory: ShortenViewFactory) = typeFactory.type(this)
     override fun visitableId() = this.hashCode()
     override fun equalsWith(o: Any?) = o == this
+
+    override fun itemCount() = data.size
 }
 
 data class ItemMissionWidgetUiModel(

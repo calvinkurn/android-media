@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponent2squareThumbnailWidgetBinding
+import com.tokopedia.home_component.util.ShortenUtils.TWO_SQUARE_MAX_PRODUCT_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
-import com.tokopedia.home_component.viewholders.shorten.internal.TWO_SQUARE_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemContentCardAdapter
-import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 
 class ThumbnailWidgetViewHolder(
     view: View,
@@ -46,7 +46,10 @@ class ThumbnailWidgetViewHolder(
 
     private fun setupRecyclerView() {
         mAdapter = ItemContentCardAdapter(ItemTwoSquareType.Thumbnail, listener)
-        binding?.lstThumbnailCard?.layoutManager = GridLayoutManager(itemView.context, TWO_SQUARE_LIMIT)
+        binding?.lstThumbnailCard?.layoutManager = GridLayoutManager(
+            itemView.context,
+            TWO_SQUARE_MAX_PRODUCT_LIMIT
+        )
         binding?.lstThumbnailCard?.adapter = mAdapter
         binding?.lstThumbnailCard?.setHasFixedSize(true)
     }
