@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.orderextension.presentation.bottomsheet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -23,9 +22,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensio
 import com.tokopedia.sellerorder.orderextension.presentation.util.SingleClick.doSomethingBeforeTime
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import java.util.*
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class SomBottomSheetOrderExtensionRequest(
     private val fragmentManager: FragmentManager,
@@ -64,7 +61,7 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
-    var currentSelectDate = OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel()
+    private var currentSelectDate = OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel()
 
     override fun bind(view: View): BottomsheetOrderExtensionRequestInfoBinding {
         return BottomsheetOrderExtensionRequestInfoBinding.bind(view)
@@ -89,12 +86,6 @@ class SomBottomSheetOrderExtensionRequest(
         if (data.completed) {
             super.dismiss()
         } else {
-            (bottomSheetLayout?.findViewById<View>(unifycomponentsR.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
-                BOTTOM_SHEET_GAP_DEFAULT.toPx(),
-                Int.ZERO,
-                BOTTOM_SHEET_GAP_DEFAULT.toPx(),
-                BOTTOM_SHEET_GAP_DEFAULT.toPx()
-            )
             super.show()
         }
     }
@@ -126,9 +117,9 @@ class SomBottomSheetOrderExtensionRequest(
             if (rvRequestExtensionInfo.adapter == null) {
                 adapter = adapter ?: OrderExtensionRequestInfoAdapter(
                     OrderExtensionRequestInfoAdapterTypeFactory(
-                        this@SomBottomSheetOrderExtensionRequest,
-                        this@SomBottomSheetOrderExtensionRequest,
-                        this@SomBottomSheetOrderExtensionRequest
+                        optionListener = this@SomBottomSheetOrderExtensionRequest,
+                        textAreaListener = this@SomBottomSheetOrderExtensionRequest,
+                        onPickTimeListener = this@SomBottomSheetOrderExtensionRequest
                     )
                 )
                 rvRequestExtensionInfo.adapter = adapter
@@ -142,8 +133,8 @@ class SomBottomSheetOrderExtensionRequest(
 
     private fun setupRequestExtensionButton() {
         binding?.btnSubmitRequestExtension?.run {
-            isLoading = data.processing
-            if (!data.processing) {
+            isLoading = data.sendingRequest
+            if (!data.sendingRequest) {
                 text = context.getString(R.string.bottomsheet_order_extension_request_button_text)
             }
             setOnClickListener {
@@ -151,10 +142,7 @@ class SomBottomSheetOrderExtensionRequest(
                 if (!dismissing && !data.isLoadingOrderExtensionRequestInfo()) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
                     if (currentSelectDate.extensionTime != Int.ZERO) {
-                        viewModel.sendOrderExtensionRequest(
-                            orderId,
-                            currentSelectDate.extensionTime
-                        )
+                        viewModel.sendOrderExtensionRequest(orderId, currentSelectDate.extensionTime)
                     } else {
                         onValidateDate()
                     }
@@ -177,8 +165,8 @@ class SomBottomSheetOrderExtensionRequest(
 
     private fun scrollToRequestFocusItem() {
         binding?.rvRequestExtensionInfo?.post {
-            val requestFocusPosition =
-                adapter?.getRequestFocusItemPosition() ?: RecyclerView.NO_POSITION
+            val requestFocusPosition = adapter
+                ?.getRequestFocusItemPosition() ?: RecyclerView.NO_POSITION
             if (requestFocusPosition != RecyclerView.NO_POSITION) {
                 smoothScroller.targetPosition = requestFocusPosition
                 binding?.rvRequestExtensionInfo?.layoutManager?.startSmoothScroll(smoothScroller)
@@ -196,21 +184,20 @@ class SomBottomSheetOrderExtensionRequest(
 
     override fun onShowCalendarPicker() {
         doSomethingBeforeTime{
-            val calendarOrderExtensionBottomSheet =
-                CalendarOrderExtensionBottomSheet(data.orderExtensionDate,::onSelectDate,
-                    ::onValidateDate, currentSelectDate)
-            calendarOrderExtensionBottomSheet.setSelectedDate(currentSelectDate)
-            calendarOrderExtensionBottomSheet.show(
-                fragmentManager,
-                CalendarOrderExtensionBottomSheet.TAG
+            val calendarOrderExtensionBottomSheet = CalendarOrderExtensionBottomSheet(
+                orderExtensionDate = data.orderExtensionDate,
+                onSelectDate = ::onSelectDate,
+                onErrorSelectDate = ::onValidateDate,
+                currentSelectDate = currentSelectDate
             )
+            calendarOrderExtensionBottomSheet.setSelectedDate(currentSelectDate)
+            calendarOrderExtensionBottomSheet.show(fragmentManager, CalendarOrderExtensionBottomSheet.TAG)
         }
     }
 
     override fun onShowTooltip() {
         doSomethingBeforeTime {
-            val infoPickTimeOrderExtentionBottomSheet =
-                InfoPickTimeOrderExtentionBottomSheet(fragmentManager)
+            val infoPickTimeOrderExtentionBottomSheet = InfoPickTimeOrderExtentionBottomSheet(fragmentManager)
             infoPickTimeOrderExtentionBottomSheet.show()
         }
     }
@@ -219,7 +206,7 @@ class SomBottomSheetOrderExtensionRequest(
         val errorMessage = context.getString(R.string.bottomsheet_order_extension_failed_pick_date)
         binding?.root?.let {
             Toaster.build(
-                it,
+                view = it,
                 type = Toaster.TYPE_ERROR,
                 text = errorMessage,
                 duration = Toaster.LENGTH_LONG
@@ -227,15 +214,14 @@ class SomBottomSheetOrderExtensionRequest(
         }
     }
 
-    private fun onSelectDate(selectDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel) {
+    private fun onSelectDate(
+        selectDate: OrderExtensionRequestInfoUiModel.OrderExtensionDate.EligibleDateUIModel
+    ) {
         currentSelectDate = selectDate
         adapter?.updatePickTime(
             selectDate.date.toFormattedString(
                 FORMAT_DATE_TEXT,
-                Locale(
-                    LOCALE_LANGUAGE_ID,
-                    LOCALE_COUNTRY_ID
-                )
+                Locale(LOCALE_LANGUAGE_ID, LOCALE_COUNTRY_ID)
             )
         )
     }

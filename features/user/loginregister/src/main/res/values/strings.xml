@@ -101,8 +101,8 @@
 
     <!-- SHOP CREATION -->
     <string name="title_landing_shop_creation">Ciptakan Peluangmu!</string>
-    <string name="desc_landing_shop_creation">Raih 90 juta pembeli dimulai dari satu tempat! Buka usaha tanpa biaya dan dapatkan pengalaman mengelola usaha semudah update status</string>
-    <string name="free_open_shop">Buka Toko Gratis</string>
+    <string name="desc_landing_shop_creation">Mulai dari satu tempat! Buka usaha kamu dan capai banyak pembeli dengan pengalaman mengelola usaha semudah update status.</string>
+    <string name="free_open_shop">Buka Toko</string>
     <string name="welcome_title">Selamat datang!</string>
     <string name="your_phone_number">Nomor handphonemu</string>
     <string name="your_fullname">Nama lengkapmu</string>
@@ -116,6 +116,24 @@
     <string name="phone_shop_tnc_policy">Dengan klik tombol di bawah, kamu menyetujui %s serta %s Pendaftaran Toko.</string>
     <string name="phone_shop_tnc_title">Syarat &amp; Ketentuan</string>
     <string name="phone_shop_policy_title">Pemberitahuan Privasi</string>
+    <string name="shop_creation_kyc_error_know_code">Oops, lagi ada kendala yang perlu kami beresin. Coba lagi nanti, ya!</string>
+    <string name="shop_creation_error_code">Kode Error: %s</string>
+    <string name="shop_creation_status_verification">Status Verifikasi</string>
+    <string name="shop_creation_rejected">Ditolak</string>
+    <string name="shop_creation_processing">Sedang Diproses</string>
+    <string name="shop_creation_retry_verification">Verifikasi Ulang</string>
+    <string name="shop_creation_connect_tokopedia_care">Hubungi Tokopedia Care</string>
+    <string name="shop_creation_refresh_data">Refresh Status</string>
+    <string name="shop_creation_title_benefit">Tips mulai berjualan untuk kamu</string>
+    <string name="shop_creation_benefit_1">Atur halaman toko &amp; produk biar bisa menarik perhatian pembeli.</string>
+    <string name="shop_creation_benefit_2">Jadi Seller yang informatif untuk pembeli &amp; sigap terima pesanan.</string>
+    <string name="shop_creation_benefit_3">Bikin promosi yang menguntungkan biar pembeli balik lagi.</string>
+    <string name="shop_creation_guideline">Lihat Selengkapnya di Panduan Seller Baru</string>
+    <string name="shop_creation_guideline_spannable">Panduan Seller Baru</string>
+    <string name="shop_creation_title_pending">Kamu bisa lanjut buat toko setelah verifikasinya selesai, ya...</string>
+    <string name="shop_creation_title_rejected">Yaah, belum berhasil. Biar bisa lanjut buat toko, coba verifikasi ulang ya</string>
+    <string name="shop_creation_title_blacklisted">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
+    <string name="shop_creation_subtitle_blacklisted">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
 
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_login_phone">Cancel login phone</string>
@@ -215,6 +233,14 @@
     <string name="goto_seamless_secondary_btn_text">Masuk ke Akun Lain</string>
 
     <string name="goto_seamless_general_error">Oops, lagi ada gangguan. Coba cek koneksi kamu atau masuk beberapa saat lagi, ya.</string>
+
+    <string name="verify_phone_dialog_title">Verifikasi nomor HP-mu</string>
+    <string name="verify_phone_dialog_subtitle">Verifikasi nomor HP-mu dulu ya sebelum lanjut buka toko</string>
+    <string name="verify_phone_dialog_primary_btn">Verifikasi Nomor HP</string>
+    <string name="verify_phone_dialog_secondary_btn">Batal</string>
+
+    <string name="official_store_on_progress_text">Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.</string>
+    <string name="shop_creation_card_unselected_text">Pilih salah satu jenis toko dulu, ya.</string>
 
     <!--ADD CHANGE NAME-->
     <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>

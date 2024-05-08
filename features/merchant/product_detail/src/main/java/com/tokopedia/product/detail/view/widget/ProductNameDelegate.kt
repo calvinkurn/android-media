@@ -8,12 +8,17 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.utils.doOnPreDraw
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.style.ImageSpanCenterVertical
 
@@ -44,7 +49,14 @@ internal class ProductNameDelegate(
     private var previousTitle: String = ""
     private var previousLabelIcons: List<LabelIcons> = emptyList()
 
-    fun setTitle(title: String, labelIcons: List<LabelIcons> = emptyList()) {
+    fun setTitle(
+        title: String,
+        labelIcons: List<LabelIcons> = emptyList(),
+        collapse: Boolean,
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
+    ) {
+        setExpandCollapse(collapse, listener, componentTrackData)
         if (!hasChanged(title = title, labelIcons = labelIcons)) return
 
         if (labelIcons.isEmpty()) {
@@ -63,6 +75,20 @@ internal class ProductNameDelegate(
         }
 
         return hasChanged
+    }
+
+    private fun setExpandCollapse(
+        collapse: Boolean,
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
+    ) {
+        setupExpandable(listener, componentTrackData)
+        if (!collapse) return
+        typography?.run {
+            if (maxLines == Int.MAX_VALUE) {
+                maxLines = resources.getInteger(R.integer.pdp_product_name_collapsed_max_lines)
+            }
+        }
     }
 
     private fun setProductNameText(title: String) {
@@ -171,6 +197,23 @@ internal class ProductNameDelegate(
 
     private fun setText(text: CharSequence?) {
         typography?.text = text
+    }
+
+    private fun setupExpandable(
+        listener: ProductDetailListener,
+        componentTrackData: ComponentTrackDataModel
+    ) {
+        typography?.doOnPreDraw {
+            val layout = typography.layout
+            if (layout != null && layout.getEllipsisCount(layout.lineCount.dec()).isMoreThanZero()) {
+                typography.setOnClickListener {
+                    typography.maxLines = Int.MAX_VALUE
+                    listener.onExpandProductName(componentTrackData)
+                }
+            } else {
+                typography.setOnClickListener(null)
+            }
+        }
     }
 }
 

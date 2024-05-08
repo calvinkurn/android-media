@@ -6,4 +6,7 @@
 
     <color name="buyer_order_detail_dms_saving_widget_start">#FFFFFF</color>
     <color name="buyer_order_detail_dms_saving_widget_end">#C2FFF0</color>
+
+    <color name="buyer_order_detail_dms_brc_csat_smiley_color_default">#8C96AA</color>
+    <color name="buyer_order_detail_dms_brc_csat_smiley_color_click">#000000</color>
 </resources>

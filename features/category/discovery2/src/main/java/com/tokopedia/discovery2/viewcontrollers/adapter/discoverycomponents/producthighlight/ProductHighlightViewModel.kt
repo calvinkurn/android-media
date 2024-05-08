@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOcsUseCase
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -18,13 +18,11 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -33,9 +31,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ProductHighlightViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
     private val productHighlightCardList: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()
@@ -114,41 +112,29 @@ class ProductHighlightViewModel(
     }
 
     fun onOCSClicked(context: Context, dataItem: DataItem) {
-        val atcRequestParam = AddToCartOcsRequestParams()
-            .apply {
-                productId = dataItem.productId.toZeroStringIfNull()
-                shopId = dataItem.shopId.toZeroStringIfNull()
-                quantity = dataItem.minQuantity
-                customerId = userId
-                productName = dataItem.productName.orEmpty()
-                category = dataItem.category.orEmpty()
-                price = dataItem.price.orEmpty()
-                shopName = dataItem.shopName.orEmpty()
-            }
+        val atcRequestParam = AddToCartOcsRequestParams().apply {
+            productId = dataItem.productId.toZeroStringIfNull()
+            shopId = dataItem.shopId.toZeroStringIfNull()
+            quantity = dataItem.minQuantity
+            customerId = userId
+            productName = dataItem.productName.orEmpty()
+            category = dataItem.category.orEmpty()
+            price = dataItem.price.orEmpty()
+            shopName = dataItem.shopName.orEmpty()
+            atcFromExternalSource = OCS_SOURCE_PARAM
+        }
 
         launchCatchError(block = {
-            val requestParams = RequestParams.create()
-            requestParams.putObject(
-                AddToCartOcsUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-                atcRequestParam
-            )
-
-            val result = dispatcher?.io?.run {
-                withContext(this) {
-                    atcUseCase?.createObservable(requestParams)?.toBlocking()?.single()
-                }
-            }
-
-            result?.let {
+            atcUseCase?.invoke(atcRequestParam)?.let {
                 handleAvailableResult(it, dataItem)
                 return@launchCatchError
             }
 
             handleUnavailableResult()
         }, onError = {
-                _ocsErrorState.postValue(ErrorHandler.getErrorMessage(context, it))
-                Timber.e(it)
-            })
+            _ocsErrorState.postValue(ErrorHandler.getErrorMessage(context, it))
+            Timber.e(it)
+        })
     }
 
     fun reload() {
@@ -182,5 +168,9 @@ class ProductHighlightViewModel(
         val message = "Failed to request ATC"
         _ocsErrorState.postValue(message)
         Timber.e(message)
+    }
+
+    companion object {
+        private const val OCS_SOURCE_PARAM = "product_highlight_atc"
     }
 }

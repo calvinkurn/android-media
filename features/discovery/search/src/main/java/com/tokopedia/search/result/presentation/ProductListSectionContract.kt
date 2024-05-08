@@ -89,7 +89,7 @@ interface ProductListSectionContract {
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
         fun isDarkMode(): Boolean
-        fun sendTrackingByteIO()
+        fun sendTrackingByteIO(isSuccess: Boolean)
         fun cleanByteIOData()
     }
 
@@ -125,5 +125,6 @@ interface ProductListSectionContract {
         fun onViewResumed()
         fun onLocalizingAddressSelected()
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
+        fun getIsLocalSearch(): Boolean
     }
 }

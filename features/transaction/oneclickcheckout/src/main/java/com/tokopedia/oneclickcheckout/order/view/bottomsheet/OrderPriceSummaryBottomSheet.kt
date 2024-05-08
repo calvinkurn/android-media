@@ -3,6 +3,8 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
+import com.tokopedia.checkoutpayment.view.bottomsheet.PaymentFeeInfoBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -14,7 +16,6 @@ import com.tokopedia.oneclickcheckout.databinding.ItemCashbackDetailBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemPaymentFeeBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -232,10 +233,10 @@ class OrderPriceSummaryBottomSheet {
                 view,
                 binding,
                 OrderPaymentFee(
-                    title = view.getString(com.tokopedia.oneclickcheckout.R.string.occ_service_fee_title_info),
+                    title = view.getString(R.string.occ_service_fee_title_info),
                     fee = orderCost.paymentFee,
                     showTooltip = true,
-                    tooltipInfo = view.getString(com.tokopedia.oneclickcheckout.R.string.occ_service_fee_tooltip_info)
+                    tooltipInfo = view.getString(R.string.occ_service_fee_tooltip_info)
                 )
             )
             showPaymentFeeSection(binding, true)
@@ -271,7 +272,7 @@ class OrderPriceSummaryBottomSheet {
             if (orderPaymentFee.showTooltip) {
                 imgPaymentFeeInfo.visible()
                 imgPaymentFeeInfo.setOnClickListener {
-                    TransactionFeeInfoBottomSheet().show(view, orderPaymentFee)
+                    PaymentFeeInfoBottomSheet().show(view, orderPaymentFee)
                 }
             } else {
                 imgPaymentFeeInfo.gone()

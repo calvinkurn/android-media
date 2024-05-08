@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.util.SparseIntArray
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -56,12 +57,15 @@ interface ProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
+    fun setImageUnify(imageView: ImageView?)
 
     fun onMerchantVoucherSummaryClicked(
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     )
-    fun onShowProductMediaRecommendationClicked()
+
+    fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?)
+    fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?)
 
     /**
      * ProductSnapshotViewHolder
@@ -83,6 +87,8 @@ interface ProductDetailListener {
     fun onMediaViewed(position: Int, isVariantPhoto: Boolean)
 
     fun shouldShowWishlist(): Boolean
+
+    fun onExpandProductName(componentTrackData: ComponentTrackDataModel)
 
     /**
      * ProductInfoViewHolder
@@ -530,7 +536,9 @@ interface ProductDetailListener {
     fun onProductMediaRecomBottomSheetDismissed()
 
     fun onClickDynamicOneLiner(
-        title: String, url: String, component: ComponentTrackDataModel
+        title: String,
+        url: String,
+        component: ComponentTrackDataModel
     )
 
     /**

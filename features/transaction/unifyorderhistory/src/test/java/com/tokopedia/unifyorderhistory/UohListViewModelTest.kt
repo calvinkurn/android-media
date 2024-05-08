@@ -11,11 +11,13 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.common_digital.common.data.model.RechargeSetFailData
+import com.tokopedia.common_digital.common.usecase.RechargeSetFailUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.domain.*
 import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
@@ -734,7 +736,7 @@ class UohListViewModelTest {
     fun tdn_shouldReturnSuccess() {
         // given
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers {
-            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+            arrayListOf(TopAdsImageUiModel(imageUrl = "url"))
         }
 
         // when
@@ -742,7 +744,7 @@ class UohListViewModelTest {
 
         // then
         assert(uohListViewModel.tdnBannerResult.value is Success)
-        assert((uohListViewModel.tdnBannerResult.value as Success<TopAdsImageViewModel>).data.imageUrl == "url")
+        assert((uohListViewModel.tdnBannerResult.value as Success<TopAdsImageUiModel>).data.imageUrl == "url")
     }
 
     @Test

@@ -49,6 +49,8 @@ import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.model.MatchPattern
 import com.tokopedia.applink.model.StartsWith
 import com.tokopedia.applink.model.or
+import com.tokopedia.applink.notifsetting.DeeplinkMapperNotifSetting
+import com.tokopedia.applink.notifsetting.NotifSettingType
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -614,6 +616,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("all-annotation") { deeplink: String ->
                 DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowAllAnnotation(deeplink)
+            },
+            DLP.matchPattern("list-belanja") { _: String ->
+                ApplinkConstInternalTokopediaNow.SHOPPING_LIST
             }
         ),
         "occ" to mutableListOf(
@@ -795,12 +800,22 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
         ),
+        "product-preview" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
+        ),
         "product-review" to mutableListOf(
             DLP.startsWith("create") { uri: Uri ->
                 DeeplinkMapperMerchant.getRegisteredNavigationProductReview(uri)
             },
             DLP.matchPattern("bulk-create") { _: String ->
                 ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW
+            }
+        ),
+        "product-webview-bs" to mutableListOf(
+            DLP.matchPattern("") { _:String ->
+                ApplinkConstInternalMarketplace.PRODUCT_WEBVIEW_BS
             }
         ),
         "productar" to mutableListOf(
@@ -980,6 +995,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(
@@ -1015,13 +1033,27 @@ object DeeplinkMainApp {
         ),
         "settings" to mutableListOf(
             DLP.matchPattern("notification") { _: String ->
-                ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink()
+            },
+            DLP.matchPattern("notification/push_notification") { _: String ->
+                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.PushNotification)
+            },
+            DLP.matchPattern("notification/email") { _: String ->
+                DeeplinkMapperNotifSetting.getEmailNotifSettingInternalDeepLink()
+            },
+            DLP.matchPattern("notification/sms") { _: String ->
+                DeeplinkMapperNotifSetting.getNotifSettingInternalDeepLink(NotifSettingType.Sms)
             },
             DLP.matchPattern("bankaccount") { _: String ->
                 ApplinkConstInternalGlobal.SETTING_BANK
             },
             DLP.matchPattern("haspassword") { _: String ->
                 ApplinkConstInternalUserPlatform.HAS_PASSWORD
+            }
+        ),
+        "share" to mutableListOf(
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
             }
         ),
         "share_address" to mutableListOf(

@@ -176,6 +176,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private var currentPlayingVideoUrl: String = ""
     private var mCoachMark: CoachMark2? = null
+    private var isPageActive: Boolean = false
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
@@ -220,11 +221,13 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        resumeStories()
+        isPageActive = true
+        resumeStories(forceResume = true)
     }
 
     override fun onPause() {
         super.onPause()
+        isPageActive = false
         pauseStories()
     }
 
@@ -305,7 +308,7 @@ class StoriesDetailFragment @Inject constructor(
 
                     curr?.let {
                         it.detailItems.getOrNull(it.selectedDetailPosition)?.let { item ->
-                            handleVideoPlayState(item, currState.timerStatus)
+                            handleVideoPlayState(item, currState.timerStatus, it.selectedGroupId)
                         }
                     }
                 }
@@ -462,7 +465,7 @@ class StoriesDetailFragment @Inject constructor(
 
         renderAuthor(currentItem)
         renderNudge(prevItem, currentItem)
-        renderMedia(currentItem.content, currentItem.status)
+        renderMedia(currentItem.content, currentItem.status, state.selectedGroupId)
 
         showPageLoading(false)
         binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
@@ -471,7 +474,8 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderMedia(
         content: StoriesItemContent,
-        status: StoryStatus
+        status: StoryStatus,
+        selectedGroupId: String
     ) {
         when (content.type) {
             Image -> {
@@ -499,7 +503,7 @@ class StoriesDetailFragment @Inject constructor(
                 renderStoryBasedOnStatus(status) {
                     showVideoContent()
                     showVideoLoading()
-                    renderVideoMedia(content)
+                    renderVideoMedia(content, selectedGroupId)
                     hideError()
                 }
             }
@@ -696,8 +700,8 @@ class StoriesDetailFragment @Inject constructor(
         viewModelAction(PauseStories)
     }
 
-    private fun resumeStories() {
-        viewModelAction(ResumeStories)
+    private fun resumeStories(forceResume: Boolean = false) {
+        viewModelAction(ResumeStories(forceResume))
     }
 
     private fun contentIsLoaded() {
@@ -897,7 +901,7 @@ class StoriesDetailFragment @Inject constructor(
         binding.layoutStoriesContent.containerVideoStoriesContent.show()
     }
 
-    private fun renderVideoMedia(content: StoriesItemContent) {
+    private fun renderVideoMedia(content: StoriesItemContent, selectedGroupId: String) {
         context?.let {
             if (_videoPlayer == null) {
                 _videoPlayer = StoriesExoPlayer(it)
@@ -939,10 +943,10 @@ class StoriesDetailFragment @Inject constructor(
             binding.layoutStoriesContent.playerStoriesDetailContent.player = videoPlayer.exoPlayer
 
             if (currentPlayingVideoUrl != content.data) {
-                videoPlayer.start(content.data)
+                videoPlayer.start(content.data, selectedGroupId, isAutoPlay = isPageActive)
                 currentPlayingVideoUrl = content.data
-            } else if (!videoPlayer.exoPlayer.isPlaying) {
-                videoPlayer.resume(shouldReset = true)
+            } else if (!videoPlayer.exoPlayer.isPlaying && isPageActive) {
+                videoPlayer.resume(shouldReset = true, selectedGroupId)
             }
         }
     }
@@ -973,12 +977,17 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo) {
+    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo, selectedGroupId: String) {
         if (_videoPlayer == null) return
 
         when {
-            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> videoPlayer.resume()
-            state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
+            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> {
+                if (!isPageActive) return
+                videoPlayer.resume(activeGroupId = selectedGroupId)
+            }
+            state.event == PAUSE || timerState.event == PAUSE -> {
+                videoPlayer.pause()
+            }
         }
     }
 

@@ -88,8 +88,10 @@ class ShopInfoReimagineViewModel @Inject constructor(
 
     fun processEvent(event: ShopInfoUiEvent) {
         when (event) {
-            is ShopInfoUiEvent.Setup -> handleSetup(event.shopId, event.districtId, event.cityId)
-            is ShopInfoUiEvent.GetShopInfo -> handleGetShopInfo()
+            is ShopInfoUiEvent.GetShopInfo -> {
+                tracker.sendShopInfoOpenScreenImpression(event.shopId)
+                handleGetShopInfo(event.shopId, event.districtId, event.cityId)
+            }
             ShopInfoUiEvent.TapCtaExpandShopPharmacyInfo -> handleCtaExpandShopPharmacyInfo()
             ShopInfoUiEvent.TapCtaViewPharmacyLocation -> handleCtaViewPharmacyLocation()
             ShopInfoUiEvent.TapShopRating -> handleTapShopRating()
@@ -101,26 +103,21 @@ class ShopInfoReimagineViewModel @Inject constructor(
             is ShopInfoUiEvent.SwipeReview -> handleSwipeReview(event.reviewIndex)
         }
     }
-
-    private fun handleSetup(shopId: String, districtId: String, cityId: String) {
-        tracker.sendShopInfoOpenScreenImpression(shopId)
+    private fun handleGetShopInfo(shopId: String, districtId: String, cityId: String) {
         _uiState.update {
             it.copy(
+                isLoading = true,
+                error = null,
                 shopId = shopId,
                 districtId = districtId,
                 cityId = cityId
             )
         }
-    }
-    private fun handleGetShopInfo() {
+
         launchCatchError(
             context = coroutineDispatcherProvider.io,
             block = {
                 supervisorScope {
-                    _uiState.update { it.copy(isLoading = true, error = null) }
-
-                    val shopId = currentState.shopId
-
                     val shopHeaderLayoutDeferred = async { getShopPageHeaderLayout() }
                     val shopRatingParam = ProductRevGetShopRatingAndTopicsUseCase.Param(shopId)
                     val shopRatingDeferred = async { getShopRatingUseCase.execute(shopRatingParam) }
@@ -210,7 +207,11 @@ class ShopInfoReimagineViewModel @Inject constructor(
     }
 
     private fun handleRetryGetShopInfo() {
-        handleGetShopInfo()
+        handleGetShopInfo(
+            shopId = currentState.shopId,
+            districtId = currentState.districtId,
+            cityId = currentState.cityId
+        )
     }
 
     private fun handleTapShopRating() {

@@ -48,7 +48,7 @@ class ProductCardColumnListViewModelTest {
     private var viewModel: ProductCardColumnListViewModel = spyk(
         ProductCardColumnListViewModel(
             application = application,
-            componentsItem = componentsItem,
+            components = componentsItem,
             position = position
         )
     )
@@ -209,7 +209,7 @@ class ProductCardColumnListViewModelTest {
     fun `test the value of view model's param`() {
         Assert.assertEquals(application, viewModel.application)
 
-        Assert.assertEquals(componentsItem, viewModel.componentsItem)
+        Assert.assertEquals(componentsItem, viewModel.components)
 
         Assert.assertEquals(position, viewModel.position)
     }

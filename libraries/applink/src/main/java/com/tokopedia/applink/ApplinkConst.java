@@ -69,6 +69,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String POST_ATC = "tokopedia://post-atc/{productId}";
+    String PRODUCT_WEBVIEW_BS = "tokopedia://product-webview-bs";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String PRODUCT_REVIEW_GALLERY = "tokopedia://product/{id}/review/gallery";
@@ -368,6 +369,9 @@ public interface ApplinkConst {
     String HAS_PASSWORD = "tokopedia://settings/haspassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
     String SETTING_NOTIFICATION = "tokopedia://settings/notification";
+    String SETTING_NOTIF_PUSH_NOTIFICATION = "tokopedia://settings/notification/push_notification";
+    String SETTING_NOTIF_EMAIL = "tokopedia://settings/notification/email";
+    String SETTING_NOTIF_SMS = "tokopedia://settings/notification/sms";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
@@ -653,6 +657,7 @@ public interface ApplinkConst {
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
         String SEE_ALL_CATEGORY = "tokopedia://now/see-all-category";
         String ALL_ANNOTATION = "tokopedia://now/all-annotation";
+        String SHOPPING_LIST = "tokopedia://now/list-belanja";
     }
 
     interface TokoFood {
@@ -893,5 +898,18 @@ public interface ApplinkConst {
 
     interface Som {
         String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
+        String SELLER_ORDER_EXTENSION_REQUEST = "tokopedia://seller/seller-order-extension-request";
+    }
+
+    interface ProductPreview {
+        String SHARE_PRODUCT_PREVIEW = "tokopedia://product-preview" +
+                "/%1s" + // productId
+                "?review_id=%2s" +
+                "&attachment_id=%3s" +
+                "&source=%4s";
+    }
+
+    interface ShareExperience {
+        String SHARE_EXPERIENCE = "tokopedia://share";
     }
 }

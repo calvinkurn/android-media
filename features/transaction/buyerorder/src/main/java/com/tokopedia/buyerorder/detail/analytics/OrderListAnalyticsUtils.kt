@@ -38,6 +38,10 @@ object OrderListAnalyticsUtils {
         return ""
     }
 
+    fun getOrderStatus(orderDetails: RechargeOrderDetailModel?): String {
+        return orderDetails?.topSectionModel?.textStatus ?: ""
+    }
+
     private const val CATEGORY_LABEL = "Kategori Produk"
     private const val PRODUCT_LABEL = "Jenis Layanan"
 }

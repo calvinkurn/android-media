@@ -69,7 +69,6 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
         presenter = new DeepLinkPresenterImpl(this);
         if (uri != null) {
             setupURIPass(uri);
-            sendAuthenticated(uri, isOriginalUrlAmp);
         }
         initializationNewRelic();
 
@@ -96,10 +95,15 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
                 }
             }
             presenter.sendCampaignGTM(this, applink, screenName, isOriginalUrlAmp);
+            Uri uri = getIntent().getData();
+            if (uri != null) {
+                sendAuthenticated(uri, isOriginalUrlAmp);
+            }
             RouteManager.route(this, applink);
             finish();
         } else {
             initDeepLink();
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_DEEP_LINK);
         }
     }
 
@@ -185,12 +189,6 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_DEEP_LINK);
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Timber.d("FCM onNewIntent " + intent.getData());
@@ -242,5 +240,10 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
     @Override
     public boolean isShadow() {
         return true;
+    }
+
+    @Override
+    public boolean shouldTrackEnterPage() {
+        return false;
     }
 }

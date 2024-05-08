@@ -821,7 +821,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 price = if (minPrice == maxPrice) maxPrice else "$minPrice - $maxPrice",
                 textTitleColor = color,
                 textPriceColor = color,
-                iconColor = color
+                iconColor = color,
+                shopId = data.topSeller.shop.id,
+                productId = data.topSeller.productID,
             )
         } else {
             BlankUiModel()
@@ -840,6 +842,7 @@ class CatalogDetailUiMapper @Inject constructor(
             val productOffer =
                 labelGroups.firstOrNull { it.position == "ri_product_offer" }?.title.orEmpty()
             SellerOfferingUiModel(
+                shopId = shop.id,
                 productId = productID,
                 productImage = mediaUrl.thumbnailUrl,
                 shopBadge = shop.badge,

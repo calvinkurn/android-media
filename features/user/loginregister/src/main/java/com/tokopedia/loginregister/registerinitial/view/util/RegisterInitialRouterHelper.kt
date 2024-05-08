@@ -35,9 +35,10 @@ class RegisterInitialRouterHelper @Inject constructor() {
         return intent
     }
 
-    fun goToLoginPage(context: Activity) {
+    fun goToLoginPage(context: Activity, callbackRegister: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         context.startActivity(intent)
         context.finish()
@@ -105,5 +106,10 @@ class RegisterInitialRouterHelper @Inject constructor() {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, isFromScp)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE)
+    }
+
+    fun goToCallbackRegister(fragment: Fragment, callback: String) {
+        val intent = RouteManager.getIntent(fragment.context, callback)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CALLBACK_REGISTER)
     }
 }

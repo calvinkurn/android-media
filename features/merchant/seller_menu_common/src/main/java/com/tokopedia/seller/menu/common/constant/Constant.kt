@@ -15,11 +15,11 @@ object Constant {
 
     object ShopStatus {
 
-        const val THRESHOLD_TRANSACTION = 110
-        const val MAX_TRANSACTION = 100
+        const val MAX_TRANSACTION = 50
+
+        const val MAX_TRANSACTION_VISIBLE = 60
 
         const val ROUNDED_RADIUS = 16f
 
     }
-
 }

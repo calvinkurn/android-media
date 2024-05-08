@@ -1,4 +1,4 @@
-package com.tokopedia.accountprofile.settingprofile.addpin.viewmodel
+package com.tokopedia.profilecompletion.settingprofile.addpin.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.verification.otp.data.OtpConstant
 import com.tokopedia.accountprofile.settingprofile.addpin.data.AddChangePinData
 import com.tokopedia.accountprofile.settingprofile.addpin.data.CheckPinData
 import com.tokopedia.accountprofile.settingprofile.addpin.data.CreatePinV2Param

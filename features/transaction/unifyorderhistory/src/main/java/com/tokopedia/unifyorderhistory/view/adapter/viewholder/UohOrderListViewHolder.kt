@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
+import android.graphics.Bitmap
 import android.view.View
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,8 +11,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.clearCustomTarget
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -36,6 +39,8 @@ class UohOrderListViewHolder(
     private val binding: UohListItemBinding,
     private val actionListener: UohItemAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
+
+    private var productImageLoadTarget: MediaBitmapEmptyTarget<Bitmap>? = null
 
     fun bind(item: UohTypeData) {
         if (item.dataObject is UohListOrder.UohOrders.Order) {
@@ -130,11 +135,11 @@ class UohOrderListViewHolder(
                 if (item.dataObject.metadata.products.first().imageURL.isNotEmpty()) {
                     binding.ivUohProduct.visible()
                     binding.ivUohProduct.clearImage()
-                    binding.ivUohProduct.loadProductImage(
+                    productImageLoadTarget = binding.ivUohProduct.loadProductImage(
                         url = item.dataObject.metadata.products.firstOrNull()?.imageURL.orEmpty(),
                         archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL,
                         cornerRadius = 6f.toPx()
-                    )
+                    ) { productImageLoadTarget = null }
                 } else {
                     binding.ivUohProduct.gone()
                 }
@@ -217,6 +222,11 @@ class UohOrderListViewHolder(
 
             actionListener?.trackViewOrderCard(item.dataObject)
         }
+    }
+
+    fun onViewRecycled() {
+        binding.ivUohProduct.clearImage()
+        binding.ivUohProduct.clearCustomTarget(productImageLoadTarget)
     }
 
     private fun setupReviewRatingWidget(

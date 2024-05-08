@@ -7,6 +7,7 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 /**
@@ -56,7 +57,7 @@ object JvmMediaLoader {
         onError: (MediaException?) -> Unit
     ) {
         imageView.loadImage(url) {
-            this.loaderListener = object: MediaListener {
+            this.loaderListener = object : MediaListener {
                 // for GIF format
                 override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {}
 
@@ -68,6 +69,13 @@ object JvmMediaLoader {
                     onError(error)
                 }
             }
+        }
+    }
+
+    @JvmStatic
+    fun clearImage(imageView: ImageView?) {
+        if (imageView != null && imageView.context.isValid()) {
+            GlideApp.with(imageView.context).clear(imageView)
         }
     }
 }

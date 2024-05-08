@@ -91,7 +91,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -239,7 +239,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var paramUohOrder = UohListParam()
     private var orderList: UohListOrder.UohOrders = UohListOrder.UohOrders()
     private var recommendationList: List<RecommendationWidget> = listOf()
-    private var tdnBanner: TopAdsImageViewModel = TopAdsImageViewModel()
+    private var tdnBanner: TopAdsImageUiModel = TopAdsImageUiModel()
     private var responseFinishOrder: UohFinishOrder.FinishOrderBuyer = UohFinishOrder.FinishOrderBuyer()
     private var responseLsPrintFinishOrder: LsPrintData.Oiaction = LsPrintData.Oiaction()
     private var currFilterDateKey: String = ""

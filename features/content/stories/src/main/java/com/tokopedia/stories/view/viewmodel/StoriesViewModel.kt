@@ -61,7 +61,7 @@ class StoriesViewModel @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
     val userSession: UserSessionInterface,
-    private val sharedPref: StoriesPreference,
+    private val sharedPref: StoriesPreference
 ) : ViewModel() {
 
     @AssistedFactory
@@ -170,7 +170,7 @@ class StoriesViewModel @AssistedInject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        StoriesUiState.Empty,
+        StoriesUiState.Empty
     )
 
     private val _timerState: Flow<TimerStatusInfo>
@@ -219,11 +219,11 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
             is StoriesUiAction.OpenBottomSheet -> handleOpenBottomSheet(action.type)
             is StoriesUiAction.SelectReportReason -> handleSelectReportReason(action.reason)
+            is StoriesUiAction.ResumeStories -> handleOnResumeStories(action.forceResume)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
-            StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
             StoriesUiAction.TapSharing -> handleSharing()
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
@@ -356,9 +356,17 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = PAUSE, isSameContent = true)
     }
 
-    private fun handleOnResumeStories() {
+    private fun handleOnResumeStories(forceResume: Boolean) {
+        val event = if (forceResume) {
+            RESUME
+        } else if (mDetail.isContentLoaded && mIsPageSelected) {
+            RESUME
+        } else {
+            PAUSE
+        }
+
         updateDetailData(
-            event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE,
+            event = event,
             isSameContent = true
         )
     }
@@ -590,7 +598,7 @@ class StoriesViewModel @AssistedInject constructor(
                 repository.getStoriesProducts(
                     validAuthorId,
                     storyId,
-                    mGroup.groupName,
+                    mGroup.groupName
                 )
             _productsState.value = productList
         }) { exception ->
@@ -777,7 +785,9 @@ class StoriesViewModel @AssistedInject constructor(
             authorType = args.authorType,
             source = args.source,
             sourceId = args.sourceId,
-            entryPoint = args.entryPoint
+            entryPoint = args.entryPoint,
+            categoryIds = args.categoryIds,
+            productIds = args.productIds
         )
     }
 
@@ -788,7 +798,9 @@ class StoriesViewModel @AssistedInject constructor(
                 authorType = group.author.type.type,
                 source = args.source,
                 sourceId = args.sourceId,
-                entryPoint = args.entryPoint
+                entryPoint = args.entryPoint,
+                categoryIds = emptyList(),
+                productIds = emptyList()
             )
         } else {
             repository.getStoriesDetailData(
@@ -796,7 +808,9 @@ class StoriesViewModel @AssistedInject constructor(
                 authorType = args.authorType,
                 source = StoriesSource.STORY_GROUP.value,
                 sourceId = group.groupId,
-                entryPoint = args.entryPoint
+                entryPoint = args.entryPoint,
+                categoryIds = args.categoryIds,
+                productIds = args.productIds
             )
         }
     }

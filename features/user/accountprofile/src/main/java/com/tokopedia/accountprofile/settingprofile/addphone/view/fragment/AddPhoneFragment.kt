@@ -17,7 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.otp.common.OtpUtils.removeErrorCode
+import com.tokopedia.verification.common.OtpUtils.removeErrorCode
 import com.tokopedia.accountprofile.R
 import com.tokopedia.accountprofile.settingprofile.addphone.data.AddPhoneResult
 import com.tokopedia.accountprofile.settingprofile.addphone.data.UserValidatePojo
