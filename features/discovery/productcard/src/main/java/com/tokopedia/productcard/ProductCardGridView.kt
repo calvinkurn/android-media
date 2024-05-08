@@ -46,6 +46,10 @@ class ProductCardGridView : ProductConstraintLayout, IProductCardView {
         productCardStrategy.setProductModel(productCardModel)
     }
 
+    fun setVisibilityPercentListener(eventListener: OnVisibilityPercentChanged?, isAds: Boolean) {
+        setAdsTrackListener(isAds, eventListener)
+    }
+
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
         productCardStrategy.setImageProductViewHintListener(impressHolder, viewHintListener)
     }
@@ -130,7 +134,7 @@ class ProductCardGridView : ProductConstraintLayout, IProductCardView {
         productCardStrategy.setOnLongClickListener(l)
     }
 
-    fun  setGenericCtaButtonOnClickListener(onClickListener: OnClickListener) {
+    fun setGenericCtaButtonOnClickListener(onClickListener: OnClickListener) {
         productCardStrategy.setGenericCtaButtonOnClickListener(onClickListener)
     }
 

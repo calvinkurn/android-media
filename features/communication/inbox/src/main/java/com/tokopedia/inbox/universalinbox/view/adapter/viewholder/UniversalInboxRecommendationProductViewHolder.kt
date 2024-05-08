@@ -56,6 +56,7 @@ class UniversalInboxRecommendationProductViewHolder(
                     uiModel.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
                 )
             }
+
             setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     uiModel.recommendationItem.sendShowAdsByteIo(itemView.context)
@@ -64,7 +65,8 @@ class UniversalInboxRecommendationProductViewHolder(
                 override fun onShowOver(maxPercentage: Int) {
                     uiModel.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
                 }
-            })
+            }, uiModel.recommendationItem.isTopAds)
+
             setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
                     AppLogRecommendation.sendProductClickAppLog(
