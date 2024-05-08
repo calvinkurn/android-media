@@ -30,13 +30,13 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class ProductSummaryViewHolder private constructor() {
 
     class Header(
-        private val binding: ItemProductSummaryHeaderListBinding,
+        private val binding: ItemProductSummaryHeaderListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ProductSummaryAdapter.Model.Header) {
             binding.tvProductSummaryTitle.text = item.text
 
-            when(item.status) {
+            when (item.status) {
                 CampaignStatus.Ongoing -> {
                     binding.tvProductSummaryLabelStatus.setLabel(
                         itemView.context.getString(R.string.ongoing_campaign)
@@ -59,8 +59,10 @@ class ProductSummaryViewHolder private constructor() {
             fun create(parent: ViewGroup): Header {
                 return Header(
                     ItemProductSummaryHeaderListBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    ),
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
                 )
             }
         }
@@ -102,7 +104,7 @@ class ProductSummaryViewHolder private constructor() {
                 }
             )
 
-            when(val productPrice = item.product.price) {
+            when (val productPrice = item.product.price) {
                 is OriginalPrice -> {
                     binding.tvProductSummaryPrice.text = productPrice.price
                     binding.labelProductSummaryDiscount.gone()
@@ -148,26 +150,33 @@ class ProductSummaryViewHolder private constructor() {
             binding.productTagRateFmt.showWithCondition(item.product.ratingFmt.isNotBlank())
 
             // hide dots when rateFmt or soldCountFmt is empty
-            binding.productTagDots.showWithCondition(item.product.ratingFmt.isNotBlank()
-                && item.product.countSoldFmt.isNotBlank())
+            binding.productTagDots.showWithCondition(
+                item.product.ratingFmt.isNotBlank() &&
+                    item.product.countSoldFmt.isNotBlank()
+            )
 
             // hide sold fmt text when countSoldFmt empty
             binding.productTagSoldFmt.showWithCondition(item.product.countSoldFmt.isNotBlank())
 
-            // hide shop badge icon when shop badge empty
-            binding.productTagShopBadge.showWithCondition(item.product.shopBadge.isNotBlank())
-
             // hide shop name when shop name empty
             binding.productTagShopName.showWithCondition(item.product.shopName.isNotBlank())
+
+            // hide shop badge icon when shop badge empty or shop name empty
+            binding.productTagShopBadge.showWithCondition(
+                item.product.shopName.isNotBlank() &&
+                    item.product.shopBadge.isNotBlank()
+            )
         }
 
         companion object {
             fun create(parent: ViewGroup, listener: Listener): Body {
                 return Body(
                     ItemProductSummaryBodyListBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
                     ),
-                    listener,
+                    listener
                 )
             }
         }
