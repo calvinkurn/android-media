@@ -41,7 +41,8 @@ class ProductCardGridViewHolder(
                     isOverrideTheme = isOverrideWidgetTheme,
                     patternColorType = listener?.getPatternColorType().orEmpty(),
                     backgroundColor = listener?.getBackgroundColor().orEmpty(),
-                    isFestivity = isFestivity
+                    isFestivity = isFestivity,
+                    atcVariantButtonText = context?.getString(R.string.shop_atc).orEmpty()
                 )
             )
             setImageProductViewHintListener(

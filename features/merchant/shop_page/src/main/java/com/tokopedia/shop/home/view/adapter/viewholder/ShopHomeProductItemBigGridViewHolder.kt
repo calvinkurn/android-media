@@ -56,7 +56,8 @@ open class ShopHomeProductItemBigGridViewHolder(
             patternColorType = shopHomeListener.getPatternColorType(),
             backgroundColor = shopHomeListener.getBackgroundColor(),
             isFestivity = false,
-            makeProductCardTransparent = true
+            makeProductCardTransparent = true,
+            atcVariantButtonText = productCard?.context?.getString(R.string.shop_atc).orEmpty()
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)

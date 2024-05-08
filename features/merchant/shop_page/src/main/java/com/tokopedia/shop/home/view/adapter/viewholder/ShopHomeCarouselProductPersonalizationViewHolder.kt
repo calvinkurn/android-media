@@ -86,7 +86,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     ""
                 },
                 element.name,
-                isOverrideTheme = shopHomeListener.isOverrideTheme()
+                isOverrideTheme = shopHomeListener.isOverrideTheme(),
+                atcButtonText = recyclerView?.context?.getString(R.string.shop_atc).orEmpty()
             )
         }
 

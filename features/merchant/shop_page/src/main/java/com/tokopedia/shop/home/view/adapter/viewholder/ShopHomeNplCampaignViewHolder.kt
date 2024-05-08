@@ -284,7 +284,8 @@ class ShopHomeNplCampaignViewHolder(
                             isOverrideTheme = shopHomeCampaignNplWidgetListener.isOverrideTheme(),
                             patternColorType = shopHomeCampaignNplWidgetListener.getPatternColorType(),
                             backgroundColor = shopHomeCampaignNplWidgetListener.getBackgroundColor(),
-                            isFestivity = model.isFestivity
+                            isFestivity = model.isFestivity,
+                            atcVariantButtonText = rvProductCarousel.context?.getString(R.string.shop_atc).orEmpty()
                         )
                     }
 

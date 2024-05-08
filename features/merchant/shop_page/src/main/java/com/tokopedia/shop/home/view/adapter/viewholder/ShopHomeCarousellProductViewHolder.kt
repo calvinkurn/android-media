@@ -169,7 +169,8 @@ class ShopHomeCarousellProductViewHolder(
                 patternColorType = shopHomeListener.getPatternColorType(),
                 backgroundColor = shopHomeListener.getBackgroundColor(),
                 isFestivity = isFestivity,
-                makeProductCardTransparent = true
+                makeProductCardTransparent = true,
+                atcVariantButtonText = recyclerView?.context?.getString(R.string.shop_atc).orEmpty()
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {

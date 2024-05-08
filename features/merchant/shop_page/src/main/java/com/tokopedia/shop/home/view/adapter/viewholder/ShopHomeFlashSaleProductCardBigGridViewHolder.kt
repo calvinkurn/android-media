@@ -111,7 +111,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             isOverrideTheme = listener.isOverrideTheme(),
             patternColorType = listener.getPatternColorType(),
             backgroundColor = listener.getBackgroundColor(),
-            isFestivity = fsUiModel?.isFestivity.orFalse()
+            isFestivity = fsUiModel?.isFestivity.orFalse(),
+            atcVariantButtonText = productCardBigGrid?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor,
             isInBackground = true,
