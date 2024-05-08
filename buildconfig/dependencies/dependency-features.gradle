@@ -286,7 +286,6 @@ ext {
             tokochat_config_common          : ":features:communication:tokochat_config_common",
             shareexperience                 : ":features:communication:shareexperience",
 
-            changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             fcm_common                      : ":features:user:fcm_common",
             groupchat                       : ":features:user:groupchat",

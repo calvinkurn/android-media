@@ -257,7 +257,6 @@
 /features/user/sessioncommon/                   		@tokopedia/android-minionkevin-dev
 /features/user/chooseaccount/                      		@tokopedia/android-minionkevin-dev
 /features/user/managepassword/                          @tokopedia/android-minionkevin-dev
-/features/user/changephonenumber                		@tokopedia/android-minionkevin-dev
 /features/user/onboarding                       		@tokopedia/android-minionkevin-dev
 /features/user/updateinactivephone              		@tokopedia/android-minionkevin-dev
 /features/user/user_identification/             		@tokopedia/android-minionkevin-dev
