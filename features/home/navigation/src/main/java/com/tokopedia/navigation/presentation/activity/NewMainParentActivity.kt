@@ -73,7 +73,8 @@ import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
 import com.tokopedia.navigation.presentation.model.BottomNavFeedId
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
-import com.tokopedia.navigation.presentation.model.BottomNavProfileType
+import com.tokopedia.navigation.presentation.model.BottomNavMePageId
+import com.tokopedia.navigation.presentation.model.BottomNavMePageType
 import com.tokopedia.navigation.presentation.model.putDiscoId
 import com.tokopedia.navigation.presentation.model.putQueryParams
 import com.tokopedia.navigation.presentation.model.putShouldShowGlobalNav
@@ -85,6 +86,8 @@ import com.tokopedia.navigation.presentation.util.TabSelectedListener
 import com.tokopedia.navigation.presentation.util.VisitFeedProcessor
 import com.tokopedia.navigation.presentation.util.createTabSelectedListener
 import com.tokopedia.navigation.util.AssetPreloadManager
+import com.tokopedia.navigation.util.FeedCoachMark
+import com.tokopedia.navigation.util.MePageCoachMark
 import com.tokopedia.navigation.util.TokopediaShortcutManager
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.CartNotifyListener
@@ -159,13 +162,17 @@ class NewMainParentActivity :
     @Inject
     lateinit var shortcutManager: Lazy<TokopediaShortcutManager>
 
+    @Inject
+    lateinit var mePageCoachMark: Lazy<MePageCoachMark>
+
     private val onTabSelected: List<TabSelectedListener> by lazy {
         listOf(
             createTabSelectedListener(globalAnalyticsProcessor.get(), true, { !it }, { false }),
             createTabSelectedListener(visitFeedProcessor.get()),
             createTabSelectedListener(EmbraceNavAnalyticsProcessor()),
             createTabSelectedListener { updateAppLogPageData(it.uniqueId, false) },
-            createTabSelectedListener { sendEnterPage(it.uniqueId) }
+            createTabSelectedListener { sendEnterPage(it.uniqueId) },
+            createTabSelectedListener { if (it.uniqueId != BottomNavHomeId) mePageCoachMark.get().forceDismiss() }
         )
     }
 
@@ -514,6 +521,10 @@ class NewMainParentActivity :
 
     override fun onHomeCoachMarkFinished() {
         // Feed Coachmark has been deprecated, so this is expected to be empty as of now
+//        val feedIconView = binding.dynamicNavbar.findBottomNavItemViewById(BottomNavFeedId) ?: return
+//        FeedCoachMark(this).show(feedIconView)
+        val mePageView = binding.dynamicNavbar.findBottomNavItemViewById(BottomNavMePageId) ?: return
+        mePageCoachMark.get().show(mePageView)
     }
 
     override fun setForYouToHomeMenuTabSelected() {
@@ -731,7 +742,7 @@ class NewMainParentActivity :
                 this,
                 Bundle().apply {
                     putDiscoId(id.discoId)
-                    putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
+                    putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavMePageType))
 
                     val navBarModel = model ?: return@apply
                     putQueryParams(navBarModel.queryParams)

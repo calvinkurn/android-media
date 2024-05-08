@@ -77,4 +77,7 @@
 
     <string name="feed_icon_coachmark_title">Cari inspirasi lebih seru di Feed yang baru ✨</string>
     <string name="feed_icon_coachmark_content">Nonton video &amp; lihat postingan kini tampilannya makin cantik dengan fitur lebih keren juga!</string>
+
+    <string name="me_page_icon_coach_mark_title">Akunmu pindah ke bawah 👇</string>
+    <string name="me_page_icon_coach_mark_content">Wishlist dan informasi lain terkait akunmu bisa dicek lewat sini, ya!</string>
 </resources>

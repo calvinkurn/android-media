@@ -46,14 +46,14 @@ val BottomNavFeedType = BottomNavBarItemType("feed")
 val BottomNavDiscoType = BottomNavBarItemType("discopage")
 val BottomNavWishlistType = BottomNavBarItemType("wishlist")
 val BottomNavTransactionType = BottomNavBarItemType("transaction")
-val BottomNavProfileType = BottomNavBarItemType("me_page")
+val BottomNavMePageType = BottomNavBarItemType("me_page")
 
 val BottomNavHomeId = BottomNavItemId(BottomNavHomeType)
 val BottomNavFeedId = BottomNavItemId(BottomNavFeedType)
 val BottomNavOfficialStoreId = BottomNavItemId(BottomNavDiscoType, DiscoId(DISCOVERY_SOS_END_POINT))
 val BottomNavWishlistId = BottomNavItemId(BottomNavWishlistType)
 val BottomNavTransactionId = BottomNavItemId(BottomNavTransactionType)
-val BottomNavProfileId = BottomNavItemId(BottomNavProfileType)
+val BottomNavMePageId = BottomNavItemId(BottomNavMePageType)
 
 val HomeFragmentCreator = FragmentCreator(
     requireLogin = false
@@ -127,9 +127,12 @@ val supportedMainFragments = mapOf(
     BottomNavDiscoType to DiscoFragmentCreator,
     BottomNavWishlistType to WishlistFragmentCreator,
     BottomNavTransactionType to TransactionFragmentCreator,
-    BottomNavProfileType to ProfileFragmentCreator,
+    BottomNavMePageType to ProfileFragmentCreator,
 )
 
+/**
+ * Bundle Util
+ */
 internal fun Bundle.putDiscoId(discoId: DiscoId) {
     putString(KEY_DISCO_ID, discoId.value)
 }

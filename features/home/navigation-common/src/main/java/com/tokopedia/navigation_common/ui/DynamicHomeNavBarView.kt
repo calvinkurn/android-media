@@ -120,6 +120,10 @@ class DynamicHomeNavBarView : LinearLayout {
         mListener = listener
     }
 
+    fun findBottomNavItemViewById(id: BottomNavItemId): View? {
+        return children.firstOrNull { it.stateHolder?.model?.uniqueId == id }
+    }
+
     private fun refresh() {
         bindBackground()
         rebindAllItems()

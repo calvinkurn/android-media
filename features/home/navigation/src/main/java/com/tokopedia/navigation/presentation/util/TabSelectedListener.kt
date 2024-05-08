@@ -4,7 +4,7 @@ import com.tokopedia.navigation.GlobalNavAnalytics
 import com.tokopedia.navigation.presentation.model.BottomNavFeedId
 import com.tokopedia.navigation.presentation.model.BottomNavHomeId
 import com.tokopedia.navigation.presentation.model.BottomNavOfficialStoreId
-import com.tokopedia.navigation.presentation.model.BottomNavProfileId
+import com.tokopedia.navigation.presentation.model.BottomNavMePageId
 import com.tokopedia.navigation.presentation.model.BottomNavTransactionId
 import com.tokopedia.navigation.presentation.model.BottomNavWishlistId
 import com.tokopedia.navigation.util.MainParentServerLogger
@@ -47,7 +47,7 @@ class GlobalNavAnalyticsProcessor @Inject constructor(
             BottomNavFeedId -> "Feed"
             BottomNavTransactionId -> "transaction page"
             BottomNavWishlistId -> "wishlist page"
-            BottomNavProfileId -> "" //TODO("Tracker GTM for me page")
+            BottomNavMePageId -> "" //TODO("Tracker GTM for me page")
             else -> ""
         }
 
