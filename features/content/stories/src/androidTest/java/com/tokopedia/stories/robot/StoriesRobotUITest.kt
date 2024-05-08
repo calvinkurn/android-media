@@ -32,6 +32,7 @@ import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coVerify
 import io.mockk.mockk
 import org.junit.Rule
 import com.tokopedia.empty_state.R as empty_stateR
