@@ -34,6 +34,7 @@ data class SmallProductModel(
             TextStyle(
                 url = labelGroup?.url.orEmpty(),
                 isBold = labelGroup?.isTextBold() == true,
+                isTextStrikethrough = labelGroup?.isTextStrikethrough() == true,
                 textColor = labelGroup?.textColor().orEmpty(),
                 shouldRenderHtmlFormat = labelGroup?.hashTextFormat() == false
             )
@@ -55,6 +56,7 @@ data class SmallProductModel(
 
     data class TextStyle(
         val isBold: Boolean = false,
+        val isTextStrikethrough: Boolean = false,
         val textColor: String = "",
         val url: String = "",
         val shouldRenderHtmlFormat: Boolean = false
@@ -78,6 +80,7 @@ data class SmallProductModel(
         fun hasTitle() = title.isNotBlank()
         fun hashTextFormat() = style[LabelGroupStyle.TEXT_FORMAT] != null
         fun isTextBold() = style[LabelGroupStyle.TEXT_FORMAT] == DEF_STYLE_TEXT_BOLD
+        fun isTextStrikethrough() = style[LabelGroupStyle.TEXT_FORMAT] == DEF_STYLE_TEXT_STRIKETHROUGH
 
         fun textColor() = style[LabelGroupStyle.TEXT_COLOR]
         fun backgroundColor() = style[LabelGroupStyle.BACKGROUND_COLOR]

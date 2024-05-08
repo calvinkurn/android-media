@@ -18,4 +18,5 @@ object LabelGroupStyle {
 
 // default style value
 const val DEF_STYLE_TEXT_BOLD = "bold"
+const val DEF_STYLE_TEXT_STRIKETHROUGH = "strikethrough"
 const val DEF_STYLE_RIBBON_RED = "red"

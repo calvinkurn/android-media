@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
@@ -105,11 +106,10 @@ class SmallProductCard @JvmOverloads constructor(
         this?.text = if (style.shouldRenderHtmlFormat) HtmlUtil.fromHtml(title) else title
         this?.setWeight(if (style.isBold) Typography.BOLD else Typography.REGULAR)
 
-        shouldHandleCampaignIconVisibility(style)
+        if (style.isTextStrikethrough) this?.strikethrough()
+        if (style.textColor.isNotEmpty()) this?.setTextColor(Color.parseColor(style.textColor))
 
-        if (style.textColor.isNotEmpty()) {
-            this?.setTextColor(Color.parseColor(style.textColor))
-        }
+        shouldHandleCampaignIconVisibility(style)
     }
 
     private fun shouldHandleCampaignIconVisibility(style: SmallProductModel.TextStyle) {
