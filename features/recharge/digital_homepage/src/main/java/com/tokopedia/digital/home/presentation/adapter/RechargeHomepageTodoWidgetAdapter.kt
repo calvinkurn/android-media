@@ -63,9 +63,9 @@ class RechargeHomepageTodoWidgetAdapter(
             object : RechargeHomepageTodoWidgetCloseProcessListener {
                 override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
                     removeItem(element)
-//                    todoWidgetListener.onCloseItem(
-//                        (element as RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel).widget,
-//                    )
+                    todoWidgetListener.onCloseItem(
+                        (element as RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel).widget,
+                    )
                 }
             },
             object : TodoWidgetItemListener {
