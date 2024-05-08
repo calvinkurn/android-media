@@ -700,7 +700,8 @@ class NewMainParentActivity :
                 }
             }
             val fragment = getFragmentById(tabId) ?: return@launch
-            selectFragment(fragment, tabId)
+            val success = selectFragment(fragment, tabId)
+            if (!success) return@launch
             binding.dynamicNavbar.select(tabId, forceSelect = true)
         }
     }
@@ -727,31 +728,19 @@ class NewMainParentActivity :
             val fragmentCreator = supportedMainFragments[id.type] ?: return null
             val create = fragmentCreator.create
 
-            val requireLogin = fragmentCreator.requireLogin
-            if (requireLogin && !userSession.get().isLoggedIn) {
-                val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-                    .putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
-                    .putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
+            val fragment = supportFragmentManager.create(
+                this,
+                Bundle().apply {
+                    putDiscoId(id.discoId)
+                    putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
 
-                this@NewMainParentActivity.intent.putTargetTabIdExtra(id)
+                    val navBarModel = model ?: return@apply
+                    putQueryParams(navBarModel.queryParams)
+                }
+            )
 
-                startActivity(intent)
-                null
-            } else {
-                val fragment = supportFragmentManager.create(
-                    this,
-                    Bundle().apply {
-                        putDiscoId(id.discoId)
-                        putShouldShowGlobalNav(!viewModel.hasTabType(BottomNavProfileType))
-
-                        val navBarModel = model ?: return@apply
-                        putQueryParams(navBarModel.queryParams)
-                    }
-                )
-
-                onFragmentCreated(fragment)
-                fragment
-            }
+            onFragmentCreated(fragment)
+            fragment
         }
     }
 
@@ -772,15 +761,35 @@ class NewMainParentActivity :
         intent.putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT, ApplinkConstInternalContent.NAV_BUTTON_ENTRY_POINT)
     }
 
-    private fun selectFragment(fragment: Fragment, itemId: BottomNavItemId) {
+    private fun selectFragment(fragment: Fragment, itemId: BottomNavItemId): Boolean {
+        if (checkShouldLogin(itemId)) return false
+
         configureBackgroundBasedOnFragment(fragment)
         configureStatusBarBasedOnFragment(fragment)
         configureNavigationBarBasedOnFragment(fragment)
         openFragment(fragment, itemId)
         setBadgeNotificationCounter(fragment)
 
-        val model = viewModel.getModelById(itemId) ?: return
-        onTabSelected.forEach { it.onSelected(model) }
+        val model = viewModel.getModelById(itemId)
+        if (model != null) onTabSelected.forEach { it.onSelected(model) }
+
+        return true
+    }
+
+    private fun checkShouldLogin(id: BottomNavItemId): Boolean {
+        val requireLogin = supportedMainFragments[id.type]?.requireLogin ?: false
+        val shouldLogin = requireLogin && !userSession.get().isLoggedIn
+        if (shouldLogin) {
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+                .putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+                .putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
+
+            this@NewMainParentActivity.intent.putTargetTabIdExtra(id)
+
+            startActivity(intent)
+        }
+
+        return shouldLogin
     }
 
     private fun configureBackgroundBasedOnFragment(fragment: Fragment) {
@@ -882,8 +891,8 @@ class NewMainParentActivity :
                     true
                 } else {
                     val fragment = getFragmentById(model.uniqueId, model)
-                    fragment?.let { selectFragment(it, model.uniqueId) }
-                    fragment != null
+                    val success = fragment?.let { selectFragment(it, model.uniqueId) }
+                    success == true
                 }
             }
         })
