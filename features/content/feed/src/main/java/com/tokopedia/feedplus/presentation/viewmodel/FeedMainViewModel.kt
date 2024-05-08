@@ -11,9 +11,12 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
+import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -39,7 +42,8 @@ class FeedMainViewModel @AssistedInject constructor(
     private val repository: FeedRepository,
     private val onBoardingPreferences: OnBoardingPreferences,
     private val userSession: UserSessionInterface,
-    private val uiEventManager: UiEventManager<FeedMainEvent>
+    private val uiEventManager: UiEventManager<FeedMainEvent>,
+    private val tooltipManager: FeedTooltipManager,
 ) : ViewModel(), OnBoardingPreferences by onBoardingPreferences {
 
     @AssistedFactory
@@ -76,6 +80,9 @@ class FeedMainViewModel @AssistedInject constructor(
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
 
+    val tooltipEvent: Flow<FeedTooltipEvent?>
+        get() = tooltipManager.tooltipEvent
+
     val displayName: String
         get() = userSession.name
 
@@ -101,6 +108,9 @@ class FeedMainViewModel @AssistedInject constructor(
                 null
             }
         }
+
+    val currentTooltipCategory: FeedSearchTooltipCategory
+        get() = tooltipManager.currentCategory
 
     init {
         viewModelScope.launch {
@@ -188,6 +198,16 @@ class FeedMainViewModel @AssistedInject constructor(
         viewModelScope.launch {
             uiEventManager.clearEvent(event.id)
         }
+    }
+
+    fun consumeEvent(event: FeedTooltipEvent) {
+        viewModelScope.launch {
+            tooltipManager.clearTooltipEvent(event.id)
+        }
+    }
+
+    fun setHasShownTooltip() {
+        tooltipManager.setHasShownTooltip()
     }
 
     fun updateUserInfo() {

@@ -38,7 +38,7 @@ class ShopRecomUiMapperImpl: ShopRecomUiMapper {
 
     override fun mapShopFollow(response: ShopFollowModel): MutationUiModel {
         return with(response.followShop) {
-            if (success) MutationUiModel.Success()
+            if (success) MutationUiModel.Success(message)
             else MutationUiModel.Error(message)
         }
     }

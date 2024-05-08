@@ -9,9 +9,9 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class PlainTabItemViewModel(
     val application: Application,
-    var components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
 
     private val onSelectedData: MutableLiveData<DataItem> = MutableLiveData()
     private val onUnselectedData: MutableLiveData<Pair<DataItem, String?>> = MutableLiveData()

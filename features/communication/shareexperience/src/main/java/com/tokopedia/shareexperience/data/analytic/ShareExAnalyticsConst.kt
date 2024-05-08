@@ -44,6 +44,7 @@ object ShareExAnalyticsConst {
         const val TOP_NAV_PDP = "top nav - product detail page"
         const val PDP = "product detail page"
         const val REVIEW = "fullscreen review"
+        const val GOPAYLATER_REFERRAL = "gopaylater referral"
     }
 
     object Tracker {
@@ -60,5 +61,11 @@ object ShareExAnalyticsConst {
         const val ID_50125 = "50125"
         const val ID_50126 = "50126"
         const val ID_50127 = "50127"
+
+        // Gopaylater Referral
+        const val ID_50464 = "50464"
+        const val ID_50465 = "50465"
+        const val ID_50466 = "50466"
+        const val ID_50467 = "50467"
     }
 }

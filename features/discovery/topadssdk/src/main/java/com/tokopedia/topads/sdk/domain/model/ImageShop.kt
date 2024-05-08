@@ -1,11 +1,9 @@
 package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.parcelize.Parcelize
-import org.json.JSONObject
 
 private const val KEY_COVER = "cover"
 private const val KEY_S_URL = "s_url"

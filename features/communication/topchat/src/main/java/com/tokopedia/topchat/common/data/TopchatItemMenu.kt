@@ -2,6 +2,7 @@ package com.tokopedia.topchat.common.data
 
 import androidx.annotation.DrawableRes
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.domain.pojo.TopChatListFilterEnum
 
 class TopchatItemMenu constructor(
     val title: String,
@@ -9,7 +10,8 @@ class TopchatItemMenu constructor(
     val hasCheck: Boolean = false,
     val id: Int = -1,
     val iconUnify: Int? = null,
-    val showNewLabel: Boolean = false
+    val showNewLabel: Boolean = false,
+    val filterEnum: TopChatListFilterEnum? = null
 ) {
 
     @DrawableRes

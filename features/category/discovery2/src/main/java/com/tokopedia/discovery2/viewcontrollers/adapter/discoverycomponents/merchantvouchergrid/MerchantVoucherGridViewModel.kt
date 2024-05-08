@@ -25,9 +25,9 @@ import kotlin.coroutines.CoroutineContext
 
 class MerchantVoucherGridViewModel(
     application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
     companion object {
         const val ERROR_MESSAGE_EMPTY_DATA = "empty data"
         const val ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE = "unavailable next page"

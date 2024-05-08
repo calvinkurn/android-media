@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeSharingWidgetViewHolder(
     itemView: View,
@@ -87,7 +88,7 @@ class HomeSharingWidgetViewHolder(
             val context = itemView.context
             val greenColor = ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             ).toString()
             tpSharing.text = MethodChecker.fromHtml(context.getString(R.string.tokopedianow_home_referral_widget_desc_sender, greenColor))
             btnSharing.text = getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
@@ -96,7 +97,7 @@ class HomeSharingWidgetViewHolder(
                 tpTitle.text = element.titleSection
             }
 
-            containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_GN50))
             iuSharing.hide()
             playAnimation()
             ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
@@ -109,7 +110,7 @@ class HomeSharingWidgetViewHolder(
             tpSharing.text = MethodChecker.fromHtml(itemView.resources.getString(
                 R.string.tokopedianow_home_referral_widget_desc_receiver, element.ogDescription))
             btnSharing.hide()
-            containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_GN50))
             if (element.titleSection.isNotEmpty()) {
                 tpTitle.visible()
                 tpTitle.text = element.titleSection
@@ -166,12 +167,11 @@ class HomeSharingWidgetViewHolder(
             ivBgImageBtm.hide()
             ivBgImageTopRight.hide()
             iuCloseSharing.setImage(IconUnify.CLOSE)
-            iuCloseSharing.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+            iuCloseSharing.setColorFilter(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_NN900))
             tpSharing.text = MethodChecker.fromHtml(
                 getServiceTypeFormattedCopy(
                     context = root.context,
-                    key = SHARING_WIDGET_RESOURCE_ID,
-                    serviceType = element.serviceType
+                    key = SHARING_WIDGET_RESOURCE_ID
                 )
             )
             btnSharing.text = itemView.resources.getString(element.btnTextRes)

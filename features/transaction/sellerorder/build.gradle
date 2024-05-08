@@ -29,7 +29,8 @@ android {
                     pathSources,
                     pathSources + 'transparency_fee',
                     pathSources + 'partial_order_fulfillment',
-                    pathSources + 'buyer_request_cancel_respond'
+                    pathSources + 'buyer_request_cancel_respond',
+                    pathSources + 'seller_order_extension_request'
             ]
         }
     }
@@ -37,9 +38,10 @@ android {
         viewBinding true
         buildConfig true
     }
-    
+
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
 
     defaultConfig {

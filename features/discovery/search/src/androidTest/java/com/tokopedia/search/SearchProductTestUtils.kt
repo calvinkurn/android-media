@@ -16,26 +16,21 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
-import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
-import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.product.suggestion.SuggestionListener
-import com.tokopedia.search.result.product.cpm.BannerAdsListener
-import com.tokopedia.search.result.product.cpm.CpmDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
-import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
 
@@ -72,7 +67,7 @@ internal fun View?.perform(vararg viewActions: ViewAction) {
 }
 
 internal fun createProductItemListener(): ProductListener {
-    return object: ProductListener {
+    return object : ProductListener {
         override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
@@ -81,19 +76,18 @@ internal fun createProductItemListener(): ProductListener {
             get() = null
 
         override fun onProductImpressedByteIO(item: ProductItemDataView?) {
-
         }
     }
 }
 
 internal fun createInspirationCardListener(): InspirationCardListener {
-    return object: InspirationCardListener {
+    return object : InspirationCardListener {
         override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {}
     }
 }
 
 internal fun createGlobalNavListener(): GlobalNavListener {
-    return object: GlobalNavListener {
+    return object : GlobalNavListener {
         override fun onGlobalNavWidgetImpressed(globalNavDataView: GlobalNavDataView) {}
         override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item, keyword: String) {}
         override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView) {}
@@ -103,17 +97,15 @@ internal fun createGlobalNavListener(): GlobalNavListener {
 internal fun createSuggestionListener(): SuggestionListener {
     return object : SuggestionListener {
         override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
-
         }
 
         override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
-
         }
     }
 }
 
 internal fun createEmptyStateListener(): EmptyStateListener {
-    return object: EmptyStateListener {
+    return object : EmptyStateListener {
         override fun resetFilters() {}
         override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun onEmptyButtonClicked() {}
@@ -121,7 +113,7 @@ internal fun createEmptyStateListener(): EmptyStateListener {
 }
 
 internal fun createRecommendationListener(): RecommendationListener {
-    return object: RecommendationListener {
+    return object : RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
         override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}

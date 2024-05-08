@@ -15,10 +15,14 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -45,7 +49,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -1071,7 +1078,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         }
 
         assertTrue(viewModel.updateCartLiveData.value is Success)
-        Assert.assertEquals((viewModel.updateCartLiveData.value as Success).data, "sukses gan")
+        Assert.assertEquals(
+            (viewModel.updateCartLiveData.value as Success).data.message,
+            "sukses gan"
+        )
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
     }
 
@@ -1204,7 +1214,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         verifyAtcUsecase(verifyOcc = true)
 
-        Assert.assertTrue(result.await() is Success)
+        assertTrue(result.await() is Success)
         assertButton(expectedIsBuyable = true)
     }
 
@@ -1227,7 +1237,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         verifyAtcUsecase(verifyOcc = true)
 
-        Assert.assertTrue(result.await() is Success)
+        assertTrue(result.await() is Success)
     }
 
     @Test
@@ -1437,6 +1447,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         }
     }
 
+    // region wishlistv2
     @Test
     fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
@@ -1466,6 +1477,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verify { addToWishlistV2UseCase.setParams(productId, "") }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
+    // endregion wishlistv2
 
     //region promo price
     @Test
@@ -1503,4 +1515,98 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         )
     }
     //endregion
+
+    // region vbs on cart
+    @Test
+    fun `update cart no action when variant data is null`() {
+        val params = ProductVariantBottomSheetParams()
+        every { spykViewModel.getVariantData() } returns null
+
+        spykViewModel.updateCart(params)
+
+        verify { spykViewModel.getVariantData() }
+
+        assertNull(spykViewModel.updateCartLiveData.value)
+    }
+
+    @Test
+    fun `update cart no action when selected variant is null`() {
+        val params = ProductVariantBottomSheetParams(
+            productId = "123",
+            isTokoNow = false,
+            showQtyEditor = true
+        )
+        decideSuccessValueHitGqlAggregator(
+            productId = params.productId,
+            isTokoNow = params.isTokoNow,
+            showQtyEditor = params.showQtyEditor
+        )
+
+        every { spykViewModel.getSelectedOptionIds() } returns null
+
+        spykViewModel.updateCart(params)
+
+        verify { spykViewModel.getSelectedOptionIds() }
+
+        assertNull(spykViewModel.updateCartLiveData.value)
+    }
+
+    @Test
+    fun `update cart no action when option id is null`() {
+        val params = ProductVariantBottomSheetParams(
+            productId = "123",
+            isTokoNow = false,
+            showQtyEditor = true
+        )
+        val optionsIds = listOf("254080", "254085")
+        decideSuccessValueHitGqlAggregator(
+            productId = params.productId,
+            isTokoNow = params.isTokoNow,
+            showQtyEditor = params.showQtyEditor
+        )
+
+        every { spykViewModel.getVariantData() } returns ProductVariant()
+        every { spykViewModel.getVariantData()?.getChildByOptionId(optionsIds) } returns null
+
+        spykViewModel.updateCart(params)
+
+        verify { spykViewModel.getVariantData()?.getChildByOptionId(optionsIds) }
+
+        assertNull(spykViewModel.updateCartLiveData.value)
+    }
+
+    @Test
+    fun `update cart on variant editor successfully`() {
+        val params = ProductVariantBottomSheetParams(
+            productId = "123",
+            isTokoNow = false,
+            showQtyEditor = true,
+            changeVariantOnCart = ProductVariantBottomSheetParams.ChangeVariant(
+                cartId = "111",
+                currentQuantity = Int.ONE
+            )
+        )
+        decideSuccessValueHitGqlAggregator(
+            productId = params.productId,
+            isTokoNow = params.isTokoNow,
+            showQtyEditor = params.showQtyEditor
+        )
+        val updateAtcResponse = UpdateCartV2Data(
+            status = "OK",
+            data = Data(anchorCartId = params.changeVariantOnCart.cartId.toLongOrZero())
+        )
+
+        coEvery {
+            updateCartUseCase.executeOnBackground()
+        } returns updateAtcResponse
+
+        spykViewModel.updateCart(params)
+
+        coVerify { updateCartUseCase.executeOnBackground() }
+
+        val result = spykViewModel.updateCartLiveData.value as? Success
+        assertNotNull(result)
+        assertEquals(params.changeVariantOnCart.cartId, result?.data?.anchorCartId.toString())
+    }
+    // endregion
 }
