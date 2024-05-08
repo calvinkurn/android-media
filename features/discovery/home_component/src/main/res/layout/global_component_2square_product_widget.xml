@@ -16,9 +16,13 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_header"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/timer_countdown"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             app:typographyType="display_2"
@@ -29,10 +33,10 @@
             android:id="@+id/timer_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
             android:layout_alignTop="@+id/txt_header"
             android:layout_alignBottom="@+id/txt_header"
-            android:layout_toEndOf="@+id/txt_header"
+            android:layout_alignParentEnd="true"
             android:visibility="gone"
             tools:visibility="visible"/>
 

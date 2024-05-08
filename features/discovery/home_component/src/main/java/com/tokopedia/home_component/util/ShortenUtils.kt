@@ -28,9 +28,9 @@ object ShortenUtils {
     fun List<ShortenVisitable>.isValidShortenWidget(): Boolean {
         var gridCount = 0
 
-        for (i in 0..this.size) gridCount += this[i].itemCount()
+        for (element in this) gridCount += element.itemCount()
 
-        return gridCount <= (TWO_SQUARE_CONTAINER_LIMIT * TWO_SQUARE_MAX_PRODUCT_LIMIT)
+        return gridCount == (TWO_SQUARE_CONTAINER_LIMIT * TWO_SQUARE_MAX_PRODUCT_LIMIT)
     }
 
     /**
