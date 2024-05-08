@@ -119,6 +119,10 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         // noop
     }
 
+    override fun onActivityPreDestroyed(activity: Activity) {
+        AppLogAnalytics.removeLastAdsPageData()
+    }
+
     override fun onActivityDestroyed(activity: Activity) {
         AppLogAnalytics.activityCount--
 
@@ -129,8 +133,6 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         if (activity is AppLogInterface) {
             removePageData(activity)
         }
-
-        AppLogAnalytics.removeLastAdsPageData()
 
         if (activity is FragmentActivity) {
             activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(appLogFragmentLifecycleCallback)
