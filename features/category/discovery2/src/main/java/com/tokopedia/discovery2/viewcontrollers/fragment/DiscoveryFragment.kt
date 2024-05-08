@@ -1745,8 +1745,11 @@ open class DiscoveryFragment :
 
     override fun onPause() {
         super.onPause()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
         currentTabName = CURRENT_TAB_NAME
         currentTabIndex = CURRENT_TAB_INDEX
+
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
