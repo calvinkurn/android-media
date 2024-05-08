@@ -63,9 +63,9 @@ class RechargeHomepageTodoWidgetAdapter(
             object : RechargeHomepageTodoWidgetCloseProcessListener {
                 override fun onCloseWidget(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
                     removeItem(element)
-                    todoWidgetListener.onCloseItem(
-                        (element as RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel).widget,
-                    )
+//                    todoWidgetListener.onCloseItem(
+//                        (element as RechargeHomepageTodoWidgetModel.RechargeHomepageTodoWidgetAutoPayPostReminderItemModel).widget,
+//                    )
                 }
             },
             object : TodoWidgetItemListener {
@@ -82,10 +82,9 @@ class RechargeHomepageTodoWidgetAdapter(
 
         fun removeItem(element: Visitable<RechargeHomepageTodoWidgetAdapterTypeFactory>) {
             try {
-                val position = baseAdapter.list.indexOf(element)
-                baseAdapter.list.remove(element)
-                baseAdapter.notifyItemRemoved(position)
-                baseAdapter.notifyItemRangeChanged(position, baseAdapter.list.size)
+                val mutableListTodoWidget = baseAdapter.list.toMutableList()
+                mutableListTodoWidget.remove(element)
+                baseAdapter.setVisitables(mutableListTodoWidget.toList())
                 if (baseAdapter.itemCount < Int.ONE) {
                     hideTitle()
                 }
