@@ -288,12 +288,22 @@ class NewMainParentActivity :
         viewModel.fetchNotificationData()
 
         run firstTimeLogin@{
-            if (!userSession.get().isLoggedIn || !isUserFirstTimeLogin) return@firstTimeLogin
-            val currentId = getCurrentActiveFragment()?.tag?.let {
-                BottomNavItemId(it)
-            } ?: BottomNavHomeId
+            if (!userSession.get().isLoggedIn || !isUserFirstTimeLogin) {
+                intent.removeTargetTabIdExtra()
+                return@firstTimeLogin
+            }
+            val targetId = run getFromExtra@{
+                val targetTabIdExtra = intent.getTargetTabIdExtra()
+                intent.removeTargetTabIdExtra()
+                targetTabIdExtra
 
-            reloadPage(currentId, true)
+            } ?: run getCurrentActive@{
+                getCurrentActiveFragment()?.tag?.let {
+                    BottomNavItemId(it)
+                } ?: BottomNavHomeId
+            }
+
+            reloadPage(targetId, true)
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn
 
@@ -399,8 +409,7 @@ class NewMainParentActivity :
         val intent = intent.putExtra(
             ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
             isFeed && isJustLoggedIn
-        ).putExtra(ARGS_TAB_ID, id.type.value)
-            .putExtra(ARGS_DISCO_ID, id.discoId.value)
+        ).putTabIdExtra(id)
 
         if (isFeed) {
             recreate()
@@ -580,21 +589,15 @@ class NewMainParentActivity :
     }
 
     private fun getTabIdFromIntent(): BottomNavItemId {
-        return intent?.extras?.let(::getTabIdFromIntentExtras)
+        return intent?.getTabIdExtra()
             ?: intent?.data?.let(::getTabIdFromQueryParameter)
             ?: BottomNavHomeId
     }
 
-    private fun getTabIdFromIntentExtras(extras: Bundle): BottomNavItemId {
+    private fun getTabIdFromQueryParameter(data: Uri): BottomNavItemId? {
+        val type = data.getQueryParameter(ARGS_TAB_TYPE) ?: return null
         return BottomNavItemId(
-            BottomNavBarItemType(extras.getString(ARGS_TAB_TYPE, BottomNavHomeId.type.value)),
-            DiscoId(extras.getString(ARGS_DISCO_ID, ""))
-        )
-    }
-
-    private fun getTabIdFromQueryParameter(data: Uri): BottomNavItemId {
-        return BottomNavItemId(
-            BottomNavBarItemType(data.getQueryParameter(ARGS_TAB_TYPE) ?: BottomNavHomeId.type.value),
+            BottomNavBarItemType(type),
             DiscoId(data.getQueryParameter(ARGS_DISCO_ID).orEmpty())
         )
     }
@@ -725,10 +728,12 @@ class NewMainParentActivity :
             val create = fragmentCreator.create
 
             val requireLogin = fragmentCreator.requireLogin
-            if (requireLogin) {
+            if (requireLogin && !userSession.get().isLoggedIn) {
                 val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
                     .putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
                     .putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
+
+                this@NewMainParentActivity.intent.putTargetTabIdExtra(id)
 
                 startActivity(intent)
                 null
@@ -1115,10 +1120,43 @@ class NewMainParentActivity :
         AppLogRecommendation.sendEnterPageAppLog()
     }
 
+    private fun Intent.putTabIdExtra(tabId: BottomNavItemId): Intent {
+        return putExtra(ARGS_TAB_TYPE, tabId.type.value)
+            .putExtra(ARGS_DISCO_ID, tabId.discoId.value)
+    }
+
+    private fun Intent.getTabIdExtra(): BottomNavItemId? {
+        val targetTabType = getStringExtra(ARGS_TAB_TYPE) ?: return null
+        return BottomNavItemId(
+            BottomNavBarItemType(targetTabType),
+            DiscoId(getStringExtra(ARGS_DISCO_ID).orEmpty())
+        )
+    }
+
+    private fun Intent.putTargetTabIdExtra(tabId: BottomNavItemId): Intent {
+        return putExtra(ARGS_TARGET_TAB_TYPE, tabId.type.value)
+            .putExtra(ARGS_TARGET_DISCO_ID, tabId.discoId.value)
+    }
+
+    private fun Intent.getTargetTabIdExtra(): BottomNavItemId? {
+        val targetTabType = getStringExtra(ARGS_TARGET_TAB_TYPE) ?: return null
+        return BottomNavItemId(
+            BottomNavBarItemType(targetTabType),
+            DiscoId(getStringExtra(ARGS_TARGET_DISCO_ID).orEmpty())
+        )
+    }
+
+    private fun Intent.removeTargetTabIdExtra() {
+        removeExtra(ARGS_TARGET_TAB_TYPE)
+        removeExtra(ARGS_TARGET_DISCO_ID)
+    }
+
     companion object {
-        private const val ARGS_TAB_ID = "tab_id"
         private const val ARGS_TAB_TYPE = "tab_type"
         private const val ARGS_DISCO_ID = "disco_id"
+
+        private const val ARGS_TARGET_TAB_TYPE = "target_tab_type"
+        private const val ARGS_TARGET_DISCO_ID = "target_disco_id"
 
         private const val ARGS_HAS_RUN_ON_RESUME_PLT = "has_run_on_resume_plt"
         internal const val SCROLL_RECOMMEND_LIST = "recommend_list"
