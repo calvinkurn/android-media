@@ -1,5 +1,6 @@
 package com.tokopedia.stories.robot
 
+import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -24,6 +25,7 @@ import com.tokopedia.stories.utils.delay
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
@@ -111,6 +113,9 @@ internal class StoriesRobotUITest(
     private val scenario = launchFragmentInContainer<StoriesGroupFragment>(
         factory = fragmentFactory,
         themeResId = empty_stateR.style.AppTheme,
+        fragmentArgs = Bundle().apply {
+            putParcelable(KEY_ARGS, args)
+        },
     )
 
     init {
