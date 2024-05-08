@@ -30,7 +30,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_RESULT_ID
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -345,10 +344,8 @@ object AppLogAnalytics {
     }
 
     fun removeLastAdsPageData() {
-        val firstIndex = if (_adsPageDataList.isNotEmpty()) Int.ONE else null
-        firstIndex?.let {
-            _adsPageDataList.removeAt(it)
-        }
+        val currentIndex = getCurrentAdsActivityIdx()
+        if (currentIndex >= 0) _adsPageDataList.removeAt(currentIndex)
     }
 
     fun getLastAdsDataBeforeCurrent(key: String): Any? {
