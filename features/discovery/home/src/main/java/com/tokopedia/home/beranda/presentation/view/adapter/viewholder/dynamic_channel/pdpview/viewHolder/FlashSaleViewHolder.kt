@@ -3,17 +3,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
-import com.tokopedia.home.util.sendEventShow
-import com.tokopedia.home.util.sendEventShowOver
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class FlashSaleViewHolder (view: View,
@@ -46,16 +41,6 @@ class FlashSaleViewHolder (view: View,
             }
 
             setProductCardViewClickListener(element)
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
-                override fun onShow() {
-                    sendEventShow(context, element.grid)
-                }
-
-                override fun onShowOver(maxPercentage: Int) {
-                    sendEventShowOver(context, element.grid, maxPercentage)
-                }
-
-            })
         }
     }
 
@@ -69,18 +54,6 @@ class FlashSaleViewHolder (view: View,
                         element.grid.imageUrl)
                 }
                 element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
-            }
-
-            override fun onAreaClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(context, element.grid, AdsLogConst.Refer.AREA)
-            }
-
-            override fun onProductImageClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(context, element.grid, AdsLogConst.Refer.COVER)
-            }
-
-            override fun onSellerInfoClicked(v: View) {
-                sendEventRealtimeClickAdsByteIo(context, element.grid, AdsLogConst.Refer.SELLER_NAME)
             }
         })
     }

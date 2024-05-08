@@ -17,24 +17,6 @@ internal fun sendEventShow(context: Context, element: HomeRecommendationItemData
     }
 }
 
-internal fun sendEventShow(context: Context, element: DynamicHomeChannel.Grid) {
-    if (element.isTopads) {
-        AppLogTopAds.sendEventShow(
-            context,
-            element.asAdsLogShowModel()
-        )
-    }
-}
-
-internal fun sendEventShowOver(context: Context, element: DynamicHomeChannel.Grid, maxPercentage: Int) {
-    if(element.isTopads) {
-        AppLogTopAds.sendEventShowOver(
-            context,
-            element.asAdsLogShowOverModel(maxPercentage)
-        )
-    }
-}
-
 internal fun sendEventShowOver(context: Context, element: HomeRecommendationItemDataModel, maxPercentage: Int) {
     if(element.recommendationProductItem.isTopAds) {
         AppLogTopAds.sendEventShowOver(
