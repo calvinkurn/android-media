@@ -3,11 +3,13 @@ package com.tokopedia.analytics.byteio
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.currentActivityName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -21,8 +23,15 @@ import kotlin.coroutines.CoroutineContext
 
 class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, CoroutineScope {
 
+    private val appLogFragmentLifecycleCallback = AppLogFragmentLifecycleCallback()
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         AppLogAnalytics.activityCount++
+
+        if (activity is FragmentActivity) {
+            activity.supportFragmentManager.registerFragmentLifecycleCallbacks(appLogFragmentLifecycleCallback,false)
+        }
+
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
             // In case activity is first running, we put the startTime.
             // in onResume this will not be overridden
@@ -34,7 +43,18 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
                 AppLogRecommendation.sendEnterPageAppLog()
             }
         }
+
         setCurrent(activity)
+
+        //for ads log approach
+        setAdsPageData(activity)
+    }
+
+    private fun setAdsPageData(activity: Activity) {
+        if (activity is AppLogInterface) {
+            AppLogAnalytics.currentPageName = activity.getPageName()
+            AppLogAnalytics.putAdsPageData(PAGE_NAME, activity.getPageName())
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -101,12 +121,19 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
 
     override fun onActivityDestroyed(activity: Activity) {
         AppLogAnalytics.activityCount--
+
         if (getCurrentActivity() === activity) {
             AppLogAnalytics.currentActivityReference?.clear()
         }
         removePageName(activity)
         if (activity is AppLogInterface) {
             removePageData(activity)
+        }
+
+        AppLogAnalytics.removeLastAdsPageData()
+
+        if (activity is FragmentActivity) {
+            activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(appLogFragmentLifecycleCallback)
         }
     }
 

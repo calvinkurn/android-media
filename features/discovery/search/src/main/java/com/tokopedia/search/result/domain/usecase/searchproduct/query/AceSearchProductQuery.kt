@@ -94,6 +94,8 @@ object AceSearchProductQuery {
                                     productClickUrl
                                     productWishlistUrl
                                     productViewUrl
+                                    creativeID
+                                    logExtra
                                 }
                             }
                         }

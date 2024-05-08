@@ -43,7 +43,7 @@ class ComparisonWidgetComparedItemViewHolder(
         trackingQueue: TrackingQueue?,
         userSession: UserSessionInterface,
     ) {
-
+        recommendationItem = comparisonModel.recommendationItem
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
         if (comparisonModel.isClickable) {

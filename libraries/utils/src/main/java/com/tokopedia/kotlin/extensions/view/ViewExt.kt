@@ -561,7 +561,7 @@ fun View.getLocationOnScreen(): Point {
     return Point(location[0], location[1])
 }
 
-fun View.addOnAttachStateChangeListener(onViewAttachedToWindow:() -> Unit, onViewDetachedFromWindow: () -> Unit) {
+fun View.addOnAttachStateChangeListener(onViewAttachedToWindow: () -> Unit, onViewDetachedFromWindow: () -> Unit) {
     addOnAttachStateChangeListener(
         object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(view: View) {
@@ -573,4 +573,24 @@ fun View.addOnAttachStateChangeListener(onViewAttachedToWindow:() -> Unit, onVie
             }
         }
     )
+}
+
+fun View.setAdsTrackListener(onViewAttachedToWindow: () -> Unit,
+                             onViewDetachedFromWindow: () -> Unit,
+                             setVisiblePercentage: () -> Unit) {
+    addOnAttachStateChangeListener(
+        object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                onViewAttachedToWindow()
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                onViewDetachedFromWindow()
+            }
+        }
+    )
+
+    viewTreeObserver.addOnScrollChangedListener {
+        setVisiblePercentage()
+    }
 }

@@ -292,7 +292,11 @@ data class DynamicHomeChannel(
         val expiredTime: String = "",
         @Expose
         @SerializedName("categoryBreadcrumbs")
-        val categoryBreadcrumbs: String = ""
+        val categoryBreadcrumbs: String = "",
+        @SerializedName("creativeID")
+        val creativeID: String = "",
+        @SerializedName("logExtra")
+        val logExtra: String = "",
     )
 
     data class HomeBadges(

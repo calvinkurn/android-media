@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
