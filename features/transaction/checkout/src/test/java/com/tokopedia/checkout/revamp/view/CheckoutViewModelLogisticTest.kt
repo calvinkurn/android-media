@@ -14,6 +14,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
@@ -23,6 +24,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
@@ -85,6 +87,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -150,6 +153,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -229,6 +233,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -257,6 +262,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -303,6 +309,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -347,6 +354,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123"),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -424,12 +432,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
 
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
 
         val shippingCourierUiModel = ShippingCourierUiModel()
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
@@ -496,12 +505,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
 
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
 
         val shippingCourierUiModel = ShippingCourierUiModel()
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
@@ -603,12 +613,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
 
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
 
         val shippingCourierUiModel = ShippingCourierUiModel()
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
@@ -694,6 +705,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -768,6 +780,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -824,6 +837,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -897,6 +911,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -970,6 +985,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1027,6 +1043,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1082,6 +1099,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1136,6 +1154,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1157,7 +1176,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun `WHEN get shipping rates schedule success with bo code THEN should hit validate use`() {
         // Given
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
         val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
         val shippingRecommendationData =
@@ -1210,6 +1229,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1227,7 +1247,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun `WHEN get shipping rates schedule got error courier with bo code THEN should not hit validate use`() {
         // Given
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
         val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
         val shippingRecommendationData =
@@ -1270,6 +1290,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1291,7 +1312,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     @Test
     fun `WHEN get shipping rates schedule got error courier THEN should not hit validate use`() {
         // Given
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
         val ratesResponse = DataProvider.provideRatesV3Response()
         val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
         val shippingRecommendationData =
@@ -1334,6 +1355,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1374,6 +1396,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1417,6 +1440,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1468,6 +1492,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1534,6 +1559,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1587,6 +1613,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1627,6 +1654,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1694,6 +1722,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1763,6 +1792,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1850,6 +1880,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1968,6 +1999,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                     )
                 )
             ),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2037,6 +2069,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shippingId = 1, spId = 1),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2215,6 +2248,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2242,6 +2276,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
                 CheckoutCostModel(
                     totalPrice = 100.0,
                     totalPriceString = "Rp100",
@@ -2279,6 +2314,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2306,6 +2342,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
                 CheckoutCostModel(),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel()
@@ -2335,6 +2372,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(isLoading = true)),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2359,6 +2397,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(isLoading = false)),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2393,12 +2432,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
 
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
 
         coEvery {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
@@ -2465,12 +2505,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
 
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
 
         val ioException = IOException("error")
         coEvery {
@@ -2521,12 +2562,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
 
-        logisticProcessor.isBoUnstackEnabled = true
+        logisticCartProcessor.isBoUnstackEnabled = true
 
         val exception = AkamaiErrorException("error akamai")
         coEvery {
@@ -2620,6 +2662,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2675,6 +2718,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2725,6 +2769,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -2779,6 +2824,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             orderModel,
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()

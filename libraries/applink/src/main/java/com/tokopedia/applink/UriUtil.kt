@@ -302,6 +302,23 @@ object UriUtil {
         return stringBuilder.toString()
     }
 
+    /**
+     * Input: key=value1&key2=value2 in map
+     * output: key=value1&key2=value2 in string
+     */
+    fun buildQueryParamToString(
+        queryParameters: Map<String, String>
+    ): String {
+        val stringBuilder = StringBuilder("")
+        var i = 0
+        for ((key, value) in queryParameters) {
+            if (i > 0) stringBuilder.append("&")
+            stringBuilder.append(key).append("=").append(value)
+            i++
+        }
+        return stringBuilder.toString()
+    }
+
     @JvmStatic
     fun uriQueryParamsToMap(url: String): Map<String, String> {
         return (uriQueryParamsToMap(Uri.parse(url)))
@@ -318,7 +335,7 @@ object UriUtil {
     }
 
     @JvmStatic
-    fun stringQueryParamsToMap(query: String?): Map<String, String> {
+    fun stringQueryParamsToMap(query: String?): MutableMap<String, String> {
         val map: MutableMap<String, String> = HashMap()
         try {
             if (!query.isNullOrEmpty()) {

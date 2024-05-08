@@ -372,4 +372,11 @@ class DiscountBulkApplyBottomSheetTest {
         //Then
         assertEquals(benefitName, actual)
     }
+
+    @Test
+    fun `When setMaxDate called, then getMaxDate should return given max date`() {
+        val mockMaxDate = Date()
+        viewModel.setMaxDate(mockMaxDate)
+        assert(viewModel.getMaxDate() == mockMaxDate)
+    }
 }

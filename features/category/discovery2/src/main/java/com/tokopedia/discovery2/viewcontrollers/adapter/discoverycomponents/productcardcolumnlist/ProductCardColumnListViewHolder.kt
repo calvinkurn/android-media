@@ -96,11 +96,10 @@ class ProductCardColumnListViewHolder(
             }
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .viewProductsList(
-                    componentsItems = componentsItem.getComponentItem(itemPosition)
-                        ?: ComponentsItem(),
+                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
-                    isFulFillment = componentsItem.isFulfillment(product),
-                    warehouseId = componentsItem.getWarehouseId(product)
+                    isFulFillment = components.isFulfillment(product),
+                    warehouseId = components.getWarehouseId(product)
                 )
 
             trackTopAdsImpression(itemPosition)
@@ -121,11 +120,10 @@ class ProductCardColumnListViewHolder(
 
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(
-                    componentsItems = componentsItem.getComponentItem(itemPosition)
-                        ?: ComponentsItem(),
+                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
-                    isFulFillment = componentsItem.isFulfillment(product),
-                    warehouseId = componentsItem.getWarehouseId(product)
+                    isFulFillment = components.isFulfillment(product),
+                    warehouseId = components.getWarehouseId(product)
                 )
 
             trackTopAdsClick(itemPosition)
@@ -187,8 +185,8 @@ class ProductCardColumnListViewHolder(
         )
         carouselPagingProductCard.addHorizontalTrackListener(
             SlideTrackObject(
-                moduleName = viewModel?.componentsItem?.creativeName.orEmpty(),
-                barName = viewModel?.componentsItem?.creativeName.orEmpty(),
+                moduleName = viewModel?.components?.creativeName.orEmpty(),
+                barName = viewModel?.components?.creativeName.orEmpty(),
             )
         )
     }

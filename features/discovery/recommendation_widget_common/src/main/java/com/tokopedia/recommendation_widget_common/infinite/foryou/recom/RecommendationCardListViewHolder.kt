@@ -8,11 +8,10 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.layout.ProductConstraintLayout
+import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogRealtimeClickModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asAdsLogShowModel
@@ -28,7 +27,7 @@ class RecommendationCardListViewHolder(
     RecommendationCardModel::class.java
 ), AppLogRecTriggerInterface {
 
-    private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
+    private val productCardView by lazy { itemView.findViewById<ProductCardListView>(R.id.productCardView) }
 
     private var recTriggerObject = RecommendationTriggerObject()
 

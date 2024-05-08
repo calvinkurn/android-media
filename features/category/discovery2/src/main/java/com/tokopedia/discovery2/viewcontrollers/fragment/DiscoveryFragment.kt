@@ -46,6 +46,7 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -293,7 +294,9 @@ open class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
-    var currentTabPosition: Int? = null
+
+    // current index of navigation tab in the page.
+    private var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
         private set
     private var isFromForcedNavigation = false
@@ -670,9 +673,9 @@ open class DiscoveryFragment :
                         )
                 ) {
                     lastVisibleComponent = getComponent(
-                            lastVisibleComponent!!.parentComponentId,
-                            lastVisibleComponent!!.pageEndPoint
-                        )
+                        lastVisibleComponent!!.parentComponentId,
+                        lastVisibleComponent!!.pageEndPoint
+                    )
                 }
             }
         }
@@ -721,35 +724,39 @@ open class DiscoveryFragment :
     private fun renderSpanSize() {
         gridLayoutManager?.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val template = discoveryAdapter.componentList[position].properties?.template
-                val name = discoveryAdapter.componentList[position].name
-                return when (name) {
-                    ComponentNames.CalendarWidgetItem.componentName -> 1
-                    ComponentNames.ShimmerCalendarWidget.componentName -> 1
-                    ComponentNames.BannerInfiniteItem.componentName -> 1
-                    ComponentNames.ShopCardItemView.componentName -> 1
-                    ComponentNames.ContentCardItem.componentName -> 1
-                    ComponentNames.ContentCardEmptyState.componentName -> 1
-                    ComponentNames.ProductCardRevampItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.MasterProductCardItemList.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.MasterProductCardItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.MasterProductCardItemListReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItemList.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardCarouselItemListReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleCarouselItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSingleItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ProductCardSingleItemReimagine.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ShopOfferHeroBrandProductItem.componentName -> if (template == LIST) 2 else 1
-                    ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
-                    else -> 2
-                }
-            }
+                if (position >= 0 && position < discoveryAdapter.componentList.size) {
+                    val component = discoveryAdapter.componentList.getOrNull(position)
+                    val template = component?.properties?.template
+                    val name = component?.name
+                    return when (name) {
+                        ComponentNames.CalendarWidgetItem.componentName,
+                        ComponentNames.ShimmerCalendarWidget.componentName,
+                        ComponentNames.BannerInfiniteItem.componentName,
+                        ComponentNames.ShopCardItemView.componentName,
+                        ComponentNames.ContentCardItem.componentName,
+                        ComponentNames.ContentCardEmptyState.componentName -> 1
 
+                        ComponentNames.ProductCardRevampItem.componentName,
+                        ComponentNames.MasterProductCardItemList.componentName,
+                        ComponentNames.MasterProductCardItemReimagine.componentName,
+                        ComponentNames.MasterProductCardItemListReimagine.componentName,
+                        ComponentNames.ProductCardCarouselItem.componentName,
+                        ComponentNames.ProductCardCarouselItemList.componentName,
+                        ComponentNames.ProductCardCarouselItemReimagine.componentName,
+                        ComponentNames.ProductCardCarouselItemListReimagine.componentName,
+                        ComponentNames.ProductCardSprintSaleItem.componentName,
+                        ComponentNames.ProductCardSprintSaleItemReimagine.componentName,
+                        ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+                        ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
+                        ComponentNames.ProductCardSingleItem.componentName,
+                        ComponentNames.ProductCardSingleItemReimagine.componentName,
+                        ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                        ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
+
+                        else -> 2
+                    }
+                } else return 0
+            }
         }
     }
 
@@ -1750,7 +1757,14 @@ open class DiscoveryFragment :
 
     private fun checkTabPositionBeforeRefresh() {
         if (!isFromCategory && currentTabPosition != null) {
-            this.arguments?.putString(ACTIVE_TAB, (currentTabPosition).toString())
+            this.arguments?.putString(
+                QUERY_PARENT,
+                Utils.upsertQueryParam(
+                    this.arguments?.getString(QUERY_PARENT) ?: "",
+                    ACTIVE_TAB,
+                    (currentTabPosition).toString()
+                )
+            )
         }
     }
 
@@ -2665,5 +2679,14 @@ open class DiscoveryFragment :
 
     override fun getPageName(): String {
         return pageInfoHolder?.label?.trackingPagename.orEmpty()
+    }
+
+    fun setCurrentTabPosition(tabPosition: Int) {
+        currentTabPosition = tabPosition
+        val tabPositionString = tabPosition.toString()
+        discoComponentQuery?.let {
+            it[ACTIVE_TAB] = tabPositionString
+        }
+        arguments?.putString(ACTIVE_TAB, tabPositionString)
     }
 }

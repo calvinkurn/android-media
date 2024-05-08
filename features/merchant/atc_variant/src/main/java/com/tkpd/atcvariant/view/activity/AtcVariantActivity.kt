@@ -17,6 +17,10 @@ import com.tokopedia.analytics.byteio.IAppLogActivity
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.extraGetString
+import com.tokopedia.kotlin.extensions.intentGetBoolean
+import com.tokopedia.kotlin.extensions.intentGetParcelable
+import com.tokopedia.kotlin.extensions.intentGetString
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
@@ -36,7 +40,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     }
 
     private val sharedViewModel by lazy {
-        ViewModelProvider(this).get(AtcVariantSharedViewModel::class.java)
+        ViewModelProvider(this)[AtcVariantSharedViewModel::class.java]
     }
 
     override fun getNewFragment(): Fragment? = null
@@ -46,46 +50,10 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val uri = intent.data
-        val bundle = intent.extras
-        val productId = if (uri != null) {
-            uri.pathSegments.getOrNull(1) ?: ""
-        } else {
-            ""
-        }
-
-        val shopId = if (uri != null) {
-            uri.lastPathSegment ?: ""
-        } else {
-            ""
-        }
-
-        val paramsData = ProductVariantBottomSheetParams()
-
-        if (bundle != null) {
-            paramsData.isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
-            paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
-            paramsData.trackerCdListName = bundle.getString(CD_LIST_EXTRA, "")
-            paramsData.productId = productId
-            paramsData.shopId = shopId
-            paramsData.cacheId = bundle.getString(ATC_VARIANT_CACHE_ID, "") ?: ""
-            paramsData.dismissAfterTransaction = intent
-                .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
-            paramsData.saveAfterClose = intent
-                .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
-            paramsData.extParams = intent
-                .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
-            paramsData.showQtyEditor = intent
-                .getBooleanExtra(AtcVariantHelper.KEY_SHOW_QTY_EDITOR, false)
-        }
-
+        val paramsData = getParamsFromBundle()
         super.onCreate(savedInstanceState)
+
         adjustOrientation()
-        try {
-            window.setDimAmount(0f)
-        } catch (th: Throwable) {
-            Timber.e(th)
-        }
 
         observeData()
 
@@ -94,6 +62,41 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
         showImmediately(supportFragmentManager, KEY_BS_VARIANT) {
             AtcVariantBottomSheet()
         }
+    }
+
+    private fun getParamsFromBundle(): ProductVariantBottomSheetParams {
+        val paramsData = ProductVariantBottomSheetParams().apply {
+            val uri = intent.data
+            // get data from path of segments
+            productId = uri?.pathSegments?.getOrNull(1).orEmpty()
+            shopId = uri?.lastPathSegment.orEmpty()
+
+            // get data from appLink query / intent extras
+            isTokoNow = extraGetString(key = TOKO_NOW_EXTRA, defaultValue = "false").toBoolean()
+            pageSource = extraGetString(key = PAGE_SOURCE_EXTRA)
+            trackerCdListName = extraGetString(key = CD_LIST_EXTRA)
+
+            // get data from intent
+            cacheId = intentGetString(key = ATC_VARIANT_CACHE_ID)
+            dismissAfterTransaction = intentGetBoolean(key = AtcVariantHelper.KEY_DISMISS_AFTER_ATC)
+            saveAfterClose = intentGetBoolean(
+                key = AtcVariantHelper.KEY_SAVE_AFTER_CLOSE,
+                defaultValue = true
+            )
+            extParams = intentGetString(key = AtcVariantHelper.KEY_EXT_PARAMS)
+            showQtyEditor = intentGetBoolean(
+                key = AtcVariantHelper.KEY_SHOW_QTY_EDITOR,
+                defaultValue = false
+            )
+            changeVariantOnCart = intentGetParcelable(
+                key = AtcVariantHelper.KEY_CHANGE_VARIANT
+            ) ?: ProductVariantBottomSheetParams.ChangeVariant()
+
+            dismissWhenTransactionError = intentGetBoolean(
+                key = AtcVariantHelper.KEY_DISMISS_WHEN_TRANSACTION_ERROR
+            )
+        }
+        return paramsData
     }
 
     private fun observeData() {
@@ -111,6 +114,12 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     private fun adjustOrientation() {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        try {
+            window.setDimAmount(0f)
+        } catch (th: Throwable) {
+            Timber.e(th)
         }
     }
 

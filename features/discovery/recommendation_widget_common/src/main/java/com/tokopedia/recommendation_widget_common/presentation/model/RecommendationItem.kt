@@ -130,6 +130,7 @@ data class RecommendationItem(
         if (addToCartType != other.addToCartType) return false
         if (currentQuantity != other.currentQuantity) return false
         if (specs != other.specs) return false
+        if (recommendationAdsLog != other.recommendationAdsLog) return false
 
         return true
     }
@@ -180,6 +181,7 @@ data class RecommendationItem(
         result = HASH_CODE * result + addToCartType.hashCode()
         result = HASH_CODE * result + currentQuantity.hashCode()
         result = HASH_CODE * result + specs.hashCode()
+        result = HASH_CODE * result + recommendationAdsLog.hashCode()
         return result
     }
 

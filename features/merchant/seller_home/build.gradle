@@ -8,6 +8,7 @@ android {
     testNamespace 'com.tokopedia.sellerhome.test'
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
 
     defaultConfig {
@@ -50,6 +51,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
 
     //libs
+    implementation projectOrAar(rootProject.ext.libraries.inappupdate)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)

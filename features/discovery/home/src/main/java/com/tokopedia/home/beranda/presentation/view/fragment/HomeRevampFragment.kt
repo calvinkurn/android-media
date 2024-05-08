@@ -9,7 +9,9 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -40,9 +42,9 @@ import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.search.AppLogSearch
-import com.tokopedia.analytics.performance.perf.*
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
+import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -50,6 +52,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -281,7 +284,6 @@ open class HomeRevampFragment :
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN = 131
-        private const val REQUEST_CODE_LOGIN_WIDGET_LOGIN = 133
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -337,6 +339,7 @@ open class HomeRevampFragment :
         private const val POSITION_ARRAY_Y = 1
         private const val isPageRefresh = true
         private const val DEFAULT_BLOCK_SIZE = 6
+        private const val FPS_TRACER_HOME = "Home Scene"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -697,6 +700,8 @@ open class HomeRevampFragment :
         setupStatusBar()
         setupHomeRecyclerView()
         initEggDragListener()
+
+        homeRecyclerView?.bindFpsTracer(FPS_TRACER_HOME)
         return view
     }
 
@@ -1100,13 +1105,17 @@ open class HomeRevampFragment :
 
     override fun onLoginWidgetClick() {
         LoginWidgetTracking.sendLoginClick()
-        goToLogin(REQUEST_CODE_LOGIN_WIDGET_LOGIN)
+        goToLogin()
     }
 
-    fun goToLogin(requestCode: Int) {
+    fun goToLogin() {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            startActivityForResult(intent, requestCode)
+            intent.putExtra(
+                ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER,
+                ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE
+            )
+            startActivity(intent)
         }
     }
 
@@ -1901,15 +1910,6 @@ open class HomeRevampFragment :
                         it.startActivity(intentHome)
                     }
                     it.finish()
-                }
-            }
-
-            REQUEST_CODE_LOGIN_WIDGET_LOGIN -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-                    if (isSuccessRegister && getUserSession().isLoggedIn) {
-                        gotoNewUserZonePage()
-                    }
                 }
             }
         }

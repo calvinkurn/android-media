@@ -3,6 +3,10 @@ package com.tokopedia.oneclickcheckout.order.view
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
+import com.tokopedia.checkoutpayment.domain.CreditCardTenorListUseCase
+import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
+import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
@@ -11,10 +15,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
-import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
-import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
-import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
@@ -35,6 +36,7 @@ import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -160,9 +162,13 @@ open class BaseOrderSummaryPageViewModelTest {
             ),
             {
                 OrderSummaryPagePaymentProcessor(
-                    creditCardTenorListUseCase,
-                    goCicilInstallmentOptionUseCase,
-                    dynamicPaymentFeeUseCase,
+                    PaymentProcessor(
+                        creditCardTenorListUseCase,
+                        goCicilInstallmentOptionUseCase,
+                        dynamicPaymentFeeUseCase,
+                        mockk(),
+                        testDispatchers
+                    ),
                     testDispatchers
                 )
             },

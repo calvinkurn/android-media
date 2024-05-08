@@ -41,7 +41,7 @@ import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollect
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class OnboardProgressiveBottomSheet: BottomSheetUnify() {
+class OnboardProgressiveBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var kycSharedPreference: KycSharedPreference
@@ -185,7 +185,8 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                     val parameter = GotoKycMainParam(
                         projectId = projectId,
                         challengeId = it.challengeId,
-                        callback = callback
+                        callback = callback,
+                        sourcePage = source
                     )
                     gotoDobChallenge(parameter)
                 }
@@ -321,7 +322,6 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                 }
             }
     }
-
 }
 
 data class DobChallengeExhaustedParam(

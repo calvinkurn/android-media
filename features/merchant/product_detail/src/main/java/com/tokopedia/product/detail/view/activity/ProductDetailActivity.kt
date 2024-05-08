@@ -402,7 +402,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         p1NetworkPerformanceMonitoring?.startTrace(P1_NETWORK_PERF_TRACE_NAME)
 
         blocksPerformanceTrace = BlocksPerformanceTrace(
-            context = this,
+            activity = this,
             traceName = "perf_trace_pdp",
             scope = lifecycleScope,
             touchListenerActivity = this,

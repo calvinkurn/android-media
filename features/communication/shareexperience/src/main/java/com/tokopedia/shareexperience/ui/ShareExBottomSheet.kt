@@ -238,7 +238,7 @@ class ShareExBottomSheet :
                 ShareExLogger.logExceptionToServerLogger(
                     it.error,
                     userSession.deviceId,
-                    it.errorHistory.joinToString { enum-> enum.name }
+                    it.errorHistory.joinToString { enum -> enum.name }
                 )
             }
 
@@ -264,7 +264,7 @@ class ShareExBottomSheet :
                     ShareExChannelEnum.OTHERS -> it.intent?.let { intent -> openIntentChooser(intent) }
                     else -> {
                         it.intent?.let { intent ->
-                            when(intent.type) {
+                            when (intent.type) {
                                 // Mime Type intent need additional steps
                                 ShareExMimeTypeEnum.IMAGE.textType -> {
                                     handleImageIntent(it)
@@ -361,8 +361,8 @@ class ShareExBottomSheet :
     private fun handleCopyLinkIntent(intentUiState: ShareExChannelIntentUiState) {
         val isSuccessCopy = context?.copyTextToClipboard(intentUiState.shortLink)
         if (isSuccessCopy == true) {
-            dismiss()
             listener?.onSuccessCopyLink()
+            dismiss()
         }
     }
 
@@ -384,7 +384,7 @@ class ShareExBottomSheet :
 
     private fun openIntentChooser(intent: Intent) {
         val intentChooser = Intent.createChooser(intent, DEFAULT_TITLE)
-         navigateWithIntent(intentChooser)
+        navigateWithIntent(intentChooser)
         dismiss()
     }
 

@@ -13,7 +13,9 @@ data class TokoPlusBadgeResponse(
 
 data class RestrictValidateRestrictionModel(
     @SerializedName("metaResponse")
-    val metaResponse: List<RestrictMetaModel> = listOf()
+    val metaResponse: List<RestrictMetaModel> = listOf(),
+    @SerializedName("dataResponse")
+    val dataResponse: List<RestrictMetaDataModel> = emptyList()
 )
 
 data class RestrictMetaModel(

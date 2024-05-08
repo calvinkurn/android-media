@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
+import android.provider.Settings.Global
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +9,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -32,6 +33,7 @@ class DiscoveryRecycleAdapter(
     companion object {
         private var noOfObject = 0
     }
+
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
     private var _componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get(
@@ -92,7 +94,13 @@ class DiscoveryRecycleAdapter(
                         position
                     )
                 ) {
+                    // id to help tracking automation, only to debug apk only
                     holder.bindView(this, parentComponent)
+                    if (GlobalConfig.isAllowDebuggingTools()) {
+                        if (this.components.id.isNotEmpty()) {
+                            holder.itemView.contentDescription = "componentID-" + this.components.id
+                        }
+                    }
                 }
             }
         } catch (e: UIWidgetUninitializedException) {

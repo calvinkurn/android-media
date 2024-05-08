@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import app.cash.turbine.test
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.inboxcommon.RoleType.Companion.BUYER
@@ -11,11 +11,15 @@ import com.tokopedia.inboxcommon.util.FileUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
-import com.tokopedia.topchat.chatlist.domain.pojo.*
+import com.tokopedia.topchat.chatlist.data.util.TopChatListResourceProvider
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListResponse
+import com.tokopedia.topchat.chatlist.domain.pojo.TopChatListFilterEnum
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
@@ -35,6 +39,7 @@ import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Compa
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.OPERATIONAL_INSIGHT_NEXT_MONDAY
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
+import com.tokopedia.topchat.common.data.TopChatResult
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
@@ -45,15 +50,28 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.invoke
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -85,12 +103,14 @@ class ChatItemListViewModelTest {
     @RelaxedMockK
     lateinit var cacheManager: TopchatCacheManager
 
+    @RelaxedMockK
+    lateinit var resourceProvider: TopChatListResourceProvider
+
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
     private val broadCastButtonVisibilityObserver: Observer<Boolean> = mockk(relaxed = true)
     private val broadCastButtonUrlObserver: Observer<String> = mockk(relaxed = true)
     private val chatBannedSellerStatusObserver: Observer<Result<Boolean>> = mockk(relaxed = true)
-    private val isWhitelistTopBotObserver: Observer<Boolean> = mockk(relaxed = true)
     private val isChatAdminEligibleObserver: Observer<Result<Boolean>> = mockk(relaxed = true)
 
     private lateinit var viewModel: ChatItemListViewModel
@@ -111,6 +131,7 @@ class ChatItemListViewModelTest {
             getChatBlastSellerMetaDataUseCase,
             cacheManager,
             userSession,
+            resourceProvider,
             CoroutineTestDispatchersProvider
         )
         viewModel.mutateChatList.observeForever(mutateChatListObserver)
@@ -118,7 +139,6 @@ class ChatItemListViewModelTest {
         viewModel.broadCastButtonVisibility.observeForever(broadCastButtonVisibilityObserver)
         viewModel.broadCastButtonUrl.observeForever(broadCastButtonUrlObserver)
         viewModel.chatBannedSellerStatus.observeForever(chatBannedSellerStatusObserver)
-        viewModel.isWhitelistTopBot.observeForever(isWhitelistTopBotObserver)
         viewModel.isChatAdminEligible.observeForever(isChatAdminEligibleObserver)
 
         mockkObject(ChatItemListViewModel.Companion)
@@ -127,7 +147,7 @@ class ChatItemListViewModelTest {
     @Test fun `getChatListMessage should return chat list of messages`() {
         // given
         val expectedValue = Success(getChatList)
-        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.filter = TopChatListFilterEnum.FILTER_ALL
 
         coEvery {
             getChatListUseCase.invoke(any())
@@ -136,7 +156,7 @@ class ChatItemListViewModelTest {
         }
 
         // when
-        viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
+        viewModel.getChatListMessage(0, TopChatListFilterEnum.FILTER_ALL, PARAM_TAB_USER)
 
         // then
         assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
@@ -145,7 +165,7 @@ class ChatItemListViewModelTest {
     @Test fun `getChatListMessage as buyer should return chat list of messages`() {
         // given
         val expectedValue = Success(getChatList)
-        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.filter = TopChatListFilterEnum.FILTER_ALL
 
         coEvery {
             getChatListUseCase.invoke(any())
@@ -163,7 +183,7 @@ class ChatItemListViewModelTest {
     @Test fun `getChatListMessage as seller should return chat list of messages`() {
         // given
         val expectedValue = Success(getChatList)
-        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.filter = TopChatListFilterEnum.FILTER_ALL
 
         coEvery {
             getChatListUseCase.invoke(any())
@@ -187,7 +207,7 @@ class ChatItemListViewModelTest {
     @Test fun `getChatListMessage as undefined should return chat list of messages as buyer`() {
         // given
         val expectedValue = Success(getChatList)
-        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.filter = TopChatListFilterEnum.FILTER_ALL
 
         coEvery {
             getChatListUseCase.invoke(any())
@@ -205,14 +225,14 @@ class ChatItemListViewModelTest {
     @Test fun `getChatListMessage should throw the Fail state`() {
         // given
         val expectedValue = Exception("")
-        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.filter = TopChatListFilterEnum.FILTER_ALL
 
         coEvery {
             getChatListUseCase.invoke(any())
         } throws expectedValue
 
         // when
-        viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
+        viewModel.getChatListMessage(0, TopChatListFilterEnum.FILTER_ALL, PARAM_TAB_USER)
 
         // then
         verify(exactly = 1) { mutateChatListObserver.onChanged(Fail(expectedValue)) }
@@ -220,8 +240,8 @@ class ChatItemListViewModelTest {
 
     @Test fun `buyer tab should be eligible to get chat list message`() {
         // when
-        viewModel.filter = PARAM_FILTER_ALL
-        viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
+        viewModel.filter = TopChatListFilterEnum.FILTER_ALL
+        viewModel.getChatListMessage(0, TopChatListFilterEnum.FILTER_ALL, PARAM_TAB_USER)
 
         // then
         verify(exactly = 0) {
@@ -234,7 +254,7 @@ class ChatItemListViewModelTest {
 
     @Test fun `buyer role should be eligible to get chat list message`() {
         // when
-        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.filter = TopChatListFilterEnum.FILTER_ALL
         viewModel.getChatListMessage(0, BUYER)
 
         // then
@@ -845,106 +865,225 @@ class ChatItemListViewModelTest {
     }
 
     @Test
-    fun should_invoke_onSuccess_when_success_load_top_bot_whitelist() {
-        // Given
-        val expectedResponse = ChatWhitelistFeatureResponse(
-            ChatWhitelistFeature(isWhitelist = true)
-        )
-        every {
-            chatWhitelistFeature.getWhiteList(any(), captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(ChatWhitelistFeatureResponse) -> Unit>()
-            onSuccess.invoke(expectedResponse)
+    fun should_give_true_when_success_load_top_bot_whitelist() {
+        runTest {
+            // Given
+            val expectedResponse = ChatWhitelistFeatureResponse(
+                ChatWhitelistFeature(isWhitelist = true)
+            )
+            coEvery {
+                chatWhitelistFeature(any())
+            } returns flow {
+                emit(TopChatResult.Loading)
+                delay(10)
+                emit(TopChatResult.Success(expectedResponse))
+            }
+
+            viewModel.isWhitelistTopBot.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.loadTopBotWhiteList()
+
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(null, initialValue)
+
+                val updatedValue = awaitItem()
+                assertEquals(true, updatedValue)
+
+                expectNoEvents()
+            }
         }
-
-        // When
-        viewModel.loadTopBotWhiteList()
-
-        // Then
-        assertTrue(viewModel.isWhitelistTopBot.value ?: false)
     }
 
     @Test
-    fun should_invoke_onSuccess_when_success_load_top_bot_whitelist_but_false() {
-        // Given
-        val expectedResponse = ChatWhitelistFeatureResponse(
-            ChatWhitelistFeature(isWhitelist = false)
-        )
-        every {
-            chatWhitelistFeature.getWhiteList(any(), captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(ChatWhitelistFeatureResponse) -> Unit>()
-            onSuccess.invoke(expectedResponse)
+    fun should_give_false_when_success_load_top_bot_whitelist_but_false() {
+        runTest {
+            // Given
+            val expectedResponse = ChatWhitelistFeatureResponse(
+                ChatWhitelistFeature(isWhitelist = false)
+            )
+            coEvery {
+                chatWhitelistFeature(any())
+            } returns flow {
+                emit(TopChatResult.Loading)
+                delay(10)
+                emit(TopChatResult.Success(expectedResponse))
+            }
+
+            viewModel.isWhitelistTopBot.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.loadTopBotWhiteList()
+
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(null, initialValue)
+
+                val updatedValue = awaitItem()
+                assertEquals(false, updatedValue)
+
+                expectNoEvents()
+            }
         }
-
-        // When
-        viewModel.loadTopBotWhiteList()
-
-        // Then
-        assertFalse(viewModel.isWhitelistTopBot.value ?: true)
     }
 
     @Test
-    fun should_invoke_onError_when_error_load_top_bot_whitelist() {
-        // Given
-        val expectedThrowable = Throwable("Oops!")
-        every {
-            chatWhitelistFeature.getWhiteList(any(), any(), captureLambda())
-        } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(expectedThrowable)
+    fun should_give_false_when_error_load_top_bot_whitelist() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            coEvery {
+                chatWhitelistFeature(any())
+            } returns flow {
+                emit(TopChatResult.Loading)
+                delay(10)
+                emit(TopChatResult.Error(expectedThrowable))
+            }
+
+            viewModel.isWhitelistTopBot.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.loadTopBotWhiteList()
+
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(null, initialValue)
+
+                val updatedValue = awaitItem()
+                assertEquals(false, updatedValue)
+
+                expectNoEvents()
+            }
         }
-
-        // When
-        viewModel.loadTopBotWhiteList()
-
-        // Then
-        assertEquals(null, viewModel.isWhitelistTopBot.value)
     }
 
     @Test
-    fun should_give_2_filter_titles_when_buyer() {
-        // Given
-        val testContext: Context = mockk(relaxed = true)
-        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "")
+    fun should_give_false_when_error_call_gql_load_top_bot_whitelist() {
+        runTest {
+            // Given
+            val expectedThrowable = Throwable("Oops!")
+            coEvery {
+                chatWhitelistFeature(any())
+            } throws expectedThrowable
 
-        // When
-        val result = viewModel.getFilterTitles(testContext, false)
+            viewModel.isWhitelistTopBot.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.loadTopBotWhiteList()
 
-        // Then
-        assertEquals(2, result.size)
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(null, initialValue)
+
+                val updatedValue = awaitItem()
+                assertEquals(false, updatedValue)
+
+                expectNoEvents()
+            }
+        }
+    }
+
+    @Test
+    fun should_give_3_filter_titles_when_buyer() {
+        runTest {
+            // Given
+            val expectedResponse = ChatWhitelistFeatureResponse(
+                ChatWhitelistFeature(isWhitelist = true)
+            )
+            coEvery {
+                chatWhitelistFeature(any())
+            } returns flow {
+                emit(TopChatResult.Loading)
+                delay(10)
+                emit(TopChatResult.Success(expectedResponse))
+            }
+
+            viewModel.chatListFilterUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.loadTopBotWhiteList()
+
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(3, initialValue.filterListBuyer.size)
+
+                val updatedValue = awaitItem()
+                assertEquals(3, updatedValue.filterListBuyer.size)
+
+                expectNoEvents()
+            }
+        }
     }
 
     @Test
     fun should_give_3_filter_titles_when_seller_default() {
-        // Given
-        val testContext: Context = mockk(relaxed = true)
-        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "")
+        runTest {
+            // Given
+            val expectedResponse = ChatWhitelistFeatureResponse(
+                ChatWhitelistFeature(isWhitelist = false)
+            )
+            coEvery {
+                chatWhitelistFeature(any())
+            } returns flow {
+                emit(TopChatResult.Loading)
+                delay(10)
+                emit(TopChatResult.Success(expectedResponse))
+            }
 
-        // When
-        val result = viewModel.getFilterTitles(testContext, true)
+            viewModel.chatListFilterUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.loadTopBotWhiteList()
 
-        // Then
-        assertEquals(3, result.size)
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(0, initialValue.filterListSeller.size)
+
+                val updatedValue = awaitItem()
+                assertEquals(3, updatedValue.filterListSeller.size)
+
+                expectNoEvents()
+            }
+        }
     }
 
     @Test
     fun should_give_4_filter_titles_when_seller_whitelisted() {
-        // Given
-        val testContext: Context = mockk(relaxed = true)
-        ChatItemListViewModel.arrayFilterParam = arrayListOf("", "", "", "")
+        runTest {
+            // Given
+            val expectedResponse = ChatWhitelistFeatureResponse(
+                ChatWhitelistFeature(isWhitelist = true)
+            )
+            coEvery {
+                chatWhitelistFeature(any())
+            } returns flow {
+                emit(TopChatResult.Loading)
+                delay(10)
+                emit(TopChatResult.Success(expectedResponse))
+            }
 
-        // When
-        val result = viewModel.getFilterTitles(testContext, true)
+            viewModel.chatListFilterUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.loadTopBotWhiteList()
 
-        // Then
-        assertEquals(4, result.size)
+                // Then
+                val initialValue = awaitItem()
+                assertEquals(0, initialValue.filterListSeller.size)
+
+                val updatedValue = awaitItem()
+                assertEquals(4, updatedValue.filterListSeller.size)
+
+                expectNoEvents()
+            }
+        }
     }
 
     @Test
     fun does_have_filter() {
         // Give
-        viewModel.filter = ChatListQueriesConstant.PARAM_FILTER_UNREAD
+        viewModel.filter = TopChatListFilterEnum.FILTER_UNREAD
 
         // When
         val result = viewModel.hasFilter()
