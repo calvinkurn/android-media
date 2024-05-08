@@ -19,7 +19,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 internal class ProductSummaryListViewComponent(
     private val view: RecyclerView,
-    listener: Listener,
+    listener: Listener
 ) : ViewComponent(view) {
 
     private val adapter = ProductSummaryAdapter(object : ProductSummaryViewHolder.Body.Listener {
@@ -45,25 +45,27 @@ internal class ProductSummaryListViewComponent(
         productSectionList: List<ProductTagSectionUiModel>,
         isEligibleForPin: Boolean,
         isProductNumerationShown: Boolean,
-        selectedAccount: ContentAccountUiModel,
-        ) {
-        var productIdx = 0 //Product Index
+        selectedAccount: ContentAccountUiModel
+    ) {
+        var productIdx = 0 // Product Index
         val finalList = buildList {
             productSectionList.forEachIndexed { idx, section ->
                 /** Don't display section title if its at the top && title is empty */
-                if(idx != 0 || section.name.isNotEmpty()) {
+                if (idx != 0 || section.name.isNotEmpty()) {
                     add(ProductSummaryAdapter.Model.Header(section.name, section.campaignStatus))
                 }
 
-                addAll(section.products.map { product ->
-                    productIdx += 1 //if numeration is not available / in prep page use hard-coded
-                    ProductSummaryAdapter.Model.Body(
-                        product = product.copy(number = product.number.ifBlank { "$productIdx" }),
-                        isEligibleForPin = isEligibleForPin,
-                        isNumerationShown = isProductNumerationShown,
-                        selectedAccount = selectedAccount
-                    )
-                })
+                addAll(
+                    section.products.map { product ->
+                        productIdx += 1 // if numeration is not available / in prep page use hard-coded
+                        ProductSummaryAdapter.Model.Body(
+                            product = product.copy(number = product.number.ifBlank { "$productIdx" }),
+                            isEligibleForPin = isEligibleForPin,
+                            isNumerationShown = isProductNumerationShown,
+                            selectedAccount = selectedAccount
+                        )
+                    }
+                )
             }
         }
 
@@ -71,12 +73,12 @@ internal class ProductSummaryListViewComponent(
     }
 
     fun getProductCommissionCoachMark(
-        firstProductCommissionView: (view: View) -> Unit,
+        firstProductCommissionView: (view: View) -> Unit
     ) {
         view.addOneTimeGlobalLayoutListener {
             adapter.getItems().forEachIndexed { index, _ ->
                 val holder = view.findViewHolderForAdapterPosition(index)
-                val view = holder?.itemView?.findViewById<Typography>(R.id.tv_commission_fmt)
+                val view = holder?.itemView?.findViewById<Typography>(R.id.tv_commission)
                 if (view?.isVisible == true) {
                     firstProductCommissionView.invoke(view)
                     return@addOneTimeGlobalLayoutListener
