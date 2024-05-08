@@ -32,11 +32,13 @@ import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.people.R
 import com.tokopedia.people.views.uimodel.getReviewSettings
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 
 /**
  * Created By : Jonathan Darwin on August 08, 2023
  */
+@CassavaTest
 class UserProfileSettingsUiTest {
 
     private val mockUserId = "123123"
@@ -84,28 +86,19 @@ class UserProfileSettingsUiTest {
         )
     }
 
+    @Test
+    fun userProfileSettings_toggleReviewSettings() {
+        Thread.sleep(1000)
 
-    /** Note: need to comment NestHeader first because
-     * Compose UI Test is failing due to this error within NestHeader:
-     *
-     * No static method weight$default(Landroidx/compose/foundation/layout/RowScope;Landroidx/compose/ui/Modifier;FZILjava/lang/Object;)
-     * Landroidx/compose/ui/Modifier; in class Landroidx/compose/foundation/layout/RowScope
-     *
-     * So for now, the test is commented
-     */
-//    @Test
-//    fun userProfileSettings_toggleReviewSettings() {
-//        Thread.sleep(1000)
-//
-//        composeActivityTestRule.onNodeWithText(mockProfileSettings.getReviewSettings().title).assertExists()
-//
-//        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
-//
-//        Thread.sleep(1000)
-//
-//        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
-//
-//        onView(withText(context.getString(R.string.up_error_unknown)))
-//            .check(matches(isDisplayed()))
-//    }
+        composeActivityTestRule.onNodeWithText(mockProfileSettings.getReviewSettings().title).assertExists()
+
+        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
+
+        Thread.sleep(1000)
+
+        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
+
+        onView(withText(context.getString(R.string.up_error_unknown)))
+            .check(matches(isDisplayed()))
+    }
 }
