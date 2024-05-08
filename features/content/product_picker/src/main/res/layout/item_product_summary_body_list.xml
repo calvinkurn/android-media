@@ -66,7 +66,7 @@
         tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_commission_fmt"
+        android:id="@+id/tv_commission"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -88,8 +88,8 @@
         android:paddingHorizontal="4dp"
         android:text="@string/product_affiliate_commission_extra"
         android:textColor="@color/Unify_GN500"
-        app:layout_constraintStart_toEndOf="@id/tv_commission_fmt"
-        app:layout_constraintTop_toTopOf="@id/tv_commission_fmt"
+        app:layout_constraintStart_toEndOf="@id/tv_commission"
+        app:layout_constraintTop_toTopOf="@id/tv_commission"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
@@ -103,8 +103,8 @@
         app:layout_constraintEnd_toStartOf="@id/tv_product_summary_original_price"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/tv_commission_fmt"
-        app:layout_constraintTop_toBottomOf="@id/tv_commission_fmt"
+        app:layout_constraintStart_toStartOf="@id/tv_commission"
+        app:layout_constraintTop_toBottomOf="@id/tv_commission"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Rp370.000" />
@@ -208,7 +208,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/product_tag_rate_fmt"
+            android:id="@+id/product_tag_rate"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_marginStart="2dp"
@@ -227,7 +227,7 @@
             app:typographyType="display_3" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/product_tag_sold_fmt"
+            android:id="@+id/product_tag_sold"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:ellipsize="end"

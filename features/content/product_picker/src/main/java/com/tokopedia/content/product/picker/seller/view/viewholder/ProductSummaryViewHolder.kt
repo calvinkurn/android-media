@@ -92,8 +92,8 @@ class ProductSummaryViewHolder private constructor() {
             binding.tvProductSummaryStock.text = String.format(ctx.getString(R.string.product_stock), item.product.stock)
             binding.tvProductSummaryName.text = item.product.name
 
-            binding.tvCommissionFmt.text = ctx.getString(R.string.product_affiliate_commission_fmt, item.product.commissionFmt)
-            binding.tvCommissionFmt.showWithCondition(item.product.hasCommission)
+            binding.tvCommission.text = ctx.getString(R.string.product_affiliate_commission_fmt, item.product.commissionFmt)
+            binding.tvCommission.showWithCondition(item.product.hasCommission)
             binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
 
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
@@ -142,8 +142,8 @@ class ProductSummaryViewHolder private constructor() {
             binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
             binding.tvSummaryProductTagNumber.text = item.product.number
 
-            binding.productTagRateFmt.text = item.product.rating
-            binding.productTagSoldFmt.text = item.product.countSold
+            binding.productTagRate.text = item.product.rating
+            binding.productTagSold.text = item.product.countSold
             binding.productTagShopBadge.loadImage(item.product.shopBadge)
             binding.productTagShopName.text = item.product.shopName
 
@@ -158,7 +158,7 @@ class ProductSummaryViewHolder private constructor() {
 
                 // hide star icon and rate text when rate empty
                 binding.productTagRateIcon.showWithCondition(item.product.rating.isNotBlank())
-                binding.productTagRateFmt.showWithCondition(item.product.rating.isNotBlank())
+                binding.productTagRate.showWithCondition(item.product.rating.isNotBlank())
 
                 // hide dots when rate or soldCount is empty
                 binding.productTagDots.showWithCondition(
@@ -166,8 +166,8 @@ class ProductSummaryViewHolder private constructor() {
                         item.product.countSold.isNotBlank()
                 )
 
-                // hide sold fmt text when countSold empty
-                binding.productTagSoldFmt.showWithCondition(item.product.countSold.isNotBlank())
+                // hide sold text when countSold empty
+                binding.productTagSold.showWithCondition(item.product.countSold.isNotBlank())
 
                 // hide shop name when shop name empty
                 binding.productTagShopName.showWithCondition(item.product.shopName.isNotBlank())
