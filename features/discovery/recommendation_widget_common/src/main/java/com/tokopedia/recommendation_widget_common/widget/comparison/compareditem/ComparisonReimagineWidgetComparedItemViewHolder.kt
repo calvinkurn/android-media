@@ -50,7 +50,6 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
         trackingQueue: TrackingQueue?,
         userSession: UserSessionInterface,
     ) {
-        recommendationItem = comparisonModel.recommendationItem
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
         binding?.productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
