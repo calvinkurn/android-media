@@ -25,6 +25,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.NewMainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
@@ -143,7 +144,8 @@ public class ConsumerSplashScreen extends SplashScreen {
         // if this SplashScreenActivity is the root means this open first time, so open Home
         // if this is not root, this SplashScreen might be triggered from opening branch link.
         if (isTaskRoot()) {
-            Intent homeIntent = new Intent(this, MainParentActivity.class);
+//            Intent homeIntent = new Intent(this, MainParentActivity.class);
+            Intent homeIntent = new Intent(this, NewMainParentActivity.class);
             startActivity(homeIntent);
         }
         finish();
