@@ -37,7 +37,7 @@ class ContainerMultiTwoSquareViewHolder(
 
     override fun bind(element: MultiTwoSquareWidgetUiModel?) {
         if (element == null) return
-        binding?.root?.setGradientBackground(element.backgroundGradientColor)
+        itemView.setGradientBackground(element.backgroundGradientColor)
 
         val visitableList = MultiTwoSquareWidgetUiModel.visitableList(element)
         if (shouldWidgetContainValidGrids(visitableList)) {

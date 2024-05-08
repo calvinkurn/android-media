@@ -4,6 +4,7 @@ import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMap
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.visitable.shorten.ItemProductWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
+import com.tokopedia.home_component.widget.card.SmallProductModel
 
 object TwoSquareProductWidgetMapper : BaseShortenWidgetMapper<ProductWidgetUiModel>() {
 
@@ -22,7 +23,12 @@ object TwoSquareProductWidgetMapper : BaseShortenWidgetMapper<ProductWidgetUiMod
             header = widget.header,
             data = widget.grids.map { grid ->
                 ItemProductWidgetUiModel(
-                    card = createSmallProductCardModel(grid, grid.labelGroup.toList()),
+                    card = createSmallProductCardModel(grid, grid.labelGroup.toList()).copy(
+                        stockBar = SmallProductModel.StockBar(
+                            isEnabled = true,
+                            percentage = grid.soldPercentage
+                        )
+                    ),
                     tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(channel, grid),
                     verticalPosition = verticalPosition
                 )

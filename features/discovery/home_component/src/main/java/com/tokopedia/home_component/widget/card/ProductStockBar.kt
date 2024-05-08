@@ -58,6 +58,6 @@ class ProductStockBar(private val view: View) {
     }
 
     companion object {
-        private const val MIN_THRESHOLD_FIRE_VISIBLE = 20
+        const val MIN_THRESHOLD_FIRE_VISIBLE = 20
     }
 }

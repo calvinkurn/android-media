@@ -4,7 +4,6 @@ import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMap
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
-import com.tokopedia.home_component.widget.card.SmallProductModel
 
 object TwoSquareThumbnailWidgetMapper : BaseShortenWidgetMapper<ThumbnailWidgetUiModel>() {
 
