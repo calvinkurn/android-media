@@ -32,7 +32,7 @@
             android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:alpha="0.03"
-            android:background="@color/Unify_Static_Black"
+            android:background="@drawable/bg_spc_light_product_banner_overlay"
             android:gravity="center"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="H,1:1"
