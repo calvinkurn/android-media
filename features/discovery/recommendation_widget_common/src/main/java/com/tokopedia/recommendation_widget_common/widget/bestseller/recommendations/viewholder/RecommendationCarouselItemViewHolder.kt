@@ -2,10 +2,12 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller.recommendat
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationCarouselItemViewHolderBinding
@@ -20,7 +22,6 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
     private var binding: RecommendationCarouselItemViewHolderBinding? by viewBinding()
 
     override fun bind(element: RecommendationCarouselItemDataModel) {
-        this.elementItem = element
         binding?.recommendationItemCard?.applyCarousel()
         binding?.recommendationItemCard?.setProductModel(element.productCardModel)
         binding?.recommendationItemCard?.setThreeDotsOnClickListener {
@@ -30,20 +31,32 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
             override fun onClick(v: View) {
                 listener.onProductClick(element.recommendationItem)
             }
-        })
 
+            override fun onAreaClicked(v: View) {
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+            }
+        })
+        binding?.recommendationItemCard?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                element.recommendationItem.sendShowAdsByteIo(itemView.context)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                element.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+            }
+
+        })
         itemView.addOnImpressionListener(element) {
             listener.onProductImpression(element.recommendationItem)
         }
-    }
-
-    override fun onViewAttachedToWindow(element: RecommendationCarouselItemDataModel?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: RecommendationCarouselItemDataModel?, visiblePercentage: Int) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     companion object {

@@ -6,7 +6,6 @@ import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
@@ -33,7 +32,6 @@ class RecommendationVerticalProductCardViewHolder(
     private val binding = ItemRecomVerticalProductcardBinding.bind(itemView)
 
     override fun bind(element: RecommendationVerticalProductCardModel) {
-        this.elementItem = element
         setupProductCardLayoutData(element.productModel)
         setupProductCardListener(element)
     }
@@ -56,32 +54,23 @@ class RecommendationVerticalProductCardViewHolder(
         binding.productCardView.recycle()
     }
 
-    override fun onViewAttachedToWindow(element: RecommendationVerticalProductCardModel?) {
-        element?.recomItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: RecommendationVerticalProductCardModel?, visiblePercentage: Int) {
-        element?.recomItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
-    }
-
     private fun setupProductCardLayoutData(productModel: ProductCardModel) {
         binding.productCardView.setProductModel(productModel)
     }
 
     private fun setupProductCardListener(element: RecommendationVerticalProductCardModel) {
-        binding.productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged{
-            override fun onShow() {
-                element.recomItem.sendShowAdsByteIo(itemView.context)
-            }
-
-            override fun onShowOver(maxPercentage: Int) {
-                element.recomItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
-            }
-        })
         with(binding.productCardView) {
             addOnImpressionListener(element.recomItem) { onProductCardImpressed(element) }
             addOnImpression1pxListener(element.recomItem.appLogImpressHolder) { onProductCardImpressed1px(element) }
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.recomItem.sendShowAdsByteIo(itemView.context)
+                }
+
+                override fun onShowOver(maxPercentage: Int) {
+                    element.recomItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                }
+            })
             setOnClickListener(object: ProductCardClickListener {
                 override fun onClick(v: View) {
                     onProductClicked(element)

@@ -22,11 +22,19 @@ open class ProductConstraintLayout : ConstraintLayout {
     private var maxHorizontalPercentage = 101
     private var minVerticalPercentage = 0
     private var maxVerticalPercentage = 101
-    private var maxVisiblePercentage = 0
+    private var maxAreaPercentage = 0
+    private val TOP = 1
+    private val BOTTOM = 3
+    private val RIGHT = 2
+    private val LEFT = 4
+    private val LEFT_AND_RIGHT = 5
+    private val TOP_AND_BOTTOM = 6
+    private val NOWHERE = 7
     private var duplicateEnabled = false
-    private var onShowTriggered = false
+    private var viewDetachedFromWindows = false
     private var debugTextView: TextView? = null
     private val set = ConstraintSet()
+    private val rectf = Rect()
 
     constructor(context: Context) : super(context) {
         init()
@@ -47,34 +55,32 @@ open class ProductConstraintLayout : ConstraintLayout {
     private fun init() {
         mContext = context
         mPercentageListener = null
+        set.clone(this)
         this.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
-                // No-Op
+                mPercentageListener?.onShow()
+                viewDetachedFromWindows = false
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
-                onShowOver()
+                mPercentageListener?.onShowOver(maxAreaPercentage)
+                viewDetachedFromWindows = true
             }
         })
         this.viewTreeObserver.addOnScrollChangedListener { calculateVisibility() }
         if (isPercentViewEnabled(context)) {
-            debugTextView = LayoutInflater.from(mContext).inflate(
+            val view = LayoutInflater.from(mContext).inflate(
                 productcardR.layout.product_card_percent_text_view,
                 this, false
-            ) as TextView
-            debugTextView!!.updateLayoutParams<LayoutParams> {
-                startToStart = id
-                endToEnd = id
-                topToTop = id
-                bottomToBottom = id
-            }
-            addView(debugTextView)
+            )
+            debugTextView = view.findViewById(R.id.productCardPercentText)
+            addView(view)
         }
     }
 
     private fun calculateVisibility() {
-        val rectf = Rect()
         getLocalVisibleRect(rectf)
+        val alignment: Int
         val top = rectf.top
         val bottom = rectf.bottom
         val right = rectf.right
@@ -85,8 +91,26 @@ open class ProductConstraintLayout : ConstraintLayout {
         var heightPixels: Int
         var widthPercentage: Int
         var widthPixels: Int
+
+        alignment = if (top != 0 && bottom != height) {
+            TOP_AND_BOTTOM
+        } else if (top != 0) {
+            TOP
+        } else if (bottom != height) {
+            BOTTOM
+        } else if (left != 0 && right != width) {
+            LEFT_AND_RIGHT
+        } else if (left != 0) {
+            LEFT
+        } else if (right != width) {
+            RIGHT
+        } else {
+            NOWHERE
+        }
+
         heightPixels = height + top - bottom
         widthPixels = width + left - right
+
         heightPercentage = (100 - heightPixels.toDouble() / height * 100).toInt()
         widthPercentage = (100 - widthPixels.toDouble() / width * 100).toInt()
         if (top > height || bottom > height) {
@@ -96,39 +120,76 @@ open class ProductConstraintLayout : ConstraintLayout {
             widthPercentage = 0
         }
         if (isBetweenHorizontalPercentageLimits(widthPercentage) && isBetweenVerticalPercentageLimits(heightPercentage)) {
-            if (heightPercentage > maxVisiblePercentage || widthPercentage > maxVisiblePercentage) {
-                maxVisiblePercentage = (heightPercentage + widthPercentage) / 2
-            }
             if (duplicateEnabled || !duplicateEnabled && (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage)) {
                 lastPercentageHeight = heightPercentage
                 lastPercentageWidht = widthPercentage
-                mPercentageListener?.onVisibilityChange(heightPercentage, widthPercentage)
-                debugTextView?.text = maxVisiblePercentage.toString()
-            }
-            if (!onShowTriggered && (heightPercentage > 1 || widthPercentage > 1)) {
-                onShow()
-            }
-            if (onShowTriggered && (heightPercentage < 1 || widthPercentage < 1)) {
-                onShowOver()
+                val areaPercentage = (lastPercentageHeight * lastPercentageWidht) / 100
+                if (maxAreaPercentage < areaPercentage) {
+                    maxAreaPercentage = areaPercentage
+                }
+                if (viewDetachedFromWindows) {
+                    maxAreaPercentage = 0
+                }
+                when(alignment) {
+                    TOP -> toBottom()
+                    BOTTOM -> toTop()
+                    RIGHT -> toLeft()
+                    LEFT -> toRight()
+                    else -> toCenter()
+                }
+                debugTextView?.text = "$maxAreaPercentage%"
             }
         }
     }
 
-    private fun onShow() {
-        mPercentageListener?.onShow()
-        onShowTriggered = true
+    private fun toCenter() {
+        debugTextView?.updateLayoutParams<LayoutParams> {
+            topToTop = id
+            rightToRight = id
+            leftToLeft = id
+            bottomToBottom = id
+        }
     }
 
-    private fun onShowOver() {
-        mPercentageListener?.onShowOver(maxVisiblePercentage)
-        onShowTriggered = false
-        maxVisiblePercentage = 0
+    private fun toRight() {
+        debugTextView?.updateLayoutParams<LayoutParams> {
+            topToTop = id
+            rightToRight = id
+            leftToLeft = -1
+            bottomToBottom = id
+        }
+    }
+
+    private fun toLeft() {
+        debugTextView?.updateLayoutParams<LayoutParams> {
+            topToTop = id
+            rightToRight = -1
+            leftToLeft = id
+            bottomToBottom = id
+        }
+    }
+
+    private fun toTop() {
+        debugTextView?.updateLayoutParams<LayoutParams> {
+            topToTop = id
+            rightToRight = id
+            leftToLeft = id
+            bottomToBottom = -1
+        }
+    }
+
+    private fun toBottom() {
+        debugTextView?.updateLayoutParams<LayoutParams> {
+            topToTop = -1
+            rightToRight = id
+            leftToLeft = id
+            bottomToBottom = id
+        }
     }
 
     interface OnVisibilityPercentChanged {
-        fun onVisibilityChange(percentageHeight: Int, percentageWidth: Int) {}
-        fun onShow() {}
-        fun onShowOver(maxPercentage: Int) {}
+        fun onShow()
+        fun onShowOver(maxPercentage: Int)
     }
 
     fun setVisibilityPercentListener(eventListener: OnVisibilityPercentChanged?) {
@@ -159,7 +220,6 @@ open class ProductConstraintLayout : ConstraintLayout {
         val cache = context.getSharedPreferences(DEV_OPT_ON_PERCENT_VIEW_ENABLED, Context.MODE_PRIVATE)
         return cache.getBoolean(IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED, false)
     }
-
 
     val DEV_OPT_ON_PERCENT_VIEW_ENABLED = "DEV_OPT_ON_PERCENT_VIEW_ENABLED"
     val IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED = "IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED"

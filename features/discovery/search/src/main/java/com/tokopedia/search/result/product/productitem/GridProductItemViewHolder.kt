@@ -5,8 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
@@ -18,6 +16,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.utils.sendEventRealtimeClickAdsByteIo
+import com.tokopedia.search.utils.sendEventShow
+import com.tokopedia.search.utils.sendEventShowOver
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
 import com.tokopedia.video_widget.VideoPlayerProvider
@@ -34,24 +34,16 @@ class GridProductItemViewHolder(
     override val videoPlayer: VideoPlayer?
         get() = binding?.searchProductCardGridReimagine?.video
 
-//    init {
-//        itemView.addOnAttachStateChangeListener(
-//            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-//            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-//        )
-//    }
-
     override fun bind(productItemData: ProductItemDataView) {
-        this.elementItem = productItemData
         binding?.searchProductCardGridReimagine?.run {
             setProductModel(productCardModel(productItemData))
             setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
-                    onViewAttachedToWindow(productItemData)
+                    sendEventShow(context, productItemData)
                 }
 
                 override fun onShowOver(maxPercentage: Int) {
-                    onViewDetachedFromWindow(productItemData, maxPercentage)
+                    sendEventShowOver(context, productItemData, maxPercentage)
                 }
             })
             setThreeDotsClickListener {
@@ -89,25 +81,6 @@ class GridProductItemViewHolder(
             addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
                 productListener.onProductImpressedByteIO(productItemData)
             }
-        }
-    }
-
-    override fun onViewAttachedToWindow(element: ProductItemDataView?) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventShow(
-                itemView.context,
-                element.asAdsLogShowModel()
-            )
-        }
-    }
-
-    override fun onViewDetachedFromWindow(element: ProductItemDataView?, visiblePercentage: Int) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventShowOver(
-                itemView.context,
-                element.asAdsLogShowOverModel(visiblePercentage)
-            )
-            setVisiblePercentage(Int.ZERO)
         }
     }
 

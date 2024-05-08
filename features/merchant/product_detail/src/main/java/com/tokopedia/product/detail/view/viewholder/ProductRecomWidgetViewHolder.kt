@@ -153,7 +153,6 @@ class ProductRecomWidgetViewHolder(
 
     override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
         recomItem.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {

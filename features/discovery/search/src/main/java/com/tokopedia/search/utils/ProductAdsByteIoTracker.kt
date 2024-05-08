@@ -15,3 +15,25 @@ internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: ProductI
         }
     }
 }
+
+internal fun sendEventShow(context: Context, element: ProductItemDataView?) {
+    element?.let {
+        if (it.isAds) {
+            AppLogTopAds.sendEventShow(
+                context,
+                it.asAdsLogShowModel()
+            )
+        }
+    }
+}
+
+internal fun sendEventShowOver(context: Context, element: ProductItemDataView?, maxPercentage: Int) {
+    element?.let {
+        if (it.isAds) {
+            AppLogTopAds.sendEventShowOver(
+                context,
+                it.asAdsLogShowOverModel(maxPercentage)
+            )
+        }
+    }
+}

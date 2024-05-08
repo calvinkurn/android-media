@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 
 abstract class CatalogLibraryAbstractViewHolder<T : Visitable<*>>(itemView: View?) : AbstractViewHolder<T>(itemView) {
 
-    override fun onViewAttachedToWindow() {}
+    open fun onViewAttachedToWindow() {}
 
     open fun onViewDetachedFromWindow() {}
 }

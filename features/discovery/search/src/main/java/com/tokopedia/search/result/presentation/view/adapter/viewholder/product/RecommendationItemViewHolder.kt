@@ -5,9 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
@@ -30,15 +29,7 @@ class RecommendationItemViewHolder (
     }
     private var binding: SearchResultRecommendationCardSmallGridBinding? by viewBinding()
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(recommendationItemDataView: RecommendationItemDataView) {
-        this.elementItem = recommendationItemDataView
         val view = binding?.root ?: return
         val recommendationItem = recommendationItemDataView.recommendationItem
         val productModel = recommendationItem.toProductCardModel(
@@ -46,7 +37,15 @@ class RecommendationItemViewHolder (
             cardInteraction = true,
         )
         view.setProductModel(productModel)
+        view.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                recommendationItem.sendShowAdsByteIo(itemView.context)
+            }
 
+            override fun onShowOver(maxPercentage: Int) {
+                recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+            }
+        })
         view.setOnClickListener(object: ProductCardClickListener {
             override fun onClick(v: View) {
                 listener.onProductClick(recommendationItem, "", adapterPosition)
@@ -70,15 +69,6 @@ class RecommendationItemViewHolder (
         view.setThreeDotsOnClickListener {
             listener.onThreeDotsClick(recommendationItemDataView.recommendationItem, adapterPosition)
         }
-    }
-
-    override fun onViewAttachedToWindow(element: RecommendationItemDataView?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: RecommendationItemDataView?, visiblePercentage: Int) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     private fun createImageProductViewHintListener(recommendationItemDataView: RecommendationItemDataView): ViewHintListener {

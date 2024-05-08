@@ -32,25 +32,15 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
     val view: View,
     private val adsViewListener: AdsViewListener?,
     private val adsItemClickListener: AdsItemClickListener?,
-) : RecyclerView.ViewHolder(view), ComparisonViewHolder, IAdsViewHolderTrackListener {
+) : RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonReimagineComparedWidgetBinding? by viewBinding()
-
-    private var viewVisiblePercentage = 0
-    private var recommendationItem: RecommendationItem? = null
 
     companion object {
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.caompareditem.ComparisonReimagineWidgetComparedItemViewHolder.kt"
     }
 
     val context: Context = view.context
-
-//    init {
-//        itemView.addOnAttachStateChangeListener(
-//            onViewAttachedToWindow = { onViewAttachedToWindow() },
-//            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-//        )
-//    }
 
     override fun bind(
         comparisonModel: ComparisonModel,
@@ -60,16 +50,16 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
         trackingQueue: TrackingQueue?,
         userSession: UserSessionInterface,
     ) {
-        recommendationItem = comparisonModel.recommendationItem
+
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
-        binding?.productCardView?.setVisibilityPercentListener(object: ProductConstraintLayout.OnVisibilityPercentChanged{
+        binding?.productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
-                comparisonModel.recommendationItem.sendShowAdsByteIo(context)
+                adsViewListener?.onViewAttachedToWindow(comparisonModel.recommendationItem, bindingAdapterPosition)
             }
 
             override fun onShowOver(maxPercentage: Int) {
-                comparisonModel.recommendationItem.sendShowOverAdsByteIo(context, maxPercentage)
+                adsViewListener?.onViewDetachedFromWindow(comparisonModel.recommendationItem, bindingAdapterPosition, maxPercentage)
             }
         })
         if (comparisonModel.isClickable) {
@@ -136,20 +126,5 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
         }
     }
-
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.let { adsViewListener?.onViewAttachedToWindow(it, bindingAdapterPosition) }
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.let { adsViewListener?.onViewDetachedFromWindow(it, bindingAdapterPosition, visiblePercentage) }
-        setVisiblePercentage(Int.ZERO)
-    }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.viewVisiblePercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = viewVisiblePercentage
 }
+

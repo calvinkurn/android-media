@@ -8,6 +8,7 @@ import com.tokopedia.carouselproductcard.databinding.CarouselPagingItemLayoutBin
 import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ProductCardListViewHolder(
@@ -27,7 +28,6 @@ internal class ProductCardListViewHolder(
     }
 
     override fun bind(element: ProductCardListDataView) {
-        this.elementItem = element
         binding?.carouselPagingProductCardListView?.setProductModel(element.productCardModel)
         binding?.carouselPagingProductCardListView?.setImageProductViewHintListener(
             element,
@@ -40,6 +40,27 @@ internal class ProductCardListViewHolder(
         binding?.carouselPagingProductCardListView?.setOnClickListener(object: ProductCardClickListener {
             override fun onClick(v: View) {
                 element.listener.onItemClick(element.group, element.productIndex)
+            }
+
+            override fun onAreaClicked(v: View) {
+                element.listener.onAreaClick(element.group, element.productIndex)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                element.listener.onProductImageClick(element.group, element.productIndex)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                element.listener.onSellerInfoClick(element.group, element.productIndex)
+            }
+        })
+        binding?.carouselPagingProductCardListView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                element.listener.onViewAttachedToWindow(element.group, element.productIndex)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                element.listener.onViewDetachedFromWindow(element.group, element.productIndex, maxPercentage)
             }
         })
     }

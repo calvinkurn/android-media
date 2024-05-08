@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselProductCardDataModel
@@ -28,21 +29,12 @@ class RecomCarouselProductCardViewHolder (view: View,
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(element: RecomCarouselProductCardDataModel) {
-        this.elementItem = element
         setLayout(element)
         setupListener(itemView.context, element)
     }
 
     override fun bind(element: RecomCarouselProductCardDataModel, payloads: MutableList<Any>) {
-        this.elementItem = element
         val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
         if (payload.isNullOrEmpty()) {
             bind(element)
@@ -77,6 +69,15 @@ class RecomCarouselProductCardViewHolder (view: View,
                 }
                 element.listener?.onProductCardImpressed(position = adapterPosition,data = data, recomItem = element.recomItem)
             }
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.listener?.onViewAttachedToWindow(element.recomItem, bindingAdapterPosition)
+                }
+
+                override fun onShowOver(maxPercentage: Int) {
+                    element.listener?.onViewDetachedFromWindow(element.recomItem, bindingAdapterPosition, maxPercentage)
+                }
+            })
             setOnClickListener(object: ProductCardClickListener {
                 override fun onClick(v: View) {
                     if(element.recomItem.isTopAds){
@@ -122,15 +123,6 @@ class RecomCarouselProductCardViewHolder (view: View,
                 )
             }
         }
-    }
-
-    override fun onViewAttachedToWindow(element: RecomCarouselProductCardDataModel?) {
-        element?.listener?.onViewAttachedToWindow(element.recomItem, bindingAdapterPosition)
-    }
-
-    override fun onViewDetachedFromWindow(element: RecomCarouselProductCardDataModel?, visiblePercentage: Int) {
-        element?.listener?.onViewDetachedFromWindow(element.recomItem, bindingAdapterPosition, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     override fun onViewRecycled() {

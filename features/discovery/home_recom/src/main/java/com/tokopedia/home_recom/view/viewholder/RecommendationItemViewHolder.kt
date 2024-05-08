@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
@@ -44,15 +45,7 @@ class RecommendationItemViewHolder(
 
     private var recTriggerObject = RecommendationTriggerObject()
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(element: RecommendationItemDataModel) {
-        this.elementItem = element
         setupCard(element)
         setRecTriggerObject(element)
     }
@@ -64,7 +57,6 @@ class RecommendationItemViewHolder(
     }
 
     private fun setupCard(element: RecommendationItemDataModel) {
-        elementItem = element
         productCardView.run {
             setProductModel(element.productItem.toProductCardModel(hasThreeDots = true))
 
@@ -83,7 +75,15 @@ class RecommendationItemViewHolder(
                     listener.onProductImpression(element.productItem)
                 }
             })
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.productItem.sendShowAdsByteIo(itemView.context)
+                }
 
+                override fun onShowOver(maxPercentage: Int) {
+                    element.productItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                }
+            })
             setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
                     listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
@@ -145,15 +145,6 @@ class RecommendationItemViewHolder(
                 )
             }
         }
-    }
-
-    override fun onViewAttachedToWindow(element: RecommendationItemDataModel?) {
-        element?.productItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: RecommendationItemDataModel?, visiblePercentage: Int) {
-        element?.productItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     private fun setRecTriggerObject(model: RecommendationItemDataModel) {

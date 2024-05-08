@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardReimagineGridItemBinding
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardGridViewHolder(
@@ -13,15 +14,21 @@ internal class CarouselProductCardGridViewHolder(
 ): AbstractViewHolder<CarouselProductCardGridModel>(itemView) {
 
     private val binding: CarouselProductCardReimagineGridItemBinding? by viewBinding()
-    private var element: CarouselProductCardGridModel? = null
 
     override fun bind(element: CarouselProductCardGridModel) {
-        this.element = element
         binding?.carouselProductCardReimagineGridItem?.run {
             setProductModel(element.productCardModel)
 
             addOnImpressionListener(element)
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.onViewAttachedToWindow()
+                }
 
+                override fun onShowOver(maxPercentage: Int) {
+                    element.onViewDetachedFromWindow(maxPercentage)
+                }
+            })
             setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
                     element.onClick()
@@ -43,16 +50,6 @@ internal class CarouselProductCardGridViewHolder(
 
             setAddToCartOnClickListener { element.onAddToCart() }
         }
-    }
-
-    override fun onViewAttachedToWindow() {
-        element?.onViewAttachedToWindow?.invoke()
-    }
-
-    override fun onViewDetachedFromWindow(
-        visiblePercentage: Int
-    ) {
-        element?.onViewDetachedFromWindow?.invoke(visiblePercentage)
     }
 
     private fun addOnImpressionListener(element: CarouselProductCardGridModel) {

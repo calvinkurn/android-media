@@ -11,11 +11,10 @@ import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
 import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class CarouselProductCardViewHolder (
@@ -31,15 +30,7 @@ class CarouselProductCardViewHolder (
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(element: CarouselProductCardDataModel) {
-        this.elementItem = element
         setLayout(itemView.context, element)
     }
 
@@ -58,6 +49,15 @@ class CarouselProductCardViewHolder (
                 element.listener?.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
                     ?: listener?.onProductCardImpressed(position = element.grid.position, trackingAttributionModel = element.trackingAttributionModel, channelGrid = element.grid)
             }
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.grid.sendEventShowAdsByteIo(itemView.context)
+                }
+
+                override fun onShowOver(maxPercentage: Int) {
+                    element.grid.sendEventShowOverAdsByteIo(itemView.context, maxPercentage)
+                }
+            })
             setOnClickListener(object: ProductCardClickListener {
                 override fun onClick(v: View) {
                     if(element.grid.isTopads){
@@ -84,14 +84,5 @@ class CarouselProductCardViewHolder (
                 }
             })
         }
-    }
-
-    override fun onViewAttachedToWindow(element: CarouselProductCardDataModel?) {
-        element?.grid?.sendEventShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: CarouselProductCardDataModel?, visiblePercentage: Int) {
-        element?.grid?.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 }

@@ -5,17 +5,18 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardSmallGridBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.utils.sendEventRealtimeClickAdsByteIo
+import com.tokopedia.search.utils.sendEventShow
+import com.tokopedia.search.utils.sendEventShowOver
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SmallGridProductItemViewHolder(
@@ -42,17 +43,8 @@ class SmallGridProductItemViewHolder(
     override val productCardView: IProductCardView?
         get() = binding?.productCardView
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(productItemData: ProductItemDataView?) {
-        this.elementItem = productItemData
         if (productItemData == null) return
-        elementItem = productItemData
 
         val productCardView = binding?.productCardView ?: return
         val productCardModel =
@@ -93,6 +85,16 @@ class SmallGridProductItemViewHolder(
             }
         })
 
+        productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                sendEventShow(itemView.context, productItemData)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                sendEventShowOver(itemView.context, productItemData, maxPercentage)
+            }
+        })
+
         productCardView.setImageProductViewHintListener(
             productItemData,
             createImageProductViewHintListener(productItemData)
@@ -104,25 +106,6 @@ class SmallGridProductItemViewHolder(
 
         productCardView.addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
             productListener.onProductImpressedByteIO(productItemData)
-        }
-    }
-
-    override fun onViewAttachedToWindow(element: ProductItemDataView?) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventShow(
-                itemView.context,
-                element.asAdsLogShowModel()
-            )
-        }
-    }
-
-    override fun onViewDetachedFromWindow(element: ProductItemDataView?, visiblePercentage: Int) {
-        if (element?.isAds == true) {
-            AppLogTopAds.sendEventShowOver(
-                itemView.context,
-                element.asAdsLogShowOverModel(visiblePercentage)
-            )
-            setVisiblePercentage(Int.ZERO)
         }
     }
 

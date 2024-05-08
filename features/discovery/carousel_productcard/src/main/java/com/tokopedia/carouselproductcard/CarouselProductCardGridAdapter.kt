@@ -3,7 +3,6 @@ package com.tokopedia.carouselproductcard
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardGridTypeFactoryImpl
 
 internal class CarouselProductCardGridAdapter(
@@ -14,19 +13,6 @@ internal class CarouselProductCardGridAdapter(
     CarouselProductCardAdapter {
 
     private val adapterTypeFactory = CarouselProductCardGridTypeFactoryImpl(internalListener, isReimagine)
-    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(scrollListener)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(scrollListener)
-    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         return adapterTypeFactory.onCreateViewHolder(viewGroup, viewType)

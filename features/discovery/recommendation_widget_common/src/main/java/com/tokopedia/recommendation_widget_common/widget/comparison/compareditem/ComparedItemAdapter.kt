@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
@@ -27,8 +26,6 @@ class ComparedItemAdapter(
     val userSessionInterface: UserSessionInterface,
     val shouldUseReimagineCard: Boolean
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) { PercentageScrollListener() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (shouldUseReimagineCard) {
@@ -58,14 +55,6 @@ class ComparedItemAdapter(
                 bind(holder as ComparisonWidgetComparedItemViewHolder, nonAnchorPosition)
             }
         }
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.addOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     private fun onCreateView(parent: ViewGroup, @LayoutRes layoutId: Int): View {
