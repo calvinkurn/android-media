@@ -95,6 +95,7 @@ import com.tokopedia.navigation.presentation.util.TabSelectedListener
 import com.tokopedia.navigation.presentation.util.VisitFeedProcessor
 import com.tokopedia.navigation.presentation.util.createTabSelectedListener
 import com.tokopedia.navigation.util.AssetPreloadManager
+import com.tokopedia.navigation.util.TokopediaShortcutManager
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -164,6 +165,9 @@ class NewMainParentActivity :
 
     @Inject
     lateinit var visitFeedProcessor: Lazy<VisitFeedProcessor>
+
+    @Inject
+    lateinit var shortcutManager: Lazy<TokopediaShortcutManager>
 
     private val onTabSelected: List<TabSelectedListener> by lazy {
         listOf(
@@ -1055,97 +1059,7 @@ class NewMainParentActivity :
     }
 
     private fun addShortcuts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return
-        runCatching {
-            val shortcutManager = getSystemService(ShortcutManager::class.java) ?: return@runCatching
-            shortcutManager.removeAllDynamicShortcuts()
-
-            val args = Bundle().apply {
-                putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true)
-                putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true)
-            }
-
-            val homeIntent = start(this)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .setAction(RouteManager.INTERNAL_VIEW)
-
-            val shortcutInfoList = buildList {
-                add(buildSearchAutoCompleteShortcut(args, homeIntent))
-                if (userSession.get().isLoggedIn) {
-                    add(buildWishlistShortcut(args, homeIntent))
-                }
-                add(buildPayShortcut(args, homeIntent))
-                if (userSession.get().isLoggedIn) {
-                    add(buildSellShortcut(args, homeIntent))
-                }
-            }
-            shortcutManager.addDynamicShortcuts(shortcutInfoList)
-        }.onFailure {
-            it.printStackTrace()
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun buildSearchAutoCompleteShortcut(args: Bundle, homeIntent: Intent): ShortcutInfo {
-        val searchIntent = RouteManager.getIntent(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-            .setAction(RouteManager.INTERNAL_VIEW)
-            .putExtras(args)
-
-        return ShortcutInfo.Builder(this, Shortcut.Search.id)
-            .setShortLabel(getString(navigationR.string.navigation_home_label_shortcut_search))
-            .setLongLabel(getString(navigationR.string.navigation_home_label_shortcut_search))
-            .setIcon(Icon.createWithResource(this, navigationR.drawable.main_parent_navigation_ic_search_shortcut))
-            .setIntents(arrayOf(homeIntent, searchIntent))
-            .setRank(Shortcut.Search.ordinal)
-            .build()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun buildWishlistShortcut(args: Bundle, homeIntent: Intent): ShortcutInfo {
-        val wishlistIntent = RouteManager.getIntent(this, ApplinkConst.NEW_WISHLIST)
-            .setAction(Intent.ACTION_VIEW)
-            .putExtras(args)
-
-        return ShortcutInfo.Builder(this, Shortcut.Wishlist.id)
-            .setShortLabel(getString(navigationR.string.navigation_home_label_shortcut_wishlist))
-            .setLongLabel(getString(navigationR.string.navigation_home_label_shortcut_wishlist))
-            .setIcon(Icon.createWithResource(this, navigationR.drawable.ic_wishlist_shortcut))
-            .setIntents(arrayOf(homeIntent, wishlistIntent))
-            .setRank(Shortcut.Wishlist.ordinal)
-            .build()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun buildPayShortcut(args: Bundle, homeIntent: Intent): ShortcutInfo {
-        val digitalIntent = RouteManager.getIntent(this, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
-            .setAction(Intent.ACTION_VIEW)
-            .putExtras(args)
-
-        return ShortcutInfo.Builder(this, Shortcut.Pay.id)
-            .setShortLabel(getString(navigationR.string.navigation_home_label_shortcut_pay))
-            .setLongLabel(getString(navigationR.string.navigation_home_label_shortcut_pay))
-            .setIcon(Icon.createWithResource(this, navigationR.drawable.ic_pay_shortcut))
-            .setIntents(arrayOf(homeIntent, digitalIntent))
-            .setRank(Shortcut.Pay.ordinal)
-            .build()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun buildSellShortcut(args: Bundle, homeIntent: Intent): ShortcutInfo {
-        val shopIntent = if (userSession.get().hasShop()) {
-            RouteManager.getIntent(this, ApplinkConstInternalMarketplace.SHOP_PAGE, userSession.get().shopId)
-        } else {
-            RouteManager.getIntent(this, ApplinkConstInternalMarketplace.OPEN_SHOP)
-        }.setAction(Intent.ACTION_VIEW)
-            .putExtras(args)
-
-        return ShortcutInfo.Builder(this, Shortcut.Sell.id)
-            .setShortLabel(getString(navigationR.string.navigation_home_label_shortcut_sell))
-            .setLongLabel(getString(navigationR.string.navigation_home_label_shortcut_sell))
-            .setIcon(Icon.createWithResource(this, navigationR.drawable.ic_sell_shortcut))
-            .setIntents(arrayOf(homeIntent, shopIntent))
-            .setRank(Shortcut.Sell.ordinal)
-            .build()
+        shortcutManager.get().addShortcuts()
     }
 
     /**
@@ -1253,12 +1167,5 @@ class NewMainParentActivity :
             return Intent(context, NewMainParentActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-    }
-
-    enum class Shortcut(val id: String) {
-        Search("Cari"),
-        Wishlist("Wishlist"),
-        Pay("Tagihan"),
-        Sell("Jual")
     }
 }
