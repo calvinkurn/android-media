@@ -296,7 +296,6 @@ class NewMainParentActivity :
                 val targetTabIdExtra = intent.getTargetTabIdExtra()
                 intent.removeTargetTabIdExtra()
                 targetTabIdExtra
-
             } ?: run getCurrentActive@{
                 getCurrentActiveFragment()?.tag?.let {
                     BottomNavItemId(it)
@@ -938,7 +937,6 @@ class NewMainParentActivity :
         return true
     }
 
-    // TODO("Check if DF_ALPHA_TESTING is still required")
     private fun installDFonBackground() {
         val userSession = this.userSession.get()
         val moduleNameList = buildList {
@@ -962,10 +960,6 @@ class NewMainParentActivity :
             add(DeeplinkDFMapper.DF_TOKOFOOD)
             add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN)
             add(DeeplinkDFMapper.DF_DILAYANI_TOKOPEDIA)
-
-//            if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
-//                moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
-//            }
         }
         DFInstaller.installOnBackground(application, moduleNameList, "Home")
     }
