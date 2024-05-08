@@ -11,11 +11,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.util.asAdsLogShowModel
 import com.tokopedia.home.util.asAdsLogShowOverModel
 import com.tokopedia.home.util.sendEventRealtimeClickAdsByteIo
+import com.tokopedia.home.util.sendEventShow
+import com.tokopedia.home.util.sendEventShowOver
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 
@@ -39,20 +40,20 @@ class HomeRecommendationItemGridViewHolder(
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(element: HomeRecommendationItemDataModel) {
-        this.elementItem = element
         setLayout(element)
-
         productCardImpressionListener(element)
         setItemProductCardClickListener(element)
         setItemThreeDotsClickListener(element)
+        productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                sendEventShow(itemView.context, element)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                sendEventShowOver(itemView.context, element, maxPercentage)
+            }
+        })
     }
 
     override fun bindPayload(newItem: HomeRecommendationItemDataModel?) {
@@ -102,29 +103,6 @@ class HomeRecommendationItemGridViewHolder(
                 sendEventRealtimeClickAdsByteIo(itemView.context, element.recommendationProductItem, AdsLogConst.Refer.SELLER_NAME)
             }
         })
-    }
-
-    override fun onViewAttachedToWindow(element: HomeRecommendationItemDataModel?) {
-        element?.let {
-            if (it.recommendationProductItem.isTopAds) {
-                AppLogTopAds.sendEventShow(
-                    itemView.context,
-                    it.recommendationProductItem.asAdsLogShowModel()
-                )
-            }
-        }
-    }
-
-    override fun onViewDetachedFromWindow(element: HomeRecommendationItemDataModel?, visiblePercentage: Int) {
-        element?.let {
-            if (it.recommendationProductItem.isTopAds) {
-                AppLogTopAds.sendEventShowOver(
-                    itemView.context,
-                    it.recommendationProductItem.asAdsLogShowOverModel(visibilityPercentage)
-                )
-                setVisiblePercentage(Int.ZERO)
-            }
-        }
     }
 
     private fun setItemThreeDotsClickListener(productCardItem: HomeRecommendationItemDataModel) {

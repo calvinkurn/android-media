@@ -2,4 +2,5 @@
 <resources>
     <item name="productCardAddToCart" type="id" />
     <item name="productCardLabelBenefitText" type="id" />
+    <item name="productCardPercentText" type="id" />
 </resources>

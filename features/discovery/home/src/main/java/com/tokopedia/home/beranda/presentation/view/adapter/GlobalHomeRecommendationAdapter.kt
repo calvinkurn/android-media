@@ -4,10 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactoryImpl
@@ -31,9 +29,6 @@ class GlobalHomeRecommendationAdapter(
     AsyncDifferConfig.Builder(ForYouRecommendationDiffUtil())
         .build()
 ) {
-    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -41,16 +36,6 @@ class GlobalHomeRecommendationAdapter(
     ): AbstractViewHolder<Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return adapterTypeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(scrollListener)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(scrollListener)
     }
 
     override fun onBindViewHolder(

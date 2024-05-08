@@ -1,13 +1,16 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison.compareditem
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonReimagineComparedWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
@@ -29,25 +32,15 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
     val view: View,
     private val adsViewListener: AdsViewListener?,
     private val adsItemClickListener: AdsItemClickListener?,
-): RecyclerView.ViewHolder(view), ComparisonViewHolder, IAdsViewHolderTrackListener {
+) : RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonReimagineComparedWidgetBinding? by viewBinding()
-
-    private var viewVisiblePercentage = 0
-    private var recommendationItem: RecommendationItem? = null
 
     companion object {
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.caompareditem.ComparisonReimagineWidgetComparedItemViewHolder.kt"
     }
 
     val context: Context = view.context
-
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
 
     override fun bind(
         comparisonModel: ComparisonModel,
@@ -57,11 +50,19 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
         trackingQueue: TrackingQueue?,
         userSession: UserSessionInterface,
     ) {
-        recommendationItem = comparisonModel.recommendationItem
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
+        binding?.productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                adsViewListener?.onViewAttachedToWindow(comparisonModel.recommendationItem, bindingAdapterPosition)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                adsViewListener?.onViewDetachedFromWindow(comparisonModel.recommendationItem, bindingAdapterPosition, maxPercentage)
+            }
+        })
         if (comparisonModel.isClickable) {
-            binding?.productCardView?.setOnClickListener(object: ProductCardClickListener {
+            binding?.productCardView?.setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
                     if (comparisonModel.recommendationItem.isTopAds) {
                         val product = comparisonModel.recommendationItem
@@ -124,21 +125,5 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
         }
     }
-
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.let { adsViewListener?.onViewAttachedToWindow(it, bindingAdapterPosition) }
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.let { adsViewListener?.onViewDetachedFromWindow(it, bindingAdapterPosition, visiblePercentage) }
-        setVisiblePercentage(Int.ZERO)
-    }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.viewVisiblePercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = viewVisiblePercentage
 }
 

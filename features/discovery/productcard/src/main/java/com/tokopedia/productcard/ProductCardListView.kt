@@ -4,16 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.experiments.ProductCardStrategy
 import com.tokopedia.productcard.experiments.ProductCardStrategyFactory
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.productcard.reimagine.ProductCardModel as ReimagineProductCardModel
 
-class ProductCardListView: ConstraintLayout, IProductCardView {
+class ProductCardListView: ProductConstraintLayout, IProductCardView {
 
     private val productCardStrategy: ProductCardStrategy
 

@@ -1,13 +1,11 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener;
 
 import java.util.List;
 
@@ -15,16 +13,13 @@ import java.util.List;
 /**
  * @author kulomady on 1/24/17.
  */
-public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerView.ViewHolder implements IAdsViewHolderTrackListener {
+public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerView.ViewHolder {
 
     public AbstractViewHolder(View itemView) {
         super(itemView);
     }
 
     public abstract void bind(T element);
-
-    protected T elementItem;
-    public int visibilityPercentage = 0;
 
     /*
     This method is used to bind the view holder when only some parts of the model is changed.
@@ -50,25 +45,5 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
 
     protected String getString(@StringRes int stringRes, String value) {
         return itemView.getContext().getString(stringRes, value);
-    }
-
-    @Override
-    public void onViewAttachedToWindow() {}
-
-    public void onViewAttachedToWindow(@Nullable T element) {}
-
-    @Override
-    public void onViewDetachedFromWindow(int visiblePercentage) {}
-
-    public void onViewDetachedFromWindow(@Nullable T element, int visiblePercentage) {}
-
-    @Override
-    public void setVisiblePercentage(int visiblePercentage) {
-        this.visibilityPercentage = visiblePercentage;
-    }
-
-
-    public int getVisiblePercentage() {
-        return visibilityPercentage;
     }
 }

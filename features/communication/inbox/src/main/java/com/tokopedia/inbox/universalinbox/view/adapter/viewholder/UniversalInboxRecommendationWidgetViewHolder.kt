@@ -43,7 +43,6 @@ class UniversalInboxRecommendationWidgetViewHolder(
 
                 override fun onViewDetachedFromWindow(position: Int, item: RecommendationItem, visiblePercentage: Int) {
                     item.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-                    setVisiblePercentage(Int.ZERO)
                 }
             }
         )

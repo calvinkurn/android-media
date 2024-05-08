@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
@@ -28,8 +29,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     protected LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
 
-    private PercentageScrollListener scrollListener = new PercentageScrollListener();
-
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
         this.visitables = visitables;
@@ -43,16 +42,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = onCreateViewItem(parent, viewType);
         return adapterTypeFactory.createViewHolder(view, viewType);
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.addOnScrollListener(scrollListener);
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.removeOnScrollListener(scrollListener);
     }
 
     protected View onCreateViewItem(ViewGroup parent, int viewType) {
@@ -242,6 +231,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
             notifyItemRangeInserted(positionStart, data.size());
         }
     }
+
 
     public void removeElement(Visitable visitable) {
         visitables.remove(visitable);

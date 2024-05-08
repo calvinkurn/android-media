@@ -2,15 +2,15 @@ package com.tokopedia.productcard.reimagine
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ReimagineListViewStrategy
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.video_widget.VideoPlayerController
 
-class ProductCardListView: ConstraintLayout {
+class ProductCardListView: ProductConstraintLayout {
 
     private val strategy = ReimagineListViewStrategy(this)
 

@@ -4,10 +4,9 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
@@ -34,15 +33,7 @@ class ComparisonBpcWidgetItemViewHolder(
     }
     val context: Context = view.context
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
-
     override fun bind(element: ComparisonBpcItemModel) {
-        this.elementItem = element
         binding?.run {
             productCardView.applyCarousel()
             setLayoutParams(element)
@@ -63,6 +54,7 @@ class ComparisonBpcWidgetItemViewHolder(
                     }
                     listener.onProductCardClicked(element.recommendationItem, element.trackingModel, element.anchorProductId)
                 }
+
                 override fun onAreaClicked(v: View) {
                     element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
                 }
@@ -73,6 +65,15 @@ class ComparisonBpcWidgetItemViewHolder(
 
                 override fun onSellerInfoClicked(v: View) {
                     element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                }
+            })
+            productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.recommendationItem.sendShowAdsByteIo(itemView.context)
+                }
+
+                override fun onShowOver(maxPercentage: Int) {
+                    element.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
                 }
             })
             productCardView.addOnImpressionListener(element) {
@@ -89,15 +90,6 @@ class ComparisonBpcWidgetItemViewHolder(
                 listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId, element.widgetTitle)
             }
         }
-    }
-
-    override fun onViewAttachedToWindow() {
-        this.elementItem?.recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        this.elementItem?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     private fun setLayoutParams(element: ComparisonBpcItemModel) {

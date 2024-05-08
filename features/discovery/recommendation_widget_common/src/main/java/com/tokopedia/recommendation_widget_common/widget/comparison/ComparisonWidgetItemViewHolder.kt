@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
@@ -20,28 +21,18 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ComparisonWidgetItemViewHolder constructor(
+class ComparisonWidgetItemViewHolder(
     val view: View,
     private val adsViewListener: AdsViewListener?,
     private val adsItemClickListener: AdsItemClickListener?,
-): RecyclerView.ViewHolder(view), ComparisonViewHolder, IAdsViewHolderTrackListener {
+): RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonWidgetBinding? by viewBinding()
-
-    private var viewVisiblePercentage = 0
-    private var recommendationItem: RecommendationItem? = null
 
     companion object {
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetItemViewHolder.kt"
     }
     val context: Context = view.context
-
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
 
     override fun bind(
             comparisonModel: ComparisonModel,
@@ -51,8 +42,6 @@ class ComparisonWidgetItemViewHolder constructor(
             trackingQueue: TrackingQueue?,
             userSession: UserSessionInterface
     ) {
-        this.recommendationItem = comparisonModel.recommendationItem
-
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
         if (comparisonModel.isClickable) {
@@ -96,6 +85,15 @@ class ComparisonWidgetItemViewHolder constructor(
                 }
             })
         }
+        binding?.productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                adsViewListener?.onViewAttachedToWindow(comparisonModel.recommendationItem, bindingAdapterPosition)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                adsViewListener?.onViewDetachedFromWindow(comparisonModel.recommendationItem, bindingAdapterPosition, maxPercentage)
+            }
+        })
         binding?.productCardView?.addOnImpressionListener(comparisonModel) {
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
@@ -119,20 +117,4 @@ class ComparisonWidgetItemViewHolder constructor(
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
         }
     }
-
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.let { adsViewListener?.onViewAttachedToWindow(it, bindingAdapterPosition) }
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.let { adsViewListener?.onViewDetachedFromWindow(it, bindingAdapterPosition, visiblePercentage) }
-        setVisiblePercentage(Int.ZERO)
-    }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.viewVisiblePercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = viewVisiblePercentage
 }

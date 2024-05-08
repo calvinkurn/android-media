@@ -8,13 +8,12 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
@@ -34,13 +33,6 @@ class RecommendationViewHolder(
 
     private var recTriggerObject = RecommendationTriggerObject()
 
-    init {
-        itemView?.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(element: RecommendationUiModel, payloads: MutableList<Any>) {
         val isWishlisted = payloads.getOrNull(0) as? Boolean ?: return
         element.recommendationItem.isWishlist = isWishlisted
@@ -50,21 +42,20 @@ class RecommendationViewHolder(
     }
 
     override fun bind(element: RecommendationUiModel) {
-        this.elementItem = element
         setRecTriggerObject(element.recommendationItem)
         bindProductCardUi(element)
         bindProductCardImpression(element)
         bindProductCardClick(element)
         bindProductCardThreeDotsClick(element)
-    }
+        productCard?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                element.recommendationItem?.sendShowAdsByteIo(itemView.context)
+            }
 
-    override fun onViewAttachedToWindow(element: RecommendationUiModel?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: RecommendationUiModel?, visiblePercentage: Int) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
+            override fun onShowOver(maxPercentage: Int) {
+                element.recommendationItem?.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+            }
+        })
     }
 
     private fun setRecTriggerObject(model: RecommendationItem) {

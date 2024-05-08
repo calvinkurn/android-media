@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
@@ -36,18 +37,8 @@ class UniversalInboxRecommendationProductViewHolder(
     private val binding: UniversalInboxRecommendationProductItemBinding? by viewBinding()
     private var recTriggerObject = RecommendationTriggerObject()
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow(elementItem) },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(elementItem, visiblePercentage) }
-        )
-    }
-
     override fun bind(uiModel: UniversalInboxRecommendationUiModel) {
-        this.elementItem = uiModel
-
         setRecTriggerObject(uiModel.recommendationItem)
-
         binding?.inboxProductRecommendation?.run {
 
             setProductModel(uiModel.recommendationItem.toProductCardModel(hasThreeDots = true))
@@ -65,7 +56,15 @@ class UniversalInboxRecommendationProductViewHolder(
                     uiModel.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
                 )
             }
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    uiModel.recommendationItem.sendShowAdsByteIo(itemView.context)
+                }
 
+                override fun onShowOver(maxPercentage: Int) {
+                    uiModel.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                }
+            })
             setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
                     AppLogRecommendation.sendProductClickAppLog(
@@ -99,15 +98,6 @@ class UniversalInboxRecommendationProductViewHolder(
                 )
             }
         }
-    }
-
-    override fun onViewAttachedToWindow(element: UniversalInboxRecommendationUiModel?) {
-        element?.recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(element: UniversalInboxRecommendationUiModel?, visiblePercentage: Int) {
-        element?.recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
     }
 
     fun bind(uiModel: RecommendationItem, payloads: Bundle) {

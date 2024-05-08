@@ -3,11 +3,10 @@ package com.tokopedia.carouselproductcard
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 
 internal class CarouselProductCardGridViewHolder(
     itemView: View,
@@ -21,20 +20,10 @@ internal class CarouselProductCardGridViewHolder(
             else R.layout.carousel_product_card_item_grid_layout
     }
 
-    private var carouselProductCardModel: CarouselProductCardModel? = null
-
     private fun productCardGridView(): ProductCardGridView? =
         itemView.findViewById(R.id.carouselProductCardItem)
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
-
     override fun bind(carouselProductCardModel: CarouselProductCardModel) {
-        this.carouselProductCardModel = carouselProductCardModel
         val productCardGridView = productCardGridView()
         val productCardModel = carouselProductCardModel.productCardModel
 
@@ -45,19 +34,6 @@ internal class CarouselProductCardGridViewHolder(
         registerProductCardLifecycleObserver(productCardGridView, productCardModel)
 
         setCarouselProductCardListeners(carouselProductCardModel)
-    }
-
-    override fun onViewAttachedToWindow() {
-        carouselProductCardModel?.let { model ->
-            model.getOnViewListener()?.onViewAttachedToWindow(model.productCardModel, absoluteAdapterPosition)
-        }
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        carouselProductCardModel?.let { model ->
-            model.getOnViewListener()?.onViewDetachedFromWindow(model.productCardModel, absoluteAdapterPosition, visiblePercentage)
-            setVisiblePercentage(Int.ZERO)
-        }
     }
 
     private fun setCarouselProductCardListeners(carouselProductCardModel: CarouselProductCardModel) {
@@ -71,7 +47,17 @@ internal class CarouselProductCardGridViewHolder(
         val onATCNonVariantClickListener = carouselProductCardModel.getOnATCNonVariantClickListener()
         val onAddVariantClickListener = carouselProductCardModel.getAddVariantClickListener()
         val onSeeOtherProductClickListener = carouselProductCardModel.getSeeOtherClickListener()
+        val onViewListener = carouselProductCardModel.getOnViewListener()
 
+        productCardGridView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                onViewListener?.onViewAttachedToWindow(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                onViewListener?.onViewDetachedFromWindow(productCardModel, bindingAdapterPosition, maxPercentage)
+            }
+        })
         productCardGridView?.setOnClickListener(object : ProductCardClickListener {
             override fun onClick(v: View) {
                 onItemClickListener?.onItemClick(productCardModel, bindingAdapterPosition)
@@ -126,6 +112,5 @@ internal class CarouselProductCardGridViewHolder(
         productCardView?.recycle()
 
         unregisterProductCardLifecycleObserver(productCardView)
-        carouselProductCardModel = null
     }
 }

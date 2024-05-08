@@ -3,6 +3,10 @@ package com.tokopedia.home_component.widget.special_release
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.home_component.analytics.sendEventRealtimeClickAdsByteIo
+import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
+import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
@@ -14,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ProductCardExperiment
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.home_component.R as home_componentR
@@ -35,7 +40,6 @@ class SpecialReleaseRevampItemViewHolder(
     private val binding: HomeComponentSpecialReleaseRevampItemBinding? by viewBinding()
 
     override fun bind(element: SpecialReleaseRevampItemDataModel) {
-        this.elementItem = element
         binding?.run {
             cardContainer.cardType = CardUnify2.TYPE_BORDER
             cardContainer.animateOnPress = element.cardInteraction
@@ -139,9 +143,30 @@ class SpecialReleaseRevampItemViewHolder(
                     element.grid.applink
                 )
             }
+
+            override fun onAreaClicked(v: View) {
+                element.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                element.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                element.grid.sendEventRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+            }
         }
         productCard.run {
             setOnClickListener(productClickListener)
+            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.grid.sendEventShowAdsByteIo(itemView.context)
+                }
+
+                override fun onShowOver(maxPercentage: Int) {
+                    element.grid.sendEventShowOverAdsByteIo(itemView.context, maxPercentage)
+                }
+            })
             addOnImpressionListener(element.productImpressHolder) {
                 if(element.grid.isTopads){
                     TopAdsUrlHitter(context).hitImpressionUrl(
