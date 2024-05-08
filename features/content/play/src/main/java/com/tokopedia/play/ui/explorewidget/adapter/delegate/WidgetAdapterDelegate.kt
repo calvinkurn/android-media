@@ -11,7 +11,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
 import com.tokopedia.play.R as playR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 02/12/22
@@ -27,8 +26,6 @@ class WidgetAdapterDelegate private constructor() {
             item: PlayWidgetChannelUiModel,
             holder: PlayExploreWidgetViewHolder.Widget
         ) {
-            val space8 = holder.itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
-            holder.itemView.setPadding(space8, space8, space8, space8)
             holder.bind(item)
         }
 
@@ -51,9 +48,7 @@ class WidgetAdapterDelegate private constructor() {
             item: PlayWidgetShimmerUiModel,
             holder: PlayWidgetCardPlaceholderViewHolder
         ) {
-            val space8 = holder.itemView.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8)
             holder.bind()
-            holder.itemView.setPadding(0, space8, space8, space8)
             holder.setType(PlayWidgetCardPlaceholderViewHolder.Type.MEDIUM)
         }
 
