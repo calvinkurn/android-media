@@ -345,8 +345,9 @@ object AppLogAnalytics {
     }
 
     fun removeLastAdsPageData() {
-        val currentIndex = getCurrentAdsActivityIdx()
-        if (currentIndex >= 0) _adsPageDataList.removeAt(currentIndex) }
+        val currentIndex = _adsPageDataList.lastIndex
+        if (currentIndex >= 0) _adsPageDataList.removeAt(currentIndex)
+    }
 
     fun getLastAdsDataBeforeCurrent(key: String): Any? {
         if (_adsPageDataList.isEmpty()) return null
