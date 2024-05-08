@@ -418,4 +418,8 @@ dependencies {
     implementation rootProject.ext.ttnetDependencies.boringSsl
     implementation rootProject.ext.ttnetDependencies.cppShared
 
+    //Fresco Bytedance
+    implementation rootProject.ext.bytedanceFrescoDependencies.fresco
+    implementation rootProject.ext.bytedanceFrescoDependencies.statistic
+
 }

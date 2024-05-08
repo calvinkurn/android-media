@@ -25,6 +25,13 @@ android {
 }
 
 dependencies {
+
+    implementation rootProject.ext.bytedanceFrescoDependencies.fresco
+    implementation rootProject.ext.bytedanceFrescoDependencies.statistic
+
+    implementation rootProject.ext.slardarDependencies.commonMonitor
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
