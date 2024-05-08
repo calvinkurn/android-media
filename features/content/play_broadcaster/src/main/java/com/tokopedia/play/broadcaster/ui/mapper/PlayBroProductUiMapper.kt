@@ -87,6 +87,10 @@ class PlayBroProductUiMapper @Inject constructor(
                         rating = "",
                         countSold = ""
                     )
+                    /** TODO
+                     * add shop_badge, shop_name, creator_sold_qty_fmt
+                     * after websocket implementation done from BE
+                     **/
                 }
             )
         }
