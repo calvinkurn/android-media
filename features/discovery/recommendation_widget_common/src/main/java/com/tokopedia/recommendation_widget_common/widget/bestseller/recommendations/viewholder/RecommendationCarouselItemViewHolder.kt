@@ -52,7 +52,6 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
             override fun onShowOver(maxPercentage: Int) {
                 element.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
             }
-
         })
         itemView.addOnImpressionListener(element) {
             listener.onProductImpression(element.recommendationItem)
