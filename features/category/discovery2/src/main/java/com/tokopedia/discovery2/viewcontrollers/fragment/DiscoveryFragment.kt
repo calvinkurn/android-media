@@ -1738,8 +1738,15 @@ open class DiscoveryFragment :
         refreshPage()
     }
 
+    // workaround to store singleton value into fragment
+    // to retain the value when the fragment is paused/resumed
+    private var currentTabName = ""
+    private var currentTabIndex = 0
+
     override fun onPause() {
         super.onPause()
+        currentTabName = CURRENT_TAB_NAME
+        currentTabIndex = CURRENT_TAB_INDEX
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
@@ -2037,6 +2044,11 @@ open class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        CURRENT_TAB_NAME = currentTabName
+        CURRENT_TAB_INDEX = currentTabIndex
+
         discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner) {
             if (!openScreenStatus) {
                 when (it) {
