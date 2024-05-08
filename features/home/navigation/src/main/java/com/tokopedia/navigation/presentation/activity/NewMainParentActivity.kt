@@ -86,7 +86,6 @@ import com.tokopedia.navigation.presentation.util.TabSelectedListener
 import com.tokopedia.navigation.presentation.util.VisitFeedProcessor
 import com.tokopedia.navigation.presentation.util.createTabSelectedListener
 import com.tokopedia.navigation.util.AssetPreloadManager
-import com.tokopedia.navigation.util.FeedCoachMark
 import com.tokopedia.navigation.util.MePageCoachMark
 import com.tokopedia.navigation.util.TokopediaShortcutManager
 import com.tokopedia.navigation_common.listener.AllNotificationListener

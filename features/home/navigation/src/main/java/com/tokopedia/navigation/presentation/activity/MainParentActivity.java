@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
@@ -100,11 +99,9 @@ import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
-import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel;
 import com.tokopedia.navigation.presentation.view.MainParentView;
-import com.tokopedia.navigation.util.FeedCoachMark;
 import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -1653,8 +1650,6 @@ public class MainParentActivity extends BaseActivity implements
     //MIGRATED
     @Override
     public void onHomeCoachMarkFinished() {
-        View feedIconView = bottomNavigation.findViewById(R.id.menu_feed);
-        new FeedCoachMark(this).show(feedIconView);
     }
 
     //MIGRATED
