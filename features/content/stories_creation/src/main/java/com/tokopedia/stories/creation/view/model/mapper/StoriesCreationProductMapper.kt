@@ -43,8 +43,8 @@ class StoriesCreationProductMapper @Inject constructor(
                     number = "",
                     shopName = "",
                     shopBadge = "",
-                    ratingFmt = "",
-                    countSoldFmt = ""
+                    rating = "",
+                    countSold = ""
                 )
             },
             hasNextPage = response.data.pagerCursor.hasNext,
@@ -87,8 +87,8 @@ class StoriesCreationProductMapper @Inject constructor(
                             extraCommission = false,
                             shopName = "",
                             shopBadge = "",
-                            ratingFmt = "",
-                            countSoldFmt = ""
+                            rating = "",
+                            countSold = ""
                         )
                     }
                 )

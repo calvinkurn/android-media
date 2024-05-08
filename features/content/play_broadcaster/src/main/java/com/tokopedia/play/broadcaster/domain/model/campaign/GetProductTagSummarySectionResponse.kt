@@ -24,7 +24,7 @@ data class GetProductTagSummarySectionResponse(
         val statusFmt: String = "",
 
         @SerializedName("products")
-        val products: List<ProductList> = emptyList(),
+        val products: List<ProductList> = emptyList()
     )
 
     data class ProductList(
@@ -84,9 +84,9 @@ data class GetProductTagSummarySectionResponse(
         val shopBadge: String = "",
 
         @SerializedName("ratingFmt")
-        val ratingFmt: String = "",
+        val rating: String = "",
 
         @SerializedName("countSoldFmt")
-        val countSoldFmt: String = "",
+        val countSold: String = ""
     )
 }

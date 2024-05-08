@@ -166,7 +166,7 @@ class ProductSummaryViewHolder private constructor() {
                         item.product.countSold.isNotBlank()
                 )
 
-                // hide sold fmt text when countSoldFmt empty
+                // hide sold fmt text when countSold empty
                 binding.productTagSoldFmt.showWithCondition(item.product.countSold.isNotBlank())
 
                 // hide shop name when shop name empty

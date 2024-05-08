@@ -19,10 +19,10 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 26/01/22
  */
 class PlayBroProductUiMapper @Inject constructor(
-    private val priceFormatUtil: PriceFormatUtil,
+    private val priceFormatUtil: PriceFormatUtil
 ) {
     fun mapProductsInEtalase(
-        response: GetProductsByEtalaseResponse,
+        response: GetProductsByEtalaseResponse
     ): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
             dataList = response.wrapper.products.map { data ->
@@ -44,11 +44,11 @@ class PlayBroProductUiMapper @Inject constructor(
                     shopBadge = "",
                     shopName = "",
                     rating = "",
-                    countSold = "",
+                    countSold = ""
                 )
             },
             hasNextPage = response.wrapper.pagerCursor.hasNext,
-            cursor = response.wrapper.pagerCursor.cursor,
+            cursor = response.wrapper.pagerCursor.cursor
         )
     }
 
@@ -73,7 +73,7 @@ class PlayBroProductUiMapper @Inject constructor(
                                 originalPriceNumber = product.originalPrice,
                                 discountPercent = product.discount.toLong(),
                                 discountedPrice = product.priceFmt,
-                                discountedPriceNumber = product.price,
+                                discountedPriceNumber = product.price
                             )
                         },
                         pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
@@ -85,7 +85,7 @@ class PlayBroProductUiMapper @Inject constructor(
                         shopBadge = "",
                         shopName = "",
                         rating = "",
-                        countSold = "",
+                        countSold = ""
                     )
                 }
             )
@@ -109,22 +109,23 @@ class PlayBroProductUiMapper @Inject constructor(
                         extraCommission = product.extraCommission,
                         imageUrl = product.imageURL,
                         stock = product.quantity.toLong(),
-                        price = if(product.discount == "0") {
+                        price = if (product.discount == "0") {
                             OriginalPrice(product.originalPriceFmt, product.originalPrice.toDouble())
-                        }
-                        else DiscountedPrice(
-                            originalPrice = product.originalPriceFmt,
-                            originalPriceNumber = product.originalPrice.toDouble(),
-                            discountPercent = product.discount.toLong(),
-                            discountedPrice = product.priceFmt,
-                            discountedPriceNumber = product.price.toDouble(),
-                        ),
+                        } else {
+                            DiscountedPrice(
+                                originalPrice = product.originalPriceFmt,
+                                originalPriceNumber = product.originalPrice.toDouble(),
+                                discountPercent = product.discount.toLong(),
+                                discountedPrice = product.priceFmt,
+                                discountedPriceNumber = product.price.toDouble()
+                            )
+                        },
                         pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
                         number = product.productNumber.toString(),
                         shopBadge = product.shopBadge,
                         shopName = product.shopName,
-                        rating = product.ratingFmt,
-                        countSold = product.countSoldFmt,
+                        rating = product.rating,
+                        countSold = product.countSold
                     )
                 }
             )
@@ -133,7 +134,7 @@ class PlayBroProductUiMapper @Inject constructor(
 
     /** Util */
     private fun mapCampaignStatusFromType(type: String): CampaignStatus {
-        return when(type.lowercase()) {
+        return when (type.lowercase()) {
             "mendatang", "upcoming" -> CampaignStatus.Ready
             "berlangsung", "active" -> CampaignStatus.Ongoing
             else -> CampaignStatus.Unknown
