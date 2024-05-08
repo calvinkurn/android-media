@@ -49,7 +49,7 @@ data class ShopDiscountSetupProductUiModel(
             val totalDiscountedVariant: Int = 0,
             val totalLocation: Int = 0,
             val minStartDateUnix: Long? = null,
-            val minEndDateUnix: Long? = null
+            val maxEndDateUnix: Long? = null
         ) : Parcelable
 
         @Parcelize

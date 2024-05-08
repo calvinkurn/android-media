@@ -6,7 +6,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopScoreTest
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
@@ -58,12 +57,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
                 )
             )
         validate(CLICK_MERCHANT_TOOLS_RECOMMENDATION_PATH)
-    }
-
-    protected fun clickPowerMerchantSection() {
-        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
-        onIdView(R.id.potentialPowerMerchantWidget).isViewDisplayed().onClick()
-        validate(CLICK_POWER_MERCHANT_SECTION_PATH)
     }
 
     protected fun clickTickerPenalty() {

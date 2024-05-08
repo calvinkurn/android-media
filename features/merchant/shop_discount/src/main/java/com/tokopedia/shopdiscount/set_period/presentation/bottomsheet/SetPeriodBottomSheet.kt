@@ -2,12 +2,14 @@ package com.tokopedia.shopdiscount.set_period.presentation.bottomsheet
 
 import android.os.Bundle
 import android.text.InputType
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -32,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Date
+import java.util.Calendar
 import javax.inject.Inject
 
 class SetPeriodBottomSheet : BottomSheetUnify() {
@@ -42,6 +45,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
         private const val SLASH_PRICE_STATUS_ID_ARG = "SLASH_PRICE_STATUS_ID_ARG"
         private const val SELECTED_PERIOD_CHIP = "SELECTED_PERIOD_CHIP"
         private const val MODE = "MODE"
+        private const val START_TIME_OFFSET_IN_MINUTES = 10
 
         fun newInstance(
             startDateUnix: Long,
@@ -151,11 +155,18 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             val endDate: Date
             val maxDate: Date = if (isUsingVps) {
                 hideAllChips()
-                val benefit = benefits.firstOrNull {
-                    it.packageId.toIntOrZero() != -1
-                }
+                val benefit = benefits.firstOrNull()
                 viewModel.setBenefitPackageName(benefit?.packageName.orEmpty())
-                benefit?.expiredAt?.toDate(DateConstant.DATE_TIME) ?: Date()
+                val benefitExpiryDate = benefit?.expiredAt?.toDate(DateConstant.DATE_TIME) ?: Date()
+                val finalEndDate = if (DateUtils.isToday(benefitExpiryDate.time)) {
+                    Calendar.getInstance().apply {
+                        add(Calendar.YEAR, Int.ONE)
+                        add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+                    }.time
+                } else {
+                    benefitExpiryDate
+                }
+                finalEndDate
             } else {
                 viewModel.defaultMembershipEndDate
             }
