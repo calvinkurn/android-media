@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.deeplink.activity;
 
+import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +15,9 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
@@ -29,6 +33,7 @@ import com.tokopedia.linker.FirebaseDLWrapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -72,10 +77,19 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
         }
         initializationNewRelic();
 
+        setAdsLogData();
+
         checkUrlMapToApplink();
         initBranchIO(this);
         logDeeplink();
         new FirebaseDLWrapper().getFirebaseDynamicLink(this, getIntent());
+    }
+
+    private void setAdsLogData() {
+        AppLogAnalytics.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
+        AppLogAnalytics.currentPageName = PageName.FIND_PAGE;
+        AppLogAnalytics.putAdsPageData(PAGE_NAME, PageName.FIND_PAGE);
+        AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
     }
 
     private void checkUrlMapToApplink() {

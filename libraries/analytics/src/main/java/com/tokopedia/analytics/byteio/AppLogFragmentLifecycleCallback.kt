@@ -8,12 +8,12 @@ class AppLogFragmentLifecycleCallback: FragmentManager.FragmentLifecycleCallback
     override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
         val visibleFragment = fm.fragments.firstOrNull { it.isVisible }
         when {
-            visibleFragment is AppLogInterface -> {
+            visibleFragment is IAdsLog -> {
                 AppLogAnalytics.currentActivityName = visibleFragment.activity?.javaClass?.simpleName.orEmpty()
                 AppLogAnalytics.currentPageName = visibleFragment.getPageName()
                 AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, visibleFragment.getPageName())
             }
-            f is AppLogInterface -> {
+            f is IAdsLog -> {
                 AppLogAnalytics.currentActivityName = f.activity?.javaClass?.simpleName.orEmpty()
                 AppLogAnalytics.currentPageName = f.getPageName()
                 AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, f.getPageName())

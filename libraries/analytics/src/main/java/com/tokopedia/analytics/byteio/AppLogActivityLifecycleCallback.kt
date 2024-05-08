@@ -9,7 +9,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.currentActivityName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
-import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -51,9 +50,10 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     }
 
     private fun setAdsPageData(activity: Activity) {
-        if (activity is AppLogInterface) {
+        if (activity is IAdsLog) {
+            AppLogAnalytics.currentActivityName = activity.javaClass.simpleName
             AppLogAnalytics.currentPageName = activity.getPageName()
-            AppLogAnalytics.putAdsPageData(PAGE_NAME, activity.getPageName())
+            AppLogAnalytics.putAdsPageData(AppLogParam.PAGE_NAME, activity.getPageName())
         }
     }
 
@@ -119,10 +119,6 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         // noop
     }
 
-    override fun onActivityPreDestroyed(activity: Activity) {
-        AppLogAnalytics.removeLastAdsPageData()
-    }
-
     override fun onActivityDestroyed(activity: Activity) {
         AppLogAnalytics.activityCount--
 
@@ -132,6 +128,10 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         removePageName(activity)
         if (activity is AppLogInterface) {
             removePageData(activity)
+        }
+
+        if (activity is IAdsLog) {
+            AppLogAnalytics.removeLastAdsPageData()
         }
 
         if (activity is FragmentActivity) {

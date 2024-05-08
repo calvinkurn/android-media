@@ -12,6 +12,7 @@ import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.IAppLogActivity
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
@@ -26,7 +27,7 @@ import timber.log.Timber
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface {
+class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     companion object {
         const val TOKO_NOW_EXTRA = "isTokoNow"
         const val PAGE_SOURCE_EXTRA = "pageSource"

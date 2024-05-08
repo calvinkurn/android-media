@@ -61,6 +61,7 @@ object AppLogAnalytics {
     @JvmField
     var currentPageName: String = ""
 
+
     /**
      * key = activity name
      * value = page name.
@@ -344,7 +345,7 @@ object AppLogAnalytics {
     }
 
     fun removeLastAdsPageData() {
-        val currentIndex = getCurrentAdsActivityIdx()
+        val currentIndex = _adsPageDataList.lastIndex
         if (currentIndex >= 0) _adsPageDataList.removeAt(currentIndex)
     }
 
