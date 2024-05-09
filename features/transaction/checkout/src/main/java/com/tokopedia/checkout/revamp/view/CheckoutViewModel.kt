@@ -25,6 +25,7 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Compan
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_CHECKOUT_OPEN_PROMO
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_NOTES
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_PAYMENT
+import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_QUANTITY
 import com.tokopedia.checkout.revamp.view.processor.CheckoutDataHelper
 import com.tokopedia.checkout.revamp.view.processor.CheckoutLogisticProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
@@ -121,10 +122,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -208,6 +210,8 @@ class CheckoutViewModel @Inject constructor(
     var usePromoEntryPointNewInterface: Boolean = false
 
     private var cartType: String = ""
+
+    private var debounceQtyJob: Job? = null
 
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
@@ -3193,7 +3197,7 @@ class CheckoutViewModel @Inject constructor(
                         Toaster.TYPE_ERROR,
                         updateCartResult.toasterMessage,
                         updateCartResult.throwable,
-                        source = "update-cart"
+                        source = "update_notes"
                     )
                 )
                 return@launch
@@ -3602,11 +3606,11 @@ class CheckoutViewModel @Inject constructor(
             val product = checkoutItems[itemIndex] as CheckoutProductModel
             var showMaxQtyError = false
             var showMinQtyError = false
-            var newQty = 0
-            if (newValue > product.maxOrder) {
+            val newQty: Int
+            if (newValue >= product.maxOrder) {
                 showMaxQtyError = true
                 newQty = product.maxOrder
-            } else if (newValue < product.minOrder) {
+            } else if (newValue <= product.minOrder) {
                 showMinQtyError = true
                 newQty = product.minOrder
             } else {
@@ -3618,11 +3622,44 @@ class CheckoutViewModel @Inject constructor(
                 quantity = newQty
             )
             checkoutItems[itemIndex] = newProduct
+            viewModelScope.launch(dispatchers.io) {
+                doUpdateCartAndReload(checkoutItems)
+            }
             /*viewModelScope.launch(dispatchers.io) {
                 addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
             }*/
-            listData.value = checkoutItems
-            calculateTotal()
+        }
+    }
+
+    private suspend fun doUpdateCartAndReload(
+        checkoutItems: MutableList<CheckoutItem>
+    ) {
+        debounceQtyJob?.cancel()
+        debounceQtyJob = viewModelScope.launch(dispatchers.immediate) {
+            delay(500L)
+            if (isActive) {
+                pageState.value = CheckoutPageState.Loading
+                val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(checkoutItems), UPDATE_CART_SOURCE_QUANTITY, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
+                if (!updateCartResult.isSuccess) {
+                    toasterProcessor.commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            updateCartResult.toasterMessage,
+                            updateCartResult.throwable,
+                            source = "update_quantity"
+                        )
+                    )
+                    pageState.value = CheckoutPageState.Normal
+                } else {
+                    listData.value = checkoutItems
+                    calculateTotal()
+                    loadSAF(
+                        isReloadData = true,
+                        skipUpdateOnboardingState = true,
+                        isReloadAfterPriceChangeHigher = false
+                    )
+                }
+            }
         }
     }
 
