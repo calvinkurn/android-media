@@ -14,14 +14,13 @@ import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout : ConstraintLayout {
 
-    private var mPercentageListener: OnVisibilityPercentChanged? = null
-    private var mContext: Context? = null
+    protected var mPercentageListener: OnVisibilityPercentChanged? = null
     private var lastPercentageWidht = 0
     private var lastPercentageHeight = 0
     private var minHorizontalPercentage = 0
-    private var maxHorizontalPercentage = 101
+    private var maxHorizontalPercentage = 100
     private var minVerticalPercentage = 0
-    private var maxVerticalPercentage = 101
+    private var maxVerticalPercentage = 100
     private var maxAreaPercentage = 0
     private val TOP = 1
     private val BOTTOM = 3
@@ -36,47 +35,15 @@ open class ProductConstraintLayout : ConstraintLayout {
     private val set = ConstraintSet()
     private val rectf = Rect()
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private fun init() {
-        mContext = context
-        mPercentageListener = null
-        set.clone(this)
-        this.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(p0: View) {
-                mPercentageListener?.onShow()
-                viewDetachedFromWindows = false
-            }
-
-            override fun onViewDetachedFromWindow(p0: View) {
-                mPercentageListener?.onShowOver(maxAreaPercentage)
-                viewDetachedFromWindows = true
-            }
-        })
-        this.viewTreeObserver.addOnScrollChangedListener { calculateVisibility() }
-        if (isPercentViewEnabled(context)) {
-            val view = LayoutInflater.from(mContext).inflate(
-                productcardR.layout.product_card_percent_text_view,
-                this, false
-            )
-            debugTextView = view.findViewById(R.id.productCardPercentText)
-            addView(view)
-        }
-    }
+    ) : super(context, attrs, defStyleAttr)
 
     private fun calculateVisibility() {
         getLocalVisibleRect(rectf)
@@ -88,9 +55,7 @@ open class ProductConstraintLayout : ConstraintLayout {
         val width = this.width
         val height = this.height
         var heightPercentage: Int
-        var heightPixels: Int
         var widthPercentage: Int
-        var widthPixels: Int
 
         alignment = if (top != 0 && bottom != height) {
             TOP_AND_BOTTOM
@@ -108,8 +73,8 @@ open class ProductConstraintLayout : ConstraintLayout {
             NOWHERE
         }
 
-        heightPixels = height + top - bottom
-        widthPixels = width + left - right
+        val heightPixels: Int = height + top - bottom
+        val widthPixels: Int = width + left - right
 
         heightPercentage = (100 - heightPixels.toDouble() / height * 100).toInt()
         widthPercentage = (100 - widthPixels.toDouble() / width * 100).toInt()
@@ -193,27 +158,50 @@ open class ProductConstraintLayout : ConstraintLayout {
     }
 
     fun setVisibilityPercentListener(eventListener: OnVisibilityPercentChanged?) {
-        mPercentageListener = eventListener
+        setAdsTrackListener(true, eventListener)
     }
 
     fun removeVisibilityPercentageListener() {
         mPercentageListener = null
     }
 
-    private fun isBetweenHorizontalPercentageLimits(a: Int): Boolean {
-        return if (a <= maxHorizontalPercentage && a >= minHorizontalPercentage) {
-            true
-        } else {
-            false
+    protected fun setAdsTrackListener(isTopAds: Boolean, eventListener: OnVisibilityPercentChanged?) {
+        if (isTopAds && mPercentageListener == null) {
+            inflateView()
+            mPercentageListener = eventListener
+            this.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(p0: View) {
+                    mPercentageListener?.onShow()
+                    viewDetachedFromWindows = false
+                }
+
+                override fun onViewDetachedFromWindow(p0: View) {
+                    mPercentageListener?.onShowOver(maxAreaPercentage)
+                    viewDetachedFromWindows = true
+                }
+            })
+            this.viewTreeObserver.addOnScrollChangedListener { calculateVisibility() }
         }
     }
 
-    private fun isBetweenVerticalPercentageLimits(a: Int): Boolean {
-        return if (a <= maxVerticalPercentage && a >= minVerticalPercentage) {
-            true
-        } else {
-            false
+    private fun inflateView() {
+        if (isPercentViewEnabled(context)) {
+            set.clone(this)
+            val view = LayoutInflater.from(context).inflate(
+                productcardR.layout.product_card_percent_text_view,
+                this, false
+            )
+            debugTextView = view.findViewById(R.id.productCardPercentText)
+            addView(view)
         }
+    }
+
+    private fun isBetweenHorizontalPercentageLimits(a: Int): Boolean {
+        return a in minHorizontalPercentage..maxHorizontalPercentage
+    }
+
+    private fun isBetweenVerticalPercentageLimits(a: Int): Boolean {
+        return a in minVerticalPercentage..maxVerticalPercentage
     }
 
     private fun isPercentViewEnabled(context: Context): Boolean {
@@ -221,6 +209,8 @@ open class ProductConstraintLayout : ConstraintLayout {
         return cache.getBoolean(IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED, false)
     }
 
-    val DEV_OPT_ON_PERCENT_VIEW_ENABLED = "DEV_OPT_ON_PERCENT_VIEW_ENABLED"
-    val IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED = "IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED"
+    companion object {
+        const val DEV_OPT_ON_PERCENT_VIEW_ENABLED = "DEV_OPT_ON_PERCENT_VIEW_ENABLED"
+        const val IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED = "IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED"
+    }
 }

@@ -162,7 +162,7 @@ object AppLogTopAds {
                 AdsLogConst.Channel.PRODUCT_SEARCH
             PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
             PageName.SHOP -> AdsLogConst.Channel.STORE_SEARCH
-            PageName.EXTERNAL_PROMO -> AdsLogConst.Channel.FIND_SEARCH
+            PageName.FIND_PAGE -> AdsLogConst.Channel.FIND_SEARCH
             PageName.DISCOVERY -> AdsLogConst.Channel.DISCOVERY_SEARCH
             else -> ""
         }
