@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
@@ -721,10 +722,10 @@ data class DataItem(
     }
 
     private fun getGtmItemNameReplaceTab(): String {
-        val tabReplaceWith = if (CURRENT_TAB_NAME.isNotEmpty()) {
-            CURRENT_TAB_NAME
-        } else if (topLevelTab.name.isNotEmpty()) {
+        val tabReplaceWith = if (topLevelTab.name.isNotEmpty()) {
             topLevelTab.name
+        } else if (CURRENT_TAB_NAME.isNotEmpty()) {
+            CURRENT_TAB_NAME
         } else {
             tabName ?: ""
         }
