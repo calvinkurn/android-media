@@ -64,6 +64,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -256,6 +257,7 @@ class DeveloperOptionActivity :
     private fun processCassavaShortcut() {
         val path = intent.data?.getQueryParameter("p")
         if (path.isNullOrEmpty()) return
+        Timber.i("Processing cassava shortcut with path $path")
         startActivity(MainValidatorActivity.newInstance(this, path))
     }
 
