@@ -146,8 +146,11 @@ object AppLogAnalytics {
         put(ENTER_FROM, getLastData(ENTER_FROM))
     }
 
+    /**
+     *  In the case of stay PDP (next), when in cart the enter_from will be changed, thus we need to take
+     *  enter_from starting from N-1
+     * */
     internal fun JSONObject.addEnterFromInfo() {
-        // todo: explain
         put(ENTER_FROM_INFO, getLastDataBeforeCurrent(ENTER_FROM))
     }
 
