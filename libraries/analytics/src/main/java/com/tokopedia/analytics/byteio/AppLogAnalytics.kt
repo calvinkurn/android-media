@@ -454,20 +454,6 @@ object AppLogAnalytics {
         }
     }
 
-    fun removeGlobalParam() {
-        listOf(
-            ENTRANCE_FORM,
-            ENTER_METHOD,
-            SOURCE_MODULE,
-            IS_AD,
-            TRACK_ID,
-            SOURCE_PAGE_TYPE,
-            REQUEST_ID
-        ).forEach {
-            _pageDataList.lastOrNull()?.remove(it)
-        }
-    }
-
     private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
         return takeLast(5).joinToString("\n")
     }
