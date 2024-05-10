@@ -68,22 +68,6 @@ object AppLogAnalytics {
     @JvmField
     var activityCount: Int = 0
 
-    // TODO check how to make this null again
-    @JvmField
-    var sourcePageType: SourcePageType? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var globalTrackId: String? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var globalRequestId: String? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var entranceForm: EntranceForm? = null
-
     private val lock = Any()
 
     private var remoteConfig: RemoteConfig? = null
@@ -555,10 +539,4 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getSourcePreviousPage(): String? {
-        getLastDataBeforeCurrent(PAGE_NAME)?.let {
-            return it.toString()
-        }
-        return null
-    }
 }
