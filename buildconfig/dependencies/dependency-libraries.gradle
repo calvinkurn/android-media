@@ -28,7 +28,7 @@ ext {
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
             byteplusEffectSdk       : "com.bef.effectsdk:effect-android:11.6.0-bd-modified@aar",
             logger                  : "com.tokopedia.library:logger:0.0.2",
-            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.9.7-beta1",
+            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.9.8-beta1",
             cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.8.1-beta2",
             cassavaTest             : "com.tokopedia.analyticsdebugger:cassavatest:1.5.0"
     ]

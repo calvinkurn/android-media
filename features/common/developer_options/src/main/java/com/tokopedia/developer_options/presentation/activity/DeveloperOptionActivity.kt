@@ -108,6 +108,7 @@ class DeveloperOptionActivity :
         const val LIVE = "live"
         const val CHANGEURL = "changeurl"
         const val URI_HOME_MACROBENCHMARK = "home-macrobenchmark"
+        const val URI_CASSAVA = "cassava"
         const val URI_COACHMARK = "coachmark"
         const val URI_COACHMARK_DISABLE = "disable"
         const val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
@@ -238,7 +239,7 @@ class DeveloperOptionActivity :
                 isHomeMacrobenchmarkApplink =
                     uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_HOME_MACROBENCHMARK
                 isCassava =
-                    uri.pathSegments.size == 2 && uri.pathSegments[1] == "cassava"
+                    uri.pathSegments.size == 2 && uri.pathSegments[1] == URI_CASSAVA
             }
         }
         when {
