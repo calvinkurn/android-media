@@ -162,6 +162,10 @@ class WishlistCollectionFragment :
         return PageName.WISHLIST
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.WISHLIST
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

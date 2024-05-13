@@ -126,4 +126,8 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     override fun getPageName(): String {
         return PageName.SKU
     }
+
+    override fun getAdsPageName(): String {
+        return PageName.SKU
+    }
 }

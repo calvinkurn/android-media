@@ -61,7 +61,7 @@ open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAcco
         }
     }
 
-    override fun getPageName(): String {
+    override fun getAdsPageName(): String {
         return PageName.ACCOUNT
     }
 

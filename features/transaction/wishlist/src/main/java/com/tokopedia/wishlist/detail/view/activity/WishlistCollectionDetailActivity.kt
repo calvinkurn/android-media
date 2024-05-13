@@ -64,4 +64,8 @@ class WishlistCollectionDetailActivity : BaseSimpleActivity(), AppLogInterface, 
     override fun getPageName(): String {
         return PageName.WISHLIST
     }
+
+    override fun getAdsPageName(): String {
+        return PageName.WISHLIST
+    }
 }

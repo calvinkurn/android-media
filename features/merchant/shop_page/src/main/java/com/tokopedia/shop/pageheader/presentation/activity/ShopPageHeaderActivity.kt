@@ -292,4 +292,8 @@ class ShopPageHeaderActivity :
     override fun getPageName(): String {
         return PageName.SHOP
     }
+
+    override fun getAdsPageName(): String {
+        return PageName.SHOP
+    }
 }

@@ -138,6 +138,8 @@ class SearchActivity :
 
     override fun getPageName(): String = AppLogSearch.ParamValue.SEARCH_RESULT
 
+    override fun getAdsPageName(): String = AppLogSearch.ParamValue.SEARCH_RESULT
+
     override fun isEnterFromWhitelisted(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

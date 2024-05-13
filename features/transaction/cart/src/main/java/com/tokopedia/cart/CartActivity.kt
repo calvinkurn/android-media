@@ -73,6 +73,10 @@ class CartActivity :
         return PageName.CART
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.CART
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

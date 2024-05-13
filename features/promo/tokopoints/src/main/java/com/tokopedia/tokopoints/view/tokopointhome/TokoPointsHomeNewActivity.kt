@@ -24,7 +24,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew.Com
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener, AppLogInterface, IAdsLog {
+class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener, IAdsLog {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     private var mUserSession: UserSessionInterface? = null
 
@@ -82,7 +82,7 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         else finish()
     }
 
-    override fun getPageName(): String {
+    override fun getAdsPageName(): String {
         return PageName.REWARD
     }
 

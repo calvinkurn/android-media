@@ -195,4 +195,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun getPageName(): String {
         return PageName.RECOMMENDATION
     }
+
+    override fun getAdsPageName(): String {
+        return PageName.RECOMMENDATION
+    }
 }
