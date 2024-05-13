@@ -32,4 +32,6 @@ data class WhiteBackgroundProductCard(
     )
     override val showOutlineView: Boolean
         get() = false
+
+    override val ratingDotColor: Int = R.color.dms_static_light_NN400
 }

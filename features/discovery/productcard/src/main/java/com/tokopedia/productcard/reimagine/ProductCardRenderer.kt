@@ -68,7 +68,8 @@ internal class ProductCardRenderer(
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
     private val credibilityText by view.lazyView<Typography?>(R.id.productCardLabelCredibility)
     private val ratingText by view.lazyView<Typography?>(R.id.productCardRating)
-    
+    private val productCardRatingDots by view.lazyView<Typography?>(R.id.productCardRatingDots)
+
     fun setProductModel(productCardModel: ProductCardModel) {
         renderOutline(productCardModel)
         renderCardContainer(productCardModel)
@@ -417,6 +418,10 @@ internal class ProductCardRenderer(
             } else {
                 labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
             }
+        }
+
+        colorMode.ratingDotColor?.let { ratingDotColor ->
+            productCardRatingDots?.setTextColor(ContextCompat.getColor(context, ratingDotColor))
         }
 
         outlineView?.isVisible = colorMode.showOutlineView

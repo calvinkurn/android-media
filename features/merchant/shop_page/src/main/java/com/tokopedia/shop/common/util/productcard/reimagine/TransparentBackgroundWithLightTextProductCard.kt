@@ -10,13 +10,13 @@ data class TransparentBackgroundWithLightTextProductCard(
     override val cardBackgroundColor: Int = android.R.color.transparent
     override val productNameTextColor: Int = R.color.dms_static_dark_NN950_96
     override val priceTextColor: Int = R.color.dms_static_dark_NN950_96
-    override val slashPriceTextColor: Int = R.color.dms_static_dark_NN950_44
-    override val soldCountTextColor: Int =  R.color.dms_static_dark_NN950_68
+    override val slashPriceTextColor: Int = R.color.dms_static_dark_NN950_96
+    override val soldCountTextColor: Int =  R.color.dms_static_dark_NN950_96
     override val discountTextColor: Int= R.color.dms_static_dark_RN500
-    override val ratingTextColor: Int = R.color.dms_static_dark_NN950_68
+    override val ratingTextColor: Int = R.color.dms_static_dark_NN950_96
     override val buttonColorMode: ColorMode = ColorMode.LIGHT_MODE
     override val labelBenefitViewColor = ProductCardColor.LabelBenefitViewColor(cutoutFillColor = labelBenefitCutoutFillColor)
-    override val shopBadgeTextColor: Int = R.color.dms_static_dark_NN600
+    override val shopBadgeTextColor: Int = R.color.dms_static_dark_NN950_96
     override val quantityEditorColor = ProductCardColor.QuantityEditorColor(
         buttonDeleteCartColorLight = R.color.dms_static_dark_NN900,
         buttonDeleteCartColorDark = R.color.dms_static_dark_NN900,
@@ -32,4 +32,6 @@ data class TransparentBackgroundWithLightTextProductCard(
     )
     override val showOutlineView: Boolean
         get() = false
+
+    override val ratingDotColor: Int = R.color.dms_static_dark_NN950_96
 }
