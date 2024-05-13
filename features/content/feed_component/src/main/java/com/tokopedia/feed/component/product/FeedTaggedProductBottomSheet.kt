@@ -6,14 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,14 +28,18 @@ import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.views.bottomsheets.MvcDetailBottomSheet
+import com.tokopedia.play_common.view.BottomSheetHeader
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as contentcommonR
 
 class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
@@ -131,7 +138,9 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = BottomSheetFeedTaggedProductBinding.inflate(inflater, container, false)
-        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title))
+        showHeader = false
+        clearContentPadding = true
+        setupHeader()
         setChild(binding.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -157,6 +166,16 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 listener?.productListLiveData?.observe(viewLifecycleOwner, productListObserver)
                 listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
             }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    listener?.cartCount?.collectLatest {
+                        val notificationText = if (it <= 0) "" else it.toString()
+
+                        binding.header.setIconNotificationText(notificationText)
+                    }
+                }
+            }
         }
     }
 
@@ -172,7 +191,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     }
 
     private fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary) {
-        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title_with_promo))
+        binding.header.setTitle(getString(contentcommonR.string.content_product_bs_title_with_promo))
         val info = data.animatedInfoList
         if (info?.isNotEmpty() == true) {
             binding.mvcTaggedProduct.setData(
@@ -232,6 +251,25 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         _binding?.rvTaggedProduct?.show()
     }
 
+    private fun setupHeader() {
+        binding.header.setTitle(getString(contentcommonR.string.content_product_bs_title))
+        binding.header.setIconNotification(IconUnify.CART)
+        binding.header.setIconNotificationText("")
+        binding.header.setListener(object : BottomSheetHeader.Listener {
+            override fun onCloseClicked(view: BottomSheetHeader) {
+                dismiss()
+            }
+
+            override fun onIconClicked(view: BottomSheetHeader) {
+                listener?.onCartClicked()
+            }
+
+            override fun impressIcon(view: BottomSheetHeader) {
+                /** No implementation */
+            }
+        })
+    }
+
     interface Listener {
         fun onProductCardClicked(
             product: ContentTaggedProductUiModel,
@@ -250,8 +288,13 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
         fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>)
 
+        fun onCartClicked()
+
         val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
+
         val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
+
+        val cartCount: StateFlow<Int>
     }
 
     companion object {

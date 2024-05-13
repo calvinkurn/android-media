@@ -136,6 +136,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -1915,6 +1916,8 @@ class FeedFragment :
             sourceType
         )
 
+        feedPostViewModel.fetchCartCount()
+
         productBottomSheet.show(
             activityId = activityId,
             shopId = author?.id ?: "",
@@ -1998,6 +2001,9 @@ class FeedFragment :
     override val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
         get() = feedPostViewModel.feedTagProductList
 
+    override val cartCount: StateFlow<Int>
+        get() = feedPostViewModel.cartCount
+
     override fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>) {
         if (currentTrackerData != null) {
             feedAnalytics?.eventMvcWidgetImpression(
@@ -2006,6 +2012,10 @@ class FeedFragment :
             )
             feedMvcAnalytics.voucherList = mvcList
         }
+    }
+
+    override fun onCartClicked() {
+        /** JOE TODO: handle this */
     }
 
     private fun observeReminder() {
