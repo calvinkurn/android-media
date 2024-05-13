@@ -42,6 +42,7 @@ import com.tokopedia.developer_options.presentation.model.ResetOnBoardingNavigat
 import com.tokopedia.developer_options.presentation.model.ResetOnBoardingUiModel
 import com.tokopedia.developer_options.presentation.model.RollenceAbTestingManualSwitcherUiModel
 import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
+import com.tokopedia.developer_options.presentation.model.SSOAuthorizationUiModel
 import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggingUiModel
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
@@ -103,6 +104,7 @@ import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingNa
 import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.RollenceAbTestingManualSwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.RouteManagerViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.SSOAuthorizationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SellerAppReviewDebuggingViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SendFirebaseCrashExceptionViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SharedPreferencesEditorViewHolder
@@ -141,7 +143,8 @@ class DeveloperOptionTypeFactoryImpl(
     private val authorizeListener: DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener,
     private val branchListener: BranchLinkViewHolder.BranchListener,
     private val userIdListener: UserIdViewHolder.UserIdListener,
-    private val shopIdListener: ShopIdViewHolder.ShopIdListener
+    private val shopIdListener: ShopIdViewHolder.ShopIdListener,
+    private val ssoListener: SSOAuthorizationViewHolder.LoginSSOListener
 ) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: MsSdkUiModel): Int = MsSdkViewHolder.LAYOUT
@@ -206,6 +209,7 @@ class DeveloperOptionTypeFactoryImpl(
 
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
+    override fun type(uiModel: SSOAuthorizationUiModel) = SSOAuthorizationViewHolder.LAYOUT
     override fun type(uiModel: OkHttpTimeoutUiModel): Int = OkHttpTimeoutViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -269,6 +273,7 @@ class DeveloperOptionTypeFactoryImpl(
             UserIdViewHolder.LAYOUT -> UserIdViewHolder(view, userIdListener)
             ShopIdViewHolder.LAYOUT -> ShopIdViewHolder(view, shopIdListener)
             BannerEnvironmentViewHolder.LAYOUT -> BannerEnvironmentViewHolder(view)
+            SSOAuthorizationViewHolder.LAYOUT -> SSOAuthorizationViewHolder(view, ssoListener)
             OkHttpTimeoutViewHolder.LAYOUT -> OkHttpTimeoutViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

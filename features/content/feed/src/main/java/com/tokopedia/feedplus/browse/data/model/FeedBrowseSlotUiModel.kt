@@ -79,7 +79,7 @@ internal data class WidgetMenuModel(
             label = "",
             group = "",
             sourceType = "",
-            sourceId = ""
+            sourceId = "",
         )
     }
 }

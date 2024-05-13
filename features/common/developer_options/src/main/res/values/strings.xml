@@ -148,4 +148,5 @@
     <string name="banner_environment">Enable Banner Environment</string>
 
     <string name="copy_id">Copied Id %s</string>
+    <string name="text_login_by_lark">Authorize by Lark</string>
 </resources>

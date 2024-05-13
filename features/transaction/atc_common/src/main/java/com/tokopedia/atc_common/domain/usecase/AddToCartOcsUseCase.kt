@@ -63,7 +63,7 @@ open class AddToCartOcsUseCase @Inject constructor(
             PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
             PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice.roundToLong(),
             KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress(),
-//                PARAM_TRACKER_DATA to ocsRequestParams.trackerData // will be needed on the next phase
+            PARAM_TRACKER_DATA to ocsRequestParams.trackerData
         )
         val atcFromExternalSource = ocsRequestParams.atcFromExternalSource
         if (atcFromExternalSource != null) {

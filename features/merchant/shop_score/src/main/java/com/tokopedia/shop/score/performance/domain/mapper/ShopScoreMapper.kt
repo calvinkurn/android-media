@@ -84,9 +84,6 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemParameterFaqU
 import com.tokopedia.shop.score.performance.presentation.model.ItemParentBenefitUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemProtectedParameterUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemReactivatedComebackUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProPotentiallyDowngradedUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
@@ -295,35 +292,6 @@ open class ShopScoreMapper @Inject constructor(
                         )
                     )
                     return@apply
-                }
-                powerMerchantResponse?.pmTier == PMTier.REGULAR || powerMerchantResponse?.pmTier == PMTier.PRO -> {
-                    when (powerMerchantResponse.status) {
-                        PMStatusConst.ACTIVE -> {
-                            if (powerMerchantResponse.pmTier == PMTier.REGULAR) {
-                                add(
-                                    ItemStatusPMUiModel(
-                                        descPM = R.string.description_content_pm_section
-                                    )
-                                )
-                                return@apply
-                            } else {
-                                when (shopScore) {
-                                    in SHOP_SCORE_60..SHOP_SCORE_69 -> {
-                                        add(ItemStatusPMProPotentiallyDowngradedUiModel(false))
-                                        return@apply
-                                    }
-                                    else -> {
-                                        add(ItemStatusPMProUiModel())
-                                        return@apply
-                                    }
-                                }
-                            }
-                        }
-                        PMStatusConst.IDLE -> {
-                            add(ItemStatusPMProPotentiallyDowngradedUiModel(true))
-                            return@apply
-                        }
-                    }
                 }
             }
         }
