@@ -3615,10 +3615,14 @@ class CheckoutViewModel @Inject constructor(
             var showMaxQtyError = false
             var showMinQtyError = false
             val newQty: Int
-            val maxQty = if (product.invenageValue < product.maxOrder) {
-                product.invenageValue
-            } else {
+            val maxQty = if (product.switchInvenage == 0) {
                 product.maxOrder
+            } else {
+                if (product.invenageValue < product.maxOrder) {
+                    product.invenageValue
+                } else {
+                    product.maxOrder
+                }
             }
 
             if (newValue > maxQty) {
