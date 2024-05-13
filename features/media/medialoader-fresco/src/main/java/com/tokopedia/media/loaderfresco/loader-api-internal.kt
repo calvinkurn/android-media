@@ -3,11 +3,15 @@ package com.tokopedia.media.loaderfresco
 import android.app.Activity
 import android.content.Context
 import android.widget.ImageView
+import com.tokopedia.media.loaderfresco.data.Properties
 
-internal fun ImageView.call(url: String?) {
+@PublishedApi
+internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValid()) {
         try {
-            MediaLoaderFrescoApi.loadImage(this, url)
+            MediaLoaderFrescoApi.loadImage(this,
+                properties.setSource(source)
+            )
         } catch (e: Exception) {
             e.printStackTrace()
 

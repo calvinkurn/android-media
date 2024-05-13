@@ -7,15 +7,15 @@ import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
+import com.tokopedia.media.loaderfresco.data.Properties
 import com.tokopedia.media.loaderfresco.tracker.FrescoLogger
 import com.tokopedia.media.loaderfresco.utils.FrescoDataSourceRequest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 internal object MediaLoaderFrescoApi {
-    fun loadImage(imageView: ImageView, url: String?) {
-        //TODO usage Properties
+    fun loadImage(imageView: ImageView, properties: Properties) {
         val context = imageView.context
-        val dataSource = FrescoDataSourceRequest.frescoDataSourceBuilder(url, context)
+        val dataSource = FrescoDataSourceRequest.frescoDataSourceBuilder(properties, context)
 
         dataSource.subscribe(object : BaseBitmapDataSubscriber() {
             override fun onNewResultImpl(bitmap: Bitmap?) {
