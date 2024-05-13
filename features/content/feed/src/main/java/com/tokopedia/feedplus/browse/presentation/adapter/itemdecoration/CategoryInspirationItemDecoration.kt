@@ -95,15 +95,7 @@ internal class CategoryInspirationItemDecoration(
         val prevSpanRowPosition = currPosition - spanIndex - 1
         if (prevSpanRowPosition < 0) return
 
-        top = when (adapter.getItemViewType(prevSpanRowPosition)) {
-            FeedBrowseItemAdapter.TYPE_INSPIRATION_CARD,
-            FeedBrowseItemAdapter.TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
-                offset24
-            }
-            else -> {
-                offset16
-            }
-        }
+        top = offset16
     }
 
     private fun Rect.itemOffsetsLoading() {

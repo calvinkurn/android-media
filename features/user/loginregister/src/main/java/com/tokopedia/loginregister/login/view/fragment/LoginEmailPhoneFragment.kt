@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.login.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import com.tokopedia.media.loader.loadImage
@@ -53,6 +54,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
@@ -106,6 +108,7 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.P
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
@@ -208,7 +211,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var validateToken = ""
     private var isLoginAfterSq = false
     private var isReturnHomeWhenBackPressed = false
+    private var isSuccessRegisterPhone = false
     private var socmedBottomSheet: SocmedBottomSheet? = null
+    private var callbackRegister = ""
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -333,6 +338,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         isEnableDirectBiometric = isEnableDirectBiometric()
         isEnableOcl = isOclEnabled()
+        callbackRegister = getParamString(PARAM_CALLBACK_REGISTER, arguments, savedInstanceState, "")
         refreshRolloutVariant()
     }
 
@@ -1043,6 +1049,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            intent.putExtra(PARAM_CALLBACK_REGISTER, callbackRegister)
             startActivity(intent)
             it.finish()
         }
@@ -1077,6 +1084,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.getUserInfo()
     }
 
+    @SuppressLint("PII Data Exposure")
     override fun onSuccessLogin() {
         dismissLoadingLogin()
         activityShouldEnd = true
@@ -1089,18 +1097,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 setLoginSuccessSellerApp()
             } else {
                 getDefaultChosenAddress()
-                val bundle = Bundle()
-
-                if (isFromRegister) {
-                    bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
-                }
 
                 if (isReturnHomeWhenBackPressed) {
                     goToHome()
                 }
 
-                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-                it.finish()
+                if (isSuccessRegisterPhone && callbackRegister.isNotEmpty()) {
+                    goToCallbackRegister(callbackRegister)
+                } else {
+                    finishResultOk()
+                }
             }
 
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
@@ -1131,6 +1137,24 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         refreshRolloutVariant()
         saveFirstInstallTime()
+    }
+
+    private fun finishResultOk() {
+        activity?.let {
+            val bundle = Bundle()
+
+            if (isFromRegister) {
+                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
+            }
+
+            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+            it.finish()
+        }
+    }
+
+    private fun goToCallbackRegister(callback: String) {
+        val intent = RouteManager.getIntent(this.context, callback)
+        this.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CALLBACK_REGISTER)
     }
 
     private fun initTokoChatConnection() {
@@ -1316,6 +1340,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+                        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
                         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                         it.startActivity(intent)
                         it.finish()
@@ -1555,6 +1580,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else if (requestCode == LoginConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 isFromRegister = true
+                isSuccessRegisterPhone = true
                 showLoading(true)
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
@@ -1637,7 +1663,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         activity?.finish()
                     }
                 }
-            } else {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CALLBACK_REGISTER) {
+                finishResultOk()
+            } else{
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }

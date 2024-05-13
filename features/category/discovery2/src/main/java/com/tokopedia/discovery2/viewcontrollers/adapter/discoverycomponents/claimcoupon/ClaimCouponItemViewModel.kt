@@ -22,7 +22,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ClaimCouponItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ClaimCouponItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val couponCode = MutableLiveData<String>()
     private val componentData = MutableLiveData<ComponentsItem>()

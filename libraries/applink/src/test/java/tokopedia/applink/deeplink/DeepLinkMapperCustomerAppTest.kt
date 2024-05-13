@@ -33,8 +33,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 163
-        const val SIZE_PATH = 277
+        const val SIZE_HOST = 164
+        const val SIZE_PATH = 281
     }
 
     override fun setup() {
@@ -1784,6 +1784,27 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check setting notif push notification appLink then should return tokopedia internal setting push notification in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=push_notification"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_PUSH_NOTIFICATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting notif email appLink then should return tokopedia internal setting notif email in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=email"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_EMAIL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting notif sms appLink then should return tokopedia internal setting notif sms in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=sms"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_SMS, expectedDeepLink)
+    }
+
+    @Test
     fun `check content detail appLink then should return tokopedia internal content detail in customerapp`() {
         val expectedDeepLink =
             "${ApplinkConsInternalHome.HOME_NAVIGATION}?TAB_POSITION=1&ARGS_FEED_SOURCE_ID=123"
@@ -3243,5 +3264,17 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val productId = "12345"
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PRODUCT_PREVIEW}/$productId"
         assertEqualsDeepLinkMapper("tokopedia://product-preview/$productId", expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed local search appLink then should return tokopedia internal feed local search`() {
+        val expectedDeepLink = ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE
+        assertEqualsDeepLinkMapper("tokopedia://feed/search", expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed search result appLink then should return tokopedia internal feed search result`() {
+        val expectedDeepLink = ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT
+        assertEqualsDeepLinkMapper("tokopedia://feed/search-result", expectedDeepLink)
     }
 }

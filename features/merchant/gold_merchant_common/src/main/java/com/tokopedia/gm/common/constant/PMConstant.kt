@@ -21,6 +21,8 @@ object PMConstant {
         const val PM_BADGE_INACTIVE = TokopediaImageUrl.PM_BADGE_INACTIVE
         const val PM_SHOP_ICON = TokopediaImageUrl.PM_SHOP_ICON
         const val PM_PRO_BADGE = TokopediaImageUrl.PM_PRO_BADGE
+        const val PM_SEARCH_DISCOVERY_ICON = TokopediaImageUrl.PM_SEARCH_DISCOVERY_ICON
+        const val PM_SHOP_PROMO_ICON = TokopediaImageUrl.PM_SHOP_PROMO_ICON
         const val PM_NEW_REQUIREMENT = TokopediaImageUrl.PM_NEW_REQUIREMENT
         const val PM_ADD_PRODUCT_BOTTOM_SHEET = TokopediaImageUrl.PM_ADD_PRODUCT_BOTTOM_SHEET
         const val PM_TOTAL_ORDER_TERM = TokopediaImageUrl.PM_TOTAL_ORDER_TERM

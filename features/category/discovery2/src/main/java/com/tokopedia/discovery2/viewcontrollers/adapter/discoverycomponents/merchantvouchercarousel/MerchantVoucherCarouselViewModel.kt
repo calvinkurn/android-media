@@ -22,9 +22,9 @@ private const val VOUCHER_PER_PAGE = 10
 
 class MerchantVoucherCarouselViewModel(
     application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(),
+) : DiscoveryBaseViewModel(components),
     CoroutineScope {
     @JvmField
     @Inject
