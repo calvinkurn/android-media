@@ -361,7 +361,7 @@ object AppLogAnalytics {
         while (idx >= 0) {
             val map = _adsPageDataList[idx]
             map[key]?.let {
-                return it.second
+                return it.third
             }
             idx--
         }
