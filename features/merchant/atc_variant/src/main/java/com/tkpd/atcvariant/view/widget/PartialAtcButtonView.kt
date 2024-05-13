@@ -3,7 +3,7 @@ package com.tkpd.atcvariant.view
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -12,6 +12,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton.Companion.buttonText
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton.Companion.orEmpty
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.generateTopchatButtonPdp
@@ -120,60 +123,51 @@ class PartialAtcButtonView private constructor(
             }
         }
 
-
         btnBuy.run {
-            val firstButton = availableButton.firstOrNull()
-            showWithCondition(firstButton != null)
-            generateTheme(firstButton?.color.orEmpty())
-            val fallbackTextIfEmpty = if (firstButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
-            val textFirstButton = availableButton.getOrNull(0)?.text ?: fallbackTextIfEmpty
-            text = textFirstButton
+            val firstButton = availableButton.firstOrNull().orEmpty
+            showWithCondition(firstButton.cartType.isNotBlank())
+            generateTheme(firstButton.color)
+            text = firstButton.buttonText
 
             setOnClickListener {
                 if (isLoading) return@setOnClickListener
 
-                buttonListener.buttonCartTypeClick(
-                    availableButton.getOrNull(0)?.cartType.orEmpty(),
-                    text.toString(),
-                    availableButton.getOrNull(0)?.showRecommendation.orFalse()
-                )
+                buttonListener.buttonCartTypeClick(firstButton)
             }
         }
 
         btnAtc.run {
-            val secondButton = availableButton.getOrNull(1)
-            showWithCondition(secondButton != null)
-            generateTheme(secondButton?.color.orEmpty())
-            val fallbackTextIfEmpty = if (secondButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
-            text = availableButton.getOrNull(1)?.text ?: fallbackTextIfEmpty
+            val secondButton = availableButton.getOrNull(Int.ONE).orEmpty
+            showWithCondition(secondButton.cartType.isNotBlank())
+            generateTheme(secondButton.color)
+            text = secondButton.buttonText
+
             setOnClickListener {
                 if (isLoading) return@setOnClickListener
 
-                buttonListener.buttonCartTypeClick(
-                    availableButton.getOrNull(1)?.cartType.orEmpty(),
-                    text.toString(),
-                    availableButton.getOrNull(1)?.showRecommendation.orFalse()
-                )
+                buttonListener.buttonCartTypeClick(secondButton)
             }
         }
     }
 
     private fun renderFallbackCheckoutButton() {
         btnBuy.run {
+            val button = AvailableButton.createBuyNowButton(context = context)
             show()
-            generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN)
-            text = context.getString(productdetailcommonR.string.buy_now)
+            generateTheme(button.color)
+            text = button.text
             setOnClickListener {
-                buttonListener.buyNowClick(text.toString())
+                buttonListener.onButtonFallbackClick(button)
             }
         }
 
         btnAtc.run {
+            val button = AvailableButton.createAddToCartButton(context = context)
             show()
-            generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN)
-            text = context.getString(productdetailcommonR.string.plus_product_to_cart)
+            generateTheme(button.color)
+            text = button.text
             setOnClickListener {
-                buttonListener.addToCartClick(text.toString())
+                buttonListener.onButtonFallbackClick(button)
             }
         }
 
@@ -193,11 +187,10 @@ class PartialAtcButtonView private constructor(
 }
 
 interface PartialAtcButtonListener {
-    fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
+    fun buttonCartTypeClick(actionButton: AvailableButton)
     fun onChatButtonClick()
     fun onButtonShowed(buttonCartTypes: List<String>)
 
     // Listener for fallback button
-    fun addToCartClick(buttonText: String)
-    fun buyNowClick(buttonText: String)
+    fun onButtonFallbackClick(actionButton: AvailableButton)
 }

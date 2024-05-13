@@ -1,9 +1,13 @@
 package com.tokopedia.product.detail.common.data.model.carttype
 
+import android.content.Context
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.ifNullOrEmpty
+import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.R
 
 data class CartRedirection(
     @SerializedName("data")
@@ -75,12 +79,51 @@ data class AvailableButton(
     @SerializedName("show_recommendation")
     @Expose
     val showRecommendation: Boolean = false,
+    @SerializedName("showAnimation")
+    @Expose
+    val showAnimation: Boolean = false,
     @SerializedName("onboarding_message")
     @Expose
     val onboardingMessage: String = ""
 ) {
     fun isCartTypeDisabledOrRemindMe(): Boolean {
         return cartType == ProductDetailCommonConstant.KEY_DEFAULT_OOS || cartType == ProductDetailCommonConstant.KEY_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST
+    }
+
+    val atcKey = ProductCartHelper.generateButtonAction(
+        cartType = cartType,
+        atcButton = showRecommendation
+    )
+
+    companion object {
+        val AvailableButton?.buttonText: String
+            get() = this?.text.ifNullOrBlank {
+                // fallback to default text
+                if (this?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
+            }
+
+        val AvailableButton?.orEmpty
+            get() = AvailableButton(
+                cartType = "",
+                color = "",
+                text = "",
+                showRecommendation = false,
+                showAnimation = false
+            )
+
+        fun createAddToCartButton(context: Context): AvailableButton = AvailableButton(
+            cartType = ProductDetailCommonConstant.KEY_NORMAL_BUTTON,
+            color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+            text = context.getString(R.string.plus_product_to_cart),
+            showRecommendation = true
+        )
+
+        fun createBuyNowButton(context: Context): AvailableButton = AvailableButton(
+            cartType = ProductDetailCommonConstant.KEY_NORMAL_BUTTON,
+            color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
+            text = context.getString(R.string.buy_now),
+            showRecommendation = false
+        )
     }
 }
 
