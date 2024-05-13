@@ -160,7 +160,7 @@ class FeedPostViewModel @Inject constructor(
         get() = _reminderResult
 
     private val _feedTagProductList = MutableStateFlow(FeedProductPaging.Empty)
-    val feedTagProductList : Flow<FeedProductPaging>
+    val feedTagProductList: Flow<FeedProductPaging>
         get() = _feedTagProductList
 
     private val _followRecommendationResult = MutableLiveData<Result<String>>()

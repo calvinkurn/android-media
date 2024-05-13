@@ -18,6 +18,3 @@ data class FeedProductPaging(
             get() = FeedProductPaging(ResultState.Loading, emptyList(), "")
     }
 }
-
-object FeedProductNextPageError: Throwable()
-object FeedProductPageError: Throwable()

@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.types.ResultState
@@ -187,7 +189,9 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         setShowListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(BOTTOM_SHEET_SHOW_DELAY)
-                listener?.productListLiveData?.collect(productListObserver)
+                repeatOnLifecycle(Lifecycle.State.RESUMED){
+                    listener?.productListLiveData?.collect(productListObserver)
+                }
                 listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
             }
         }
@@ -256,11 +260,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         super.onDestroyView()
         binding.rvTaggedProduct.removeOnScrollListener(scrollListener)
         binding.rvTaggedProduct.removeOnLayoutChangeListener(rvLayoutChangeListener)
+        _binding = null
         listener = null
     }
 
     private fun showLoading(isVisible: Boolean) {
-        _binding?.feedProductLoadMore?.showWithCondition(isVisible)
+        binding.feedProductLoadMore.showWithCondition(isVisible)
     }
 
     private fun showError(isVisible: Boolean) {
