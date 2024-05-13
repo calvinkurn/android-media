@@ -169,6 +169,10 @@ object AceSearchProductQuery {
                         customVideoURL
                         parentId
                         isPortrait
+                        ads {
+                            creativeID
+                            logExtra
+                        }
                     }
                     violation {
                         headerText
