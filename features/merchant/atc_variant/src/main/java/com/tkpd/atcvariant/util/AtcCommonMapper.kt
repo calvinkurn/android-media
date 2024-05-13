@@ -93,7 +93,7 @@ object AtcCommonMapper {
                     ),
                     userId = userId,
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP,
-                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.INSTANT)
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.OCC)
                 )
             }
             else -> {
