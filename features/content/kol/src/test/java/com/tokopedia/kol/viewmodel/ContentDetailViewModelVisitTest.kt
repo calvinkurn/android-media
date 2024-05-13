@@ -1,6 +1,7 @@
 package com.tokopedia.kol.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
@@ -34,17 +35,23 @@ class ContentDetailViewModelVisitTest {
     private val channelId = "1234"
     private val contentId = "1234"
     private val builder = ContentDetailModelBuilder()
+    private val productIds = buildList {
+        add(FeedXProduct(id = "3"))
+        add(FeedXProduct(id = "4"))
+    }
 
     @Test
     fun `when user watch vod content it should count as visit channel, given response success, then it should emit VisitContentModel`() {
         val rowNumber = 0
         val expectedResult = builder.getVisitContentModel(rowNumber)
 
-        coEvery { mockRepo.trackVisitChannel(channelId, rowNumber) } returns expectedResult
+        coEvery { mockRepo.trackPerformance(any(), any(), any(), any()) } returns expectedResult
 
-        viewModel.trackVisitChannel(channelId, rowNumber)
+        viewModel.trackVisitChannel(channelId, rowNumber, productIds)
 
         val result = viewModel.vodViewData.value
+
+        println("hello $result")
 
         Assertions
             .assertThat(result)
@@ -55,11 +62,13 @@ class ContentDetailViewModelVisitTest {
     fun `when user watch vod content it should count as visit channel, given response error, then it should emit error`() {
         val rowNumber = 0
 
-        coEvery { mockRepo.trackVisitChannel(channelId, rowNumber) } throws Throwable()
+        coEvery { mockRepo.trackPerformance(any(), any(), any(), any()) } throws Throwable()
 
-        viewModel.trackVisitChannel(channelId, rowNumber)
+        viewModel.trackVisitChannel(channelId, rowNumber, productIds)
 
         val result = viewModel.vodViewData.value
+
+        println("hello 2 $result")
 
         Assertions
             .assertThat(result)
