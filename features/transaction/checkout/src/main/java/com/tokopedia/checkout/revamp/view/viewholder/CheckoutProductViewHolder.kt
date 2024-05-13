@@ -385,9 +385,14 @@ class CheckoutProductViewHolder(
                 MARGIN_16.dpToPx(itemView.context.resources.displayMetrics)
             )
             if (product.shouldShowMaxQtyError) {
+                val maxQty = if (product.invenageValue < product.maxOrder) {
+                    product.invenageValue
+                } else {
+                    product.maxOrder
+                }
                 productBinding.labelQuantityError.text = String.format(
                     itemView.context.resources.getString(R.string.checkout_max_quantity_error),
-                    product.maxOrder
+                    maxQty
                 )
             }
             if (product.shouldShowMinQtyError) {

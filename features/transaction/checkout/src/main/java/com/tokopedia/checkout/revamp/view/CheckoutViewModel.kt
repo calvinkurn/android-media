@@ -223,7 +223,9 @@ class CheckoutViewModel @Inject constructor(
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHigher: Boolean,
         gatewayCode: String = "",
-        tenor: Int = 0
+        tenor: Int = 0,
+        checkoutItems: MutableList<CheckoutItem>? = null,
+        itemIndex: Int? = null
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         viewModelScope.launch(dispatchers.io) {
@@ -284,10 +286,16 @@ class CheckoutViewModel @Inject constructor(
                         summariesAddOnUiModel =
                             ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)
 
+                        var currProduct: CheckoutProductModel? = null
+                        if (checkoutItems != null && itemIndex != null) {
+                            currProduct = checkoutItems[itemIndex] as CheckoutProductModel
+                        }
+
                         val items = dataConverter.getCheckoutItems(
                             saf.cartShipmentAddressFormData,
                             address.recipientAddressModel.locationDataModel != null,
-                            userSessionInterface.name
+                            userSessionInterface.name,
+                            currProduct
                         )
 
                         var uploadPrescriptionUiModel = UploadPrescriptionUiModel()
@@ -3607,10 +3615,16 @@ class CheckoutViewModel @Inject constructor(
             var showMaxQtyError = false
             var showMinQtyError = false
             val newQty: Int
-            if (newValue >= product.maxOrder) {
+            val maxQty = if (product.invenageValue < product.maxOrder) {
+                product.invenageValue
+            } else {
+                product.maxOrder
+            }
+
+            if (newValue > maxQty) {
                 showMaxQtyError = true
-                newQty = product.maxOrder
-            } else if (newValue <= product.minOrder) {
+                newQty = maxQty
+            } else if (newValue < product.minOrder) {
                 showMinQtyError = true
                 newQty = product.minOrder
             } else {
@@ -3623,7 +3637,7 @@ class CheckoutViewModel @Inject constructor(
             )
             checkoutItems[itemIndex] = newProduct
             viewModelScope.launch(dispatchers.io) {
-                doUpdateCartAndReload(checkoutItems)
+                doUpdateCartAndReload(checkoutItems, itemIndex)
             }
             /*viewModelScope.launch(dispatchers.io) {
                 addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
@@ -3632,7 +3646,8 @@ class CheckoutViewModel @Inject constructor(
     }
 
     private suspend fun doUpdateCartAndReload(
-        checkoutItems: MutableList<CheckoutItem>
+        checkoutItems: MutableList<CheckoutItem>,
+        itemIndex: Int
     ) {
         debounceQtyJob?.cancel()
         debounceQtyJob = viewModelScope.launch(dispatchers.immediate) {
@@ -3656,7 +3671,9 @@ class CheckoutViewModel @Inject constructor(
                     loadSAF(
                         isReloadData = true,
                         skipUpdateOnboardingState = true,
-                        isReloadAfterPriceChangeHigher = false
+                        isReloadAfterPriceChangeHigher = false,
+                        checkoutItems = checkoutItems,
+                        itemIndex = itemIndex
                     )
                 }
             }
