@@ -1,7 +1,5 @@
 package com.tokopedia.graphql.domain
 
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
-
 /**
  * This is the base class for the domain layer by using the GraphQL service.
  * This class is the result of an improvement from the existing GraphqlUseCase (or related).
@@ -22,14 +20,9 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 abstract class GqlUseCase<Input, Output> {
 
     /*
-    * override this to set the string graphql query
+    * override this to set the graphql query
     * */
-    protected open fun graphqlQuery(): String = ""
-
-    /*
-    * override this to set the interface graphql query object
-    * */
-    protected open fun gqlQuery(): GqlQueryInterface? = null
+    protected abstract fun graphqlQuery(): String
 
     /*
     * override this to set the code to be executed
