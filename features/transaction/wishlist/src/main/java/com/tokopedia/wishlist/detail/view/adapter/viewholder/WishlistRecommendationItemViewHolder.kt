@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst

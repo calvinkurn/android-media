@@ -15,8 +15,6 @@ import com.tokopedia.inbox.databinding.UniversalInboxRecommendationProductItemBi
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
@@ -57,7 +55,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 )
             }
 
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(uiModel.recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     uiModel.recommendationItem.sendShowAdsByteIo(itemView.context)
                 }
@@ -65,7 +63,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 override fun onShowOver(maxPercentage: Int) {
                     uiModel.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
                 }
-            }, uiModel.recommendationItem.isTopAds)
+            })
 
             setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {

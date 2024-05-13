@@ -49,7 +49,7 @@ class CarouselProductCardViewHolder (
                 element.listener?.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
                     ?: listener?.onProductCardImpressed(position = element.grid.position, trackingAttributionModel = element.trackingAttributionModel, channelGrid = element.grid)
             }
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(element.grid.isTopads, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     element.grid.sendEventShowAdsByteIo(itemView.context)
                 }

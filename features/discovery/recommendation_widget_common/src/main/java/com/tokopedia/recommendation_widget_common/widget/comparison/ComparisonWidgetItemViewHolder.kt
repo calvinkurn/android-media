@@ -3,16 +3,12 @@ package com.tokopedia.recommendation_widget_common.widget.comparison
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -85,7 +81,7 @@ class ComparisonWidgetItemViewHolder(
                 }
             })
         }
-        binding?.productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        binding?.productCardView?.setVisibilityPercentListener(comparisonModel.recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 adsViewListener?.onViewAttachedToWindow(comparisonModel.recommendationItem, bindingAdapterPosition)
             }

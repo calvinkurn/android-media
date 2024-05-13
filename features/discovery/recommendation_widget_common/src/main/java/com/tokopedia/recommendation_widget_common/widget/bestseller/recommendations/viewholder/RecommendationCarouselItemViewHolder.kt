@@ -44,7 +44,7 @@ class RecommendationCarouselItemViewHolder(view: View, private val listener: Rec
                 element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
             }
         })
-        binding?.recommendationItemCard?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        binding?.recommendationItemCard?.setVisibilityPercentListener(element.recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 element.recommendationItem.sendShowAdsByteIo(itemView.context)
             }

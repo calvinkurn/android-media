@@ -47,13 +47,13 @@ class RecommendationViewHolder(
         bindProductCardImpression(element)
         bindProductCardClick(element)
         bindProductCardThreeDotsClick(element)
-        productCard?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        productCard?.setVisibilityPercentListener(element.recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
-                element.recommendationItem?.sendShowAdsByteIo(itemView.context)
+                element.recommendationItem.sendShowAdsByteIo(itemView.context)
             }
 
             override fun onShowOver(maxPercentage: Int) {
-                element.recommendationItem?.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                element.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
             }
         })
     }

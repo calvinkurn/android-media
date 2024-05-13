@@ -8,8 +8,6 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.layout.ProductConstraintLayout
@@ -38,7 +36,7 @@ class RecommendationCardGridViewHolder(
         productCardImpressionListener(element)
         setItemProductCardClickListener(element)
         setItemThreeDotsClickListener(element)
-        productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        productCardView?.setVisibilityPercentListener(element.recommendationProductItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 if(element.recommendationProductItem.isTopAds) {
                     AppLogTopAds.sendEventShow(

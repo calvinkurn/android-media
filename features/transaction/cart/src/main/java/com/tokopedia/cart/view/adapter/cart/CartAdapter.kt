@@ -4,8 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.cart.databinding.ItemCartBuyAgainBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
@@ -88,20 +86,6 @@ class CartAdapter(
         const val SELLER_CASHBACK_ACTION_INSERT = 1
         const val SELLER_CASHBACK_ACTION_UPDATE = 2
         const val SELLER_CASHBACK_ACTION_DELETE = 3
-    }
-
-    private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(scrollListener)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(scrollListener)
     }
 
     fun updateList(newList: ArrayList<Any>) {

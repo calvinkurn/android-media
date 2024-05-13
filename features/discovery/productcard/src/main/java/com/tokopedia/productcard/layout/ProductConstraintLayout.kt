@@ -157,15 +157,11 @@ open class ProductConstraintLayout : ConstraintLayout {
         fun onShowOver(maxPercentage: Int)
     }
 
-    fun setVisibilityPercentListener(eventListener: OnVisibilityPercentChanged?) {
-        setAdsTrackListener(true, eventListener)
-    }
-
     fun removeVisibilityPercentageListener() {
         mPercentageListener = null
     }
 
-    protected fun setAdsTrackListener(isTopAds: Boolean, eventListener: OnVisibilityPercentChanged?) {
+    fun setVisibilityPercentListener(isTopAds: Boolean, eventListener: OnVisibilityPercentChanged?) {
         if (isTopAds && mPercentageListener == null) {
             inflateView()
             mPercentageListener = eventListener

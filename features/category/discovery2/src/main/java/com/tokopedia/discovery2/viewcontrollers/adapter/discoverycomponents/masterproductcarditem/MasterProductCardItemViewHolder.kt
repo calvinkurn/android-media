@@ -62,8 +62,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var isFullFilment: Boolean = false
     private var isRecommendation = false
 
-    private val itemViewRect by lazy { Rect() }
-
     init {
         itemView.addOnAttachStateChangeListener(
             onViewAttachedToWindow = { onViewAttachedToWindow() },
