@@ -85,6 +85,10 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface, IAdsLo
         return PageName.OFFICIAL_STORE
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.OFFICIAL_STORE
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

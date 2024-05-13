@@ -1559,8 +1559,9 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
 
+    @NonNull
     @Override
-    public String getPageName() {
+    public String getAdsPageName() {
         if (currentFragment instanceof AppLogInterface) {
             return ((AppLogInterface) currentFragment).getPageName();
         }

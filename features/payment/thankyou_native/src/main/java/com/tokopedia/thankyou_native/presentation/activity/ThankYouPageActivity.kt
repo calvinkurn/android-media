@@ -528,4 +528,8 @@ class ThankYouPageActivity :
     override fun getPageName(): String {
         return PageName.ORDER_SUBMIT
     }
+
+    override fun getAdsPageName(): String {
+        return PageName.ORDER_SUBMIT
+    }
 }

@@ -92,7 +92,6 @@ open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOr
         buyerOrderDetailLoadMonitoring?.initPerformanceMonitoring()
     }
 
-    override fun getPageName(): String {
-        return PageName.BUYER_ORDER_MANAGEMENT
-    }
+    override fun getAdsPageName() = PageName.BUYER_ORDER_MANAGEMENT
+
 }

@@ -2021,6 +2021,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         return PageName.UOH
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.UOH
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

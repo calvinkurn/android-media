@@ -52,8 +52,8 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     private fun setAdsPageData(activity: Activity) {
         if (activity is IAdsLog) {
             AppLogAnalytics.currentActivityName = activity.javaClass.simpleName
-            AppLogAnalytics.currentPageName = activity.getPageName()
-            AppLogAnalytics.putAdsPageData(AppLogParam.PAGE_NAME, activity.getPageName())
+            AppLogAnalytics.currentPageName = activity.getAdsPageName()
+            AppLogAnalytics.putAdsPageData(AppLogParam.PAGE_NAME, activity.getAdsPageName())
         }
     }
 
@@ -131,7 +131,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         }
 
         if (activity is IAdsLog) {
-            AppLogAnalytics.removeLastAdsPageData()
+            AppLogAnalytics.removeLastAdsPageData(activity)
         }
 
         if (activity is FragmentActivity) {

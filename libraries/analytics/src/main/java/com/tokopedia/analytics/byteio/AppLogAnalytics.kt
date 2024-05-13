@@ -344,8 +344,10 @@ object AppLogAnalytics {
         return currentActivityIdx
     }
 
-    fun removeLastAdsPageData() {
-        val currentIndex = _adsPageDataList.lastIndex
+    fun removeLastAdsPageData(activity: Activity) {
+        val currentIndex = _adsPageDataList.indexOfFirst { map ->
+            map.values.any { it.first == activity.javaClass.simpleName }
+        }
         if (currentIndex >= 0) _adsPageDataList.removeAt(currentIndex)
     }
 

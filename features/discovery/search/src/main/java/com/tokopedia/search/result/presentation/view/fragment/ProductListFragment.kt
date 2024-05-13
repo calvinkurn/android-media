@@ -1574,8 +1574,8 @@ class ProductListFragment :
         onBoardingListenerDelegate.enableProductViewTypeCoachmark()
     }
 
-    override fun getPageName(): String {
-        return AppLogSearch.ParamValue.GOODS_SEARCH
+    override fun getAdsPageName(): String {
+        return GOODS_SEARCH
     }
 
     //endregion
