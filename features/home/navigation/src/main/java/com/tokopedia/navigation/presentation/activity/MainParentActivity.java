@@ -1369,7 +1369,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, getPageName());
+        AppLogAnalytics.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, getAdsPageName());
         updateAppLogPageData(position, false);
         sendEnterPage(position);
         return true;

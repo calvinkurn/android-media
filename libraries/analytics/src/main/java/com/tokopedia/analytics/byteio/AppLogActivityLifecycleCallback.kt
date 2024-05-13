@@ -53,7 +53,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         if (activity is IAdsLog) {
             AppLogAnalytics.currentActivityName = activity.javaClass.simpleName
             AppLogAnalytics.currentPageName = activity.getAdsPageName()
-            AppLogAnalytics.putAdsPageData(AppLogParam.PAGE_NAME, activity.getAdsPageName())
+            AppLogAnalytics.putAdsPageData(activity, AppLogParam.PAGE_NAME, activity.getAdsPageName())
         }
     }
 

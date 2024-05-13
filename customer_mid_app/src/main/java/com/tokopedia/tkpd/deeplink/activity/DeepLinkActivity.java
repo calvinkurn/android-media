@@ -88,8 +88,8 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
     private void setAdsLogData() {
         AppLogAnalytics.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
         AppLogAnalytics.currentPageName = PageName.FIND_PAGE;
-        AppLogAnalytics.putAdsPageData(PAGE_NAME, PageName.FIND_PAGE);
-        AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
+        AppLogAnalytics.putAdsPageData(this, PAGE_NAME, PageName.FIND_PAGE);
+        AppLogAnalytics.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
     }
 
     private void checkUrlMapToApplink() {
