@@ -116,6 +116,8 @@ object AceSearchProductQuery {
                             productWishlistUrl
                             productViewUrl
                             tag
+                            creativeID
+                            logExtra
                         }
                         shop {
                             id
