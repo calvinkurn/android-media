@@ -116,6 +116,8 @@ object AceSearchProductQuery {
                             productWishlistUrl
                             productViewUrl
                             tag
+                            creativeID
+                            logExtra
                         }
                         shop {
                             id
@@ -169,10 +171,6 @@ object AceSearchProductQuery {
                         customVideoURL
                         parentId
                         isPortrait
-                        ads {
-                            creativeID
-                            logExtra
-                        }
                     }
                     violation {
                         headerText
