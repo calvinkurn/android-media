@@ -20,7 +20,7 @@ class SetLibraUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<LibraOwner, LibraUiModel>(dispatchers.io) {
 
-    override fun graphqlQuery() = LibraQuery.getQuery()
+    override fun gqlQuery() = LibraQuery
 
     override suspend fun execute(params: LibraOwner): LibraUiModel {
         val request = request(params)
@@ -31,6 +31,6 @@ class SetLibraUseCase @Inject constructor(
     }
 
     private suspend fun request(params: LibraOwner): LibraResponse {
-        return repository.request(LibraQuery, LibraGqlParam(params.type))
+        return repository.request(gqlQuery(), LibraGqlParam(params.type))
     }
 }

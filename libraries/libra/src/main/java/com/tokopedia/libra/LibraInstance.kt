@@ -12,6 +12,30 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A Libra request wrapper.
+ *
+ * How-to use:
+ *
+ * 1. You have to hit the fetcher first, this action will be invoked the remote service and store locally,
+ * hence, the N+1 session will able to consume the data:
+ *
+ * LibraInstance.get(context).fetch([LibraOwner])
+ *
+ * 2. To fetch the variant, we have 2 options:
+ * 2.1. Variant as a raw data which returns as String
+ * 2.2. Variant as a state (control-variant built-in handled)
+ *
+ * LibraInstance.get(context).variant([LibraOwner], experiment): String
+ * or
+ * val state = LibraInstance.get(context).variantAsState([LibraOwner], experiment): LibraState
+ * when(state) {
+ *   is LibraState.Control -> // control
+ *   is LibraState.Variant -> // state.variant
+ * }
+ *
+ * 2024 (c) Home.
+ */
 class LibraInstance(context: Context) : Libra, CoroutineScope {
 
     @Inject lateinit var setLibraUseCase: SetLibraUseCase
@@ -40,8 +64,7 @@ class LibraInstance(context: Context) : Libra, CoroutineScope {
         val variant = shouldGetExperiment(owner, experiment)?.variant.orEmpty()
 
         return when {
-            variant.isEmpty() -> LibraState.None
-            variant == CONTROL_VARIANT -> LibraState.Control
+            variant.isEmpty() || variant == Const.CONTROL_VARIANT -> LibraState.Control
             else -> LibraState.Variant(variant)
         }
     }
@@ -58,8 +81,11 @@ class LibraInstance(context: Context) : Libra, CoroutineScope {
         return getLibraCacheUseCase(owner).experiments
     }
 
+    internal object Const {
+        const val CONTROL_VARIANT = "control"
+    }
+
     companion object {
-        private const val CONTROL_VARIANT = "control"
         @Volatile var libra: LibraInstance? = null
 
         fun get(context: Context): LibraInstance {
