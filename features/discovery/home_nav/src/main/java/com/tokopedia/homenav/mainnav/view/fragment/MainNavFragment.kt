@@ -100,6 +100,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     var pageSource = NavSource.DEFAULT
     var pageSourcePath: String = ""
+    var isCloseable: Boolean = true
 
     // for coachmark purpose
     private var isOngoingShowOnboarding = false
@@ -126,6 +127,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
         pageSource = args.StringMainNavArgsSourceKey.asNavSource()
         pageSourcePath = args.StringMainNavArgsSourcePathKey
+        isCloseable = args.StringMainNavArgsIsCloseableKey
 
         viewModel.setPageSource(pageSource)
         context?.let {
@@ -137,7 +139,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
             it.setBackButtonType(
-                if (pageSource != NavSource.HOME_NAV) NavToolbar.Companion.BackType.BACK_TYPE_CLOSE else NavToolbar.Companion.BackType.BACK_TYPE_NONE
+                if (isCloseable) NavToolbar.Companion.BackType.BACK_TYPE_CLOSE else NavToolbar.Companion.BackType.BACK_TYPE_NONE
             ) {
                 TrackingOthers.onClickCloseButton(pageSource, pageSourcePath)
             }

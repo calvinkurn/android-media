@@ -3,6 +3,7 @@
 
     <string name="main_nav_args_source_key">pageSource</string>
     <string name="main_nav_args_source_path_key">pageSourcePath</string>
+    <string name="main_nav_args_is_closeable_key">isCloseable</string>
 
     <string name="content_desc_review">review star</string>
 

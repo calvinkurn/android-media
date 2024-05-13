@@ -115,8 +115,9 @@ val ProfileFragmentCreator = FragmentCreator(
 )  { activity, _ ->
     val extras = activity.intent.extras ?: Bundle()
     with (extras) {
-        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, "HOME_NAV")
-        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH, "home navigation")
+        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, "HOME")
+        putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH, "")
+        putBoolean(ApplinkConsInternalNavigation.PARAM_IS_CLOSEABLE, false)
     }
     RouteManager.instantiateFragment(activity, FragmentConst.HOME_NAV_FRAGMENT, extras)
 }

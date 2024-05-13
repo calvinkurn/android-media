@@ -20,7 +20,6 @@ internal object MainNavTrackingConst {
     private const val PAGE_SOURCE_FEED = "feed"
     private const val PAGE_SOURCE_FEED_PROFILE = "feed profile"
     private const val PAGE_SOURCE_HOME = "homepage"
-    private const val PAGE_SOURCE_HOME_NAV = "home navigation"
     private const val PAGE_SOURCE_MVC = "merchant voucher"
     private const val PAGE_SOURCE_NOTIF = "notification"
     private const val PAGE_SOURCE_PDP = "pdp"
@@ -51,7 +50,6 @@ internal object MainNavTrackingConst {
             NavSource.DT -> PAGE_SOURCE_DT
             NavSource.FEED -> PAGE_SOURCE_FEED
             NavSource.HOME -> PAGE_SOURCE_HOME
-            NavSource.HOME_NAV -> PAGE_SOURCE_HOME_NAV
             NavSource.HOME_WISHLIST,
             NavSource.WISHLIST -> PAGE_SOURCE_WISHLIST
             NavSource.HOME_UOH,
