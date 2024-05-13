@@ -42,5 +42,8 @@ data class GetReportSummaryResponse(
 
         @SerializedName("totalLikeFmt")
         val totalLike: String = "",
+
+        @SerializedName("totalLike")
+        val totalLikeRaw: String = "",
     )
 }

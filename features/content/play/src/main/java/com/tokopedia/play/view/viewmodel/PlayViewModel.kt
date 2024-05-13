@@ -1585,7 +1585,7 @@ class PlayViewModel @AssistedInject constructor(
                     _channelReport.setValue {
                         copy(
                             totalViewFmt = report.visitContent,
-                            totalLike = report.totalLike.toLongOrZero(),
+                            totalLike = report.totalLikeRaw.toLongOrZero(),
                             totalLikeFmt = report.totalLike
                         )
                     }

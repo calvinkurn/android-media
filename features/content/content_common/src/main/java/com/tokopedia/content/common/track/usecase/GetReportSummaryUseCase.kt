@@ -56,6 +56,7 @@ class GetReportSummaryUseCase @Inject constructor(
                                 visitContentFmt
                                 estimatedIncomeFmt
                                 totalLikeFmt
+                                totalLike
                             }
                         }
                     }
