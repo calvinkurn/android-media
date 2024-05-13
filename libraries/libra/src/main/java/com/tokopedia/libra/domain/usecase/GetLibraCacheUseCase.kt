@@ -13,9 +13,7 @@ class GetLibraCacheUseCase @Inject constructor(
         return cacheRepository.get(owner)
     }
 
-    operator fun invoke(owner: LibraOwner, clearAll: Boolean) {
-        with(cacheRepository) {
-            if (clearAll.not()) clear(owner) else clear()
-        }
+    fun clear(owner: LibraOwner) {
+        cacheRepository.clear(owner)
     }
 }

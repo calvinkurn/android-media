@@ -25,10 +25,6 @@ class CacheRepositoryImpl @Inject constructor(context: Context, gson: Gson) : Ca
         preferenceDelegate.clear(owner.type)
     }
 
-    override fun clear() {
-        preferenceDelegate.removeAll()
-    }
-
     companion object {
         private const val PREF_NAME = "libra_cache.pref"
     }

@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.libra.di.DaggerLibraComponent
 import com.tokopedia.libra.domain.usecase.GetLibraCacheUseCase
-import com.tokopedia.libra.domain.usecase.SetLibraUseCase
+import com.tokopedia.libra.domain.usecase.GetLibraRemoteUseCase
 import com.tokopedia.libra.domain.model.ItemLibraUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,25 +20,32 @@ import kotlin.coroutines.CoroutineContext
  * 1. You have to hit the fetcher first, this action will be invoked the remote service and store locally,
  * hence, the N+1 session will able to consume the data:
  *
- * LibraInstance.get(context).fetch([LibraOwner])
+ * ```
+ * LibraInstance.get(context).fetch(LibraOwner)
+ * ```
  *
  * 2. To fetch the variant, we have 2 options:
  * 2.1. Variant as a raw data which returns as String
  * 2.2. Variant as a state (control-variant built-in handled)
  *
- * LibraInstance.get(context).variant([LibraOwner], experiment): String
+ * ```
+ * LibraInstance.get(context).variant(LibraOwner, experiment): String
+ * ```
  * or
- * val state = LibraInstance.get(context).variantAsState([LibraOwner], experiment): LibraState
+ * ```
+ * val state = LibraInstance.get(context).variantAsState(LibraOwner, experiment): LibraState
+ *
  * when(state) {
  *   is LibraState.Control -> // control
  *   is LibraState.Variant -> // state.variant
  * }
+ * ```
  *
  * 2024 (c) Home.
  */
 class LibraInstance(context: Context) : Libra, CoroutineScope {
 
-    @Inject lateinit var setLibraUseCase: SetLibraUseCase
+    @Inject lateinit var getLibraRemoteUseCase: GetLibraRemoteUseCase
     @Inject lateinit var getLibraCacheUseCase: GetLibraCacheUseCase
 
     override val coroutineContext: CoroutineContext
@@ -53,7 +60,9 @@ class LibraInstance(context: Context) : Libra, CoroutineScope {
     }
 
     override suspend fun fetch(owner: LibraOwner) {
-        setLibraUseCase(owner)
+        try {
+            getLibraRemoteUseCase(owner)
+        } catch (_: Throwable) {}
     }
 
     override fun variant(owner: LibraOwner, experiment: String): String {
@@ -70,7 +79,7 @@ class LibraInstance(context: Context) : Libra, CoroutineScope {
     }
 
     override fun clear(owner: LibraOwner) {
-        getLibraCacheUseCase(owner, true)
+        getLibraCacheUseCase.clear(owner)
     }
 
     private fun shouldGetExperiment(owner: LibraOwner, experiment: String): ItemLibraUiModel? {

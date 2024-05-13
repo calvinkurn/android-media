@@ -14,7 +14,7 @@ import com.tokopedia.libra.domain.LibraMapper
 import com.tokopedia.libra.domain.model.LibraUiModel
 import javax.inject.Inject
 
-class SetLibraUseCase @Inject constructor(
+class GetLibraRemoteUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     private val cacheRepository: CacheRepository,
     dispatchers: CoroutineDispatchers

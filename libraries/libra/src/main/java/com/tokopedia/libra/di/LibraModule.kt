@@ -9,7 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.libra.data.repository.CacheRepository
 import com.tokopedia.libra.data.repository.CacheRepositoryImpl
 import com.tokopedia.libra.domain.usecase.GetLibraCacheUseCase
-import com.tokopedia.libra.domain.usecase.SetLibraUseCase
+import com.tokopedia.libra.domain.usecase.GetLibraRemoteUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -30,10 +30,10 @@ class LibraModule {
 
     @Provides
     @LibraScope
-    fun providesSetLibraUseCase(
+    fun providesGetLibraRemoteUseCase(
         graphqlRepository: GraphqlRepository,
         cacheRepository: CacheRepository,
-    ) = SetLibraUseCase(graphqlRepository, cacheRepository, CoroutineDispatchersProvider)
+    ) = GetLibraRemoteUseCase(graphqlRepository, cacheRepository, CoroutineDispatchersProvider)
 
     @Provides
     @LibraScope
