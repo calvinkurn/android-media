@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokopoints.R
@@ -17,10 +16,6 @@ import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : RecyclerView.ViewHolder(view) {
 
-    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
-
     val layoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(
             view.context,
@@ -30,10 +25,6 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
     }
 
     private val rvCarousel: RecyclerView = view.findViewById(R.id.rv_recomm)
-
-    init {
-        rvCarousel.addOnScrollListener(percentageScrollListener)
-    }
 
     fun bind(data: RewardsRecommendation) {
         val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_recomm)

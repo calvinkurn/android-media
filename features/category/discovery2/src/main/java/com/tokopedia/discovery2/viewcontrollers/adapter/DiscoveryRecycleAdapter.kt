@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -46,10 +45,6 @@ class DiscoveryRecycleAdapter(
     val componentList: ArrayList<ComponentsItem>
         get() = _componentList
 
-    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
         val itemView: View =
             LayoutInflater.from(parent.context)
@@ -59,16 +54,6 @@ class DiscoveryRecycleAdapter(
             viewType,
             fragment
         ) as AbstractViewHolder
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {

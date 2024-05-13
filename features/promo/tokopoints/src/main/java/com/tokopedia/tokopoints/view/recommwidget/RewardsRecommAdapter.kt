@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -23,10 +22,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val listener: RewardsRecomListener) :
     RecyclerView.Adapter<RewardsRecommAdapter.ProductCardViewHolder>() {
-
-    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
 
     inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         IAdsViewHolderTrackListener {
@@ -113,16 +108,6 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.tp_layout_recomm_item, parent, false)
         return ProductCardViewHolder(view)
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun getItemCount(): Int {

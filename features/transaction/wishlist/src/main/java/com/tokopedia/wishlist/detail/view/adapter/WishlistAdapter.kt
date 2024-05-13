@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
@@ -68,10 +67,6 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var isRefreshing = false
     private var isAutoSelected = false
     private var isAddBulkModeFromOthers = false
-
-    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -424,16 +419,6 @@ class WishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
             }
         }
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(percentageScrollListener)
     }
 
     override fun getItemCount(): Int {

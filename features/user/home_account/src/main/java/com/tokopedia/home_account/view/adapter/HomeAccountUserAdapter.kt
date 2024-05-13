@@ -2,8 +2,6 @@ package com.tokopedia.home_account.view.adapter
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.PercentageScrollListener
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.ProfileDataView
@@ -30,10 +28,6 @@ class HomeAccountUserAdapter(
     shopAdsNewPositionCallback: (Int, CpmModel) -> Unit,
 ): BaseCommonAdapter() {
 
-    private val percentageScrollListener by lazy(LazyThreadSafetyMode.NONE) {
-        PercentageScrollListener()
-    }
-
     private var memberTitle: Typography? = null
 
     init {
@@ -54,16 +48,6 @@ class HomeAccountUserAdapter(
             val memberSection = holder.itemView.findViewById<ConstraintLayout>(R.id.home_account_profile_member_section)
             memberTitle = memberSection.findViewById(R.id.home_account_member_layout_title)
         }
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        recyclerView.removeOnScrollListener(percentageScrollListener)
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addOnScrollListener(percentageScrollListener)
     }
 
     fun setDefaultMemberTitle(title: String) {
