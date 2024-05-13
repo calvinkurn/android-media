@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.presentation.model.OkHttpTimeoutUiModel
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -38,6 +40,7 @@ class OkHttpTimeoutViewHolder(
                     Toaster.LENGTH_SHORT
                 ).show()
             }
+            DevOpsTracker.trackEntryEvent(DevopsFeature.OK_HTTP_TIMEOUT_HANDLER)
         }
     }
 
