@@ -117,7 +117,6 @@ class DeveloperOptionAdapter(
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         MockDynamicWidgetUiModel(listOf(MOCK_DYNAMIC_WIDGET_DEV)),
         DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
-        ShopPageDevUiModel(listOf(KEYWORD_SHOP_PAGE_DEV)),
         SystemNonSystemAppsUiModel(
             listOf(
                 KEYWORD_SYSTEM_APPS,
