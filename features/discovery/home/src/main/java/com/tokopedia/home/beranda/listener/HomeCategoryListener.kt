@@ -14,6 +14,7 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
+import com.tokopedia.localizationchooseaddress.ui.widget.BaseChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -123,7 +124,7 @@ interface HomeCategoryListener {
 
     fun onChooseAddressUpdated()
 
-    fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
+    fun initializeChooseAddressWidget(chooseAddressWidget: BaseChooseAddressWidget, needToShowChooseAddress: Boolean)
 
     fun onChooseAddressServerDown()
 

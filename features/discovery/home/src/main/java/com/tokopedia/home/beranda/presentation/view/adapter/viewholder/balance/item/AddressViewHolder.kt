@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.
 import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.databinding.LayoutDynamicBalanceAddressBinding
 import com.tokopedia.home.R as homeR
 import com.tokopedia.utils.view.binding.viewBinding
@@ -12,6 +13,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class AddressViewHolder(
     v: View,
+    val listener: HomeCategoryListener,
 ): AbstractViewHolder<BalanceItemUiModel>(v) {
     companion object {
         @SuppressLint("PII Data Exposure")
@@ -20,24 +22,11 @@ class AddressViewHolder(
 
     private val binding: LayoutDynamicBalanceAddressBinding? by viewBinding()
 
+    @SuppressLint("PII Data Exposure")
     override fun bind(
         model: BalanceItemUiModel,
     ) {
-//        if (needToShowChooseAddress) {
-//            it.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, paddingBottomChooseAddress)
-//            listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
-//        } else {
-//            it.gone()
-//        }
-    }
-
-    override fun bind(
-        model: BalanceItemUiModel,
-        payloads: MutableList<Any>
-    ) {
-        if(payloads.isNotEmpty()) {
-        } else {
-            bind(model)
-        }
+        val binding = binding ?: return
+        listener.initializeChooseAddressWidget(binding.chooseAddressWidget, true)
     }
 }

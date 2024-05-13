@@ -188,6 +188,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.libra.LibraInstance
 import com.tokopedia.libra.LibraOwner
+import com.tokopedia.localizationchooseaddress.ui.widget.BaseChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -1960,7 +1961,7 @@ open class HomeRevampFragment :
     }
 
     override fun initializeChooseAddressWidget(
-        chooseAddressWidget: ChooseAddressWidget,
+        chooseAddressWidget: BaseChooseAddressWidget,
         needToShowChooseAddress: Boolean
     ) {
         chooseAddressWidgetCallback =

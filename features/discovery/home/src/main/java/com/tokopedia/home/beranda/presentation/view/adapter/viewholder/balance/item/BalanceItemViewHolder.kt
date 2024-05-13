@@ -35,32 +35,34 @@ class BalanceItemViewHolder(
     }
 
     private fun View.handleClick(model: BalanceItemUiModel) {
-        when(model.contentType) {
-            is BalanceItemVisitable.ContentType.GoPay -> {
-                if (model.contentType.isLinked) {
-                    BalanceWidgetTracking.sendClickGopayLinkedWidgetTracker(
-                        balancePoints = model.text,
-                        userId = listener.userId
+        setOnClickListener {
+            when(model.contentType) {
+                is BalanceItemVisitable.ContentType.GoPay -> {
+                    if (model.contentType.isLinked) {
+                        BalanceWidgetTracking.sendClickGopayLinkedWidgetTracker(
+                            balancePoints = model.text,
+                            userId = listener.userId
+                        )
+                    } else {
+                        BalanceWidgetTracking.sendClickGopayNotLinkedWidgetTracker(
+                            userId = listener.userId
+                        )
+                    }
+                    listener.onSectionItemClicked(model.url)
+                }
+                is BalanceItemVisitable.ContentType.Rewards -> {
+                    BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
+                        listener.userId
                     )
-                } else {
-                    BalanceWidgetTracking.sendClickGopayNotLinkedWidgetTracker(
-                        userId = listener.userId
+                    listener.actionTokoPointClicked(
+                        model.applink,
+                        model.url,
+                        "Tokopedia"
                     )
                 }
-                listener.onSectionItemClicked(model.url)
-            }
-            is BalanceItemVisitable.ContentType.Rewards -> {
-                BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
-                    listener.userId
-                )
-                listener.actionTokoPointClicked(
-                    model.applink,
-                    model.url,
-                    "Tokopedia"
-                )
-            }
 
-            else -> { }
+                else -> { }
+            }
         }
     }
 }
