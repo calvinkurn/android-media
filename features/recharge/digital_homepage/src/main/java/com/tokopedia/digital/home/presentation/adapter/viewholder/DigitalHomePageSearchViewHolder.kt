@@ -8,7 +8,7 @@ import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListen
 import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 class DigitalHomePageSearchViewHolder(
     itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener,

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuFrameBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener) :
     RecyclerView.Adapter<RechargeItemFavoriteAdapter.DigitalItemFavoriteViewHolder>() {

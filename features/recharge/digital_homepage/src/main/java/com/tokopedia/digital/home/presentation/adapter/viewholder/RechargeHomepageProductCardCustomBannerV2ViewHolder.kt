@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardAdapterTypeFactory
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewholder.DigitalUnifyCardViewHolder
 import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel

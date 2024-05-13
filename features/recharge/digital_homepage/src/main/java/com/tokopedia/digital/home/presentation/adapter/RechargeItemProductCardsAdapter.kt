@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 class RechargeItemProductCardsAdapter(
     val items: List<RechargeHomepageSections.Item>,

@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 /**
  * created by @bayazidnasir on 7/11/2022

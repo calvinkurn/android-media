@@ -22,7 +22,7 @@ import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import kotlin.math.abs
 

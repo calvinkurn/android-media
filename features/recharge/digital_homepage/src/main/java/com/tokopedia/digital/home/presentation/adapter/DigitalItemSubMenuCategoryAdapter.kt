@@ -8,7 +8,7 @@ import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.model.DigitalHomePageCategoryModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 class DigitalItemSubMenuCategoryAdapter(
     val submenu: List<DigitalHomePageCategoryModel.Submenu>?,

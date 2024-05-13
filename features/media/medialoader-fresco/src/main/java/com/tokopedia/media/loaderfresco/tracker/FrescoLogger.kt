@@ -1,12 +1,13 @@
 package com.tokopedia.media.loaderfresco.tracker
 
+import android.util.Log
 import com.bytedance.apm.ApmAgent
 import com.optimize.statistics.FrescoMonitor
 import com.optimize.statistics.FrescoMonitorConst
 import com.optimize.statistics.ImageTraceListener
 import org.json.JSONObject
 
-object FrescoLogger {
+internal object FrescoLogger {
 
     fun loggerSlardarFresco() {
         FrescoMonitor.addImageTraceListener(object : ImageTraceListener {

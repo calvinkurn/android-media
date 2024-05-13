@@ -12,7 +12,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 /**
  * @author by resakemal on 15/06/20.

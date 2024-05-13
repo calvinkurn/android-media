@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
     val binding: ViewRechargeHomeMyBillsTripleEntrypointBinding,

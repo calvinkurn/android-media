@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.digital.home.R as digitalhomeR
 

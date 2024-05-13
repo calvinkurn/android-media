@@ -3,8 +3,13 @@ package com.tokopedia.media.loaderfresco.utils
 import android.net.Uri
 
 
-fun String.generateFrescoUri(): Uri {
+fun String?.generateFrescoUri(): Uri {
     // get url that fresco needed to load
+
+    //TODO from internal cdn
+    //TODO valid url
+    //TODO webp
+    //TODO generate secure url
     return Uri.parse(this)
 }
 

@@ -12,7 +12,8 @@ import com.tokopedia.media.loaderfresco.utils.FrescoDataSourceRequest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 internal object MediaLoaderFrescoApi {
-    fun loadImage(imageView: ImageView, url: String) {
+    fun loadImage(imageView: ImageView, url: String?) {
+        //TODO usage Properties
         val context = imageView.context
         val dataSource = FrescoDataSourceRequest.frescoDataSourceBuilder(url, context)
 

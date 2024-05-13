@@ -8,7 +8,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImage
 
 class RechargeItemRecommendationBannerAdapter(
     val items: List<RechargeHomepageSections.Item>,
