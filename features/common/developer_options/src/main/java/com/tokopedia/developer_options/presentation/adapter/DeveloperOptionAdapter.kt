@@ -102,6 +102,7 @@ class DeveloperOptionAdapter(
         const val FPI_MONITORING = "FPI Monitoring"
         const val KEYWORD_GET_USER_ID = "Get User Id"
         const val KEYWORD_GET_SHOP_ID = "Get Shop Id"
+        const val KEYWORD_SSO_LOGIN = "Login SSO"
     }
 
     /**
@@ -111,6 +112,7 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
+        SSOAuthorizationUiModel(listOf(KEYWORD_SSO_LOGIN)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
@@ -255,6 +257,7 @@ class DeveloperOptionAdapter(
             defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
+            removeWidget(SSOAuthorizationUiModel::class.java)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
         }
 

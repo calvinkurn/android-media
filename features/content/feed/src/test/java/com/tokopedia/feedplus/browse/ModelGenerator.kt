@@ -3,7 +3,9 @@ package com.tokopedia.feedplus.browse
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import java.util.*
 
 internal class ModelGenerator {
@@ -65,6 +67,16 @@ internal class ModelGenerator {
             title = "Author Slot model $it",
             identifier = "author_slot_$it",
             authorList = emptyList()
+        )
+    }
+    val storyGroupSlot = indexGenerator.map {
+        val randomSlotId = UUID.randomUUID().mostSignificantBits.toString()
+        FeedBrowseSlotUiModel.StoryGroups(
+            slotId = randomSlotId,
+            title = "Story Group $it",
+            storyList = emptyList(),
+            nextCursor = "",
+            source = "",
         )
     }
 }

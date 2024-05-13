@@ -10,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT
@@ -65,6 +67,10 @@ object DeeplinkMapperContent {
             INTERNAL_FEED_CREATION_SHOP_SEARCH
         } else if (pathSegments.startsWith("hashtag", false)) {
             ""
+        } else if (pathSegments.startsWith("search-result", false)) {
+            INTERNAL_FEED_SEARCH_RESULT
+        } else if (pathSegments.startsWith("search", false)) {
+            INTERNAL_FEED_LOCAL_BROWSE
         } else {
             goToAppLinkFeedHomeInternal(uri)
         }

@@ -38,6 +38,7 @@ import com.tokopedia.developer_options.presentation.model.ResetOnBoardingNavigat
 import com.tokopedia.developer_options.presentation.model.ResetOnBoardingUiModel
 import com.tokopedia.developer_options.presentation.model.RollenceAbTestingManualSwitcherUiModel
 import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
+import com.tokopedia.developer_options.presentation.model.SSOAuthorizationUiModel
 import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggingUiModel
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
@@ -128,5 +129,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: FpiMonitoringUiModel): Int
     fun type(uiModel: UserIdUiModel): Int
     fun type(uiModel: ShopIdUiModel): Int
+    fun type(uiModel: SSOAuthorizationUiModel): Int
     fun type(uiModel: OkHttpTimeoutUiModel): Int
 }

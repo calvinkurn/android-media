@@ -551,7 +551,8 @@ class ChatbotFragment2 :
 
     private fun sendInvoiceAttachment(
         invoiceLinkPojo: InvoiceLinkPojo,
-        startTime: String
+        startTime: String,
+        isArticleEntry: Boolean = this.isArticleEntry
     ) {
         viewModel.sendInvoiceAttachment(
             messageId,
@@ -1590,7 +1591,7 @@ class ChatbotFragment2 :
         getViewState()?.removeInvoiceCarousel()
         hideActionBubble()
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
-        sendInvoiceAttachment(invoiceLinkPojo, generatedInvoice.startTime)
+        sendInvoiceAttachment(invoiceLinkPojo, generatedInvoice.startTime, false)
         enableTyping()
     }
 

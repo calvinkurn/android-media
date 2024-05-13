@@ -1,9 +1,10 @@
 package com.tokopedia.content.product.picker.seller.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.content.product.picker.seller.view.viewholder.ProductSummaryViewHolder
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.view.viewholder.ProductSummaryViewHolder
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -30,6 +31,11 @@ class ProductSummaryAdapter(
 
     sealed class Model {
         data class Header(val text: String, val status: CampaignStatus): Model()
-        data class Body(val product: ProductUiModel, val isEligibleForPin: Boolean, val isNumerationShown: Boolean): Model()
+        data class Body(
+            val product: ProductUiModel,
+            val isEligibleForPin: Boolean,
+            val isNumerationShown: Boolean,
+            val selectedAccount: ContentAccountUiModel,
+        ) : Model()
     }
 }

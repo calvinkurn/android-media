@@ -22,6 +22,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -314,6 +315,32 @@ class Utils {
             }
         }
 
+
+        /**
+         * queryValue: activeTab=3&key=abc
+         * key: activeTab
+         * value: 4
+         * Output: activeTab=4&key=abc
+         */
+        fun upsertQueryParam(
+            queryValue: String,
+            key: String,
+            value: String
+        ): String {
+            return if (queryValue.isEmpty()) {
+                "$key=$value"
+            } else {
+                try {
+                    val map = UriUtil.stringQueryParamsToMap(queryValue)
+                    map.remove(key)
+                    map[key] = value
+                    UriUtil.buildQueryParamToString(map)
+                } catch (e: Exception) {
+                    "$key=$value"
+                }
+            }
+        }
+
         fun isFutureSaleOngoing(
             saleStartDate: String,
             saleEndDate: String,
@@ -536,9 +563,9 @@ class Utils {
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
                     if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(
                             MiniCartItemKey(
-                                    dataItem.parentProductId ?: "",
-                                    type = MiniCartItemType.PARENT
-                                )
+                                dataItem.parentProductId ?: "",
+                                type = MiniCartItemType.PARENT
+                            )
                         )
                     ) {
                         map.getMiniCartItemParentProduct(
@@ -828,8 +855,10 @@ class Utils {
             imageView: ShapeableImageView,
             imageTier: String
         ) {
-            val animOut: Animation = AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_out)
-            val animIn: Animation = AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_in)
+            val animOut: Animation =
+                AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_out)
+            val animIn: Animation =
+                AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_in)
             animOut.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
                 override fun onAnimationRepeat(animation: Animation?) {}
@@ -840,6 +869,7 @@ class Utils {
                         override fun onAnimationStart(animation: Animation?) {
                             this@flipImage.visible()
                         }
+
                         override fun onAnimationRepeat(animation: Animation?) {}
                         override fun onAnimationEnd(animation: Animation?) {}
                     })
