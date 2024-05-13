@@ -9,6 +9,8 @@
 
     <string name="buy_now">Beli Sekarang</string>
     <string name="plus_product_to_cart">+ Keranjang</string>
+    <string name="action_preorder">PreOrder</string>
+    <string name="buy">Beli</string>
     <string name="empty_stock_atc">Stok Habis</string>
 
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>

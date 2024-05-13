@@ -160,6 +160,8 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantR
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton.Companion.buttonText
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -4895,26 +4897,15 @@ open class ProductDetailFragment :
         }
     }
 
-    override fun addToCartClick(buttonText: String) {
-        viewModel.buttonActionText = buttonText
-        viewModel.getProductInfoP1?.let {
-            doAtc(ProductDetailCommonConstant.ATC_BUTTON)
-        }
+    override fun onButtonFallbackClick(button: AvailableButton) {
+        viewModel.buttonActionText = button.buttonText
+        doAtc(button)
     }
 
-    override fun buyNowClick(buttonText: String) {
-        viewModel.buttonActionText = buttonText
-        // buy now / buy / preorder
-        viewModel.getProductInfoP1?.let {
-            doAtc(ProductDetailCommonConstant.BUY_BUTTON)
-        }
-    }
-
-    override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        viewModel.buttonActionText = buttonText
-        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-        trackOnButtonClick(cartType)
-        doAtc(atcKey)
+    override fun buttonCartTypeClick(button: AvailableButton) {
+        viewModel.buttonActionText = button.buttonText
+        trackOnButtonClick(button.cartType)
+        doAtc(button)
     }
 
     override fun topChatButtonClicked() {
@@ -5053,8 +5044,8 @@ open class ProductDetailFragment :
         }
     }
 
-    private fun doAtc(buttonAction: Int) {
-        buttonActionType = buttonAction
+    private fun doAtc(button: AvailableButton) {
+        buttonActionType = button.atcKey
         context?.let {
             val isVariant = viewModel.getProductInfoP1?.data?.variant?.isVariant ?: false
             if (isVariant && pdpUiUpdater?.productSingleVariant != null) {
@@ -5090,7 +5081,7 @@ open class ProductDetailFragment :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            hitAtc(buttonAction)
+            hitAtc(button = button)
         }
     }
 
@@ -5108,11 +5099,11 @@ open class ProductDetailFragment :
     private fun buyAfterTradeinDiagnose(deviceId: String) {
         buttonActionType = ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE
         viewModel.tradeinDeviceId = deviceId
-        hitAtc(ProductDetailCommonConstant.OCS_BUTTON)
+        hitAtc(AvailableButton.createOCSButton())
     }
 
-    private fun hitAtc(actionButton: Int) {
-        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
+    private fun hitAtc(button: AvailableButton) {
+        if (button.atcKey == ProductDetailCommonConstant.ATC_BUTTON) {
             EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
         }
 
@@ -5121,10 +5112,10 @@ open class ProductDetailFragment :
         viewModel.getProductInfoP1?.let { data ->
             atcAnimation.runAtcAnimation(
                 binding,
-                actionButton == ProductDetailCommonConstant.ATC_BUTTON
+                button.showAnimation
             )
             actionButtonView.showLoading()
-            when (actionButton) {
+            when (button.atcKey) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                         productId = data.basic.productID

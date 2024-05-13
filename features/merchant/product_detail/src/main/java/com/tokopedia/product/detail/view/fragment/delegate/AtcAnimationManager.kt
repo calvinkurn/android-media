@@ -37,9 +37,9 @@ class AtcAnimationManager(
     ) {
         if (context == null ||
             binding == null ||
-            !shoudShow ||
-            !ProductRollenceHelper.rollenceAtcAnimationActive()
+            !shoudShow
         ) {
+            viewModel.onFinishAnimation()
             return
         }
 

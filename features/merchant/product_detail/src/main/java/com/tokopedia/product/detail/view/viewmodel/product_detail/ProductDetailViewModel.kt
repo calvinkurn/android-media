@@ -283,10 +283,7 @@ class ProductDetailViewModel @Inject constructor(
 
     val successAtcAndAnimation: Flow<Boolean> =
         _finishAnimationAtc.combine(_finishAtc) { finishAtcAnimation, finishAtc ->
-            val finishAtcAnimationResult =
-                !ProductRollenceHelper.rollenceAtcAnimationActive() || finishAtcAnimation
-
-            finishAtcAnimationResult && finishAtc
+            finishAtcAnimation && finishAtc
         }.map { bothSuccess ->
             if (bothSuccess) {
                 _finishAnimationAtc.emit(false)

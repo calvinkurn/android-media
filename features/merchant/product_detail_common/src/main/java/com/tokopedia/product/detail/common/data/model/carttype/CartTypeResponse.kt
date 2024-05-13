@@ -103,7 +103,7 @@ data class AvailableButton(
             }
 
         val AvailableButton?.orEmpty
-            get() = AvailableButton(
+            get() = this ?: AvailableButton(
                 cartType = "",
                 color = "",
                 text = "",
@@ -113,16 +113,32 @@ data class AvailableButton(
 
         fun createAddToCartButton(context: Context): AvailableButton = AvailableButton(
             cartType = ProductDetailCommonConstant.KEY_NORMAL_BUTTON,
-            color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+            color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
             text = context.getString(R.string.plus_product_to_cart),
             showRecommendation = true
         )
 
-        fun createBuyNowButton(context: Context): AvailableButton = AvailableButton(
+        fun createBuyNowButton(
+            context: Context,
+            isPreOrderActive: Boolean = false,
+            isExpressCheckout: Boolean = true
+        ): AvailableButton = AvailableButton(
             cartType = ProductDetailCommonConstant.KEY_NORMAL_BUTTON,
-            color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
-            text = context.getString(R.string.buy_now),
+            color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+            text = if (isPreOrderActive) {
+                context.getString(R.string.action_preorder)
+            } else {
+                if (isExpressCheckout) {
+                    context.getString(R.string.buy_now)
+                } else {
+                    context.getString(R.string.buy)
+                }
+            },
             showRecommendation = false
+        )
+
+        fun createOCSButton(): AvailableButton = AvailableButton(
+            cartType = ProductDetailCommonConstant.KEY_OCS_BUTTON
         )
     }
 }
