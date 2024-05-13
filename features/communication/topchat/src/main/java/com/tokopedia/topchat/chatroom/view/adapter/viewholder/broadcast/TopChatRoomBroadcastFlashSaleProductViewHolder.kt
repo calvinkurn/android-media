@@ -41,11 +41,11 @@ class TopChatRoomBroadcastFlashSaleProductViewHolder(
     }
 
     private fun impressTracker(uiModel: ProductAttachmentUiModel) {
-        binding?.topchatChatroomBroadcastFlashsaleProductCard?.addOnImpressionListener(
-            uiModel.impressHolder
-        ) {
-            val banner = broadcastUiModel.banner
-            if (banner != null) {
+        val banner = broadcastUiModel.banner
+        if (banner != null && !banner.isLoading) {
+            binding?.topchatChatroomBroadcastFlashsaleProductCard?.addOnImpressionListener(
+                uiModel.impressHolder
+            ) {
                 productListener.onImpressionBroadcastProduct(
                     blastId = broadcastUiModel.blastId,
                     campaignStatus = banner.getCampaignStatusString(),
