@@ -1,8 +1,8 @@
 package com.tokopedia.libra.utils
 
-fun <T> invokeSafe(default: T, action: () -> T): T {
+fun <T> invokeSafe(default: T, action: () -> T?): T {
     return try {
-        action()
+        action() ?: default
     } catch (_: Throwable) {
         default
     }
