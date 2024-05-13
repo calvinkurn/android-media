@@ -100,7 +100,12 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
-        coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
+        coEvery {
+            mockRepo.getBroadcastingConfig(
+                any(),
+                any()
+            )
+        } returns uiModelBuilder.buildBroadcastingConfigUiModel()
         coEvery { mockUserSessionInterface.userId } returns mockUserId
     }
 
@@ -117,7 +122,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(PriceFormatUtil()),
+            productMapper = PlayBroProductUiMapper(PriceFormatUtil())
         )
 
         robot.use {
@@ -133,7 +138,8 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            val defaultCountDown = it.getViewModelPrivateField<Int>("DEFAULT_BEFORE_LIVE_COUNT_DOWN")
+            val defaultCountDown =
+                it.getViewModelPrivateField<Int>("DEFAULT_BEFORE_LIVE_COUNT_DOWN")
             it.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(defaultCountDown)
         }
     }
@@ -151,7 +157,7 @@ class PlayBroadcasterViewModelTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         val mock = spyk(robot.getViewModel(), recordPrivateCalls = true)
@@ -177,7 +183,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -208,7 +214,7 @@ class PlayBroadcasterViewModelTest {
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = productUiMapper,
-            sharedPref = sharedPreferences,
+            sharedPref = sharedPreferences
         )
 
         robot.use {
@@ -225,7 +231,10 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when user submit set product action, and product changed should show toaster updated`() {
         val mockProductTagSection1 = productSetupUiModelBuilder.buildProductTagSectionList()
-        val mockProductTagSection2 = productSetupUiModelBuilder.buildProductTagSectionList(sectionSize = 3, productSizePerSection = 2)
+        val mockProductTagSection2 = productSetupUiModelBuilder.buildProductTagSectionList(
+            sectionSize = 3,
+            productSizePerSection = 2
+        )
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
         val sharedPreferences: HydraSharedPreferences = mockk(relaxed = true)
@@ -241,7 +250,7 @@ class PlayBroadcasterViewModelTest {
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = productUiMapper,
-            sharedPref = sharedPreferences,
+            sharedPref = sharedPreferences
         )
 
         robot.use {
@@ -273,10 +282,10 @@ class PlayBroadcasterViewModelTest {
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
-            remoteConfig = mockRemoteConfig,
+            remoteConfig = mockRemoteConfig
         )
 
-        robot.use{
+        robot.use {
             val state = it.recordState {
                 getAccountConfiguration()
             }
@@ -302,10 +311,10 @@ class PlayBroadcasterViewModelTest {
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
-            remoteConfig = mockRemoteConfig,
+            remoteConfig = mockRemoteConfig
         )
 
-        robot.use{
+        robot.use {
             val state = it.recordState {
                 getAccountConfiguration()
             }
@@ -331,10 +340,10 @@ class PlayBroadcasterViewModelTest {
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
-            remoteConfig = mockRemoteConfig,
+            remoteConfig = mockRemoteConfig
         )
 
-        robot.use{
+        robot.use {
             val state = it.recordState {
                 getAccountConfiguration()
             }
@@ -360,10 +369,10 @@ class PlayBroadcasterViewModelTest {
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
-            remoteConfig = mockRemoteConfig,
+            remoteConfig = mockRemoteConfig
         )
 
-        robot.use{
+        robot.use {
             val state = it.recordState {
                 getAccountConfiguration()
             }
@@ -381,7 +390,7 @@ class PlayBroadcasterViewModelTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            userSession = mockUserSessionInterface,
+            userSession = mockUserSessionInterface
         )
 
         robot.use {
@@ -395,7 +404,7 @@ class PlayBroadcasterViewModelTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            userSession = mockUserSessionInterface,
+            userSession = mockUserSessionInterface
         )
 
         robot.use {
@@ -409,7 +418,7 @@ class PlayBroadcasterViewModelTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            userSession = mockUserSessionInterface,
+            userSession = mockUserSessionInterface
         )
 
         robot.use {
@@ -428,7 +437,7 @@ class PlayBroadcasterViewModelTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            broadcastTimer = mockTimer,
+            broadcastTimer = mockTimer
         )
 
         robot.use {
@@ -444,7 +453,7 @@ class PlayBroadcasterViewModelTest {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            broadcastTimer = mockTimer,
+            broadcastTimer = mockTimer
         )
 
         robot.use {
@@ -464,7 +473,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = PlayBroProductUiMapper(PriceFormatUtil()),
+            productMapper = PlayBroProductUiMapper(PriceFormatUtil())
         )
 
         robot.use {
@@ -487,7 +496,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -512,7 +521,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -540,7 +549,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -570,7 +579,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -594,7 +603,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -609,17 +618,23 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when user set cover uploaded source`() {
         coEvery { mockHydraSharedPreferences.setUploadedCoverSource(1, "123", "prep") }
-        coEvery { mockHydraSharedPreferences.getSavedSelectedAutoGeneratedCover("123", "prep") } returns 1
+        coEvery {
+            mockHydraSharedPreferences.getSavedSelectedAutoGeneratedCover(
+                "123",
+                "prep"
+            )
+        } returns 1
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             it.recordState {
                 it.getViewModel().submitAction(PlayBroadcastAction.SetCoverUploadedSource(1))
-                mockHydraSharedPreferences.getSavedSelectedAutoGeneratedCover("123", "prep").assertEqualTo(1)
+                mockHydraSharedPreferences.getSavedSelectedAutoGeneratedCover("123", "prep")
+                    .assertEqualTo(1)
             }
         }
     }
@@ -637,7 +652,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -664,7 +679,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -692,7 +707,7 @@ class PlayBroadcasterViewModelTest {
             sharedPref = mockHydraSharedPreferences,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -719,7 +734,7 @@ class PlayBroadcasterViewModelTest {
             sharedPref = mockHydraSharedPreferences,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -743,7 +758,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -767,7 +782,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -781,7 +796,11 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when shop account not eligible and buyer account is not enabled then selected account is shop with info`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
-        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, usernameBuyer = false, tncBuyer = false)
+        val accountMock = uiModelBuilder.buildAccountListModel(
+            tncShop = false,
+            usernameBuyer = false,
+            tncBuyer = false
+        )
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
@@ -791,7 +810,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -806,7 +825,8 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `when shop and buyer account eligible but live stream then selected account is shop with info`() {
-        val configMock = uiModelBuilder.buildConfigurationUiModel(channelStatus = ChannelStatus.Live)
+        val configMock =
+            uiModelBuilder.buildConfigurationUiModel(channelStatus = ChannelStatus.Live)
         val accountMock = uiModelBuilder.buildAccountListModel()
 
         coEvery { mockRepo.getAccountList() } returns accountMock
@@ -817,7 +837,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -844,7 +864,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -858,7 +878,8 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when entry point from user profile but non-seller not eligible then selected account should be seller`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
-        val accountMock = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
+        val accountMock =
+            uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
@@ -868,7 +889,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -892,7 +913,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -916,7 +937,7 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            productMapper = productUiMapper,
+            productMapper = productUiMapper
         )
 
         robot.use {
@@ -931,38 +952,46 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when user account not eligible, then no dynamic ticker bottom sheet config should show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
-        val accountMock = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncShop = false, usernameShop = false)
+        val accountMock = uiModelBuilder.buildAccountListModel(
+            usernameBuyer = false,
+            tncShop = false,
+            usernameShop = false
+        )
 
         val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = TickerBottomSheetPage.UNKNOWN,
-            type = TickerBottomSheetType.UNKNOWN,
+            type = TickerBottomSheetType.UNKNOWN
         )
         val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_PREPARATION
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_PREPARATION
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -976,37 +1005,40 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
 
-
         val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
-            type = TickerBottomSheetType.BOTTOM_SHEET,
+            type = TickerBottomSheetType.BOTTOM_SHEET
         )
         val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_PREPARATION
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_PREPARATION
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1024,32 +1056,36 @@ class PlayBroadcasterViewModelTest {
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
-            type = TickerBottomSheetType.BOTTOM_SHEET,
+            type = TickerBottomSheetType.BOTTOM_SHEET
         )
         val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_PREPARATION
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_PREPARATION
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1062,29 +1098,33 @@ class PlayBroadcasterViewModelTest {
         val responseMock2 = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey2,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
-            type = TickerBottomSheetType.BOTTOM_SHEET,
+            type = TickerBottomSheetType.BOTTOM_SHEET
         )
 
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock2
-        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock2.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
+                key = responseMock2.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot2 = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot2.use {
             robot2.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_PREPARATION
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_PREPARATION
+                    )
+                )
             }.also { state ->
                 state.tickerBottomSheetConfig.cacheKey.assertEqualTo(cacheKey2)
                 state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.BOTTOM_SHEET)
@@ -1102,32 +1142,36 @@ class PlayBroadcasterViewModelTest {
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
-            type = TickerBottomSheetType.BOTTOM_SHEET,
+            type = TickerBottomSheetType.BOTTOM_SHEET
         )
         val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_PREPARATION
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_PREPARATION
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1145,32 +1189,36 @@ class PlayBroadcasterViewModelTest {
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
-            type = TickerBottomSheetType.BOTTOM_SHEET,
+            type = TickerBottomSheetType.BOTTOM_SHEET
         )
         val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
-        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_PREPARATION
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_PREPARATION
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1188,32 +1236,36 @@ class PlayBroadcasterViewModelTest {
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_REPORT,
-            type = TickerBottomSheetType.TICKER,
+            type = TickerBottomSheetType.TICKER
         )
         val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicTickerPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_REPORT
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_REPORT
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1231,32 +1283,36 @@ class PlayBroadcasterViewModelTest {
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_REPORT,
-            type = TickerBottomSheetType.BOTTOM_SHEET,
+            type = TickerBottomSheetType.BOTTOM_SHEET
         )
         val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicTickerPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_REPORT
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_REPORT
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1276,25 +1332,29 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
-        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicTickerPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_REPORT
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_REPORT
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1314,25 +1374,29 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicTickerPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
-                    TickerBottomSheetPage.LIVE_REPORT
-                ))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                        TickerBottomSheetPage.LIVE_REPORT
+                    )
+                )
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -1352,28 +1416,31 @@ class PlayBroadcasterViewModelTest {
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = page,
-            type = type,
+            type = type
         )
         val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
-            it.getViewModel().submitAction(PlayBroadcastAction.SetDynamicTickerBottomSheetPref(type = type))
+            it.getViewModel()
+                .submitAction(PlayBroadcastAction.SetDynamicTickerBottomSheetPref(type = type))
             mockHydraSharedPreferences.getDynamicBottomSheetPref(
                 key = responseMock.cacheKey,
                 userId = mockUserId
@@ -1392,28 +1459,31 @@ class PlayBroadcasterViewModelTest {
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             cacheKey = cacheKey1,
             page = page,
-            type = type,
+            type = type
         )
         val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            userId = mockUserId
-        ) } returns alreadyShowed
+        coEvery {
+            mockHydraSharedPreferences.getDynamicTickerPref(
+                key = responseMock.cacheKey,
+                userId = mockUserId
+            )
+        } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            sharedPref = mockHydraSharedPreferences,
+            sharedPref = mockHydraSharedPreferences
         )
 
         robot.use {
-            it.getViewModel().submitAction(PlayBroadcastAction.SetDynamicTickerBottomSheetPref(type = type))
+            it.getViewModel()
+                .submitAction(PlayBroadcastAction.SetDynamicTickerBottomSheetPref(type = type))
             mockHydraSharedPreferences.getDynamicTickerPref(
                 key = responseMock.cacheKey,
                 userId = mockUserId
@@ -1423,10 +1493,10 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `when user as shop setup channel and success`() {
-
         val configMock = uiModelBuilder.buildConfigurationUiModel(channelId = "123")
         val accountMock = uiModelBuilder.buildAccountListModel()
-        val mockCover = PlayCoverUiModel(croppedCover = CoverSetupState.Blank, state = SetupDataState.Draft)
+        val mockCover =
+            PlayCoverUiModel(croppedCover = CoverSetupState.Blank, state = SetupDataState.Draft)
         val mockMaxProduct = 17
 
         coEvery { mockRepo.getAccountList() } returns accountMock
@@ -1441,7 +1511,7 @@ class PlayBroadcasterViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = productUiMapper,
             mDataStore = mockDataStore,
-            hydraConfigStore = mockHydraConfigStore,
+            hydraConfigStore = mockHydraConfigStore
         )
 
         robot.use {
@@ -1452,7 +1522,6 @@ class PlayBroadcasterViewModelTest {
             it.getViewModel().maxProduct.assertEqualTo(mockMaxProduct)
             it.getViewModel().remainingDurationInMillis.assertEqualTo(0L)
             it.getViewModel().productSectionList.assertEqualTo(mockProductTagSectionList)
-
 
             val configInfo = it.getViewModel().observableConfigInfo.getOrAwaitValue()
             configInfo.assertEqualTo(NetworkResult.Success(configMock))
@@ -1475,7 +1544,7 @@ class PlayBroadcasterViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = productUiMapper,
             mDataStore = mockDataStore,
-            hydraConfigStore = mockHydraConfigStore,
+            hydraConfigStore = mockHydraConfigStore
         )
 
         robot.use {
@@ -1503,7 +1572,10 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockHydraConfigStore.getAuthor() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
 
-        val robot = PlayBroadcastViewModelRobot(hydraConfigStore = mockHydraConfigStore, channelRepo = mockRepo)
+        val robot = PlayBroadcastViewModelRobot(
+            hydraConfigStore = mockHydraConfigStore,
+            channelRepo = mockRepo
+        )
 
         robot.use {
             it.getViewModel().saveState(bundle)
@@ -1527,8 +1599,14 @@ class PlayBroadcasterViewModelTest {
         val calendar = Calendar.getInstance()
         val mockDate = Date(calendar.timeInMillis)
 
-        coEvery { mockRepo.updateSchedule(any(), mockDate) } returns BroadcastScheduleUiModel.Scheduled(
-            mockDate, "yyyy/mm/dd"
+        coEvery {
+            mockRepo.updateSchedule(
+                any(),
+                mockDate
+            )
+        } returns BroadcastScheduleUiModel.Scheduled(
+            mockDate,
+            "yyyy/mm/dd"
         )
 
         val robot = PlayBroadcastViewModelRobot(channelRepo = mockRepo)
@@ -1546,7 +1624,12 @@ class PlayBroadcasterViewModelTest {
         val calendar = Calendar.getInstance()
         val mockDate = Date(calendar.timeInMillis)
 
-        coEvery { mockRepo.updateSchedule(any(), mockDate) } returns BroadcastScheduleUiModel.NoSchedule
+        coEvery {
+            mockRepo.updateSchedule(
+                any(),
+                mockDate
+            )
+        } returns BroadcastScheduleUiModel.NoSchedule
 
         val robot = PlayBroadcastViewModelRobot(channelRepo = mockRepo)
 
@@ -1571,7 +1654,8 @@ class PlayBroadcasterViewModelTest {
             val state = robot.recordEvent {
                 getViewModel().submitAction(PlayBroadcastAction.SetSchedule(mockDate))
             }
-            state.last().assertEvent(PlayBroadcastEvent.ShowScheduleError(Exception("any exception")))
+            state.last()
+                .assertEvent(PlayBroadcastEvent.ShowScheduleError(Exception("any exception")))
         }
     }
 
@@ -1599,19 +1683,36 @@ class PlayBroadcasterViewModelTest {
             val state = robot.recordEvent {
                 getViewModel().submitAction(PlayBroadcastAction.DeleteSchedule)
             }
-            state.last().assertEvent(PlayBroadcastEvent.ShowScheduleError(Exception("any exception")))
+            state.last()
+                .assertEvent(PlayBroadcastEvent.ShowScheduleError(Exception("any exception")))
         }
     }
 
     @Test
-    fun `when user click pin product and failed from network` () {
+    fun `when user click pin product and failed from network`() {
         coEvery { mockRepo.setPinProduct(any(), any()) } returns false
 
-        val product = ProductUiModel(id = "1", "Wafer", false,"", 10L, false, "", 0L, OriginalPrice("20",20.0),  PinProductUiModel(isPinned = false, canPin = true), "")
+        val product = ProductUiModel(
+            id = "1",
+            "Wafer",
+            false,
+            "",
+            10L,
+            false,
+            "",
+            0L,
+            OriginalPrice("20", 20.0),
+            PinProductUiModel(isPinned = false, canPin = true),
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
@@ -1623,23 +1724,44 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user click pin product and error from network` () {
+    fun `when user click pin product and error from network`() {
         val error = MessageErrorException("Error kak")
 
         coEvery { mockRepo.setPinProduct(any(), any()) } throws error
 
-        val product = ProductUiModel(id = "1", "Wafer", false,"", 10L, false, "", 0L, OriginalPrice("20",20.0),  PinProductUiModel(isPinned = false, canPin = true), "")
+        val product = ProductUiModel(
+            id = "1",
+            "Wafer",
+            false,
+            "",
+            10L,
+            false,
+            "",
+            0L,
+            OriginalPrice("20", 20.0),
+            PinProductUiModel(isPinned = false, canPin = true),
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo,
+            channelRepo = mockRepo
         )
 
         robot.use {
             val event = it.recordEvent {
                 it.getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(product))
             }
-            event.last().assertEqualTo(PlayBroadcastEvent.FailPinUnPinProduct(error, product.pinStatus.isPinned))
+            event.last().assertEqualTo(
+                PlayBroadcastEvent.FailPinUnPinProduct(
+                    error,
+                    product.pinStatus.isPinned
+                )
+            )
         }
     }
 
@@ -1652,7 +1774,7 @@ class PlayBroadcasterViewModelTest {
         val errorLog = BroadcasterErrorLog(
             channelId = configMock.channelId,
             authorId = accountMock.first().id,
-            authorType = accountMock.first().type,
+            authorType = accountMock.first().type
         )
 
         coEvery { mockRepo.getAccountList() } returns accountMock
@@ -1664,7 +1786,7 @@ class PlayBroadcasterViewModelTest {
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = productUiMapper,
-            errorLogger = mockErrorLogger,
+            errorLogger = mockErrorLogger
         )
 
         robot.use {

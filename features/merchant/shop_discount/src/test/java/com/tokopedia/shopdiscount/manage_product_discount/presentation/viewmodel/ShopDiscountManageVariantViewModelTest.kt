@@ -1,6 +1,8 @@
 package com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel
 
+import android.text.format.DateUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
@@ -10,8 +12,10 @@ import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
+import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation
+import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -19,10 +23,17 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -43,6 +54,7 @@ class ShopDiscountManageVariantViewModelTest {
     private val mockEndDateValueBulkApply = Date(1670880168000)
     private val mockBulkApplyRupiahDiscountAmountBulkApply = 1000
     private val mockBulkApplyPercentageDiscountAmountBulkApply = 10
+    private val mockEndDate = Date(1684287429L.unixToMs())
     private val viewModel by lazy {
         ShopDiscountManageVariantViewModel(
             CoroutineTestDispatchersProvider,
@@ -53,6 +65,11 @@ class ShopDiscountManageVariantViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+    }
+
+    @After
+    fun finish() {
+        unmockkStatic(DateUtils::class)
     }
 
     @Test
@@ -199,6 +216,8 @@ class ShopDiscountManageVariantViewModelTest {
 
     @Test
     fun `When call updateProductVariantDiscountPeriodData when creating discount with vps but wrong package id, then getProductData end date time should return 0`() {
+        mockkStatic(DateUtils::class)
+        every { DateUtils.isToday(any()) } returns true
         val mockProductData = getMockProductDataWithDefaultStartDate()
         val mockShopDiscountSellerInfoUiModel =
             getMockShopDiscountSellerInfoUiModelWithVpsButWrongPackageId()
@@ -206,7 +225,11 @@ class ShopDiscountManageVariantViewModelTest {
         viewModel.updateProductVariantDiscountPeriodData(mockShopDiscountSellerInfoUiModel)
         val productData = viewModel.getProductData()
         assert(productData.listProductVariant.all {
-            it.slashPriceInfo.endDate.time == 0L
+            val yearDiff = ChronoUnit.YEARS.between(
+                LocalDateTime.ofInstant(it.slashPriceInfo.startDate.toInstant(), ZoneId.systemDefault()),
+                LocalDateTime.ofInstant(it.slashPriceInfo.endDate.toInstant(), ZoneId.systemDefault())
+            )
+            yearDiff == Int.ONE.toLong()
         })
     }
 
@@ -222,7 +245,8 @@ class ShopDiscountManageVariantViewModelTest {
             listSlashPriceBenefitData = listOf(
                 ShopDiscountSellerInfoUiModel.SlashPriceBenefitData(
                     packageId = "1",
-                    expiredAtUnix = 2537080009
+                    expiredAt = mockEndDate.parseTo(DateConstant.DATE_TIME),
+                    expiredAtUnix = mockEndDate.time / 1000L
                 )
             )
         )
@@ -234,7 +258,6 @@ class ShopDiscountManageVariantViewModelTest {
             listSlashPriceBenefitData = listOf(
                 ShopDiscountSellerInfoUiModel.SlashPriceBenefitData(
                     packageId = "-1",
-                    expiredAtUnix = 2537080009
                 )
             )
         )

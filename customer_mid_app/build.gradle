@@ -36,6 +36,7 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
     lintOptions {
         abortOnError false
