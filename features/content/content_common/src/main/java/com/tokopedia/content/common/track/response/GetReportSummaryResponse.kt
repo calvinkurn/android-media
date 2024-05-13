@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain.model.report.live
+package com.tokopedia.content.common.track.response
 
 import com.google.gson.annotations.SerializedName
 
