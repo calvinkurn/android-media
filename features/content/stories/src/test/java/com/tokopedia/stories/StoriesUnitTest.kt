@@ -2,6 +2,7 @@ package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.data.mock.mockContentTaggedProductUiModel
@@ -435,7 +436,7 @@ class StoriesUnitTest {
             actualDetail.isContentLoaded.assertTrue()
 
             coVerify { mockRepository.getReportSummary(any()) }
-            coVerify { mockRepository.trackVisitContent(any()) }
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -458,7 +459,7 @@ class StoriesUnitTest {
             }
             event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
             coVerify { mockRepository.getReportSummary(any()) }
-            coVerify { mockRepository.trackVisitContent(any()) }
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -479,7 +480,7 @@ class StoriesUnitTest {
             actualDetail.isContentLoaded.assertTrue()
 
             coVerify { mockRepository.getReportSummary(any()) }
-            coVerify { mockRepository.trackVisitContent(any()) }
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -491,7 +492,6 @@ class StoriesUnitTest {
 
         coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
-
         getStoriesRobot().use { robot ->
             robot.setTrackActivity(selectedGroup)
 
@@ -499,7 +499,6 @@ class StoriesUnitTest {
             actualDetail.isContentLoaded.assertFalse()
 
             coVerify { mockRepository.getReportSummary(any()) }
-            coVerify { mockRepository.trackVisitContent(any()) }
         }
     }
 
@@ -524,7 +523,6 @@ class StoriesUnitTest {
             event.last().assertEqualTo(StoriesUiEvent.ErrorSetTracking(expectedThrowable))
 
             coVerify { mockRepository.getReportSummary(any()) }
-            coVerify { mockRepository.trackVisitContent(any()) }
         }
     }
 

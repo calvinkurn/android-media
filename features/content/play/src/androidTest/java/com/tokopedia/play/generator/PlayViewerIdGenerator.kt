@@ -111,7 +111,7 @@ class PlayViewerIdGenerator {
                 videoStateProcessorFactory = mockk(relaxed = true),
                 channelStateProcessorFactory = mockk(relaxed = true),
                 videoBufferGovernorFactory = mockk(relaxed = true),
-                getReportSummariesUseCase = mockk(relaxed = true),
+                getReportSummariesUseCaseEx = mockk(relaxed = true),
                 playSocketToModelMapper = mockk(relaxed = true),
                 playUiModelMapper = mapper,
                 userSession = mockk(relaxed = true),

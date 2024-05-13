@@ -1,7 +1,7 @@
 package com.tokopedia.play.robot.play
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
@@ -46,7 +46,7 @@ class PlayViewModelRobot2(
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    getReportSummariesUseCase: GetReportSummariesUseCase,
+    getReportSummariesUseCase: GetReportSummaryUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineTestDispatchers,
     remoteConfig: RemoteConfig,
@@ -198,7 +198,7 @@ fun createPlayViewModelRobot(
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory = mockk(relaxed = true),
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
-    getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
+    getReportSummariesUseCase: GetReportSummaryUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     remoteConfig: RemoteConfig = mockk(relaxed = true),
     playPreference: PlayPreference = mockk(relaxed = true),

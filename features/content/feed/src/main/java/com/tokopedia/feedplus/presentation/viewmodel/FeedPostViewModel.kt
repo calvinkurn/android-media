@@ -15,7 +15,9 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
-import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
+import com.tokopedia.content.common.track.usecase.ContentType
+import com.tokopedia.content.common.track.usecase.GetReportSummaryRequest
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase.Companion.isVisit
@@ -127,7 +129,7 @@ class FeedPostViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    private val getReportSummariesUseCase: GetReportSummaryUseCase,
     private val tooltipManager: FeedTooltipManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -1254,7 +1256,7 @@ class FeedPostViewModel @Inject constructor(
 
         viewModelScope.launchCatchError(dispatchers.io, block = {
             getReportSummariesUseCase(
-                GetReportSummariesUseCase.Param(playChannelId, TrackContentType.Play.value)
+                GetReportSummaryRequest.create(playChannelId, ContentType.Play)
             )
         }) {}
     }

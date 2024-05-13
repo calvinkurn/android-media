@@ -11,9 +11,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
-import com.tokopedia.content.common.track.response.ReportSummaries
-import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
-import com.tokopedia.content.common.types.TrackContentType
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
+import com.tokopedia.content.common.track.usecase.ContentType
+import com.tokopedia.content.common.track.usecase.GetReportSummaryRequest
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -106,7 +107,7 @@ class PlayViewModel @AssistedInject constructor(
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    private val getReportSummariesUseCase: GetReportSummaryUseCase,
     private val playSocketToModelMapper: PlaySocketToModelMapper,
     private val playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -1580,12 +1581,12 @@ class PlayViewModel @AssistedInject constructor(
                 }
 
                 try {
-                    val report = deferredReportSummaries.await().reportSummaries.data.first().content.metrics
+                    val report = deferredReportSummaries.await().data.reportData.first().content.metrics
                     _channelReport.setValue {
                         copy(
-                            totalViewFmt = report.totalViewFmt,
+                            totalViewFmt = report.visitContent,
                             totalLike = report.totalLike.toLongOrZero(),
-                            totalLikeFmt = report.totalLikeFmt
+                            totalLikeFmt = report.totalLike
                         )
                     }
                     _isChannelReportLoaded.setValue { true }
@@ -1615,8 +1616,8 @@ class PlayViewModel @AssistedInject constructor(
         chatManager.addChat(chat)
     }
 
-    private suspend fun getReportSummaries(channelId: String): ReportSummaries.Response = withContext(dispatchers.io) {
-        getReportSummariesUseCase(GetReportSummariesUseCase.Param(channelId, TrackContentType.Play.value))
+    private suspend fun getReportSummaries(channelId: String): GetReportSummaryResponse = withContext(dispatchers.io) {
+        getReportSummariesUseCase(GetReportSummaryRequest.create(channelId, ContentType.Play))
     }
 
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {

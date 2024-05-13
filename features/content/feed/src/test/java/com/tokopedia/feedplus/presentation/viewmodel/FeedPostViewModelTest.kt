@@ -11,8 +11,8 @@ import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
-import com.tokopedia.content.common.track.response.ReportSummaries
-import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -139,10 +139,12 @@ class FeedPostViewModelTest {
     private val uiEventManager = UiEventManager<FeedPostEvent>()
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase = mockk()
-    private val getReportSummariesUseCase : GetReportSummariesUseCase = mockk()
+    private val getReportSummariesUseCase : GetReportSummaryUseCase = mockk()
     private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
+
+    private val playChannelId get() = (getDummyFeedModel().items[1] as FeedCardVideoContentModel).playChannelId
 
     @Before
     fun setUp() {
@@ -1211,7 +1213,7 @@ class FeedPostViewModelTest {
         coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
 
         // when
-        viewModel.trackPerformance(getDummyFeedModel().items[1] as FeedCardVideoContentModel, BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
+        viewModel.trackPerformance(playChannelId, emptyList() ,BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
 
         coVerify { trackReportViewerUseCase.executeOnBackground() }
     }
@@ -1219,7 +1221,7 @@ class FeedPostViewModelTest {
     @Test
     fun onTrackVisitChannel() {
         coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
-        viewModel.trackPerformance(getDummyFeedModel().items[1] as FeedCardVideoContentModel, BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
+        viewModel.trackPerformance(playChannelId, emptyList(), BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
 
         coVerify { trackReportViewerUseCase.executeOnBackground() }
     }
@@ -2503,8 +2505,10 @@ class FeedPostViewModelTest {
 
     @Test
     fun getReportSummaryVideo() {
-        coEvery { getReportSummariesUseCase(any()) } returns ReportSummaries.Response()
+        coEvery { getReportSummariesUseCase(any()) } returns GetReportSummaryResponse()
 
         viewModel.getReportSummaries(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+
+        coVerify { getReportSummariesUseCase(any()) }
     }
 }
