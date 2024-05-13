@@ -37,10 +37,4 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools" />
 
-    <com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
-        android:id="@+id/dynamic_navbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
 </LinearLayout>

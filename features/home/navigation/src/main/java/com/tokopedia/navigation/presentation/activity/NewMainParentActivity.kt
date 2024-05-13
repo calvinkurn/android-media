@@ -68,7 +68,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceControlle
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper
 import com.tokopedia.navigation.GlobalNavAnalytics
 import com.tokopedia.navigation.GlobalNavConstant
-import com.tokopedia.navigation.databinding.ActivityMainParentBinding
+import com.tokopedia.navigation.databinding.ActivityNewMainParentBinding
 import com.tokopedia.navigation.domain.model.Notification
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent
 import com.tokopedia.navigation.presentation.model.BottomNavFeedId
@@ -214,7 +214,7 @@ class NewMainParentActivity :
 
     private var isFirstNavigationImpression: Boolean = false
 
-    private lateinit var binding: ActivityMainParentBinding
+    private lateinit var binding: ActivityNewMainParentBinding
 
     private val handler = Handler()
 
@@ -335,15 +335,6 @@ class NewMainParentActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode)
-//        run handleByRequestCode@{
-//            when (requestCode) {
-//                REQUEST_CODE_LOGIN -> {
-//                    if (resultCode != Activity.RESULT_OK || data == null) return@handleByRequestCode
-//                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-//                    if (isSuccessRegister) goToNewUserZonePage()
-//                }
-//            }
-//        }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -628,7 +619,7 @@ class NewMainParentActivity :
 
     private fun createView(savedInstanceState: Bundle?) {
         isFirstNavigationImpression = true
-        binding = ActivityMainParentBinding.inflate(layoutInflater)
+        binding = ActivityNewMainParentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val firstTimeWeave = object : WeaveInterface {
@@ -984,16 +975,6 @@ class NewMainParentActivity :
         NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
     }
 
-    // TODO("Ask account team")
-//    private fun goToNewUserZonePage() {
-//        val intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER)
-//        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
-//        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//
-//        startActivities(arrayOf(intentHome, intentNewUser))
-//        finish()
-//    }
-
     private fun showDarkModeIntroBottomSheet() {
         DarkModeIntroductionLauncher
             .withToaster(intent, window.decorView)
@@ -1192,8 +1173,6 @@ class NewMainParentActivity :
 
         private const val KEY_IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK"
         private const val KEY_MO_ENGAGE_COUPON_CODE = "coupon_code"
-
-//        private const val REQUEST_CODE_LOGIN: Int = 12137
 
         private const val EXIT_DELAY_MILLIS = 2_000L
 
