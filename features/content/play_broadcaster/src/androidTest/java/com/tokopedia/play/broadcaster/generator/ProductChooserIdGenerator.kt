@@ -123,7 +123,8 @@ class ProductChooserIdGenerator {
             savedStateHandle: SavedStateHandle,
             isNumerationShown: Boolean,
             isEligibleForPin: Boolean,
-            fetchCommissionProduct: Boolean
+            fetchCommissionProduct: Boolean,
+            selectedAccount: ContentAccountUiModel
         ): ContentProductPickerSellerViewModel {
             return ContentProductPickerSellerViewModel(
                 creationId = creationId,
@@ -136,7 +137,8 @@ class ProductChooserIdGenerator {
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
                 isNumerationShown = isNumerationShown,
-                fetchCommissionProduct = fetchCommissionProduct
+                fetchCommissionProduct = fetchCommissionProduct,
+                selectedAccount = selectedAccount
             )
         }
     }
