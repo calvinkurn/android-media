@@ -71,7 +71,7 @@ object AppLogAnalytics {
     @JvmField
     var pageNames = mutableListOf<Pair<String, Int?>>()
 
-    //key = PAGE_NAME, Pair(activityName, activityHasCode, fragmentName)
+    //key = PAGE_NAME, Pair(activityName, activityHashCode, fragmentName)
     private val _adsPageDataList = ArrayList<HashMap<String, Triple<String, Int, Any>>>()
     val adsPageDataList: List<Map<String, Triple<String, Int, Any>>>
         get() = _adsPageDataList.toList()
