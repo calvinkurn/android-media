@@ -1541,11 +1541,7 @@ public class MainParentActivity extends BaseActivity implements
     //MIGRATED
     private IconJumper getIconJumper() {
         if (HomeRollenceController.isIconJumper()) {
-            if (HomeRollenceController.isIconJumperSRE()) {
-                return getSREIconJumper();
-            } else {
-                return getForYouIconJumper();
-            }
+            return getForYouIconJumper();
         } else {
             return null;
         }
@@ -1559,18 +1555,6 @@ public class MainParentActivity extends BaseActivity implements
                 R.raw.bottom_nav_home_to_thumb,
                 R.raw.bottom_nav_thumb_idle,
                 R.raw.bottom_nav_thumb_to_home
-        );
-    }
-
-    //NOT NEEDED
-    //TODO("Delete the SRE Icon Jumper")
-    private IconJumper getSREIconJumper() {
-        return new IconJumper(
-                getResources().getString(R.string.for_you),
-                R.drawable.ic_bottom_nav_home_sre,
-                R.raw.bottom_nav_home_to_sre,
-                R.raw.bottom_nav_sre_idle,
-                R.raw.bottom_nav_sre_to_home
         );
     }
 
