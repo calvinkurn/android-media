@@ -60,7 +60,7 @@ data class StoriesDetailItem(
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
     val status: StoryStatus = StoryStatus.Unknown,
-    val performanceLink: String ="",
+    val performanceLink: String = "",
 ) {
 
     val storyType: String
