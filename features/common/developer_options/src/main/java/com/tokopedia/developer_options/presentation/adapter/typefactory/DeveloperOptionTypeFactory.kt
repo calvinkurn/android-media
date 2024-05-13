@@ -42,7 +42,7 @@ import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggi
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
-import com.tokopedia.developer_options.presentation.model.ShopPageDevUiModel
+import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
 import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
@@ -71,7 +71,7 @@ import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
 interface DeveloperOptionTypeFactory {
     fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int
     fun type(uiModel: PdpDevUiModel): Int
-    fun type(uiModel: ShopPageDevUiModel): Int
+    fun type(uiModel: MockDynamicWidgetUiModel): Int
     fun type(uiModel: AccessTokenUiModel): Int
     fun type(uiModel: SystemNonSystemAppsUiModel): Int
     fun type(uiModel: ResetOnBoardingUiModel): Int

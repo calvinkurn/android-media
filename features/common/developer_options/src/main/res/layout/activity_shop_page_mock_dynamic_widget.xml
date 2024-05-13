@@ -17,7 +17,7 @@
             android:layout_height="50dp"
             app:text_field_input_type="text"
             app:text_field_label_static="true"
-            app:text_field_placeholder="Shop Id" />
+            app:text_field_placeholder="ShopId (Eg. 1854168 for Unilever Official Store)" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/route_to_shop_page_button"

@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.shop_page_dev_option
+package com.tokopedia.developer_options.mock_dynamic_widget.shop_page
 
 import com.google.gson.JsonParser
 import com.tokopedia.kotlin.extensions.orFalse
@@ -9,6 +9,23 @@ data class ShopPageMockWidgetModel(
     fun getWidgetName(): String {
         val jsonObjectData = JsonParser.parseString(mockShopWidgetData.first).asJsonObject
         return jsonObjectData?.get("widgetName")?.asString.orEmpty()
+    }
+
+    fun markAsCustomWidget() {
+        val first = JsonParser.parseString(mockShopWidgetData.first).asJsonObject.apply {
+            addProperty("_shop_widget_custom_widget_flag", true)
+        }.toString()
+        mockShopWidgetData = Pair(first, mockShopWidgetData.second)
+    }
+
+    fun isCustomShopWidgetMockResponse(): Boolean {
+        val jsonObjectData = JsonParser.parseString(mockShopWidgetData.first).asJsonObject
+        return jsonObjectData?.get("_shop_widget_custom_widget_flag")?.asBoolean.orFalse()
+    }
+
+    fun getWidgetType(): String {
+        val jsonObjectData = JsonParser.parseString(mockShopWidgetData.first).asJsonObject
+        return jsonObjectData?.get("widgetType")?.asString.orEmpty()
     }
 
     fun editWidgetId(index: Int) {
@@ -39,3 +56,7 @@ data class ShopPageMockWidgetModel(
         return JsonParser.parseString(mockShopWidgetData.first).asJsonObject?.get("isFestivity")?.asBoolean.orFalse()
     }
 }
+
+data class BmsmMockWidgetModel(
+    var mockBmsmWidgetData: Pair<String, String> = Pair("", "")
+)

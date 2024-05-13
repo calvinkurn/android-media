@@ -58,6 +58,7 @@ internal enum class DevopsFeature {
     LOGIN_HELPER,
     ENABLE_DEVOPS_ON_NOTIF,
     PRODUCT_DETAIL_DEV,
+    MOCK_DYNAMIC_WIDGET,
     MSSDK_DEV,
     SHOP_PAGE_DEV,
     SYSTEM_APPS,

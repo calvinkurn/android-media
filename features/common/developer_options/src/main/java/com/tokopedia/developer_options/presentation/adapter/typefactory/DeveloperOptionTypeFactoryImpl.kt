@@ -46,7 +46,7 @@ import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggi
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
-import com.tokopedia.developer_options.presentation.model.ShopPageDevUiModel
+import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
 import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
@@ -108,7 +108,7 @@ import com.tokopedia.developer_options.presentation.viewholder.SellerAppReviewDe
 import com.tokopedia.developer_options.presentation.viewholder.SendFirebaseCrashExceptionViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SharedPreferencesEditorViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
-import com.tokopedia.developer_options.presentation.viewholder.ShopPageDevOptViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.MockDynamicWidgetViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ShowApplinkOnToastViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.StrictModeLeakPublisherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SystemNonSystemAppsViewHolder
@@ -151,7 +151,7 @@ class DeveloperOptionTypeFactoryImpl(
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
-    override fun type(uiModel: ShopPageDevUiModel): Int = ShopPageDevOptViewHolder.LAYOUT
+    override fun type(uiModel: MockDynamicWidgetUiModel): Int = MockDynamicWidgetViewHolder.LAYOUT
     override fun type(uiModel: AccessTokenUiModel): Int = AccessTokenViewHolder.LAYOUT
     override fun type(uiModel: SystemNonSystemAppsUiModel): Int = SystemNonSystemAppsViewHolder.LAYOUT
     override fun type(uiModel: ResetOnBoardingUiModel): Int = ResetOnBoardingViewHolder.LAYOUT
@@ -217,7 +217,7 @@ class DeveloperOptionTypeFactoryImpl(
             MsSdkViewHolder.LAYOUT -> MsSdkViewHolder(view)
             DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
-            ShopPageDevOptViewHolder.LAYOUT -> ShopPageDevOptViewHolder(view)
+            MockDynamicWidgetViewHolder.LAYOUT -> MockDynamicWidgetViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)
             SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view)
             ResetOnBoardingViewHolder.LAYOUT -> ResetOnBoardingViewHolder(view, resetOnBoardingListener)
