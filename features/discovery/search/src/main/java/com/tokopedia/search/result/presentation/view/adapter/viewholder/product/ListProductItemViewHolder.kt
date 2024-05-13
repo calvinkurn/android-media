@@ -2,23 +2,17 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardListBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.utils.sendEventRealtimeClickAdsByteIo
-import com.tokopedia.search.utils.sendEventShow
-import com.tokopedia.search.utils.sendEventShowOver
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ListProductItemViewHolder(
@@ -99,15 +93,6 @@ class ListProductItemViewHolder(
         productCardView.addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
             productListener.onProductImpressedByteIO(productItemData)
         }
-        productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
-            override fun onShow() {
-                sendEventShow(itemView.context, productItemData)
-            }
-
-            override fun onShowOver(maxPercentage: Int) {
-                sendEventShowOver(itemView.context, productItemData, maxPercentage)
-            }
-        })
     }
 
     private fun ProductItemDataView.getProductListTypeEnum(): ProductCardModel.ProductListType {
