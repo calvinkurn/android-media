@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.product.picker.R
@@ -24,6 +25,8 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.content.product.picker.R as contentproductpickerR
+import com.tokopedia.play_common.R as play_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -92,10 +95,18 @@ class ProductSummaryViewHolder private constructor() {
             binding.tvProductSummaryStock.text = String.format(ctx.getString(R.string.product_stock), item.product.stock)
             binding.tvProductSummaryName.text = item.product.name
 
+            binding.tvCommissionExtra.background = ContextCompat.getDrawable(
+                ctx,
+                contentproductpickerR.drawable.bg_commission_extra
+            )
             binding.tvCommission.text = ctx.getString(R.string.product_affiliate_commission_fmt, item.product.commissionFmt)
             binding.tvCommission.showWithCondition(item.product.hasCommission)
             binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
 
+            binding.tvProductSummaryEmptyStock.background = ContextCompat.getDrawable(
+                ctx,
+                play_commonR.drawable.bg_play_product_tag_stock
+            )
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.text = ctx.getString(
@@ -139,8 +150,12 @@ class ProductSummaryViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item.product)
             }
-            binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
+            binding.tvSummaryProductTagNumber.background = ContextCompat.getDrawable(
+                ctx,
+                contentproductpickerR.drawable.product_number_background
+            )
             binding.tvSummaryProductTagNumber.text = item.product.number
+            binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
 
             binding.productTagRate.text = item.product.rating
             binding.productTagSold.text = item.product.countSold
