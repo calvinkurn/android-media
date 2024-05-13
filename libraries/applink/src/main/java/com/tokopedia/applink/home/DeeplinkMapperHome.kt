@@ -44,6 +44,8 @@ object DeeplinkMapperHome {
                 ApplinkConsInternalHome.HOME_NAVIGATION,
                 mapOf(EXTRA_TAB_TYPE to TAB_TYPE_HOME)
             )
+        } else if (deeplink.startsWith(ApplinkConst.HOME_OLD) && uri.pathSegments.size == 1) {
+            return ApplinkConsInternalHome.HOME_NAVIGATION_OLD
         } else if (deeplink.startsWith(ApplinkConst.HOME_CATEGORY) && uri.pathSegments.size == 1) {
             return ApplinkConsInternalHome.HOME_NAVIGATION
         } else if (deeplink.startsWith(ApplinkConst.Navigation.MAIN_NAV)) {

@@ -4,6 +4,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
@@ -72,6 +73,8 @@ object DeeplinkMapperContent {
             INTERNAL_FEED_SEARCH_RESULT
         } else if (pathSegments.startsWith("search", false)) {
             INTERNAL_FEED_LOCAL_BROWSE
+        } else if (pathSegments.startsWith("old", false)) {
+            goToAppLinkFeedHomeInternal(uri, isOldNav = true)
         } else {
             goToAppLinkFeedHomeInternal(uri)
         }
@@ -96,11 +99,19 @@ object DeeplinkMapperContent {
      * ?tab={tab_name}
      * ?source={source_name}
      */
-    private fun goToAppLinkFeedHomeInternal(uri: Uri): String {
+    private fun goToAppLinkFeedHomeInternal(uri: Uri, isOldNav: Boolean = false): String {
         return UriUtil.buildUriAppendParams(
-            ApplinkConsInternalHome.HOME_NAVIGATION,
-            buildMap {
-                put(EXTRA_TAB_TYPE, TAB_TYPE_FEED)
+            uri = if (!isOldNav) {
+                ApplinkConsInternalHome.HOME_NAVIGATION
+            } else {
+                ApplinkConsInternalHome.HOME_NAVIGATION_OLD
+            },
+            queryParameters = buildMap {
+                if (!isOldNav) {
+                    put(EXTRA_TAB_TYPE, TAB_TYPE_FEED)
+                } else {
+                    put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
+                }
 
                 val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
