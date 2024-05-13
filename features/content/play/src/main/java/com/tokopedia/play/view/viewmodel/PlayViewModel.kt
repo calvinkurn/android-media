@@ -2932,6 +2932,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
         }
+        _channelDetail.update { detail -> detail.copy(channelRecomConfig = detail.channelRecomConfig.copy(exploreWidgetConfig = detail.channelRecomConfig.exploreWidgetConfig.copy(categoryName = element.text))) }
     }
     private fun refreshWidget(widget: ExploreWidgetType) {
         widgetQuery.value = widgetQuery.value.mapValues {
