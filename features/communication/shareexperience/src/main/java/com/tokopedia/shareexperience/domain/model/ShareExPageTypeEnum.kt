@@ -17,6 +17,9 @@ enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     GOPAYLATER_REFERRAL("gopaylater referral", 7);
 
     companion object {
+
+        const val AFFILIATE_TYPE_PDP = "pdp"
+
         fun fromValue(value: String): ShareExPageTypeEnum {
             return values().find { it.value == value } ?: OTHERS // default
         }
