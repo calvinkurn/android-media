@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -46,6 +47,7 @@ class PlayShortsSwitchAccountAnalyticTest {
     private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
@@ -55,6 +57,8 @@ class PlayShortsSwitchAccountAnalyticTest {
     private val mockAccountUser = mockAccountList[1]
 
     init {
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any(), any()) } returns true
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockShortsRepo.getShortsConfiguration(any(), any()) } returns mockShortsConfig
         coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
@@ -77,6 +81,7 @@ class PlayShortsSwitchAccountAnalyticTest {
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
+                        mockCoachMarkSharedPref = mockCoachMarkSharedPref,
                     )
                 )
                 .build()
