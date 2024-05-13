@@ -49,7 +49,7 @@ internal class CarouselProductCardGridViewHolder(
         val onSeeOtherProductClickListener = carouselProductCardModel.getSeeOtherClickListener()
         val onViewListener = carouselProductCardModel.getOnViewListener()
 
-        productCardGridView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        productCardGridView?.setVisibilityPercentListener(productCardModel.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 onViewListener?.onViewAttachedToWindow(productCardModel, bindingAdapterPosition)
             }

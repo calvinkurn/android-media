@@ -85,7 +85,7 @@ class SmallGridProductItemViewHolder(
             }
         })
 
-        productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        productCardView.setVisibilityPercentListener(productItemData.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 sendEventShow(itemView.context, productItemData)
             }

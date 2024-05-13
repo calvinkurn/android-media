@@ -38,7 +38,7 @@ class RecommendationCardGridViewHolder(
         productCardImpressionListener(element)
         setItemProductCardClickListener(element)
         setItemThreeDotsClickListener(element)
-        productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        productCardView?.setVisibilityPercentListener(element.recommendationProductItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 if(element.recommendationProductItem.isTopAds) {
                     AppLogTopAds.sendEventShow(

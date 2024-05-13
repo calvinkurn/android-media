@@ -85,7 +85,7 @@ class ComparisonReimagineWidgetItemViewHolder(
                 }
             })
         }
-        binding?.productCardView?.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        binding?.productCardView?.setVisibilityPercentListener(comparisonModel.recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 adsViewListener?.onViewAttachedToWindow(comparisonModel.recommendationItem, bindingAdapterPosition)
             }

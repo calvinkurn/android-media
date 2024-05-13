@@ -75,7 +75,7 @@ class RecommendationItemViewHolder(
                     listener.onProductImpression(element.productItem)
                 }
             })
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(element.productItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     element.productItem.sendShowAdsByteIo(itemView.context)
                 }

@@ -62,7 +62,7 @@ class RecommendationVerticalProductCardViewHolder(
         with(binding.productCardView) {
             addOnImpressionListener(element.recomItem) { onProductCardImpressed(element) }
             addOnImpression1pxListener(element.recomItem.appLogImpressHolder) { onProductCardImpressed1px(element) }
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(element.recomItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     element.recomItem.sendShowAdsByteIo(itemView.context)
                 }

@@ -37,7 +37,7 @@ class GridProductItemViewHolder(
     override fun bind(productItemData: ProductItemDataView) {
         binding?.searchProductCardGridReimagine?.run {
             setProductModel(productCardModel(productItemData))
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(productItemData.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     sendEventShow(context, productItemData)
                 }

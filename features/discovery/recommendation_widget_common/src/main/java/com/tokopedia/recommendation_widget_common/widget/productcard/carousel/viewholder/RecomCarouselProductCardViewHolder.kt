@@ -69,7 +69,7 @@ class RecomCarouselProductCardViewHolder (view: View,
                 }
                 element.listener?.onProductCardImpressed(position = adapterPosition,data = data, recomItem = element.recomItem)
             }
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(element.recomItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     element.listener?.onViewAttachedToWindow(element.recomItem, bindingAdapterPosition)
                 }

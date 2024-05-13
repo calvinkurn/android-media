@@ -37,7 +37,7 @@ class RecommendationItemViewHolder (
             cardInteraction = true,
         )
         view.setProductModel(productModel)
-        view.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        view.setVisibilityPercentListener(recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 recommendationItem.sendShowAdsByteIo(itemView.context)
             }

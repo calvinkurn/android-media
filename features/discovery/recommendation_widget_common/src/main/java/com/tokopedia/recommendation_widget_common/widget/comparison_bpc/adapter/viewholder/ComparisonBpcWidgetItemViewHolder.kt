@@ -67,7 +67,7 @@ class ComparisonBpcWidgetItemViewHolder(
                     element.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                 }
             })
-            productCardView.setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            productCardView.setVisibilityPercentListener(element.recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     element.recommendationItem.sendShowAdsByteIo(itemView.context)
                 }

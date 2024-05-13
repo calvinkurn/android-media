@@ -57,7 +57,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 )
             }
 
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(uiModel.recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     uiModel.recommendationItem.sendShowAdsByteIo(itemView.context)
                 }
@@ -65,7 +65,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 override fun onShowOver(maxPercentage: Int) {
                     uiModel.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
                 }
-            }, uiModel.recommendationItem.isTopAds)
+            })
 
             setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {

@@ -20,7 +20,7 @@ internal class CarouselProductCardGridViewHolder(
             setProductModel(element.productCardModel)
 
             addOnImpressionListener(element)
-            setVisibilityPercentListener(object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            setVisibilityPercentListener(element.productCardModel.isAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
                 override fun onShow() {
                     element.onViewAttachedToWindow()
                 }
