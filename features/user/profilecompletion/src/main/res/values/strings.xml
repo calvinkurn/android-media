@@ -48,6 +48,8 @@
     <string name="profile_info_placeholder_dob">Pilih Tanggal Lahir</string>
     <string name="profile_info_failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
     <string name="profile_info_success_copy_userid">User ID berhasil disalin!</string>
+    <string name="profile_info_title_applog_device_id">Applog Device ID</string>
+    <string name="profile_info_success_copy_applog_device_id">Applog Device ID berhasil disalin!</string>
     <string name="profile_info_add_and_verify_phone">Tambah nomor HP dulu, yuk!</string>
     <string name="profile_info_add_and_verify_phone_detail">Proses verifikasi buat akses akun jadi lebih gampang kalau ada nomor HP. Keamanan akunmu makin terjamin, deh!</string>
     <string name="profile_info_title_add_phone">Tambah Nomor HP</string>

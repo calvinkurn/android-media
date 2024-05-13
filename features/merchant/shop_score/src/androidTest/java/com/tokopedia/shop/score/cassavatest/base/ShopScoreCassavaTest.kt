@@ -6,7 +6,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopScoreTest
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
@@ -15,10 +14,12 @@ import com.tokopedia.shop.score.stub.common.util.getHyperlinkText
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
+import com.tokopedia.shop.score.stub.common.util.onIdVisibleView
 import com.tokopedia.shop.score.stub.common.util.scrollTo
 import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.MatcherAssert
 import org.junit.Rule
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 open class ShopScoreCassavaTest : BaseShopScoreTest() {
 
@@ -58,15 +59,9 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
         validate(CLICK_MERCHANT_TOOLS_RECOMMENDATION_PATH)
     }
 
-    protected fun clickPowerMerchantSection() {
-        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
-        onIdView(R.id.potentialPowerMerchantWidget).isViewDisplayed().onClick()
-        validate(CLICK_POWER_MERCHANT_SECTION_PATH)
-    }
-
     protected fun clickTickerPenalty() {
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
-        onIdView(com.tokopedia.unifycomponents.R.id.ticker_description).isViewDisplayed().onClick()
+        onIdVisibleView(unifycomponentsR.id.ticker_description).isViewDisplayed().onClick()
         validate(CLICK_TICKER_PENALTY_PATH)
     }
 

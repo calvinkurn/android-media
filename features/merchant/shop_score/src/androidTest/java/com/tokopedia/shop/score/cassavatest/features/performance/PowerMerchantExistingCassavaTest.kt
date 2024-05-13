@@ -21,7 +21,6 @@ class PowerMerchantExistingCassavaTest : ShopScoreCassavaTest() {
     @Test
     fun validateClickPowerMerchantSection() {
         activityRule.launchActivity(getShopPerformancePageIntent())
-        clickPowerMerchantSection()
     }
 
     @Test

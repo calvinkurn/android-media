@@ -5,7 +5,7 @@
     android:layout_width="@dimen/play_widget_card_medium_width"
     android:layout_height="@dimen/play_widget_card_medium_height"
     android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:cardCornerRadius="4dp"
     app:cardElevation="@dimen/spacing_lvl1"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
@@ -16,11 +16,11 @@
         android:layout_height="match_parent"
         android:background="@color/play_widget_dms_light_gray">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/play_widget_thumbnail"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl0"
-            android:scaleType="fitXY"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

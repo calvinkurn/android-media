@@ -49,7 +49,6 @@ import com.tokopedia.common.topupbills.favoritepage.view.viewmodel.TopupBillsFav
 import com.tokopedia.common.topupbills.favoritepage.view.viewholder.PersoFavoriteNumberErrorViewHolder.PersoFavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.favoritepage.view.viewholder.PersoFavoriteNumberViewHolder.OnPersoFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
-import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero

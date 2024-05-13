@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView
 
 
 class TopAdsAdapter(
@@ -38,7 +38,7 @@ class TopAdsAdapter(
     }
 
     override fun onBindViewHolder(holder: TopAdsViewHolder, position: Int) {
-        holder.bind(topAdsModelList[position] as TopAdsImageViewModel)
+        holder.bind(topAdsModelList[position] as TopAdsImageUiModel)
 
     }
 
@@ -54,7 +54,7 @@ class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
 
 
-    fun bind(topAdsImageViewModel: TopAdsImageViewModel) {
+    fun bind(topAdsImageUiModel: TopAdsImageUiModel) {
 
         topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
@@ -75,7 +75,7 @@ class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
             }
 
         })
-        topAdsImageView.loadImage(topAdsImageViewModel, 8)
+        topAdsImageView.loadImage(topAdsImageUiModel, 8)
     }
 
     private val topAdsImageView = itemView.findViewById<TopAdsImageView>(R.id.topAdsBanner)

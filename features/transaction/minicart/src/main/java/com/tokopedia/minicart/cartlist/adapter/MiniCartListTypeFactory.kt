@@ -3,9 +3,11 @@ package com.tokopedia.minicart.cartlist.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomShimmeringUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProgressiveInfoUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
@@ -34,6 +36,10 @@ interface MiniCartListTypeFactory {
     fun type(uiModel: MiniCartProductBundleRecomUiModel): Int
 
     fun type(uiModel: MiniCartProductBundleRecomShimmeringUiModel): Int
+
+    fun type(uiModel: MiniCartProgressiveInfoUiModel): Int
+
+    fun type(uiModel: MiniCartGwpGiftUiModel): Int
 
     fun createViewHolder(parent: View, viewType: Int): AbstractViewHolder<*>
 }

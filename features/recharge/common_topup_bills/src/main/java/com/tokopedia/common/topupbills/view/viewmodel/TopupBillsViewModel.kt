@@ -33,6 +33,8 @@ import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,6 +53,7 @@ class TopupBillsViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
     private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
+    private val remoteConfig: RemoteConfig,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -119,16 +122,16 @@ class TopupBillsViewModel @Inject constructor(
 
     fun getMenuDetail(
         rawQuery: String,
-        mapParam: Map<String, Any>,
-        isLoadFromCloud: Boolean = false
+        mapParam: Map<String, Any>
     ) {
         launch {
             runCatching {
                 val data = withContext(dispatcher.io) {
+                    val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
                     val graphqlRequest =
                         GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                     val graphqlCacheStrategy =
-                        GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                        GraphqlCacheStrategy.Builder(if (isEnableGqlCache) CacheType.CACHE_FIRST else CacheType.CLOUD_THEN_CACHE)
                             .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
                     graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<TelcoCatalogMenuDetailData>()

@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -217,6 +219,10 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     } else {
                         ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
                     }
+                ),
+                AppLogAnalytics.getEntranceInfoForCheckout(
+                    AtcBuyType.OCC,
+                    products.mapNotNull { if (it.isError) null else it.cartId }
                 )
             )
 

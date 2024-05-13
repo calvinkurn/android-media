@@ -102,7 +102,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
             if (lottieAnimatedStateMap[tabIndex] != true) {
                 try {
                     lottieAnimatedStateMap[tabIndex] = true
-                    lottieAnimation.cancelAnimation()
+                    lottieAnimation.pauseAnimation()
                     CoroutineScope(Dispatchers.Main).launch {
                         delay(DELAY_BEFORE_STARTING_ANIMATION)
                         LottieCompositionFactory.fromUrl(context, dataItem.lottieImage)?.addListener { result ->

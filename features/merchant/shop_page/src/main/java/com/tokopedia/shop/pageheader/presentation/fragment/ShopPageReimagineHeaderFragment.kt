@@ -149,7 +149,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.ShopHeaderFragmentBinding
-import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
+import com.tokopedia.shop.databinding.ShopPageWidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.util.mapper.ShopPagePrefetchMapper
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -417,7 +417,7 @@ class ShopPageReimagineHeaderFragment :
     private var bottomViewContainer: ViewGroup? = null
     private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<ShopHeaderFragmentBinding>()
-    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
+    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<ShopPageWidgetSellerMigrationBottomSheetHasPostBinding>()
     private val isLogin: Boolean
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
 
@@ -608,7 +608,7 @@ class ShopPageReimagineHeaderFragment :
                 BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
                 BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
                 viewBindingSellerMigrationBottomSheet =
-                    WidgetSellerMigrationBottomSheetHasPostBinding.inflate(
+                    ShopPageWidgetSellerMigrationBottomSheetHasPostBinding.inflate(
                         LayoutInflater.from(context)
                     )
                 viewTarget.addView(viewBindingSellerMigrationBottomSheet?.root)
@@ -665,6 +665,7 @@ class ShopPageReimagineHeaderFragment :
                     initMiniCart()
                     sendTrackerImpressionShopHeader()
                     sendTrackerImpressionShopBottomNav()
+                    getShopShareAndOperationalHourStatusData()
                 }
 
                 is Fail -> {
@@ -791,7 +792,6 @@ class ShopPageReimagineHeaderFragment :
                     }
                 }
             }
-
         }
 
         shopHeaderViewModel?.shopImagePath?.observe(owner) {
@@ -1140,7 +1140,6 @@ class ShopPageReimagineHeaderFragment :
 
     private fun getShopPageP2Data() {
         if (!isAlreadyGetShopPageP2Data) {
-            getShopShareAndOperationalHourStatusData()
             getFollowStatus()
             getSellerPlayWidget()
             isAlreadyGetShopPageP2Data = true
@@ -1505,7 +1504,7 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.getNewShopPageTabData(
             shopId = shopId,
             shopDomain = shopDomain.orEmpty(),
-            isRefresh = isRefresh,
+            isRefresh = true, // Changed to true as in the requirement from ByteIO implementation. Use `isRefresh` if you want to perform caching mechanism to improve PLT for second page visit
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
             tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
@@ -2856,8 +2855,9 @@ class ShopPageReimagineHeaderFragment :
         val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
         return if (isOverrideTextColor) {
             if (getShopHeaderConfig()?.getFinalPatternColorType(
-                context?.isDarkMode().orFalse()
-            ) == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+                    context?.isDarkMode().orFalse()
+                ) == ShopPageHeaderLayoutUiModel.ColorType.DARK.value
+            ) {
                 unifyprinciplesR.color.Unify_Static_White
             } else {
                 R.color.dms_static_Unify_NN950_light

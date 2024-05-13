@@ -8,6 +8,6 @@
     android:layout_height="@dimen/layout_lvl5"
     app:icon_color_light_enable="@color/Unify_Static_White"
     app:icon_color_night_enable="@color/Unify_Static_White"
-    app:icon_name="SHARE"
+    app:icon_name="SOCIAL_SHARE"
     app:unify_image_type="circle"
     tools:background="@color/play_dms_N700" />

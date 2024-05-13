@@ -24,6 +24,25 @@ object PMActiveTermHelper {
             getShopScoreTerm(context, shopInfo, isPmProSelected),
             getTotalOrderTerm(context, shopInfo),
             getNetItemValueTerm(context, shopInfo),
+            getVerificationTerm(context, shopInfo),
+        )
+    }
+
+    private fun getVerificationTerm(
+        context: Context,
+        shopInfo: PMShopInfoUiModel
+    ): PmActiveTermUiModel.Kyc {
+        val isEligible = shopInfo.isKyc
+        val (resDrawableIcon, isChecked) = getTermIcon(isEligible)
+        val title = context.getString(R.string.pm_title_data_verification_term)
+        val description = context.getString(R.string.pm_desc_data_verification_term)
+        return PmActiveTermUiModel.Kyc(
+            title = title,
+            descriptionHtml = description,
+            resDrawableIcon = resDrawableIcon,
+            clickableText = null,
+            appLinkOrUrl = null,
+            isChecked = isChecked
         )
     }
 
@@ -35,10 +54,7 @@ object PMActiveTermHelper {
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         val isEligibleShopScore =
             (isPmProSelected && shopInfo.isEligibleShopScorePmPro()) || (!isPmProSelected && shopInfo.isEligibleShopScore())
-        val (shopScoreResIcon, isChecked) = getResDrawableIcon(
-            shopInfo,
-            isEligibleShopScore
-        )
+        val (shopScoreResIcon, isChecked) = getTermIcon(isEligibleShopScore)
 
         val title: String
         val description: String
@@ -88,10 +104,7 @@ object PMActiveTermHelper {
         val isEligibleOrder = shopInfo.itemSoldOneMonth >= shopInfo.itemSoldPmProThreshold
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
 
-        val (resDrawableIcon, isChecked) = getResDrawableIcon(
-            shopInfo,
-            isEligibleOrder
-        )
+        val (resDrawableIcon, isChecked) = getTermIcon(isEligibleOrder)
 
         val title: String
         val description: String
@@ -116,10 +129,7 @@ object PMActiveTermHelper {
     ): PmActiveTermUiModel.NetItemValue {
         val isEligible = shopInfo.netItemValueOneMonth >= shopInfo.netItemValuePmProThreshold
 
-        val (resDrawableIcon, isChecked) = getResDrawableIcon(
-            shopInfo,
-            isEligible
-        )
+        val (resDrawableIcon, isChecked) = getTermIcon(isEligible)
 
         val title: String
         val description: String
@@ -251,11 +261,11 @@ object PMActiveTermHelper {
                 description = context.getString(
                     R.string.pm_pro_general_benefit_2
                 ),
-                icon = IconUnify.PROMO_ADS
+                imgUrl = PMConstant.Images.PM_SHOP_PROMO_ICON
             ),
             PMProBenefitUiModel(
                 description = context.getString(R.string.pm_pro_general_benefit_3),
-                icon = IconUnify.PROMO
+                imgUrl = PMConstant.Images.PM_SEARCH_DISCOVERY_ICON
             )
         )
     }

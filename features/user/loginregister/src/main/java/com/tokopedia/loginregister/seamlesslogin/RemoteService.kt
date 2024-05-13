@@ -7,10 +7,13 @@ import android.os.IBinder
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.RemoteApi
+import com.tokopedia.loginregister.common.SeamlessSellerConstant
 import com.tokopedia.loginregister.seamlesslogin.di.DaggerSeamlessLoginComponent
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginComponent
 import com.tokopedia.loginregister.seamlesslogin.ui.SeamlessLoginViewModel
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
+import com.tokopedia.utils.appsignature.AppSignatureUtil
 import javax.inject.Inject
 
 /**
@@ -22,18 +25,8 @@ import javax.inject.Inject
 class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
 
     companion object {
-        const val KEY_NAME = "name"
-        const val KEY_EMAIL = "email"
-        const val KEY_SHOP_AVATAR = "shop_avatar"
-        const val KEY_SHOP_NAME = "shop_name"
-        const val KEY_PHONE = "phone_no"
-        const val KEY_ERROR = "error"
-
-        const val KEYNAME = "key"
-
         const val MSG_NOT_LOGIN = "not logged in"
-
-        const val PACKAGE_SELLERAPP = "com.tokopedia.sellerapp"
+        const val MSG_NOT_VALID_APP = "not valid request"
     }
 
     override fun onCreate() {
@@ -56,9 +49,20 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
     private fun broadCastResult(data: Bundle, taskId: String) {
         try {
             val intent = Intent().apply {
-                `package` = PACKAGE_SELLERAPP
+                `package` = SeamlessSellerConstant.SELLERAPP_PACKAGE
                 action = taskId
-                putExtras(data)
+            }
+            if (isMatchedSignatureAppWithTokopedia() && isMatchedMinVersionSellerApp()) {
+                intent.apply {
+                    putExtras(data)
+                }
+            } else {
+                val bundle = Bundle().apply {
+                    putString(SeamlessSellerConstant.KEY_ERROR, MSG_NOT_VALID_APP)
+                }
+                intent.apply {
+                    putExtras(bundle)
+                }
             }
             sendBroadcast(intent)
         } catch (ignored: Exception) {
@@ -70,16 +74,36 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
             val data = Bundle()
             viewModel.getKey({
                 data.apply {
-                    putString(KEYNAME, it.key)
+                    if (it.error.isEmpty()) {
+                        putString(SeamlessSellerConstant.KEY_TOKEN, it.key)
+                    } else {
+                        putString(SeamlessSellerConstant.KEY_ERROR, it.error)
+                    }
                 }
                 broadCastResult(data, taskId = this@run)
             }, {
                 data.apply {
-                    putString(KEY_ERROR, it.cause?.message)
+                    putString(SeamlessSellerConstant.KEY_ERROR, it.cause?.message)
                 }
                 broadCastResult(data, taskId = this)
             })
         }
+    }
+
+    private fun isMatchedMinVersionSellerApp(): Boolean {
+        return AppSignatureUtil.getVersionCodeOtherApp(
+            applicationContext,
+            SeamlessSellerConstant.SELLERAPP_PACKAGE
+        ) >= AppSignatureUtil.MIN_VERSION_SELLER_APP
+    }
+
+    private fun isMatchedSignatureAppWithTokopedia(): Boolean {
+        return AppSignatureUtil.isSignatureMatch(
+            AppSignatureUtil.getAppSignature(
+                applicationContext,
+                SeamlessSellerConstant.SELLERAPP_PACKAGE
+            ), AppSignatureUtil.TOKO_APP_SIGNATURE
+        )
     }
 
     fun getUserData(taskId: String?) {
@@ -87,19 +111,28 @@ class RemoteService : Service(), HasComponent<SeamlessLoginComponent> {
             val data = Bundle()
             if (userSession.isLoggedIn) {
                 data.apply {
-                    putString(KEY_NAME, userSession.name)
-                    putString(KEY_EMAIL, userSession.email)
-                    putString(KEY_SHOP_AVATAR, userSession.shopAvatar)
-                    putString(KEY_SHOP_NAME, userSession.shopName)
-                    putString(KEY_PHONE, userSession.phoneNumber)
+                    putString(SeamlessSellerConstant.KEY_NAME, encryptData(userSession.name))
+                    putString(SeamlessSellerConstant.KEY_EMAIL, encryptData(userSession.email))
+                    putString(
+                        SeamlessSellerConstant.KEY_SHOP_AVATAR,
+                        encryptData(userSession.shopAvatar)
+                    )
+                    putString(
+                        SeamlessSellerConstant.KEY_SHOP_NAME,
+                        encryptData(userSession.shopName)
+                    )
                 }
             } else {
                 data.apply {
-                    putString(KEY_ERROR, MSG_NOT_LOGIN)
+                    putString(SeamlessSellerConstant.KEY_ERROR, MSG_NOT_LOGIN)
                 }
             }
             broadCastResult(data, taskId = this)
         }
+    }
+
+    private fun encryptData(data: String): String {
+        return EncoderDecoder.Encrypt(data, SeamlessSellerConstant.IV_KEY_SEAMLESS_SELLER)
     }
 
     private val binder = object : RemoteApi.Stub() {

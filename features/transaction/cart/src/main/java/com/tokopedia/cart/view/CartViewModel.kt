@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -31,6 +34,7 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.mapper.CartShopGroupTickerGroupMetadataRequestMapper
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.processor.CartCalculator
@@ -130,10 +134,11 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -162,7 +167,6 @@ class CartViewModel @Inject constructor(
     private val deleteCartUseCase: DeleteCartUseCase,
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
-    private val compositeSubscription: CompositeSubscription,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
@@ -180,7 +184,6 @@ class CartViewModel @Inject constructor(
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
     private val cartPromoEntryPointProcessor: CartPromoEntryPointProcessor,
     private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
-    private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel(), CoroutineScope {
 
@@ -521,7 +524,8 @@ class CartViewModel @Inject constructor(
         cartId: String,
         initialLoad: Boolean,
         isLoadingTypeRefresh: Boolean,
-        getCartState: Int = GET_CART_STATE_DEFAULT
+        getCartState: Int = GET_CART_STATE_DEFAULT,
+        isCartChangeVariant: Boolean = false,
     ) {
         updateBuyAgainFloatingButtonVisibility(false)
         CartIdlingResource.increment()
@@ -533,13 +537,21 @@ class CartViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val cartData = getCartRevampV4UseCase(
-                    GetCartParam(
-                        cartId = cartId,
-                        state = getCartState,
-                        isCartReimagine = true
-                    )
+                val requestToaster = when {
+                    isCartChangeVariant -> {
+                        GetCartRevampV4UseCase.PARAM_VALUE_TOASTER_CART_VARIANT
+                    }
+                    else -> {
+                        GetCartRevampV4UseCase.PARAM_VALUE_TOASTER_DEFAULT
+                    }
+                }
+                val param = GetCartParam(
+                    cartId = cartId,
+                    state = getCartState,
+                    isCartReimagine = true,
+                    requestToaster = requestToaster
                 )
+                val cartData = getCartRevampV4UseCase(param)
                 onSuccessGetCartList(cartData, initialLoad)
             } catch (t: Throwable) {
                 onErrorGetCartList(t, initialLoad)
@@ -692,6 +704,7 @@ class CartViewModel @Inject constructor(
 
         _subTotalState.value = SubTotalState(
             subtotalCashback,
+            subtotalBeforeSlashedPrice,
             totalItemQty.toString(),
             finalSubtotal,
             dataList.isEmpty()
@@ -1639,6 +1652,13 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    fun sendAtcButtonTracker() {
+        val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
+            cartDataList.value, subTotalState.value
+        )
+        AppLogPdp.sendCartButtonClick(buttonClickTracker)
+    }
+
     fun processAddToCart(productModel: Any) {
         _cartProgressLoading.value = true
 
@@ -2410,7 +2430,8 @@ class CartViewModel @Inject constructor(
                         .build(),
                     enableBoAffordability = cartGroupHolderData.cartShopGroupTicker.enableBoAffordability,
                     enableBundleCrossSell = cartGroupHolderData.cartShopGroupTicker.enableBundleCrossSell,
-                    isTokoNow = cartGroupHolderData.isTokoNow
+                    isTokoNow = cartGroupHolderData.isTokoNow,
+                    groupMetadata = CartShopGroupTickerGroupMetadataRequestMapper.generateGroupMetadata(cartGroupHolderData)
                 )
                 val response = cartShopGroupTickerAggregatorUseCase(cartAggregatorParam)
                     .cartShopGroupTickerAggregator.data

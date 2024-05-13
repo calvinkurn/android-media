@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.discoveryext.UIWidgetUninitializedException
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 
 abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -21,14 +22,28 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
     lateinit var uiWidgetComponent: UIWidgetComponent
 
-    fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel, parentViewHolder: AbstractViewHolder?) {
+    fun bindView(
+        discoveryBaseViewModel: DiscoveryBaseViewModel,
+        parentViewHolder: AbstractViewHolder?
+    ) {
         this.parentAbstractViewHolder = parentViewHolder
         if (::uiWidgetComponent.isInitialized) {
-            if (this.discoveryBaseViewModel != null) {
-                if (this.discoveryBaseViewModel != discoveryBaseViewModel) {
-                    removeObservers(lifecycleOwner)
-                    this.discoveryBaseViewModel?.onDetachToViewHolder()
-                    lifecycleOwner?.lifecycle?.removeObserver(this.discoveryBaseViewModel!!)
+            val prevViewModel = this.discoveryBaseViewModel
+            if (prevViewModel != null) {
+                if (prevViewModel != discoveryBaseViewModel) {
+                    var needToRemoveObserver = false
+                    if (prevViewModel is MasterProductCardItemViewModel) {
+                        if (prevViewModel.detachedBindingAdapterPosition != -1) {
+                            needToRemoveObserver = true
+                        }
+                    } else {
+                        needToRemoveObserver = true
+                    }
+                    if (needToRemoveObserver) {
+                        removeObservers(lifecycleOwner)
+                        prevViewModel.onDetachToViewHolder()
+                        lifecycleOwner?.lifecycle?.removeObserver(prevViewModel)
+                    }
                     this.discoveryBaseViewModel = discoveryBaseViewModel
                 }
             } else {
@@ -59,6 +74,9 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     }
 
     open fun onViewDetachedToWindow() {
-
+        val dbvm = discoveryBaseViewModel
+        if (dbvm is MasterProductCardItemViewModel) {
+            dbvm.detachedBindingAdapterPosition = bindingAdapterPosition
+        }
     }
 }

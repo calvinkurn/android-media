@@ -106,6 +106,7 @@ open class ShareExChannelMapper @Inject constructor(
         return channelList.map { channelItem ->
             responseItemMap[channelItem.channelEnum.id]?.let { responseItem ->
                 channelItem.copy(
+                    title = responseItem.title,
                     platform = responseItem.platform,
                     imageResolution = responseItem.imageResolution
                 )
@@ -113,7 +114,7 @@ open class ShareExChannelMapper @Inject constructor(
         }
     }
 
-    open fun generateSocialMediaChannel(isDefault: Boolean = false): ShareExChannelModel {
+    open fun generateSocialMediaChannel(excludeImageShare: Boolean = false): ShareExChannelModel {
         var socialMediaChannelList = generateSocialMediaChannelList()
         val orderingArray = getSocialMediaOrderingArray()
         socialMediaChannelList = socialMediaChannelList.sortedWith(
@@ -135,7 +136,7 @@ open class ShareExChannelMapper @Inject constructor(
                 )
             )
         }
-        if (isDefault) {
+        if (excludeImageShare) {
             socialMediaChannelList = socialMediaChannelList.filter {
                 it.mimeType != ShareExMimeTypeEnum.IMAGE
             }

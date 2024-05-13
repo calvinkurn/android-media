@@ -36,6 +36,7 @@
 
     <string name="access_token">Access Token</string>
     <string name="pdp_dev">Product Detail Dev</string>
+    <string name="mssdk_dev">MsSdk Dev</string>
     <string name="shop_page_dev">Shop Page Dev</string>
     <string name="app_auth_secret">App Auth Secret (IT Risk)</string>
     <string name="skip_onboarding_user_session">Set False OnBoarding User Session</string>
@@ -145,4 +146,5 @@
     <string name="banner_environment">Enable Banner Environment</string>
 
     <string name="copy_id">Copied Id %s</string>
+    <string name="text_login_by_lark">Authorize by Lark</string>
 </resources>

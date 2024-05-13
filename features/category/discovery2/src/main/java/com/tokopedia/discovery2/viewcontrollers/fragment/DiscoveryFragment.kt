@@ -28,9 +28,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -38,9 +38,14 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -63,6 +68,7 @@ import com.tokopedia.discovery2.analytics.CLICK_SCREENSHOT_SHARE_CHANNEL
 import com.tokopedia.discovery2.analytics.CLICK_SHARE_CHANNEL
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.analytics.EVENT_CLICK_DISCOVERY
+import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.analytics.SHARE
 import com.tokopedia.discovery2.analytics.UNIFY_CLICK_SHARE
 import com.tokopedia.discovery2.analytics.UNIFY_CLOSE_SCREENSHOT_SHARE
@@ -81,6 +87,7 @@ import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.discoveryPageData
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.di.DiscoveryComponent
@@ -119,6 +126,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sect
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -152,9 +161,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.mvcwidget.views.MvcView
-import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
@@ -219,7 +225,8 @@ open class DiscoveryFragment :
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
-    MiniCartWidgetListener {
+    MiniCartWidgetListener,
+    AppLogInterface {
 
     private var bmGmDataParam: BmGmDataParam? = null
     private var recyclerViewPaddingResetNeeded: Boolean = false
@@ -281,13 +288,15 @@ open class DiscoveryFragment :
     private var pinnedAlreadyScrolled = false
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var userAddressData: LocalCacheModel? = null
-    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private var gridLayoutManager: GridLayoutManager? = null
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
-    var currentTabPosition: Int? = null
+
+    // current index of navigation tab in the page.
+    private var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
         private set
     private var isFromForcedNavigation = false
@@ -296,6 +305,8 @@ open class DiscoveryFragment :
     private var stickyHeaderShowing = false
     private var hasColouredStatusBar: Boolean = false
     private var isLightThemeStatusBar: Boolean? = null
+
+    private var hasTrackEnterPage = false
 
     companion object {
         private const val FIRST_POSITION = 0
@@ -345,6 +356,10 @@ open class DiscoveryFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // WORKAROUND for gtm tab name
+        CURRENT_TAB_NAME = ""
+        CURRENT_TAB_INDEX = 0
+
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
@@ -580,11 +595,14 @@ open class DiscoveryFragment :
                 navToolbar.setupToolbarWithStatusBar(it)
             }
         }
+
+        recyclerView.trackVerticalScroll()
     }
 
     private fun enableRefreshWhenFirstItemCompletelyVisible() {
         if (mSwipeRefreshLayout?.isRefreshing == false) {
-            val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
+            val firstPosition: Int =
+                gridLayoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
             mSwipeRefreshLayout?.isEnabled = firstPosition == FIRST_POSITION
         }
     }
@@ -639,30 +657,29 @@ open class DiscoveryFragment :
 
     private fun updateLastVisibleComponent() {
         if (lastVisibleComponent != null && (
-            lastVisibleComponent?.name ==
-                ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
-                ComponentsList.ProductCardSprintSale.componentName
-            )
+                lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName
+                )
         ) {
             return
         }
-        staggeredGridLayoutManager?.findLastVisibleItemPositions(null)?.let { positionArray ->
-            if (positionArray.isNotEmpty() && positionArray.first() >= 0) {
-                if (discoveryAdapter.currentList.size <= positionArray.first()) return
-                lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
+        gridLayoutManager?.findLastVisibleItemPosition()?.let { positionArray ->
+            if (positionArray >= 0) {
+                if (discoveryAdapter.currentList.size <= positionArray) return
+                lastVisibleComponent = discoveryAdapter.currentList[positionArray]
 
                 if (lastVisibleComponent != null && (
-                    lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardSprintSaleItem.componentName ||
-                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
-                    )
-                ) {
-                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
-                        .getComponent(
-                            lastVisibleComponent!!.parentComponentId,
-                            lastVisibleComponent!!.pageEndPoint
+                        lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
                         )
+                ) {
+                    lastVisibleComponent = getComponent(
+                        lastVisibleComponent!!.parentComponentId,
+                        lastVisibleComponent!!.pageEndPoint
+                    )
                 }
             }
         }
@@ -697,79 +714,52 @@ open class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
-            staggeredGridLayoutManager = getLayoutManager()
-            setLayoutManager(staggeredGridLayoutManager!!)
+            gridLayoutManager = GridLayoutManager(requireContext(), 2)
+            renderSpanSize()
+            gridLayoutManager?.let {
+                setLayoutManager(it)
+            }
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
         }
     }
 
-    private fun getLayoutManager(): StaggeredGridLayoutManager {
-        return object : StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
-            override fun supportsPredictiveItemAnimations(): Boolean {
-                return false
-            }
+    private fun renderSpanSize() {
+        gridLayoutManager?.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                if (position >= 0 && position < discoveryAdapter.componentList.size) {
+                    val component = discoveryAdapter.componentList.getOrNull(position)
+                    val template = component?.properties?.template
+                    val name = component?.name
+                    return when (name) {
+                        ComponentNames.CalendarWidgetItem.componentName,
+                        ComponentNames.ShimmerCalendarWidget.componentName,
+                        ComponentNames.BannerInfiniteItem.componentName,
+                        ComponentNames.ShopCardItemView.componentName,
+                        ComponentNames.ContentCardItem.componentName,
+                        ComponentNames.ContentCardEmptyState.componentName -> 1
 
-            override fun onLayoutChildren(
-                recycler: RecyclerView.Recycler?,
-                state: RecyclerView.State?
-            ) {
-                try {
-                    super.onLayoutChildren(recycler, state)
-                } catch (e: Exception) {
-                    Utils.logException(e)
-                }
-            }
+                        ComponentNames.ProductCardRevampItem.componentName,
+                        ComponentNames.MasterProductCardItemList.componentName,
+                        ComponentNames.MasterProductCardItemReimagine.componentName,
+                        ComponentNames.MasterProductCardItemListReimagine.componentName,
+                        ComponentNames.ProductCardCarouselItem.componentName,
+                        ComponentNames.ProductCardCarouselItemList.componentName,
+                        ComponentNames.ProductCardCarouselItemReimagine.componentName,
+                        ComponentNames.ProductCardCarouselItemListReimagine.componentName,
+                        ComponentNames.ProductCardSprintSaleItem.componentName,
+                        ComponentNames.ProductCardSprintSaleItemReimagine.componentName,
+                        ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+                        ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
+                        ComponentNames.ProductCardSingleItem.componentName,
+                        ComponentNames.ProductCardSingleItemReimagine.componentName,
+                        ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                        ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
 
-            override fun onItemsUpdated(
-                recyclerView: RecyclerView,
-                positionStart: Int,
-                itemCount: Int,
-                payload: Any?
-            ) {
-                try {
-                    super.onItemsUpdated(recyclerView, positionStart, itemCount, payload)
-                } catch (e: Exception) {
-                    Utils.logException(e)
-                }
-            }
-
-            override fun onItemsAdded(
-                recyclerView: RecyclerView,
-                positionStart: Int,
-                itemCount: Int
-            ) {
-                try {
-                    super.onItemsAdded(recyclerView, positionStart, itemCount)
-                } catch (e: Exception) {
-                    Utils.logException(e)
-                }
-            }
-
-            override fun onItemsRemoved(
-                recyclerView: RecyclerView,
-                positionStart: Int,
-                itemCount: Int
-            ) {
-                try {
-                    super.onItemsRemoved(recyclerView, positionStart, itemCount)
-                } catch (e: Exception) {
-                    Utils.logException(e)
-                }
-            }
-
-            override fun onItemsMoved(
-                recyclerView: RecyclerView,
-                from: Int,
-                to: Int,
-                itemCount: Int
-            ) {
-                try {
-                    super.onItemsMoved(recyclerView, from, to, itemCount)
-                } catch (e: Exception) {
-                    Utils.logException(e)
-                }
+                        else -> 2
+                    }
+                } else return 0
             }
         }
     }
@@ -785,6 +775,7 @@ open class DiscoveryFragment :
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout?.isRefreshing == true) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
+                        trackEnterPage()
                         if (listComponent.isEmpty()) {
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
@@ -830,6 +821,7 @@ open class DiscoveryFragment :
             when (it) {
                 is Success -> {
                     pageInfoHolder = it.data
+                    trackEnterPage()
                     setToolBarPageInfoOnSuccess(it.data)
                     addMiniCartToPageFirstTime()
                     setupAffiliate()
@@ -1034,16 +1026,25 @@ open class DiscoveryFragment :
                 }
         }
 
-        discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) { config ->
-            if (config.color.isNotEmpty() || config.isExtendedLayout) {
-                hasColouredStatusBar = true
-                requestStatusBarLight()
-                setupNavToolbarWithStatusBar()
-                setupExtendedLayout(config)
-                setupBackgroundColorForHeader(config)
-                setupNavScrollListener()
+        discoveryViewModel.getDiscoveryNavToolbarConfigLiveData()
+            .observe(viewLifecycleOwner) { config ->
+                if (config.color.isNotEmpty() || config.isExtendedLayout) {
+                    hasColouredStatusBar = true
+                    requestStatusBarLight()
+                    setupNavToolbarWithStatusBar()
+                    setupExtendedLayout(config)
+                    setupBackgroundColorForHeader(config)
+                    setupNavScrollListener()
+                }
             }
-        }
+    }
+
+    private fun trackEnterPage() {
+        if (hasTrackEnterPage || getPageName().isEmpty()) return
+        pageInfoHolder?.let { AppLogAnalytics.putPageData(PAGE_NAME, it.label.trackingPagename) }
+            ?: return
+        AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun addMarginInRuntime(data: List<ComponentsItem>) {
@@ -1060,9 +1061,13 @@ open class DiscoveryFragment :
                     if (componentsToExclude.contains(data.getOrNull(index + 1)?.name ?: "")) {
                         tabsViewModel?.shouldAddSpace(false)
                     } else if (data.getOrNull(index + 1)?.name == ComponentsList.Section.componentName) {
-                        val latestComponent = data.getOrNull(index + 1)?.getComponentsItem()?.getOrNull(0)?.name
-                            ?: return@let
-                        if (latestComponent == ComponentsList.LihatSemua.componentName || componentsToExclude.contains(latestComponent)) {
+                        val latestComponent =
+                            data.getOrNull(index + 1)?.getComponentsItem()?.getOrNull(0)?.name
+                                ?: return@let
+                        if (latestComponent == ComponentsList.LihatSemua.componentName || componentsToExclude.contains(
+                                latestComponent
+                            )
+                        ) {
                             tabsViewModel?.shouldAddSpace(false)
                         } else {
                             tabsViewModel?.shouldAddSpace(true)
@@ -1654,41 +1659,37 @@ open class DiscoveryFragment :
 
     private fun removePaddingIfComponent() {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    var pos = Int.MIN_VALUE
-                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                        if (componentsItem.name == ComponentsList.Tabs.componentName) {
-                            pos = index
-                        }
-                        if (index == pos + 1) {
-                            val i = pos + 1
-                            val firstVisibleItemPositions =
-                                staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
-                            val lastVisibleItemPositions =
-                                staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                var pos = Int.MIN_VALUE
+                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                        pos = index
+                    }
+                    if (index == pos + 1) {
+                        val i = pos + 1
+                        val firstVisibleItemPositions =
+                            gridLayoutManager?.findFirstVisibleItemPosition()
+                        val lastVisibleItemPositions =
+                            gridLayoutManager?.findLastVisibleItemPosition()
 
-                            if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
-                                val firstVisibleItemPosition =
-                                    firstVisibleItemPositions.minOrNull() ?: -1
-                                val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
-
-                                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
-                                    if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                                        recyclerView.setPaddingToInnerRV(
-                                            0,
-                                            recyclerView.dpToPx(0).toInt(),
-                                            0,
-                                            0
-                                        )
-                                    }
+                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                            if (firstVisibleItemPositions != RecyclerView.NO_POSITION && lastVisibleItemPositions != RecyclerView.NO_POSITION) {
+                                if (i in firstVisibleItemPositions..lastVisibleItemPositions) {
+                                    recyclerView.setPaddingToInnerRV(
+                                        0,
+                                        recyclerView.dpToPx(0).toInt(),
+                                        0,
+                                        0
+                                    )
                                 }
                             }
                         }
                     }
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-            })
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     fun scrollToComponentWithID(componentID: String) {
@@ -1737,8 +1738,18 @@ open class DiscoveryFragment :
         refreshPage()
     }
 
+    // workaround to store singleton value into fragment
+    // to retain the value when the fragment is paused/resumed
+    private var currentTabName = ""
+    private var currentTabIndex = 0
+
     override fun onPause() {
         super.onPause()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        currentTabName = CURRENT_TAB_NAME
+        currentTabIndex = CURRENT_TAB_INDEX
+
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
@@ -1760,7 +1771,14 @@ open class DiscoveryFragment :
 
     private fun checkTabPositionBeforeRefresh() {
         if (!isFromCategory && currentTabPosition != null) {
-            this.arguments?.putString(ACTIVE_TAB, (currentTabPosition).toString())
+            this.arguments?.putString(
+                QUERY_PARENT,
+                Utils.upsertQueryParam(
+                    this.arguments?.getString(QUERY_PARENT) ?: "",
+                    ACTIVE_TAB,
+                    (currentTabPosition).toString()
+                )
+            )
         }
     }
 
@@ -1787,28 +1805,6 @@ open class DiscoveryFragment :
         this.componentPosition = componentPosition
         val intent = RouteManager.getIntent(requireContext(), appLink)
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
-    }
-
-    fun startMVCTransparentActivity(
-        componentPosition: Int = -1,
-        shopId: String,
-        productId: String,
-        hashCodeForMVC: Int
-    ) {
-        this.componentPosition = componentPosition
-        context?.let {
-            startActivityForResult(
-                TransParentActivity.getIntent(
-                    it,
-                    shopId,
-                    MvcSource.DISCO,
-                    ApplinkConst.SHOP.replace("{shop_id}", shopId),
-                    hashCode = hashCodeForMVC,
-                    productId = productId
-                ),
-                MvcView.REQUEST_CODE
-            )
-        }
     }
 
     fun refreshCarouselData(componentPosition: Int = -1) {
@@ -2051,6 +2047,11 @@ open class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        CURRENT_TAB_NAME = currentTabName
+        CURRENT_TAB_INDEX = currentTabIndex
+
         discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner) {
             if (!openScreenStatus) {
                 when (it) {
@@ -2446,17 +2447,18 @@ open class DiscoveryFragment :
          */
         val warehouseTco = requestingComponent?.properties?.warehouseTco
         val offerId = requestingComponent?.properties?.header?.offerId
-        bmGmDataParam = if (warehouseTco != null && warehouseTco.isNotBlankOrZero() || offerId != null && offerId.isNotBlankOrZero()) {
-            BmGmDataParam(
-                shopId = requestingComponent.data?.firstOrNull()?.shopId.orEmpty(),
-                warehouseTco = warehouseTco.orEmpty(),
-                offerId = offerId.orEmpty(),
+        bmGmDataParam =
+            if (warehouseTco != null && warehouseTco.isNotBlankOrZero() || offerId != null && offerId.isNotBlankOrZero()) {
+                BmGmDataParam(
+                    shopId = requestingComponent.data?.firstOrNull()?.shopId.orEmpty(),
+                    warehouseTco = warehouseTco.orEmpty(),
+                    offerId = offerId.orEmpty(),
 
-                parentPosition = parentPosition
-            )
-        } else {
-            null
-        }
+                    parentPosition = parentPosition
+                )
+            } else {
+                null
+            }
     }
 
     fun scrollToSection(sectionID: String) {
@@ -2489,7 +2491,7 @@ open class DiscoveryFragment :
                 }
             smoothScroller.targetPosition = position
             if (this.isResumed) {
-                staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+                gridLayoutManager?.startSmoothScroll(smoothScroller)
             }
         } catch (e: Exception) {
         }
@@ -2659,34 +2661,51 @@ open class DiscoveryFragment :
         }
         pinnedAlreadyScrolled = false
         if (activeTab != null) {
-            this.arguments?.putString(FORCED_NAVIGATION, "true")
-            if (componentId != null) {
+            this.arguments?.apply {
+                putString(FORCED_NAVIGATION, "true")
+                putString(QUERY_PARENT, queryParams)
+            }
+
+            componentId?.let {
                 this.arguments?.putString(COMPONENT_ID, componentId.toString())
                 isFromForcedNavigation = true
             }
-            discoveryViewModel.getDiscoveryData(
-                discoveryViewModel.getQueryParameterMapFromBundle(
-                    arguments
-                ),
-                userAddressData,
-                true
-            )
+
+            discoveryAdapter.getFirstViewModel(TabsViewModel::class.java)?.let { viewModel ->
+                if (viewModel is TabsViewModel) {
+                    viewModel.selectTab(activeTab)
+                }
+            }
         } else if (componentId != null) {
             scrollToPinnedComponent(discoveryAdapter.currentList, componentId.toString())
         }
     }
 
     fun setTabPosition(tabPosition: Int) {
-        discoveryAdapter.getFirstViewModel(ThematicHeaderViewModel::class.java)?.let { discoveryBaseViewModel ->
-            if (discoveryBaseViewModel is ThematicHeaderViewModel) {
-                discoveryBaseViewModel.switchThematicHeaderData(tabPosition)
+        discoveryAdapter.getFirstViewModel(ThematicHeaderViewModel::class.java)
+            ?.let { discoveryBaseViewModel ->
+                if (discoveryBaseViewModel is ThematicHeaderViewModel) {
+                    discoveryBaseViewModel.switchThematicHeaderData(tabPosition)
+                }
             }
-        }
     }
 
     fun setupBackgroundColorForHeader(color: String?) {
         if (!color.isNullOrEmpty()) {
             setupHexBackgroundColor(color)
         }
+    }
+
+    override fun getPageName(): String {
+        return pageInfoHolder?.label?.trackingPagename.orEmpty()
+    }
+
+    fun setCurrentTabPosition(tabPosition: Int) {
+        currentTabPosition = tabPosition
+        val tabPositionString = tabPosition.toString()
+        discoComponentQuery?.let {
+            it[ACTIVE_TAB] = tabPositionString
+        }
+        arguments?.putString(ACTIVE_TAB, tabPositionString)
     }
 }

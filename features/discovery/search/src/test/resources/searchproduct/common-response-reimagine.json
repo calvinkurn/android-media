@@ -9,7 +9,8 @@
       "meta": {
         "productListType": "var_reposition",
         "hasPostProcessing": false,
-        "hasButtonATC": false
+        "hasButtonATC": false,
+        "dynamicFields": "{\"request_id\":\"2024022311434562EE2EAD086BC91E\",\"search_id\":\"202402231143456376B0786E58E47C\"}"
       },
       "isQuerySafe": true,
       "additionalParams": "",

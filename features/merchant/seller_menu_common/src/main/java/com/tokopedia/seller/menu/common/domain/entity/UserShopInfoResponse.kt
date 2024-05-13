@@ -41,27 +41,29 @@ data class UserShopInfoResponse(
             val result: List<Result> = listOf()
     ) {
         data class Result(
-                @Expose
-                @SerializedName("goldOS")
-                val goldOS: GoldOS = GoldOS(),
-                @Expose
-                @SerializedName("shopSnippetURL")
-                val shopSnippetUrl: String = "",
-                @Expose
-                @SerializedName("location")
-                val location: String = "",
-                @Expose
-                @SerializedName("branchLinkDomain")
-                val branchLinkDomain: String = "",
-                @Expose
-                @SerializedName("shopCore")
-                val shopCore: ShopCore = ShopCore(),
-                @Expose
-                @SerializedName("statsByDate")
-                val statsByDate: List<StatsByDate> = listOf(),
-                @Expose
-                @SerializedName("statusInfo")
-                val statusInfo: StatusInfo = StatusInfo()
+            @Expose
+            @SerializedName("goldOS")
+            val goldOS: GoldOS = GoldOS(),
+            @Expose
+            @SerializedName("shopSnippetURL")
+            val shopSnippetUrl: String = "",
+            @Expose
+            @SerializedName("location")
+            val location: String = "",
+            @Expose
+            @SerializedName("branchLinkDomain")
+            val branchLinkDomain: String = "",
+            @Expose
+            @SerializedName("shopCore")
+            val shopCore: ShopCore = ShopCore(),
+            @Expose
+            @SerializedName("statsByDate")
+            val statsByDate: List<StatsByDate> = listOf(),
+            @Expose
+            @SerializedName("statusInfo")
+            val statusInfo: StatusInfo = StatusInfo(),
+            @SerializedName("isKyc")
+            val kycStatus: Int = 1
         ) {
             data class GoldOS(
                     @Expose

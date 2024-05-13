@@ -6,19 +6,22 @@ import android.app.Dialog
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.gson.Gson
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.component.ShareExComponentFactoryProvider
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingOverlayBinding
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDefaultBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
-import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExOthersBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExReviewBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,13 +32,15 @@ import javax.inject.Inject
 @SuppressLint("UnifyComponentUsage")
 class ShareExLoadingDialog(
     context: Context,
-    private val id: String,
-    private val pageTypeEnum: ShareExPageTypeEnum,
+    private val arg: ShareExBottomSheetArg,
     private val onResult: (ShareExResult<ShareExBottomSheetModel>) -> Unit
 ) : Dialog(context, R.style.CustomDialogTheme) {
 
     private val weakContext = WeakReference(context)
     private var _binding: ShareexperienceLoadingOverlayBinding? = null
+    private val gson by lazy {
+        Gson()
+    }
 
     @Inject
     lateinit var useCase: ShareExGetSharePropertiesUseCase
@@ -98,30 +103,37 @@ class ShareExLoadingDialog(
     }
 
     private fun getRequest(): ShareExBottomSheetRequest {
-        return when (pageTypeEnum) {
+        return when (arg.pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
                 ShareExProductBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                    pageType = arg.pageTypeEnum.valueInt,
+                    productId = arg.productId
                 )
             }
             ShareExPageTypeEnum.SHOP -> {
                 ShareExShopBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                    pageType = arg.pageTypeEnum.valueInt,
+                    shopId = arg.shopId
                 )
             }
             ShareExPageTypeEnum.DISCOVERY -> {
                 ShareExDiscoveryBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                    pageType = arg.pageTypeEnum.valueInt,
+                    campaignId = arg.campaignId
+                )
+            }
+            ShareExPageTypeEnum.REVIEW -> {
+                ShareExReviewBottomSheetRequest(
+                    pageType = arg.pageTypeEnum.valueInt,
+                    reviewId = arg.reviewId,
+                    attachmentId = arg.attachmentId
                 )
             }
             else -> {
-                // Default Others
-                ShareExOthersBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                // Default params, if all BU specific data only need to be passed through metadata
+                ShareExDefaultBottomSheetRequest(
+                    pageType = arg.pageTypeEnum.valueInt,
+                    metadata = gson.toJson(arg.metadata)
                 )
             }
         }

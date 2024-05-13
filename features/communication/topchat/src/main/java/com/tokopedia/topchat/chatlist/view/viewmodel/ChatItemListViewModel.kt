@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
-import android.content.Context
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,21 +17,18 @@ import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueries.MUTATION_CHAT_MARK_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueries.MUTATION_CHAT_MARK_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
+import com.tokopedia.topchat.chatlist.data.util.TopChatListResourceProvider
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListParam
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.TopChatListFilterEnum
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.domain.pojo.chatlistticker.ChatListTickerResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
-import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatBlastSellerMetaDataUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
@@ -41,8 +37,11 @@ import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
+import com.tokopedia.topchat.chatlist.view.TopChatListAction
+import com.tokopedia.topchat.chatlist.view.uimodel.TopChatListFilterUiState
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.data.TopChatResult
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.Utils
@@ -53,6 +52,16 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -64,7 +73,7 @@ import javax.inject.Inject
  */
 
 interface ChatItemListContract {
-    fun getChatListMessage(page: Int, filterIndex: Int, tab: String)
+    fun getChatListMessage(page: Int, filter: TopChatListFilterEnum, tab: String)
     fun chatMoveToTrash(messageId: String)
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
@@ -94,10 +103,14 @@ class ChatItemListViewModel @Inject constructor(
     private val getChatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase,
     private val cacheManager: TopchatCacheManager,
     private val userSession: UserSessionInterface,
+    private val resourceProvider: TopChatListResourceProvider,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), ChatItemListContract {
 
-    var filter: String = PARAM_FILTER_ALL
+    private val _actionFlow =
+        MutableSharedFlow<TopChatListAction>(extraBufferCapacity = 16)
+
+    var filter: TopChatListFilterEnum = TopChatListFilterEnum.FILTER_ALL
         set(value) {
             field = value
             cancelAllUseCase()
@@ -123,8 +136,8 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
-    private val _isWhitelistTopBot = MutableLiveData<Boolean>()
-    val isWhitelistTopBot: LiveData<Boolean>
+    private val _isWhitelistTopBot = MutableStateFlow<Boolean?>(null)
+    val isWhitelistTopBot: StateFlow<Boolean?>
         get() = _isWhitelistTopBot
 
     private val _isChatAdminEligible = MutableLiveData<Result<Boolean>>()
@@ -147,9 +160,41 @@ class ChatItemListViewModel @Inject constructor(
     val isAdminHasAccess: Boolean
         get() = (_isChatAdminEligible.value as? Success)?.data == true
 
-    override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
+    private val _chatListFilterUiState = MutableStateFlow(TopChatListFilterUiState())
+    val chatListFilterUiState = _chatListFilterUiState.asStateFlow()
+
+    init {
+        setBuyerFilterData()
+    }
+
+    fun processAction(action: TopChatListAction) {
+        viewModelScope.launch {
+            _actionFlow.emit(action)
+        }
+    }
+
+    fun setupViewModelObserver() {
+        _actionFlow.process()
+    }
+
+    private fun Flow<TopChatListAction>.process() {
+        onEach {
+            when (it) {
+                is TopChatListAction.SetFilter -> {
+                    _chatListFilterUiState.update { uiState ->
+                        uiState.copy(selectedFilter = it.filter)
+                    }
+                }
+                else -> Unit
+            }
+        }
+            .flowOn(dispatcher.immediate)
+            .launchIn(viewModelScope)
+    }
+
+    override fun getChatListMessage(page: Int, filter: TopChatListFilterEnum, tab: String) {
         whenChatAdminAuthorized(tab) {
-            queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
+            queryGetChatListMessage(page, filter, tab)
         }
     }
 
@@ -165,8 +210,8 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
-    private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
-        val p = ChatListParam(page, filter, tab)
+    private fun queryGetChatListMessage(page: Int, filter: TopChatListFilterEnum, tab: String) {
+        val p = ChatListParam(page, filter.filterString, tab)
         launch {
             try {
                 val result = getChatListUseCase(p)
@@ -362,40 +407,56 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun loadTopBotWhiteList() {
-        chatWhitelistFeature.getWhiteList(
-            GetChatWhitelistFeature.PARAM_VALUE_FEATURE_TOPBOT,
-            ::onSuccessLoadWhiteList,
-            ::onErrorGetWhiteList
-        )
-    }
-
-    private fun onSuccessLoadWhiteList(chatWhitelistFeatureResponse: ChatWhitelistFeatureResponse) {
-        _isWhitelistTopBot.value = chatWhitelistFeatureResponse.chatWhitelistFeature.isWhitelist
-        if (chatWhitelistFeatureResponse.chatWhitelistFeature.isWhitelist) {
-            arrayFilterParam.add(PARAM_FILTER_TOPBOT)
-        }
-    }
-
-    private fun onErrorGetWhiteList(throwable: Throwable) {
-        throwable.printStackTrace()
-    }
-
-    fun getFilterTitles(context: Context, isTabSeller: Boolean): List<String> {
-        val filters = arrayListOf(
-            context.getString(R.string.filter_chat_all),
-            context.getString(R.string.filter_chat_unread)
-        )
-        if (isTabSeller) {
-            filters.add(context.getString(R.string.filter_chat_unreplied))
-            if (arrayFilterParam.size > SELLER_FILTER_THRESHOLD) {
-                filters.add(context.getString(R.string.filter_chat_smart_reply))
+        viewModelScope.launch {
+            try {
+                chatWhitelistFeature(GetChatWhitelistFeature.PARAM_VALUE_FEATURE_TOPBOT).collectLatest {
+                    when (it) {
+                        is TopChatResult.Success -> {
+                            _isWhitelistTopBot.value = it.data.chatWhitelistFeature.isWhitelist
+                            setSellerFilterData(it.data.chatWhitelistFeature.isWhitelist)
+                        }
+                        is TopChatResult.Error -> {
+                            _isWhitelistTopBot.value = false
+                            setSellerFilterData(false)
+                        }
+                        is TopChatResult.Loading -> Unit
+                    }
+                }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                _isWhitelistTopBot.value = false
             }
         }
-        return filters
+    }
+
+    private fun setSellerFilterData(isWhiteListed: Boolean) {
+        val listFilterSeller: MutableList<Pair<TopChatListFilterEnum, String>> = mutableListOf(
+            Pair(TopChatListFilterEnum.FILTER_ALL, resourceProvider.getStringResource(R.string.filter_chat_all)),
+            Pair(TopChatListFilterEnum.FILTER_UNREAD, resourceProvider.getStringResource(R.string.filter_chat_unread)),
+            Pair(TopChatListFilterEnum.FILTER_UNREPLIED, resourceProvider.getStringResource(R.string.filter_chat_unreplied))
+        ).apply {
+            if (isWhiteListed) {
+                add(Pair(TopChatListFilterEnum.FILTER_TOPBOT, resourceProvider.getStringResource(R.string.filter_chat_smart_reply)))
+            }
+        }
+        _chatListFilterUiState.update {
+            it.copy(filterListSeller = listFilterSeller)
+        }
+    }
+
+    private fun setBuyerFilterData() {
+        val listFilterBuyer: MutableList<Pair<TopChatListFilterEnum, String>> = mutableListOf(
+            Pair(TopChatListFilterEnum.FILTER_ALL, resourceProvider.getStringResource(R.string.filter_chat_all)),
+            Pair(TopChatListFilterEnum.FILTER_UNREAD, resourceProvider.getStringResource(R.string.filter_chat_unread)),
+            Pair(TopChatListFilterEnum.FILTER_BROADCAST, resourceProvider.getStringResource(R.string.filter_chat_broadcast))
+        )
+        _chatListFilterUiState.update {
+            it.copy(filterListBuyer = listFilterBuyer)
+        }
     }
 
     fun hasFilter(): Boolean {
-        return filter != PARAM_FILTER_ALL
+        return filter != TopChatListFilterEnum.FILTER_ALL
     }
 
     private fun cancelAllUseCase() {
@@ -455,14 +516,8 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     companion object {
-        private const val SELLER_FILTER_THRESHOLD = 3
         private const val ONE_MILLION = 1_000_000L
         const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
         const val BUBBLE_TICKER_PREF_NAME = "topchat_seller_bubble_chat_ticker"
-        var arrayFilterParam = arrayListOf(
-            PARAM_FILTER_ALL,
-            PARAM_FILTER_UNREAD,
-            PARAM_FILTER_UNREPLIED
-        )
     }
 }

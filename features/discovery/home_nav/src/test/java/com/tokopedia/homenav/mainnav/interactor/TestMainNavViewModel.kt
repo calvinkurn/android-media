@@ -3,6 +3,9 @@ package com.tokopedia.homenav.mainnav.interactor
 import android.accounts.NetworkErrorException
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
@@ -15,10 +18,15 @@ import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
@@ -27,6 +35,7 @@ import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RefreshShopBasicDataUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,6 +61,8 @@ class TestMainNavViewModel {
     private val mockGetUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
     private val mockGetPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
     private val mockGetReviewProductUseCase = mockk<GetReviewProductUseCase>()
+    private val mockAddToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
+    private val mockRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed =  true)
 
     @Before
     fun setup() {
@@ -122,7 +133,7 @@ class TestMainNavViewModel {
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
         val separator = visitableList.find {
             it is SeparatorDataModel && it.sectionId == MainNavConst.Section.HOME ||
-            it is SeparatorDataModel && it.sectionId == MainNavConst.Section.PROFILE
+                it is SeparatorDataModel && it.sectionId == MainNavConst.Section.PROFILE
         } as? SeparatorDataModel
 
         Assert.assertNull(backToHomeMenu)
@@ -270,10 +281,12 @@ class TestMainNavViewModel {
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
             .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
-        coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(
-            unreadCountComplain = mockComplainCount,
-            unreadCountInboxTicket = mockInboxCount,
-        ) }
+        coEvery { getNavNotification.executeOnBackground() }.answers {
+            NavNotificationModel(
+                unreadCountComplain = mockComplainCount,
+                unreadCountInboxTicket = mockInboxCount
+            )
+        }
 
         viewModel = createViewModel(
             clientMenuGenerator = clientMenuGenerator,
@@ -404,7 +417,7 @@ class TestMainNavViewModel {
         val accountInfoPair = Pair(adminDataResponse, null)
         val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
         val gqlRepository = mockk<GraphqlRepository>()
-        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository, CoroutineTestDispatchers))
 
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -437,7 +450,7 @@ class TestMainNavViewModel {
             )
         )
         coEvery {
-            accountAdminInfoUseCase.executeOnBackground()
+            accountAdminInfoUseCase(any())
         } returns accountInfoPair
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
@@ -750,10 +763,10 @@ class TestMainNavViewModel {
         val position = 0
         val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
         val gqlRepository = mockk<GraphqlRepository>()
-        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository, CoroutineTestDispatchers))
         val userSession = mockk<UserSessionInterface>(relaxed = true)
         coEvery {
-            accountAdminInfoUseCase.executeOnBackground()
+            accountAdminInfoUseCase(any())
         } throws MessageErrorException("")
         coEvery {
             userSession.hasShop()
@@ -892,10 +905,10 @@ class TestMainNavViewModel {
         val accountInfoPair = Pair(adminDataResponse, shopDataResponse)
         val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
         val gqlRepository = mockk<GraphqlRepository>()
-        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository, CoroutineTestDispatchers))
 
         coEvery {
-            accountAdminInfoUseCase.executeOnBackground()
+            accountAdminInfoUseCase(any())
         } returns accountInfoPair
 
         coEvery {
@@ -1017,21 +1030,26 @@ class TestMainNavViewModel {
         Assert.assertTrue(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError?.message == error.message)
     }
 
-
     @Test
     fun `given launched from home then still show separator after profile section`() {
         viewModel = createViewModel(userSession = getUserSession(true))
         viewModel.setPageSource(NavSource.HOME)
 
-        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME
-        })
-        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is SeparatorDataModel && it.sectionId == MainNavConst.Section.HOME
-        })
-        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is SeparatorDataModel && it.sectionId == MainNavConst.Section.PROFILE
-        })
+        Assert.assertNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME
+            }
+        )
+        Assert.assertNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is SeparatorDataModel && it.sectionId == MainNavConst.Section.HOME
+            }
+        )
+        Assert.assertNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is SeparatorDataModel && it.sectionId == MainNavConst.Section.PROFILE
+            }
+        )
     }
 
     @Test
@@ -1045,12 +1063,16 @@ class TestMainNavViewModel {
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel })
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
-        })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
+            }
+        )
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
+            }
+        )
     }
 
     @Test
@@ -1060,12 +1082,16 @@ class TestMainNavViewModel {
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
         Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
-        })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
+            }
+        )
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && it.showCta
+            }
+        )
     }
 
     // Transaction section
@@ -1082,9 +1108,11 @@ class TestMainNavViewModel {
 
         val transactionModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
         Assert.assertTrue(transactionModel.orderListModel.paymentList.isNotEmpty())
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
+            }
+        )
     }
 
     @Test
@@ -1100,9 +1128,11 @@ class TestMainNavViewModel {
 
         val transactionModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
         Assert.assertTrue(transactionModel.orderListModel.orderList.isNotEmpty())
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
+            }
+        )
     }
 
     @Test
@@ -1111,12 +1141,12 @@ class TestMainNavViewModel {
             NavProductOrder(),
             NavProductOrder(),
             NavProductOrder(),
-            NavProductOrder(),
+            NavProductOrder()
         )
         val mockPayments = listOf(
             NavPaymentOrder(),
             NavPaymentOrder(),
-            NavPaymentOrder(),
+            NavPaymentOrder()
         )
 
         coEvery { mockGetUohOrdersNavUseCase.executeOnBackground() } returns mockOrders
@@ -1124,7 +1154,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             userSession = getUserSession(true),
             getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = mockGetPaymentOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = mockGetPaymentOrdersNavUseCase
         )
 
         viewModel.setInitialState()
@@ -1146,7 +1176,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             userSession = getUserSession(true),
             getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = mockGetPaymentOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = mockGetPaymentOrdersNavUseCase
         )
 
         viewModel.setInitialState()
@@ -1154,9 +1184,11 @@ class TestMainNavViewModel {
 
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
+            }
+        )
     }
 
     @Test
@@ -1165,7 +1197,7 @@ class TestMainNavViewModel {
 
         viewModel = createViewModel(
             userSession = getUserSession(true),
-            getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase,
+            getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase
         )
 
         viewModel.setInitialState()
@@ -1173,9 +1205,11 @@ class TestMainNavViewModel {
 
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
+            }
+        )
     }
 
     // Review section
@@ -1193,9 +1227,11 @@ class TestMainNavViewModel {
 
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
         Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && it.showCta
+            }
+        )
     }
 
     @Test
@@ -1211,9 +1247,11 @@ class TestMainNavViewModel {
         viewModel.getMainNavData(true)
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
+            }
+        )
     }
 
     @Test
@@ -1229,9 +1267,11 @@ class TestMainNavViewModel {
         viewModel.getMainNavData(true)
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
+            }
+        )
     }
 
     @Test
@@ -1247,16 +1287,86 @@ class TestMainNavViewModel {
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == initialData
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == initialData
+            }
+        )
 
         val refreshedData = listOf(NavReviewModel("234"))
         coEvery { mockGetReviewProductUseCase.executeOnBackground() } returns refreshedData
         viewModel.refreshReviewData()
 
-        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == refreshedData
-        })
+        Assert.assertNotNull(
+            viewModel.mainNavLiveData.value?.dataList?.find {
+                it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == refreshedData
+            }
+        )
+    }
+
+    @Test
+    fun `given user add to cart success should update atcProductState pair isError false`(){
+        val addToCartDataModel = AddToCartDataModel(status = "OK", data = DataModel(success = 1))
+
+        coEvery { mockAddToCartUseCase.executeOnBackground() } returns addToCartDataModel
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            addToCartUseCase = mockAddToCartUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.addToCartProduct("", "")
+
+        val newState = viewModel.onAtcProductState.value
+        Assert.assertEquals(false, newState?.first)
+    }
+
+    @Test
+    fun `given user add to cart throwing exception should update atcProductState pair isError true`(){
+
+        coEvery { mockAddToCartUseCase.executeOnBackground() } throws  Exception("")
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            addToCartUseCase = mockAddToCartUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.addToCartProduct("", "")
+
+        val newState = viewModel.onAtcProductState.value
+        Assert.assertEquals(true, newState?.first)
+    }
+
+    @Test
+    fun `given user refreshes buy again data should call recommendation with page name buy again and update data`(){
+        val requestParamSlot = slot<GetRecommendationRequestParam>()
+        val recommendationItemList = listOf(
+            RecommendationItem(
+                productId = 1,
+            )
+        )
+        val recommendationWidgetList = listOf(
+            RecommendationWidget(
+                recommendationItemList = recommendationItemList,
+            )
+        )
+
+        coEvery { mockRecommendationUseCase.getData(capture(requestParamSlot)) } returns recommendationWidgetList
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getRecommendationUseCase = mockRecommendationUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.refreshBuyAgainData()
+
+        coVerify (exactly = 1){ mockRecommendationUseCase.getData(any()) }
+        Assert.assertEquals("buy_it_again_me", requestParamSlot.captured.pageName)
+
+        val resultData = viewModel.mainNavLiveData.value
+        assert(resultData?.dataList?.find { it is BuyAgainUiModel } != null)
     }
 }

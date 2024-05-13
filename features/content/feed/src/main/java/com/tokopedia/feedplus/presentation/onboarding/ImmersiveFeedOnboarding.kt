@@ -15,13 +15,20 @@ class ImmersiveFeedOnboarding private constructor(
     private val createContentView: View?,
     private val profileEntryPointView: View?,
     private val browseIconView: View?,
-    private val listener: Listener,
+    private val listener: Listener
 ) {
 
     private val coachMark = CoachMark2(context)
 
+    var hasCoachMark: Boolean = false
+        private set
+
     suspend fun show() {
         val coachMarkItems = buildList {
+            if (browseIconView != null) {
+                add(browseEntryPointCoachMarkItem(browseIconView))
+            }
+
             if (profileEntryPointView != null) {
                 add(profileEntryPointCoachMarkItem(profileEntryPointView))
             }
@@ -29,16 +36,14 @@ class ImmersiveFeedOnboarding private constructor(
             if (createContentView != null) {
                 add(createContentCoachMarkItem(createContentView))
             }
-
-            if (browseIconView != null) {
-                add(browseEntryPointCoachMarkItem(browseIconView))
-            }
         }
 
         if (coachMarkItems.isEmpty()) {
             listener.onFinished(isForcedDismiss = false)
             return
         }
+
+        hasCoachMark = true
 
         if (coachMarkItems.size > 1) {
             coachMark.setStepListener(object : CoachMark2.OnStepListener {
@@ -141,7 +146,7 @@ class ImmersiveFeedOnboarding private constructor(
                 createContentView = createContentView,
                 profileEntryPointView = profileEntryPointView,
                 browseIconView = browseIconView,
-                listener = listener,
+                listener = listener
             )
         }
 
@@ -156,7 +161,7 @@ class ImmersiveFeedOnboarding private constructor(
             anchorView = view,
             title = context.getString(R.string.feed_onboarding_create_content_title),
             description = context.getString(R.string.feed_onboarding_create_content_subtitle),
-            position = CoachMark2.POSITION_BOTTOM,
+            position = CoachMark2.POSITION_BOTTOM
         )
     }
 
@@ -165,7 +170,7 @@ class ImmersiveFeedOnboarding private constructor(
             anchorView = view,
             title = context.getString(R.string.feed_onboarding_profile_entry_point_title),
             description = context.getString(R.string.feed_onboarding_profile_entry_point_subtitle),
-            position = CoachMark2.POSITION_BOTTOM,
+            position = CoachMark2.POSITION_BOTTOM
         )
     }
 
@@ -174,7 +179,7 @@ class ImmersiveFeedOnboarding private constructor(
             anchorView = view,
             title = context.getString(R.string.feed_onboarding_browse_entry_point_title),
             description = context.getString(R.string.feed_onboarding_browse_entry_point_subtitle),
-            position = CoachMark2.POSITION_BOTTOM,
+            position = CoachMark2.POSITION_BOTTOM
         )
     }
 

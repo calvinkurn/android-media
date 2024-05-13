@@ -70,6 +70,7 @@ class CategoryInspirationViewModelTest {
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
         val menuResponse = ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = ""
@@ -112,15 +113,18 @@ class CategoryInspirationViewModelTest {
         val viewModel = CategoryInspirationViewModel(mockSource, mockRepo)
         val menus = modelGen.widgetMenuModel.take(2).toList()
         val menuResponsePage1 = ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = "page_2"
         )
         val menuResponsePage2 = ContentSlotModel.ChannelBlock(
+            title = "",
             channels = listOf(mockChannel2),
             config = PlayWidgetConfigUiModel.Empty,
             nextCursor = "page_3"
         )
+        val menuResponsePage3 = ContentSlotModel.NoData(nextCursor = "")
 
         backgroundScope.launch { viewModel.uiState.collect() }
 
@@ -131,6 +135,7 @@ class CategoryInspirationViewModelTest {
         } returns ContentSlotModel.TabMenus(menus = menus)
         coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("")) } returns menuResponsePage1
         coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("page_2")) } returns menuResponsePage2
+        coEvery { mockRepo.getWidgetContentSlot(menus[0].toRequest("page_3")) } returns menuResponsePage3
 
         viewModel.onAction(CategoryInspirationAction.Init)
         viewModel.onAction(CategoryInspirationAction.LoadData(menus[0]))
@@ -144,6 +149,27 @@ class CategoryInspirationViewModelTest {
                         listOf(mockChannel, mockChannel2),
                         nextCursor = menuResponsePage2.nextCursor,
                         hasNextPage = menuResponsePage2.hasNextPage,
+                        config = menuResponsePage2.config
+                    )
+                ),
+                menus[1].id to CategoryInspirationData(
+                    menus[1],
+                    FeedBrowseChannelListState.initLoading()
+                )
+            )
+        )
+
+        /** Try to load more but it return ContentSlotModel.NoData */
+        viewModel.onAction(CategoryInspirationAction.LoadMoreData)
+
+        viewModel.uiState.value.items.assertEqualTo(
+            mapOf(
+                menus[0].id to CategoryInspirationData(
+                    menus[0],
+                    FeedBrowseChannelListState.initSuccess(
+                        listOf(mockChannel, mockChannel2),
+                        nextCursor = menuResponsePage3.nextCursor,
+                        hasNextPage = menuResponsePage3.hasNextPage,
                         config = menuResponsePage2.config
                     )
                 ),

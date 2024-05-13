@@ -102,6 +102,7 @@ class DeveloperOptionAdapter(
         const val FPI_MONITORING = "FPI Monitoring"
         const val KEYWORD_GET_USER_ID = "Get User Id"
         const val KEYWORD_GET_SHOP_ID = "Get Shop Id"
+        const val KEYWORD_SSO_LOGIN = "Login SSO"
     }
 
     /**
@@ -111,8 +112,10 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
+        SSOAuthorizationUiModel(listOf(KEYWORD_SSO_LOGIN)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
+        DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
         ShopPageDevUiModel(listOf(KEYWORD_SHOP_PAGE_DEV)),
         SystemNonSystemAppsUiModel(
             listOf(
@@ -161,12 +164,12 @@ class DeveloperOptionAdapter(
     )
 
     private val hiddenItems = mutableListOf(
+        MsSdkUiModel(listOf("")),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
-        DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
         TopAdsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_TOPADS_LOG_ON_NOTIFICATION)),
         ViewTopAdsLogUiModel(listOf(KEYWORD_VIEW_TOPADS_LOG)),
         ApplinkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION)),
@@ -254,6 +257,7 @@ class DeveloperOptionAdapter(
             defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
+            removeWidget(SSOAuthorizationUiModel::class.java)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
         }
 

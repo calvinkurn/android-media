@@ -5,6 +5,7 @@
     <string name="main_nav_args_source_path_key">pageSourcePath</string>
 
     <string name="content_desc_review">review star</string>
+    <string name="content_desc_product_image">product image</string>
 
     <string name="title_main_nav">Menu Utama</string>
 
@@ -30,6 +31,7 @@
     <string name="title_wishlist_section">Wishlist</string>
     <string name="title_favorite_shop_section">Toko yang di-follow</string>
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
+    <string name="menu_transaction_menu_buy_again">Beli Lagi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
     <string name="title_activity_revamp">Aktivitasmu</string>
@@ -42,7 +44,7 @@
     <string name="transaction_view_all">Lihat Semua</string>
 
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
-    <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko Gratis&lt;/a&gt;</string>
+    <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko&lt;/a&gt;</string>
 
     <string name="category_back_menu">Kembali</string>
 
@@ -59,7 +61,7 @@
     <string name="content_desc_image_review">image review</string>
     <string name="content_desc_affiliate">Affiliate</string>
     <string name="account_header_store_title">Toko saya:</string>
-    <string name="account_header_register_store">Buka Toko Gratis</string>
+    <string name="account_header_register_store">Buka Toko</string>
     <string name="account_header_register_affiliate">Daftar Affiliate</string>
 
     <string name="mainnav_wallet_app_format">%s • %s</string>
@@ -81,4 +83,7 @@
     <string name="transaction_view_all_desc">Transaksi lainnya</string>
     <string name="review_view_all_desc">Ulasan lainnya</string>
     <string name="wishlist_view_all_desc">Wishlist lainnya</string>
+
+    <string name="transaction_buy_again_atc_message">1 barang berhasil ditambahkan ke keranjang.</string>
+    <string name="transaction_buy_again_atc_cta">Lihat</string>
 </resources>

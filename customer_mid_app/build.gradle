@@ -36,6 +36,7 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
     lintOptions {
         abortOnError false
@@ -50,6 +51,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
+    implementation projectOrAar(rootProject.ext.features.feedCommon)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.home)
@@ -91,6 +93,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.translator)
     implementation projectOrAar(rootProject.ext.features.attachcommon)
     implementation projectOrAar(rootProject.ext.features.common_promo)
+    implementation projectOrAar(rootProject.ext.features.productPreview)
     implementation projectOrAar(rootProject.ext.libraries.bannerDynamic)
     implementation projectOrAar(rootProject.ext.libraries.inappupdate)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
@@ -164,7 +167,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
-    implementation projectOrAar(rootProject.ext.features.otp)
+    implementation projectOrAar(rootProject.ext.features.verification)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.homecredit)
     implementation projectOrAar(rootProject.ext.features.fcm_common)
@@ -392,4 +395,26 @@ dependencies {
     debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+
+    // applog
+    implementation rootProject.appLogDependencies.bdTrackerGlobal
+    implementation rootProject.appLogDependencies.sampling
+    implementation rootProject.appLogDependencies.compress
+    implementation rootProject.appLogDependencies.monitor
+    implementation rootProject.appLogDependencies.encrypt
+    implementation rootProject.appLogDependencies.baseLibsUtility
+    implementation rootProject.appLogDependencies.bdNetworkTag
+    implementation rootProject.appLogDependencies.bdTrackerEtGlobal // debugOnly
+
+    // Tik tok Slardar
+    implementation rootProject.ext.slardarDependencies.commonMonitor
+    implementation rootProject.ext.slardarDependencies.npth
+    implementation rootProject.ext.slardarDependencies.npthCore
+
+    // ttnet
+    implementation rootProject.ext.ttnetDependencies.chromiumCronet
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+    implementation rootProject.ext.ttnetDependencies.boringSsl
+    implementation rootProject.ext.ttnetDependencies.cppShared
+
 }

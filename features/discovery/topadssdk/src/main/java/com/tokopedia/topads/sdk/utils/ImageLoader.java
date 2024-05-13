@@ -4,10 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,25 +13,23 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
+
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-
-import java.util.List;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener;
 
 /**
  * @author by errysuprayogi on 4/3/17.
  */
 
+@Deprecated(
+        since = "Please use medialoader module instead. Use imageView.loadImage(url) from com.tokopedia.media.loader package."
+)
 public class ImageLoader {
 
     private static final String IMAGE_CACHE_DIR = "images";
@@ -52,7 +47,7 @@ public class ImageLoader {
     }
 
     public void loadImage(Product product, final ImageView imageView, int pos) {
-        loadImage(product, imageView, pos,null);
+        loadImage(product, imageView, pos, null);
     }
 
     public void loadImage(Product product, final ImageView imageView, int pos,
@@ -60,7 +55,7 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(product.getImage().getS_ecs())
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -68,7 +63,7 @@ public class ImageLoader {
                         if (!product.isLoaded()) {
                             product.setLoaded(true);
                             new ImpresionTask(className).execute(product.getImage().getS_url());
-                            if(impressionListener!=null){
+                            if (impressionListener != null) {
                                 impressionListener.onImpressionProductAdsItem(pos, product, null);
                             }
                         }
@@ -85,7 +80,7 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(shop.getImageShop().getXsEcs())
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -107,12 +102,12 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(ecs)
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageView.setImageBitmap(resource);
-                        if (url!=null && url.contains(PATH_VIEW)) {
+                        if (url != null && url.contains(PATH_VIEW)) {
                             new ImpresionTask(className).execute(url);
                         }
                     }
@@ -128,7 +123,7 @@ public class ImageLoader {
         Glide.with(context)
                 .asBitmap()
                 .load(shop.getImageShop().getXsEcs())
-                .placeholder(R.drawable.loading_page)
+                .placeholder(R.drawable.loading_page_topads)
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
@@ -149,9 +144,9 @@ public class ImageLoader {
 
     public static void clearImage(final ImageView imageView) {
         if (imageView != null) {
-            Glide.with(imageView.getContext()).clear(imageView);
+            JvmMediaLoader.clearImage(imageView);
             imageView.setImageDrawable(
-                    getDrawable(imageView.getContext(), com.tokopedia.topads.sdk.R.drawable.ic_loading_image)
+                    getDrawable(imageView.getContext(), R.drawable.ic_loading_image_topads)
             );
         }
     }

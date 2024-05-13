@@ -174,6 +174,20 @@ class HydraSharedPreferences @Inject constructor(
         val cachedKey = mSharedPrefs.getString(prefKey, "").orEmpty()
         return cachedKey == key
     }
+    fun isFirstStatisticIconShown(authorId: String): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, authorId),
+            true
+        )
+    }
+
+    fun setFirstStatisticIconShown(authorId: String) {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_FIRST_STATISTIC_ICON_SHOWN, authorId),
+                false
+            ).apply()
+    }
 
     companion object {
 
@@ -190,5 +204,6 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_UPLOADED_COVER_SOURCE = "saved_cover_source_%s_%s"
         private const val KEY_DYNAMIC_BOTTOM_SHEET = "key_dynamic_bottom_sheet"
         private const val KEY_DYNAMIC_TICKER = "key_dynamic_ticker"
+        private const val KEY_FIRST_STATISTIC_ICON_SHOWN = "first_statistic_icon_shown_%s"
     }
 }

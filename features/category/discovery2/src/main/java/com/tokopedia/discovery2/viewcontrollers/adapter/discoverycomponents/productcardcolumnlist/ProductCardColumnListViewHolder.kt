@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
@@ -10,6 +12,8 @@ import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
 import com.tokopedia.carouselproductcard.paging.CarouselPagingSelectedGroupModel
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -80,13 +84,19 @@ class ProductCardColumnListViewHolder(
         itemPosition: Int
     ) {
         viewModel?.apply {
-            val product = getProduct(itemPosition)
+            val product = getProduct(itemPosition)?.also {
+                AppLogRecommendation.sendProductShowAppLog(
+                    it.asProductTrackModel(
+                        it.parentComponentName.orEmpty()
+                    )
+                )
+            }
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .viewProductsList(
-                    componentsItems = componentsItem.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
-                    isFulFillment = componentsItem.isFulfillment(product),
-                    warehouseId = componentsItem.getWarehouseId(product)
+                    isFulFillment = components.isFulfillment(product),
+                    warehouseId = components.getWarehouseId(product)
                 )
 
             trackTopAdsImpression(itemPosition)
@@ -95,13 +105,21 @@ class ProductCardColumnListViewHolder(
 
     override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
         viewModel?.apply {
-            val product = getProduct(itemPosition)
+            val product = getProduct(itemPosition)?.also {
+                if(it.isEligibleToTrack()) {
+                    AppLogRecommendation.sendProductClickAppLog(
+                        it.asProductTrackModel(
+                            it.parentComponentName.orEmpty()
+                        )
+                    )
+                }
+            }
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(
-                    componentsItems = componentsItem.getComponentItem(itemPosition) ?: ComponentsItem(),
+                    componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),
                     isLogin = isLoggedIn(),
-                    isFulFillment = componentsItem.isFulfillment(product),
-                    warehouseId = componentsItem.getWarehouseId(product)
+                    isFulFillment = components.isFulfillment(product),
+                    warehouseId = components.getWarehouseId(product)
                 )
 
             trackTopAdsClick(itemPosition)
@@ -117,6 +135,12 @@ class ProductCardColumnListViewHolder(
                 itemPerPage = getItemPerPage()
             ),
             listener = this@ProductCardColumnListViewHolder
+        )
+        carouselPagingProductCard.addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = viewModel?.components?.creativeName.orEmpty(),
+                barName = viewModel?.components?.creativeName.orEmpty(),
+            )
         )
     }
 }

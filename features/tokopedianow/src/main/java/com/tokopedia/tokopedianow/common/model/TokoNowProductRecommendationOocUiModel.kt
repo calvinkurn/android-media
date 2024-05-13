@@ -8,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 
-class TokoNowProductRecommendationOocUiModel(
+data class TokoNowProductRecommendationOocUiModel(
     val id: String = "",
     val pageName: String,
     var carouselData: RecommendationCarouselData = RecommendationCarouselData(state = STATE_LOADING),

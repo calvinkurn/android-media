@@ -6,6 +6,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
@@ -1339,6 +1341,7 @@ class ShipmentViewModel @Inject constructor(
         carts: Carts,
         dynamicData: String
     ): CheckoutRequest {
+        val buyType = if (isOneClickShipment) AtcBuyType.OCS else AtcBuyType.ATC
         var publicKey = ""
         var fingerprintSupport = false
         if (getEnableFingerprintPayment(view?.activity)) {
@@ -1362,7 +1365,8 @@ class ShipmentViewModel @Inject constructor(
             true,
             false,
             fingerprintSupport.toString(),
-            publicKey
+            publicKey,
+            tracker = AppLogAnalytics.getEntranceInfoForCheckout(buyType, carts.cartIds)
         )
     }
 

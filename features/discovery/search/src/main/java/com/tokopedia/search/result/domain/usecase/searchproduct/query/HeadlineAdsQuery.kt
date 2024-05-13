@@ -55,6 +55,7 @@ object HeadlineAdsQuery {
                             merchant_vouchers
                             product {
                                 id
+                                parent_id
                                 name
                                 price_format
                                 applinks
@@ -117,6 +118,7 @@ object HeadlineAdsQuery {
                         description
                         uri
                         layout
+                        position
                     }
                     applinks
                 }

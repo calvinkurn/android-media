@@ -6,13 +6,16 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 /**
  * @author by jessica on 08/04/21
  */
 class RechargeCatalogProductInputUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<CatalogData.Response>
+        private val useCase: GraphqlUseCase<CatalogData.Response>,
+        private val remoteConfig: RemoteConfig
 ) {
     fun execute(
             params: Map<String, Any>,
@@ -23,8 +26,13 @@ class RechargeCatalogProductInputUseCase @Inject constructor(
             setTypeClass(CatalogData.Response::class.java)
             setRequestParams(params)
             setGraphqlQuery(CommonTopupBillsGqlQuery.rechargeCatalogProductInput)
-            setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+            val isEnableGqlCache = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_DIGITAL_GQL_CACHE, false)
+            if (isEnableGqlCache) {
+                setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+            } else {
+                setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }
 
             execute(onSuccess, onError)
         }

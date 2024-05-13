@@ -30,7 +30,7 @@ import kotlin.coroutines.CoroutineContext
 const val DEFAULT_SORT_ID = "23"
 const val SORT_KEY = "ob"
 const val SORT_FILTER_KEY = "sortfilter_ob"
-class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class QuickFilterViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     @JvmField
     @Inject

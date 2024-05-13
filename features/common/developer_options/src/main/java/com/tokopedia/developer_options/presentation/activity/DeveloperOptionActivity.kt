@@ -20,6 +20,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
+import com.ss.android.larksso.CallBackData
+import com.ss.android.larksso.IGetDataCallback
+import com.ss.android.larksso.LarkSSO
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -41,6 +44,7 @@ import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizat
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
 import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.SSOAuthorizationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
@@ -49,8 +53,9 @@ import com.tokopedia.developer_options.tracker.DevOpsTracker
 import com.tokopedia.encryption.security.sha256
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfig.Listener
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl.Companion.deleteInstance
@@ -68,6 +73,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
+import com.tokopedia.keys.R as keysR
 
 
 /**
@@ -76,7 +82,8 @@ import javax.inject.Inject
 
 class DeveloperOptionActivity :
     BaseActivity(),
-    DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener {
+    DevOptsAuthorizationViewHolder.DevOptsAuthorizationListener,
+    SSOAuthorizationViewHolder.LoginSSOListener {
 
     companion object {
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
@@ -84,6 +91,8 @@ class DeveloperOptionActivity :
         private const val RV_DEFAULT_POSITION = 0
         private const val RV_CACHE_SIZE = 20
         private const val LOGIN_HELPER_REQUEST_CODE = 789
+        private const val LOGIN_SSO_REQUEST_CODE = 0
+        private const val DEV_OPT_PASSWORD_CONFIG_EXPIRATION = 0L
 
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
@@ -128,7 +137,6 @@ class DeveloperOptionActivity :
     private var userSession: UserSession? = null
     private var rvDeveloperOption: RecyclerView? = null
     private var sbDeveloperOption: SearchBarUnify? = null
-    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(this) }
     private val loginSession by lazy { DevOptLoginSession(this) }
     private val gson by lazy { GsonBuilder().disableHtmlEscaping().create() }
 
@@ -146,7 +154,8 @@ class DeveloperOptionActivity :
                 authorizeListener = this,
                 branchListener = getBranchListener(),
                 userIdListener = userIdListener(),
-                shopIdListener = shopIdListener()
+                shopIdListener = shopIdListener(),
+                this
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -290,6 +299,7 @@ class DeveloperOptionActivity :
         adapter.setValueIsAuthorized(loggedIn)
         adapter.initializeList()
         adapter.setDefaultItem()
+
     }
 
     private fun handleUri(uri: Uri) {
@@ -437,6 +447,7 @@ class DeveloperOptionActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        LarkSSO.inst().parseIntent(this, data)
         when (requestCode) {
             LOGIN_HELPER_REQUEST_CODE -> {
                 this.setResult(Activity.RESULT_OK)
@@ -488,18 +499,84 @@ class DeveloperOptionActivity :
 
     class DeveloperOptionException(message: String?) : RuntimeException(message)
 
-    override fun onSubmitDevOptsPassword(password: String, isAuto: Boolean) {
-        val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+    override fun onSubmitDevOptsPassword(password: String, isAuto: Boolean, retry: Boolean) {
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        remoteConfig.setConfigCacheExpiration(DEV_OPT_PASSWORD_CONFIG_EXPIRATION)
+
+        val serverPassword = remoteConfig
+            .getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
+
         if (password == serverPassword) {
             loginSession.setLoginSession(password)
             adapter.setValueIsAuthorized(true)
             adapter.initializeList()
             adapter.setDefaultItem()
             showToaster("You are authorized !!")
+        } else if (retry) {
+            remoteConfig.fetch(object : Listener {
+                override fun onComplete(remoteConfig: RemoteConfig) {
+                    runOnUiThread {
+                        onSubmitDevOptsPassword(password, isAuto, false)
+                    }
+                }
+
+                override fun onError(e: java.lang.Exception?) {
+                    showToaster("Server Error. Please try again ...")
+                }
+            })
+        } else if (isAuto) {
+            showToaster("Auto login failed. Please check your network connection and try again.")
         } else {
-            if (!isAuto) {
-                showToaster("Wrong password !! Please ask Android representative")
-            }
+            showToaster("Wrong password !! Please ask Android representative")
         }
     }
+
+    override fun onClickLogin() {
+        val builder = LarkSSO.Builder().setAppId(getString(keysR.string.sso_lark_key))
+            .setServer("Feishu")
+            .setChallengeMode(true)
+            .setForceWeb(false)
+            .setEnv("normal")
+            .setContext(this)
+
+        LarkSSO.inst().startSSOVerify(builder, object : IGetDataCallback {
+            override fun onSuccess(callBackData: CallBackData) {
+                loginSession.setLoginSession(callBackData.codeVerifier)
+                loginSession.setLoginSSO()
+                adapter.setValueIsAuthorized(true)
+                adapter.initializeList()
+                adapter.setDefaultItem()
+                showToaster("You are authorized !!")
+                Intent(this@DeveloperOptionActivity,DeveloperOptionActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(this)
+                }
+                this@DeveloperOptionActivity.finish()
+
+            }
+
+            override fun onError(callBackData: CallBackData) {
+                Toast.makeText(
+                    this@DeveloperOptionActivity,
+                    "Auth Failed, errorCode is ${callBackData.code}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LarkSSO.inst().parseIntent(this, intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        LarkSSO.inst().parseIntent(this, intent)
+
+    }
+
+
 }

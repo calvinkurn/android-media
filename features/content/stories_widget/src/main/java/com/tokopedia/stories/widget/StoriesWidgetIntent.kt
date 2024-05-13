@@ -5,7 +5,11 @@ package com.tokopedia.stories.widget
  */
 internal sealed interface StoriesWidgetIntent {
 
-    data class GetStoriesStatus(val shopIds: List<String>) : StoriesWidgetIntent
+    data class GetStoriesStatus(
+        val shopIds: List<String>,
+        val categoryIds: List<String> = emptyList(),
+        val productIds: List<String> = emptyList()
+    ) : StoriesWidgetIntent
 
     object GetLatestStoriesStatus : StoriesWidgetIntent
 

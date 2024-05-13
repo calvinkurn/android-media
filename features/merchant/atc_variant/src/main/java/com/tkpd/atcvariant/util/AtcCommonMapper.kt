@@ -7,6 +7,8 @@ import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
 import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
@@ -69,6 +71,7 @@ object AtcCommonMapper {
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
                     this.shopName = shopName
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.OCS)
                 }
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
@@ -89,7 +92,8 @@ object AtcCommonMapper {
                         }
                     ),
                     userId = userId,
-                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP,
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.OCC)
                 )
             }
             else -> {
@@ -112,6 +116,7 @@ object AtcCommonMapper {
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
                 }
             }
         }
@@ -336,7 +341,8 @@ object AtcCommonMapper {
         shouldRefreshPreviousPage: Boolean? = null,
         isFollowShop: Boolean? = null,
         requestCode: Int? = null,
-        cartId: String? = null
+        cartId: String? = null,
+        anchorCartId: String? = null
     ): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
@@ -348,6 +354,7 @@ object AtcCommonMapper {
         if (requestCode != null) result.requestCode = requestCode
         if (isFollowShop != null) result.isFollowShop = isFollowShop
         if (cartId != null) result.cartId = cartId
+        if (anchorCartId != null) result.anchorCartId = anchorCartId
 
         return result
     }

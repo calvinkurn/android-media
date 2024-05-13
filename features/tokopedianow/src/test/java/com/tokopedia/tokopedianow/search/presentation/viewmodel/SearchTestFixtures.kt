@@ -10,7 +10,6 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
@@ -18,7 +17,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
@@ -53,7 +52,6 @@ open class SearchTestFixtures {
     protected val deleteCartUseCase = mockk<DeleteCartUseCase>(relaxed = true)
     protected val getWarehouseUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
     protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
-    protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val affiliateService = mockk<NowAffiliateService>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
@@ -105,7 +103,6 @@ open class SearchTestFixtures {
             getMiniCartListSimplifiedUseCase,
             cartService,
             getWarehouseUseCase,
-            setUserPreferenceUseCase,
             remoteConfig,
             chooseAddressWrapper,
             affiliateService,
@@ -138,7 +135,7 @@ open class SearchTestFixtures {
     )
 
     protected fun `Given address data null`() {
-        tokoNowSearchViewModel.mockSuperClassField("chooseAddressData", null)
+        tokoNowSearchViewModel.mockPrivateField("chooseAddressData", null)
     }
 
     protected fun `Given view already created`() {

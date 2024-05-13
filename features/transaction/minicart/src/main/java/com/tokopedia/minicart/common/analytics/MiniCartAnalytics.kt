@@ -48,6 +48,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
         const val VALUE_BUSINESS_UNIT_HOME_AND_BROWSE = "home & browse"
         const val VALUE_BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
+        const val VALUE_BUSINESS_UNIT_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART = "click beli in minicart"
         const val VALUE_CHECKOUT_OPTION_VIEW_MINI_CART_PAGE = "view minicart page"
@@ -83,6 +84,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_NAME_CLICK_PP = "clickPP"
         const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
         const val EVENT_NAME_SELECT_CONTENT = "select_content"
+        const val EVENT_VIEW_ITEM = "view_item"
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
@@ -162,6 +164,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val SHOP_NAME = "shop_name"
         const val SHOP_TYPE = "shop_type"
     }
+
+    val gwpAnalytics: MiniCartGwpAnalytics
+        get() = MiniCartGwpAnalytics(userSession.userId)
 
     fun String.toEnhancedEcommerceDefaultValueIfEmpty(): String {
         return if (this.isBlank()) "none/other" else this

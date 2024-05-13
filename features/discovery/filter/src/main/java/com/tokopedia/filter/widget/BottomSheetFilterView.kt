@@ -14,7 +14,6 @@ import android.widget.TextView
 
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.R
 import com.tokopedia.resources.common.R as RCommon
@@ -40,6 +39,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 import android.app.Activity.RESULT_OK
+import com.tokopedia.filter.newdynamicfilter.helper.KeyboardHelper
 
 class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     private var filterMainRecyclerView: RecyclerView? = null

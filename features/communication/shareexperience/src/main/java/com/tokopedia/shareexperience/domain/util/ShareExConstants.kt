@@ -3,7 +3,9 @@ package com.tokopedia.shareexperience.domain.util
 object ShareExConstants {
 
     object Rollence {
-        const val ROLLENCE_SHARE_EX = "shareex_an"
+        const val ROLLENCE_SHARE_EX = "shareex_an_ma"
+        const val ROLLENCE_SHARE_EX_SA = "shareex_an_sa"
+        const val ROLLENCE_SHARE_EX_REVIEW = "an_sharexreview"
     }
 
     object RemoteConfigKey {
@@ -11,6 +13,7 @@ object ShareExConstants {
     }
 
     object DefaultValue {
+        const val SOURCE = "share"
         const val DEFAULT_TITLE = "Bagikan ke teman kamu"
     }
 
@@ -34,6 +37,7 @@ object ShareExConstants {
     }
 
     object ShortLinkValue {
+        const val TIMEOUT_LIMIT = 5000L
         const val SOURCE = "android"
         const val SOURCE_SHARING = "sharing"
     }

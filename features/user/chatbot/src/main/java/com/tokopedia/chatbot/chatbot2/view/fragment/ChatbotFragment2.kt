@@ -199,7 +199,6 @@ import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.csat_rating.dynamiccsat.DynamicCsatConst
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -552,7 +551,8 @@ class ChatbotFragment2 :
 
     private fun sendInvoiceAttachment(
         invoiceLinkPojo: InvoiceLinkPojo,
-        startTime: String
+        startTime: String,
+        isArticleEntry: Boolean = this.isArticleEntry
     ) {
         viewModel.sendInvoiceAttachment(
             messageId,
@@ -1591,7 +1591,7 @@ class ChatbotFragment2 :
         getViewState()?.removeInvoiceCarousel()
         hideActionBubble()
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
-        sendInvoiceAttachment(invoiceLinkPojo, generatedInvoice.startTime)
+        sendInvoiceAttachment(invoiceLinkPojo, generatedInvoice.startTime, false)
         enableTyping()
     }
 
@@ -1674,29 +1674,7 @@ class ChatbotFragment2 :
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
         activity?.let {
-            val loadSecureImage = FirebaseRemoteConfigImpl(it)
-                .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_SECURE_IMAGE, true)
-
-            if (loadSecureImage) {
-                previewSecureImage(imageUrl)
-            } else {
-                previewImage(imageUrl)
-            }
-        }
-    }
-
-    private fun previewImage(imageUrl: String) {
-        activity?.let {
-            val strings: ArrayList<String> = ArrayList()
-            strings.add(imageUrl)
-            it.startActivity(
-                ImagePreviewActivity.getCallingIntent(
-                    it,
-                    strings,
-                    null,
-                    0
-                )
-            )
+            previewSecureImage(imageUrl)
         }
     }
 

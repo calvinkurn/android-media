@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.product.inspirationlistatc
 
-import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
 
@@ -10,9 +9,14 @@ interface InspirationListAtcView {
 
     fun trackItemClick(trackingData: InspirationCarouselTracking.Data)
 
+    fun trackItemClickByteIO(product: InspirationCarouselDataView.Option.Product)
+
     fun trackItemImpress(product: InspirationCarouselDataView.Option.Product)
 
-    fun trackAddToCart(trackingData: InspirationCarouselTracking.Data)
+    fun trackAddToCart(
+        trackingData: InspirationCarouselTracking.Data,
+        product: InspirationCarouselDataView.Option.Product,
+    )
 
     fun openAddToCartToaster(message: String, isSuccess: Boolean)
 
@@ -29,4 +33,6 @@ interface InspirationListAtcView {
     fun trackAdsClick(product: InspirationCarouselDataView.Option.Product)
 
     fun trackAdsImpress(product: InspirationCarouselDataView.Option.Product)
+
+    fun trackImpression(option: InspirationCarouselDataView.Option)
 }

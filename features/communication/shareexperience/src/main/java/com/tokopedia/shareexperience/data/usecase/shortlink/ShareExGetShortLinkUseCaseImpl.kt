@@ -120,7 +120,7 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
         return ShareExBranchUniversalObjectRequest(
             canonicalId = params.linkerPropertiesRequest.canonicalIdentifier,
             title = params.linkerPropertiesRequest.ogTitle,
-            description = params.linkerPropertiesRequest.message,
+            description = params.linkerPropertiesRequest.messageObject.getFinalMessage(),
             contentImageUrl = params.linkerPropertiesRequest.ogImageUrl,
             customMetaTags = params.linkerPropertiesRequest.customMetaTags,
             anMinVersion = params.linkerPropertiesRequest.anMinVersion

@@ -6,6 +6,7 @@ import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.Properties.Header.OfferTier
+import com.tokopedia.discovery2.data.automatecoupon.TimeLimitData
 import com.tokopedia.discovery2.data.contentCard.LandingPage
 import com.tokopedia.discovery2.data.contentCard.Product
 import com.tokopedia.discovery2.data.contentCard.TotalItem
@@ -14,8 +15,12 @@ import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
@@ -157,7 +162,10 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color", "text_color_mode"])
+    @SerializedName(
+        "font_color",
+        alternate = ["text_color", "benefit_text_color", "text_color_mode"]
+    )
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -448,6 +456,13 @@ data class DataItem(
     @SerializedName("badges")
     var badges: List<Badges?>? = null,
 
+    // https://tokopedia.atlassian.net/wiki/spaces/HP/pages/1724552759/Merchant+Voucher+Single+Shop
+    @SerializedName("badge")
+    var badge: String = "",
+
+    @SerializedName("time_limit")
+    var timeLimit: TimeLimitData? = null,
+
     @SerializedName("text_date")
     var textDate: String? = null,
 
@@ -547,7 +562,7 @@ data class DataItem(
     val widgetHomeBanner: String? = "",
 
     @SerializedName("gtm_item_name")
-    var gtmItemName: String? = "",
+    private var _gtmItemName: String? = "",
 
     @SerializedName("department_id")
     var categoryDeptId: String? = "",
@@ -597,6 +612,9 @@ data class DataItem(
     @SerializedName("active_image_url")
     val tabActiveImageUrl: String? = null,
 
+    @SerializedName("rec_param")
+    private val recommendationParam: String? = null,
+
     @SerializedName("layout")
     val couponLayout: String? = null,
 
@@ -608,6 +626,9 @@ data class DataItem(
 
     @SerializedName("catalog_subcategory_id")
     var catalogSubCategoryIds: List<String>? = null,
+
+    @SerializedName("inactive_text_color")
+    val inactiveFontColor: String? = "",
 
     var shopAdsClickURL: String? = "",
 
@@ -648,8 +669,16 @@ data class DataItem(
     var typeProductHighlightComponentCard: String? = "",
 
     @SerializedName("warehouse_id")
-    var warehouseId: Long? = null
+    var warehouseId: Long? = null,
+
+    var itemPosition: Int = 0,
+
+    var topLevelTab: TopLevelTab = UnknownTab
 ) {
+
+    var gtmItemName: String = ""
+        get() = getGtmItemNameReplaceTab()
+
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0
@@ -660,6 +689,10 @@ data class DataItem(
             return rightMarginMobile?.toIntOrNull() ?: 0
         }
 
+    val appLogImpressHolder: ImpressHolder = ImpressHolder()
+    private var appLog: RecommendationAppLog? = null
+    var source: ComponentSourceData = ComponentSourceData.Unknown
+
     fun getLabelPrice(): LabelsGroup? {
         return findLabelGroup(LABEL_PRICE)
     }
@@ -668,7 +701,37 @@ data class DataItem(
         return findLabelGroup(LABEL_PRODUCT_STATUS)
     }
 
+    fun setAppLog(tracker: ComponentTracker) {
+        appLog = with(tracker) {
+            RecommendationAppLog(
+                logId.orEmpty(),
+                requestId.orEmpty(),
+                sessionId.orEmpty(),
+                recommendationParam.orEmpty(),
+                recommendationPageName.orEmpty()
+            )
+        }
+    }
+
+    fun getAppLog(): RecommendationAppLog? {
+        return appLog
+    }
+
     private fun findLabelGroup(position: String): LabelsGroup? {
         return labelsGroupList?.find { it.position == position }
+    }
+
+    private fun getGtmItemNameReplaceTab(): String {
+        val tabReplaceWith = if (topLevelTab.name.isNotEmpty()) {
+            topLevelTab.name
+        } else if (CURRENT_TAB_NAME.isNotEmpty()) {
+            CURRENT_TAB_NAME
+        } else {
+            tabName ?: ""
+        }
+        return _gtmItemName?.replace(
+            "#MEGA_TAB_VALUE",
+            tabReplaceWith
+        ) ?: ""
     }
 }

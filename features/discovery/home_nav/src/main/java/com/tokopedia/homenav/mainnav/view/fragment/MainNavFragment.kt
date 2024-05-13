@@ -1,9 +1,7 @@
 package com.tokopedia.homenav.mainnav.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -13,20 +11,22 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -44,40 +44,27 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingOthers
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
+import com.tokopedia.homenav.mainnav.view.interactor.listener.BuyAgainCallback
+import com.tokopedia.homenav.mainnav.view.interactor.listener.TokopediaPlusCallback
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.recommendation_widget_common.DEFAULT_PAGE_NAME
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.asNavSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
-import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
-import java.util.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
-    companion object {
-        private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
-        private const val REQUEST_LOGIN = 1234
-        private const val REQUEST_REGISTER = 2345
-        private const val OFFSET_TO_SHADOW = 100
-        private const val REQUEST_REVIEW_PRODUCT = 999
-        private const val COACHMARK_SAFE_DELAY = 200L
-        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        private const val REQUEST_FROM_PDP = 394
-        private const val PERFORMANCE_TRACE_HOME_NAV = "home_nav"
-    }
-
     private var mainNavDataFetched: Boolean = false
-    private var sharedPrefs: SharedPreferences? = null
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -97,13 +84,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     var pageSource = NavSource.DEFAULT
     var pageSourcePath: String = ""
-
-    // for coachmark purpose
-    private var isOngoingShowOnboarding = false
-
-    override fun getScreenName(): String {
-        return ""
-    }
+    var pageName = DEFAULT_PAGE_NAME
 
     override fun initInjector() {
         val baseNavComponent =
@@ -200,6 +181,21 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 }
             }
         )
+
+        viewModel.onAtcProductState.observe(viewLifecycleOwner) {
+            val (isError, message) = it
+
+            if (isError) {
+                onShowToast(message, Toaster.TYPE_ERROR)
+            } else {
+                val succeedMessage = getString(R.string.transaction_buy_again_atc_message)
+                val ctaTitle = getString(R.string.transaction_buy_again_atc_cta)
+
+                onShowToast(succeedMessage, Toaster.TYPE_NORMAL, ctaTitle) {
+                    startActivity(RouteManager.getIntent(requireContext(), ApplinkConst.CART))
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -263,6 +259,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshTransactionListData()
     }
 
+    override fun onRefreshBuyAgainIfError() {
+        viewModel.refreshBuyAgainData()
+    }
+
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
             hitClickTrackingBasedOnId(homeNavMenuDataModel)
@@ -284,6 +284,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
             }
+            handleAppLogEnterMethod(homeNavMenuDataModel)
+        }
+    }
+
+    private fun handleAppLogEnterMethod(homeNavMenuDataModel: HomeNavMenuDataModel) {
+        if (homeNavMenuDataModel.id == ID_WISHLIST_MENU) {
+            AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICONACCOUNT)
         }
     }
 
@@ -429,26 +436,24 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         val mainNavFactory = MainNavTypeFactoryImpl(
             this,
             getUserSession(),
-            object : TokopediaPlusListener {
-                override fun isShown(
-                    isShown: Boolean,
-                    pageSource: String,
-                    tokopediaPlusDataModel: TokopediaPlusDataModel
-                ) {
-                }
-
-                override fun onClick(
-                    pageSource: String,
-                    tokopediaPlusDataModel: TokopediaPlusDataModel
-                ) {
-                    TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber, this@MainNavFragment.pageSource, pageSourcePath)
-                }
-
-                override fun onRetry() {
+            TokopediaPlusCallback(
+                source = pageSource,
+                pageSourcePath = pageSourcePath,
+                onRefreshTokopediaPlus = {
                     viewModel.refreshTokopediaPlusData()
                 }
+            ),
+            BuyAgainCallback(
+                fragment = this,
+                mainNavListener = this,
+                addToCart = { productId, shopId ->
+                    viewModel.addToCartProduct(productId, shopId)
+                }
+            ).also {
+                it.setPageDetail(pageSource, pageSourcePath, pageName)
             }
         )
+
         adapter = MainNavListAdapter(mainNavFactory)
 
         activity?.let {
@@ -490,30 +495,35 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return userSession
     }
 
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
+    private fun onShowToast(
+        message: String,
+        type: Int,
+        actionText: String = "",
+        clickListener: () -> Unit = {}
+    ) {
+        val view = view ?: return
+
+        Toaster.build(
+            view,
+            message,
+            Snackbar.LENGTH_SHORT,
+            type,
+            actionText = actionText,
+            clickListener = {
+                clickListener()
+            }
+        ).show()
     }
 
-    private fun getSharedPreference(): SharedPreferences {
-        return requireContext().getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
-    }
+    override fun getScreenName() = ""
 
-    private fun goToPDP(productId: String, position: Int) {
-        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
-            startActivityForResult(this, REQUEST_FROM_PDP)
-        }
+    companion object {
+        private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
+        private const val REQUEST_LOGIN = 1234
+        private const val REQUEST_REGISTER = 2345
+        private const val OFFSET_TO_SHADOW = 100
+        private const val REQUEST_REVIEW_PRODUCT = 999
+        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val REQUEST_FROM_PDP = 394
     }
 }
-
-data class CoachmarkRecyclerViewConfig(
-    val items: ArrayList<CoachMark2Item>,
-    val configs: ArrayList<CoachmarkItemReyclerViewConfig>,
-    val onFinish: () -> Unit
-)
-
-data class CoachmarkItemReyclerViewConfig(
-    val scrollToPosition: Int,
-    val targetPosition: Int?
-)
