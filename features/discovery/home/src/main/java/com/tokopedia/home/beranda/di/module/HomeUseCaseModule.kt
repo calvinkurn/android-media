@@ -388,27 +388,4 @@ class HomeUseCaseModule {
     fun provideTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
-
-//    @Provides
-//    @HomeScope
-//    fun provideDynamicPositionRepository(
-//        atfDao: AtfDao,
-//        atfDataRepository: HomeAtfRepository,
-//        homeRoomDataSource: HomeRoomDataSource,
-//    ) = DynamicPositionRepository(atfDao, atfDataRepository, homeRoomDataSource)
-//
-//    @Provides
-//    @HomeScope
-//    fun provideBannerRepository(
-//        homePageBannerRepository: HomePageBannerRepository,
-//        homeChooseAddressRepository: HomeChooseAddressRepository,
-//        atfDao: AtfDao,
-//    ) = BannerRepository(homePageBannerRepository, homeChooseAddressRepository, atfDao)
-//
-//    @Provides
-//    @HomeScope
-//    fun provideAtfRepository(
-//        dynamicPositionRepository: DynamicPositionRepository,
-//        bannerRepository: BannerRepository,
-//    ) = AtfRepository(dynamicPositionRepository, bannerRepository)
 }

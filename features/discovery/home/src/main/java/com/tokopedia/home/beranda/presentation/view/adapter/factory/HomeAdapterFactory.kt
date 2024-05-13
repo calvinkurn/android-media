@@ -158,6 +158,8 @@ import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
+import com.tokopedia.home_component.widget.balance.BalanceWidgetTypeFactory
+import com.tokopedia.home_component.widget.balance.BalanceWidgetTypeFactoryImpl
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
@@ -229,7 +231,9 @@ class HomeAdapterFactory(
     HomeTypeFactory,
     HomeComponentTypeFactory,
     RecommendationTypeFactory,
-    RechargeComponentTypeFactory {
+    RechargeComponentTypeFactory,
+    BalanceWidgetTypeFactory by BalanceWidgetTypeFactoryImpl()
+{
 
     override fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int {
         return InspirationHeaderViewHolder.LAYOUT

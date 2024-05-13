@@ -62,4 +62,7 @@
     <string name="content_desc_small_product_card_stockbar_fire">Stockbar Fire Icon</string>
 
     <string name="count_down_timer_day_title">%d Hari</string>
+
+    <string name="error_state_title">Konten gagal ditampilkan</string>
+    <string name="error_state_description">Klik ikon di samping buat coba lagi.</string>
 </resources>
