@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.login_sdk
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -16,6 +17,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,6 +31,7 @@ import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_API
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientName
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
@@ -66,6 +70,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showLoading(shouldShow = true)
 
         viewBinding?.btnLoginConsent?.setOnClickListener {
             viewBinding?.btnLoginConsent?.isLoading = true
@@ -85,12 +90,14 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             packageName = arguments?.getString("package_name") ?: "",
             redirectUri = redirectUrl
         )
+        setupToolbar()
+    }
 
-        showLoading(shouldShow = true)
-
+    fun setupToolbar() {
         activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
             headerTitle = "Masuk ke Tokopedia"
             actionTextView?.hide()
+            isShowShadow = false
         }
     }
 
@@ -109,7 +116,6 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess) {
-                        showLoading(shouldShow = false)
                         if (it.data.showConsent) {
                             setUI(it.data)
                         } else {
@@ -121,7 +127,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                             )
                         }
                     } else {
-                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
+                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error, errorCode = ERR_CODE_API)
                     }
                 }
                 is Fail -> {
@@ -139,7 +145,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                 }
                 is Fail -> {
                     LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("failed - ${it.throwable.message}")
-                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error")
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error", errorCode = ERR_CODE_API)
                 }
             }
         }
@@ -155,11 +161,11 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                         )
                         LoginSdkAnalytics.sendViewTokopediaSsoPageEvent(it.data.appName)
                     } else {
-                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
+                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error, errorCode = ERR_CODE_API)
                     }
                 }
                 is Fail -> {
-                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error")
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error", errorCode = ERR_CODE_API)
                 }
             }
         }
@@ -193,7 +199,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                     }
                     override fun updateDrawState(ds: TextPaint) {
                         ds.color = getColor(context, color)
-                        ds.isUnderlineText = true
+                        ds.setTypeface(Typeface.DEFAULT_BOLD);
                     }
                 },
                 text.indexOf(it),
@@ -207,14 +213,12 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
     }
 
     private fun setUI(consentData: SdkConsentData) {
+        showLoading(shouldShow = false)
         viewBinding?.run {
-
-            txtHeader.text = "${consentData.clientInfo.appName} izin akses data dari akun Tokopedia berikut"
-
+            txtHeader.text = "Izinkan ${consentData.clientInfo.appName} untuk mengakses data dari akun berikut"
             consentData.consents.forEach {
                 txtDataList.append(" •  $it\n")
             }
-
             // Remove last newline from text
             txtDataList.text = txtDataList.text.substring(0, txtDataList.text.length - 1)
 
@@ -226,19 +230,6 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             imgPartnerLogo.loadImage(consentData.clientInfo.imageUrl)
 
             txtTncPrivPartner.text = "Syarat dan ketentuan serta Kebijakan Privasi ${consentData.clientInfo.appName}"
-            txtTncPrivTkpd.clickableText(
-                requireContext(),
-                listOf("Syarat dan ketentuan", "Kebijakan Privasi"),
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            ) {
-                if (it == "Syarat dan ketentuan") {
-                    LoginSdkAnalytics.sendClickOnButtonSyaratDanKetentuanTokopediaEvent()
-                }
-                if (it == "Kebijakan Privasi") {
-                    LoginSdkAnalytics.sendClickOnButtonKebijakanPrivasiTokopediaEvent()
-                }
-
-            }
 
             txtTncPrivPartner.clickableText(
                 requireContext(),
@@ -246,9 +237,11 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             ) {
                 if (it == "Syarat dan ketentuan") {
+                    RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.url))
                     LoginSdkAnalytics.sendClickOnButtonSyaratDanKetentuanEvent(requireContext().getClientName())
                 }
                 if (it == "Kebijakan Privasi") {
+                    RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.privacyUrl))
                     LoginSdkAnalytics.sendClickOnButtonKebijakanPrivasiEvent(requireContext().getClientName())
                 }
             }

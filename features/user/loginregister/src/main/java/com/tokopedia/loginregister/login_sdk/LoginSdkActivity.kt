@@ -7,6 +7,8 @@ import androidx.fragment.app.commit
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.sessioncommon.util.LoginSdkUtils
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CLIENT_CANCELLED
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_CLIENT
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientName
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.removeLoginSdkFlow
 import com.tokopedia.user.session.UserSession
@@ -41,7 +43,7 @@ class LoginSdkActivity : LoginActivity() {
             intent?.extras?.let {
                 bundle.putAll(it)
             }
-            replace(R.id.parent_view, LoginSdkConsentFragment.createInstance(bundle), "")
+            add(R.id.parent_view, LoginSdkConsentFragment.createInstance(bundle), "")
         }
     }
 
@@ -61,7 +63,8 @@ class LoginSdkActivity : LoginActivity() {
             activity = this,
             redirectUrl = intent?.extras?.getString("redirect_uri") ?: "",
             authCode = "",
-            error = "err:user:cancelled"
+            errorCode = ERR_CODE_CLIENT,
+            error = ERR_CLIENT_CANCELLED
         )
     }
 

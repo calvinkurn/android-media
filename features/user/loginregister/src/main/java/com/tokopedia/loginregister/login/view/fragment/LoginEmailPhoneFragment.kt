@@ -96,7 +96,6 @@ import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
-import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_TIKTOK_LOGIN
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.router.LoginRouter
@@ -105,7 +104,6 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
-import com.tokopedia.loginregister.login.view.activity.TiktokLoginActivity
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
@@ -129,6 +127,7 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.network.TokenErrorException
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
@@ -745,8 +744,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             listener = object : SocmedBottomSheetListener {
                 override fun onItemClick(provider: ProviderData) {
                     if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
-//                        onLoginGoogleClick()
-                        onLoginTiktokClicked()
+                        onLoginGoogleClick()
                         socmedBottomSheet?.dismiss()
                     }
                 }
@@ -968,12 +966,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun onLoginTiktokClicked() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.TIKTOK_LOGIN)
-        showLoadingLogin()
-        startActivityForResult(intent, REQUEST_TIKTOK_LOGIN)
-    }
-
     private fun onLoginGoogleClick() {
         if (activity != null) {
             onDismissBottomSheet()
@@ -1158,8 +1150,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
             }
 
-            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-            it.finish()
+            if (!requireContext().isLoginSdkFlow()) {
+                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+                it.finish()
+            }
         }
     }
 

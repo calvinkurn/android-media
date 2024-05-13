@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Neutral_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,13 +10,16 @@
         android:id="@+id/container_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp">
+        android:padding="16dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_partner_logo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="64dp"
+            android:maxHeight="64dp"
             android:layout_marginTop="12dp"
+            android:adjustViewBounds="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,8 +52,8 @@
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_profile"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -122,24 +127,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_consent_info"
+            android:layout_marginBottom="6dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
-            android:text="Dengan klik tombol Izinkan, kamu menyetujui pembagian data akun di atas ke Partner untuk Login "
-            app:layout_constraintBottom_toTopOf="@+id/txt_tnc_priv_tkpd"
+            tools:text="Dengan mengklik tombol Izinkan, Anda setuju untuk membagikan data akun di atas untuk masuk ke Shop | Tokopedia."
+            app:layout_constraintBottom_toTopOf="@+id/iconUnify2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="paragraph_3" />
 
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iconUnify"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:icon_name="INFORMATION"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_tnc_priv_tkpd"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txt_tnc_priv_tkpd" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconUnify2"
@@ -149,18 +145,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/txt_tnc_priv_partner"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/txt_tnc_priv_partner" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_tnc_priv_tkpd"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginBottom="10dp"
-            android:text="Syarat dan ketentuan serta Kebijakan Privasi Tokopedia"
-            app:layout_constraintBottom_toTopOf="@+id/txt_tnc_priv_partner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iconUnify"
-            app:typographyType="paragraph_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_tnc_priv_partner"

@@ -10,9 +10,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_API
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
 import com.tokopedia.usecase.coroutines.Fail
@@ -30,13 +32,23 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
+        prepareLoginTiktokView()
+        showLoadingLogin()
         viewModel.validateClient(
             clientId = arguments?.getString("client_id") ?: "",
             signature = arguments?.getString("sign_cert") ?: "",
             packageName = arguments?.getString("package_name") ?: "",
             redirectUri = redirectUrl
         )
-        showLoadingLogin()
+    }
+
+    private fun prepareLoginTiktokView() {
+        viewBinding?.apply {
+            socmedBtn.showWithCondition(false)
+            registerButton.showWithCondition(false)
+//            btnLoginTiktok.showWithCondition(false)
+//            btnLoginGoogle.showWithCondition(true)
+        }
     }
 
     private fun initObserver() {
@@ -44,14 +56,14 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
             when (it ) {
                 is Success -> {
                     if (!it.data.status) {
-                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error)
+                        redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.data.error, errorCode = ERR_CODE_API)
                     } else {
                         setupAsLoginSdkFlow(it.data.appName)
                         dismissLoadingLogin()
                     }
                 }
                 is Fail -> {
-                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error")
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error", errorCode = ERR_CODE_API)
                 }
             }
         }
