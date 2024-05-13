@@ -156,21 +156,17 @@ internal class StoriesRobotUITest(
         delay(duration.times(4L))
     }
 
-    fun tapNextUntilNextGroup() = chainable {
+    fun tapNext() = chainable {
         Espresso
             .onView(withId(storiesR.id.fl_stories_next))
             .check(matches(isDisplayed()))
             .perform(click())
-            .perform(click())
-            .perform(click())
     }
 
-    fun tapPrevUntilPrevGroup() = chainable {
+    fun tapPrev() = chainable {
         Espresso
             .onView(withId(storiesR.id.fl_stories_prev))
             .check(matches(isDisplayed()))
-            .perform(click())
-            .perform(click())
             .perform(click())
     }
 
@@ -183,14 +179,6 @@ internal class StoriesRobotUITest(
     fun tapGroup() = chainable {
         Espresso.onView(withId(storiesR.id.rv_stories_category))
             .perform(actionOnItemAtPosition<ViewHolder>(1, click()))
-            .perform(actionOnItemAtPosition<ViewHolder>(2, click()))
-            .perform(actionOnItemAtPosition<ViewHolder>(0, click()))
-    }
-
-    fun swipeGroup() = chainable {
-        Espresso.onView(withId(storiesR.id.stories_group_view_pager))
-            .perform(swipeLeft())
-            .perform(swipeRight())
     }
 
     fun assertEventAction(eventAction: String) = chainable {

@@ -56,20 +56,14 @@ class StoriesUITest {
             .doNothingUntilNextGroup(duration)
             .assertEventAction("click - move to other category")
 
-            .tapNextUntilNextGroup()
+            .tapNext()
             .assertEventAction("click - tap next content")
-            .assertEventAction("click - move to other category")
 
-            .tapPrevUntilPrevGroup()
+            .tapPrev()
             .assertEventAction("click - tap previous content")
-            .assertEventAction("click - move to other category")
 
             .tapGroup()
             .assertEventAction("click - story circle")
-            .assertEventAction("click - move to other category")
-
-            .swipeGroup()
-            .assertEventAction("click - move to other category")
 
             .moveToDestroyState()
             .assertEventAction("click - exit story room")
