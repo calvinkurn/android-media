@@ -1341,6 +1341,7 @@ class ShipmentViewModel @Inject constructor(
         carts: Carts,
         dynamicData: String
     ): CheckoutRequest {
+        val buyType = if (isOneClickShipment) AtcBuyType.OCS else AtcBuyType.ATC
         var publicKey = ""
         var fingerprintSupport = false
         if (getEnableFingerprintPayment(view?.activity)) {
@@ -1365,7 +1366,7 @@ class ShipmentViewModel @Inject constructor(
             false,
             fingerprintSupport.toString(),
             publicKey,
-            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC, carts.cartIds)
+            tracker = AppLogAnalytics.getEntranceInfoForCheckout(buyType, carts.cartIds)
         )
     }
 
