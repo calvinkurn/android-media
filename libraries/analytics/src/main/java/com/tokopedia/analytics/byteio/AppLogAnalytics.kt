@@ -443,7 +443,7 @@ object AppLogAnalytics {
         if (appLogInterface.getPageName().isNotBlank()) {
             putPageData(PAGE_NAME, appLogInterface.getPageName())
             if (appLogInterface.isEnterFromWhitelisted()) {
-                putPageData(ENTER_FROM, appLogInterface.getPageName())
+                putPageData(ENTER_FROM, appLogInterface.getEnterFrom())
             }
         }
         if (appLogInterface.isShadow()) {
