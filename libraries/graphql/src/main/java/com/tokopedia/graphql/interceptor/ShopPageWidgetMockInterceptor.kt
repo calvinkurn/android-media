@@ -15,6 +15,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
+import timber.log.Timber
 import java.io.IOException
 
 @Keep
@@ -87,6 +88,7 @@ class ShopPageWidgetMockInterceptor(val applicationContext: Context) : Intercept
                 }
             }
         } catch (e: IOException) {
+            Timber.e(e)
             return chain.proceed(chain.request())
         }
         return chain.proceed(chain.request())

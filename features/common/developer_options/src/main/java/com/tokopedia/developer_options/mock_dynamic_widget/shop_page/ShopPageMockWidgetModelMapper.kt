@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.mock_dynamic_widget.shop_page.ShopPageMockWidgetModel.*
 import com.tokopedia.kotlin.extensions.view.orZero
+import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 
@@ -33,7 +34,7 @@ object ShopPageMockWidgetModelMapper {
         try {
             rawResource.close()
         } catch (e: IOException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return JsonParser.parseString(content).asJsonArray
     }
@@ -79,7 +80,7 @@ object ShopPageMockWidgetModelMapper {
         try {
             rawResource.close()
         } catch (e: IOException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return JsonParser.parseString(content).asJsonArray
     }
@@ -90,7 +91,7 @@ object ShopPageMockWidgetModelMapper {
         try {
             rawResource.close()
         } catch (e: IOException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         val jsonArray = JsonParser.parseString(content).asJsonArray
         return jsonArray?.first()?.asJsonObject.toString()
