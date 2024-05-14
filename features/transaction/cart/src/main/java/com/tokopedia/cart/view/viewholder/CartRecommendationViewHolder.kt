@@ -2,10 +2,8 @@ package com.tokopedia.cart.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
@@ -14,10 +12,9 @@ import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
@@ -30,8 +27,11 @@ import com.tokopedia.unifycomponents.UnifyButton
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBinding, val actionListener: ActionListener?) :
-    RecyclerView.ViewHolder(binding.root), AppLogRecTriggerInterface, IAdsViewHolderTrackListener {
+class CartRecommendationViewHolder(
+    private val binding: ItemCartRecommendationBinding,
+    val actionListener: ActionListener?
+) : RecyclerView.ViewHolder(binding.root),
+    AppLogRecTriggerInterface {
 
     companion object {
         @JvmStatic
@@ -39,16 +39,8 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
     }
 
     internal var isTopAds = false
-    private var visibleViewPercentage: Int = 0
     private var recTriggerObject = RecommendationTriggerObject()
     private var recommendationItem: RecommendationItem? = null
-
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
 
     fun bind(element: CartRecommendationItemHolderData) {
         this.recommendationItem = element.recommendationItem
@@ -96,6 +88,19 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
                 }
             )
 
+            setVisibilityPercentListener(
+                isTopAds = element.recommendationItem.isTopAds,
+                eventListener = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                    override fun onShow() {
+                        element.recommendationItem.sendShowAdsByteIo(itemView.context)
+                    }
+
+                    override fun onShowOver(maxPercentage: Int) {
+                        element.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                    }
+                }
+            )
+
             addOnImpression1pxListener(element.recommendationItem.appLogImpressHolder) {
                 AppLogRecommendation.sendProductShowAppLog(
                     element.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
@@ -110,22 +115,6 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
 
         isTopAds = element.recommendationItem.isTopAds
     }
-
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
-    }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.visibleViewPercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = visibleViewPercentage
 
     private fun setRecTriggerObject(model: RecommendationItem) {
         recTriggerObject = RecommendationTriggerObject(

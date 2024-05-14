@@ -2,10 +2,8 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
@@ -16,19 +14,11 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ViewToViewProductViewHolder(
     private val listener: ViewToViewListener,
     view: View
-) : RecyclerView.ViewHolder(view), IAdsViewHolderTrackListener {
+) : RecyclerView.ViewHolder(view) {
 
     private var binding: ItemViewToViewBinding? by viewBinding()
 
-    private var viewVisiblePercentage = 0
     private var recommendationItem: RecommendationItem? = null
-
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
 
     fun bind(data: ViewToViewDataModel) {
         val binding = binding ?: return
@@ -44,27 +34,23 @@ class ViewToViewProductViewHolder(
             setAddVariantClickListener {
                 listener.onAddToCartClicked(data, data.recommendationItem.position)
             }
+            setVisibilityPercentListener(
+                isTopAds = data.recommendationItem.isTopAds,
+                eventListener = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                    override fun onShow() {
+                        data.recommendationItem.sendShowAdsByteIo(itemView.context)
+                    }
+
+                    override fun onShowOver(maxPercentage: Int) {
+                        data.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                    }
+                }
+            )
             addOnImpressionListener(data.recommendationItem) {
                 listener.onProductImpressed(data, data.recommendationItem.position, className)
             }
         }
     }
-
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
-    }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.viewVisiblePercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = viewVisiblePercentage
 
     fun type() = LAYOUT
 

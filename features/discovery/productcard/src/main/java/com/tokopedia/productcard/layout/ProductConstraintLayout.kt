@@ -32,8 +32,9 @@ open class ProductConstraintLayout : ConstraintLayout {
     private var duplicateEnabled = false
     private var viewDetachedFromWindows = false
     private var debugTextView: TextView? = null
-    private val set = ConstraintSet()
-    private val rectf = Rect()
+
+    private val set: ConstraintSet by lazy { ConstraintSet() }
+    private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context)
 
