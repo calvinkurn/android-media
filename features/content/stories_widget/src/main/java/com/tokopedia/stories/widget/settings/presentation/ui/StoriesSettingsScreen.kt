@@ -100,6 +100,8 @@ private fun StoriesSettingsSuccess(
                 }
             })
         }
+
+        //Header - Story
         NestTypography(
             modifier = Modifier
                 .padding(bottom = 16.dp)
@@ -113,18 +115,24 @@ private fun StoriesSettingsSuccess(
                 color = textColor
             )
         )
-        NestIcon(iconId = IconUnify.SOCIAL_STORY, modifier = Modifier
-            .padding(end = 12.dp)
-            .constrainAs(ivIconHeader) {
-                top.linkTo(tvHeader.bottom)
-                start.linkTo(tvHeader.start)
-            })
+        //Icon - Mobile
+        NestIcon(iconId = IconUnify.SOCIAL_STORY,
+            colorNightDisable = textColor,
+            colorLightEnable = textColor,
+            modifier = Modifier
+                .constrainAs(ivIconHeader) {
+                    top.linkTo(tvHeader.bottom)
+                    start.linkTo(tvHeader.start)
+                })
+
+        //Text - Buat Stories Otomatis
         NestTypography(
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(start = 12.dp)
                 .constrainAs(tvDescription) {
                     start.linkTo(ivIconHeader.end)
                     top.linkTo(ivIconHeader.top)
+                    bottom.linkTo(ivIconHeader.bottom)
                 },
             text = itemFirst.text,
             textStyle = NestTheme.typography.display2.copy(
@@ -132,11 +140,13 @@ private fun StoriesSettingsSuccess(
                 color = textColor
             )
         )
+
+        //Text - Buat Stories Otomatis - Toggle
         AndroidView(
             modifier = Modifier.constrainAs(switchHeader) {
-                end.linkTo(parent.end)
                 top.linkTo(tvDescription.top)
                 bottom.linkTo(tvDescription.bottom)
+                end.linkTo(parent.end)
             },
             factory = { context ->
                 SwitchUnify(context).apply {
@@ -155,6 +165,7 @@ private fun StoriesSettingsSuccess(
                 switchUnify.isEnabled = isEligible
             },
         )
+        //Text - Selengkapnya
         val text = buildAnnotatedString {
             append(pageInfo.config.articleCopy.replace(tagLink, ""))
             withStyle(
@@ -170,7 +181,7 @@ private fun StoriesSettingsSuccess(
         }
         NestTypography(
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(vertical = 16.dp, horizontal = 12.dp)
                 .constrainAs(tvAll) {
                     top.linkTo(tvDescription.bottom)
                     start.linkTo(tvDescription.start)
@@ -183,9 +194,10 @@ private fun StoriesSettingsSuccess(
                 viewModel.onEvent(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
             }
         )
+        //Text - Kategori update produk
         NestTypography(
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(bottom = 16.dp, start = 12.dp)
                 .constrainAs(tvCategory) {
                     top.linkTo(tvAll.bottom)
                     start.linkTo(tvAll.start)
@@ -194,11 +206,14 @@ private fun StoriesSettingsSuccess(
             textStyle = NestTheme.typography.paragraph3.copy(color = textColor)
         )
 
-        LazyColumn(modifier = Modifier.constrainAs(rvOptions) {
-            top.linkTo(tvCategory.bottom)
-            start.linkTo(tvCategory.start)
-            end.linkTo(parent.end)
-        }) {
+        //List of Options
+        LazyColumn(modifier = Modifier
+            .padding(start = 16.dp)
+            .constrainAs(rvOptions) {
+                top.linkTo(tvCategory.bottom)
+                start.linkTo(tvCategory.start)
+                end.linkTo(parent.end)
+            }) {
             items(pageInfo.options.drop(1)) { item ->
                 SettingOptItem(item, isEligible, textColor) {
                     viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
@@ -213,7 +228,8 @@ private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsVie
     val (text, type, action) = when (error) {
         is UnknownHostException -> Triple(
             stringResource(id = R.string.stories_settings_try_again),
-            NestGlobalErrorType.NoConnection, {})
+            NestGlobalErrorType.NoConnection
+        ) {}
 
         else -> Triple("", NestGlobalErrorType.PageNotFound) {
             viewModel.onEvent(
@@ -240,7 +256,7 @@ private fun SettingOptItem(
     ) {
         NestTypography(
             text = item.text,
-            textStyle = NestTheme.typography.paragraph3.copy(color = textColor),
+            textStyle = NestTheme.typography.paragraph2.copy(color = textColor),
         )
         AndroidView(
             factory = { context ->
