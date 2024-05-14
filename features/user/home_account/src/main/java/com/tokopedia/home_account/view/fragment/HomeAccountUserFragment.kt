@@ -221,7 +221,6 @@ open class HomeAccountUserFragment :
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
     private var statusNameTokopediaCard = ""
-    private var hasApplogScrollListener = false
 
     var adapter: HomeAccountUserAdapter? = null
     var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
@@ -1675,15 +1674,9 @@ open class HomeAccountUserFragment :
         endlessRecyclerViewScrollListener?.let {
             binding?.homeAccountUserFragmentRv?.run {
                 addOnScrollListener(it)
-                addRecommendationScrollListener()
+                addVerticalTrackListener()
             }
         }
-    }
-
-    private fun RecyclerView.addRecommendationScrollListener() {
-        if(hasApplogScrollListener) return
-        addVerticalTrackListener()
-        hasApplogScrollListener = true
     }
 
     private fun showLoadMoreLoading() {
