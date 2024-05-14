@@ -70,7 +70,7 @@ class TopAdsHeadlineViewModelTest {
             onSuccess =  onSuccess,
             onError = {})
 
-        Assert.assertEquals(onSuccess, null)
+        Assert.assertNull(onSuccess)
     }
 
     @Test
@@ -91,7 +91,25 @@ class TopAdsHeadlineViewModelTest {
         Assert.assertTrue(result)
     }
 
-    @Test()
+    @Test
+    fun `getTopAdsHeadlineData is empty null`() {
+        val result = null
+        every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
+        every { topAdsHeadlineUseCase.setParams(any(), any()) } just Runs
+        coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
+            displayAds = CpmModel(
+                data = mutableListOf()
+            )
+        )
+        viewModel.getTopAdsHeadlineData(
+            "",
+            onSuccess = {},
+            onError = result
+        )
+        Assert.assertNull(result)
+    }
+
+    @Test
     fun `getTopAdsHeadlineData is failed`() {
         var result = false
         every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
@@ -103,6 +121,19 @@ class TopAdsHeadlineViewModelTest {
             onError = {result = true})
 
         Assert.assertTrue(result)
+    }
+
+    @Test
+    fun `getTopAdsHeadlineData is failed null`() {
+        var result = null
+        every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
+        every { topAdsHeadlineUseCase.setParams(any(), any()) } just Runs
+        coEvery { topAdsHeadlineUseCase.executeOnBackground() } throws Exception()
+        viewModel.getTopAdsHeadlineData(
+            "",
+            onSuccess = {},
+            onError = result)
+        Assert.assertNull(result)
     }
 
 
