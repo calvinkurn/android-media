@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders.shorten.viewholder
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -56,6 +57,7 @@ class MissionWidgetViewHolder(
     }
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.global_component_2square_mission_widget
     }
 }

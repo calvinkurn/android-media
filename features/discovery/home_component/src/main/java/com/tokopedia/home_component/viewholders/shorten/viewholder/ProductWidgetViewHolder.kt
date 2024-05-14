@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponent2squareProductWidgetBinding
+import com.tokopedia.home_component.util.ShortenUtils
 import com.tokopedia.home_component.util.ShortenUtils.TWO_SQUARE_MAX_PRODUCT_LIMIT
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemContentCardAdapter
@@ -79,14 +80,10 @@ class ProductWidgetViewHolder(
             binding?.timerCountdown?.run {
                 isShowClockIcon = false
                 timerVariant = CountdownTimer.VARIANT_MAIN
-                targetDate = Calendar.getInstance().apply {
-                    val currentDate = Date()
-                    val currentMillisecond: Long = currentDate.time + header.serverTimeOffset
-                    val timeDiff = expiredTime.time - currentMillisecond
-                    add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
-                    add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
-                    add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
-                }
+                targetDate = ShortenUtils.createFormatTargetDate(
+                    expiredTime = expiredTime,
+                    serverTimeOffset = header.serverTimeOffset
+                )
                 onFinish = { onTimerFinished() }
             }
         }
@@ -94,7 +91,9 @@ class ProductWidgetViewHolder(
 
     private fun shouldShowRetryWhenCampaignTimeout() {
         binding?.retryContainer?.root?.show()
+
         binding?.retryContainer?.root?.setOnClickListener {
+            it.gone()
             listener.retryWidget()
         }
     }
@@ -108,6 +107,7 @@ class ProductWidgetViewHolder(
     }
 
     companion object {
-        @LayoutRes val LAYOUT = R.layout.global_component_2square_product_widget
+        @LayoutRes
+        val LAYOUT = R.layout.global_component_2square_product_widget
     }
 }

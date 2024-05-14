@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import java.util.*
 
 object ShortenUtils {
 
@@ -55,6 +56,17 @@ object ShortenUtils {
         childViewRef.forEach {
             it.setLayoutHeight(maxHeight)
             it.requestLayout()
+        }
+    }
+
+    fun createFormatTargetDate(expiredTime: Date, serverTimeOffset: Long): Calendar {
+        return Calendar.getInstance().apply {
+            val currentDate = Date()
+            val currentMillisecond: Long = currentDate.time + serverTimeOffset
+            val timeDiff = expiredTime.time - currentMillisecond
+            add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
+            add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
+            add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
         }
     }
 }
