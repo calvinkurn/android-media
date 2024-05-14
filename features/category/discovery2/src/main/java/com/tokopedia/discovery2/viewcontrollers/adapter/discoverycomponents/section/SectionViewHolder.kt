@@ -138,7 +138,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveForeground.setImageBitmap(bitmap)
                     addHeightForeground(festiveForeground)
                     festiveForeground.minimumHeight = 0
-                }, 100)
+                }, 350)
             },
                 onError = { festiveForeground.hide() })
         })
@@ -155,7 +155,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveBackground.setImageBitmap(bitmap)
                     addHeightBgOnce(festiveBackground)
                     festiveBackground.minimumHeight = 0
-                }, 100)
+                }, 350)
             },
                 onError = { festiveBackground.hide() })
         })
