@@ -1145,7 +1145,9 @@ class FeedPostViewModel @Inject constructor(
                         userId = userSession.userId
                     )
                 )
-            }.executeOnBackground()
+            }.executeOnBackground().also {
+                fetchCartCount()
+            }
         }
 
     /**
