@@ -99,4 +99,6 @@
     <dimen name="count_down_timer_timertextview_highlight_text_size">24sp</dimen>
 
     <dimen name="balance_outer_margin">4dp</dimen>
+    <dimen name="balance_widget_inner_margin">4dp</dimen>
+    <dimen name="balance_widget_outer_margin">16dp</dimen>
 </resources>

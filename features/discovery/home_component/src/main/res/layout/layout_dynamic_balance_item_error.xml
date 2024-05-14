@@ -12,6 +12,7 @@
         android:id="@+id/iconErrorBalance"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:background="@color/Unify_NN400"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

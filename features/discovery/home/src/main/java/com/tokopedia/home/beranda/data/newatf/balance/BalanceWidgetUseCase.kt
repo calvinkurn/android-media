@@ -9,7 +9,7 @@ import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
 import com.tokopedia.home.beranda.data.newatf.BaseAtfRepository
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
 import com.tokopedia.home.constant.AtfKey
@@ -30,10 +30,11 @@ import kotlin.coroutines.CoroutineContext
 @HomeScope
 class BalanceWidgetUseCase @Inject constructor(
     private val homeDispatcher: CoroutineDispatchers,
-    private val getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository,
+    private val getHomeBalanceWidgetUseCase: GetHomeBalanceWidgetUseCase,
     private val homeWalletRepository: HomeWalletAppRepository,
     private val homeRewardsRepository: HomeTokopointsListRepository,
     private val userSession: UserSessionInterface,
+    private val balanceWidgetMapper: BalanceWidgetMapper,
 ): BaseAtfRepository(), CoroutineScope {
 
     companion object {
@@ -52,7 +53,7 @@ class BalanceWidgetUseCase @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {
-        emitInitialLoading(atfMetadata)
+        initialLoading(atfMetadata)
 
         val param = Bundle().apply {
             putString(
@@ -61,173 +62,125 @@ class BalanceWidgetUseCase @Inject constructor(
             )
         }
 
-        val balanceWidget = getHomeBalanceWidgetRepository.getRemoteData(param)
+        val balanceWidget = getHomeBalanceWidgetUseCase.getRemoteData(param)
         if (balanceWidget.getHomeBalanceList.error.isNotBlank()) {
             throw MessageErrorException(balanceWidget.getHomeBalanceList.error)
         } else {
-            addPlaceholder(atfMetadata, balanceWidget)
-            conditionalFetchBalance(atfMetadata)
-        }
-    }
-
-    private suspend fun emitInitialLoading(atfMetadata: AtfMetadata) {
-        emitData(
-            AtfData(
-                atfMetadata = atfMetadata,
-                isCache = false
-            )
-        )
-    }
-
-    private fun conditionalFetchBalance(atfMetadata: AtfMetadata) {
-        balanceWidgetModel.balanceItems.forEachIndexed { idx, it ->
-            launch {
-                when (it) {
-                    is BalanceWalletModel -> {
-                        it.initialLoading(idx, atfMetadata)
-                        getWalletData().updateBalanceWidgetModel(atfMetadata)
-                    }
-                    is BalanceRewardsModel -> {
-                        it.initialLoading(idx, atfMetadata)
-                        getRewardsData().updateBalanceWidgetModel(atfMetadata)
-                    }
-
-                    else -> { }
-                }
+            addPlaceholder(balanceWidget)
+            balanceWidgetModel.balanceItems.forEachIndexed { idx, it ->
+                fetchData(it.type)
             }
         }
     }
 
-    private suspend fun addPlaceholder(
-        atfMetadata: AtfMetadata,
-        getHomeBalanceWidgetData: GetHomeBalanceWidgetData
-    ) {
-        val balanceItems = mutableListOf<BalanceItemModel>()
-        getHomeBalanceWidgetData.getHomeBalanceList.balancesList.forEachIndexed { idx, balance ->
-            val model = balance.initialLoading()
-            model?.let { balanceItems.add(it) }
-        }
-        balanceWidgetModel = DynamicBalanceWidgetModel(balanceItems)
-        emitData(
-            AtfData(
-                atfMetadata = atfMetadata,
-                atfContent = balanceWidgetModel,
-                atfStatus = AtfKey.STATUS_LOADING,
-                isCache = false
-            )
+    private fun addPlaceholder(getHomeBalanceWidgetData: GetHomeBalanceWidgetData) {
+        balanceWidgetModel = DynamicBalanceWidgetModel(
+            getHomeBalanceWidgetData.getHomeBalanceList.balancesList.map {
+                it.loading()
+            }
         )
     }
 
-    private suspend fun getWalletData(): BalanceItemModel {
-        return try {
-            val walletAppData = homeWalletRepository.getRemoteData()
-            if (walletAppData.walletappGetBalance.balances.isNotEmpty()) {
-                walletAppData.walletappGetBalance.balances.firstOrNull()?.let {
-                    BalanceWalletModel(
-                        data = it,
-                        state = DataStatus.SUCCESS,
-                    )
-                }.ifNull {
+    private fun fetchData(type: String) {
+        when(type) {
+            BalanceItemModel.GOPAY -> getWalletData()
+            BalanceItemModel.REWARDS -> getRewardsData()
+        }
+    }
+
+    fun getWalletData() {
+        launch {
+            val type = BalanceItemModel.GOPAY
+            try {
+                updateState(DataStatus.LOADING, type)
+                val walletAppData = homeWalletRepository.getRemoteData()
+                if (walletAppData.walletappGetBalance.balances.isNotEmpty()) {
+                    val balanceItemModel = walletAppData.walletappGetBalance.balances.firstOrNull()?.let {
+                        balanceWidgetMapper.mapToBalanceItemModel(it, type)
+                    }.ifNull {
+                        HomeServerLogger.logWarning(
+                            type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
+                            throwable = MessageErrorException(ERROR_NO_SUPPORTED_WALLET),
+                            reason = ERROR_NO_SUPPORTED_WALLET
+                        )
+                        throw IllegalStateException(ERROR_NO_SUPPORTED_WALLET)
+                    }
+                    updateBalanceItem(balanceItemModel, type)
+                } else {
                     HomeServerLogger.logWarning(
                         type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
-                        throwable = MessageErrorException(ERROR_NO_SUPPORTED_WALLET),
-                        reason = ERROR_NO_SUPPORTED_WALLET
+                        throwable = MessageErrorException(ERROR_UNABLE_TO_PARSE_WALLET),
+                        reason = ERROR_UNABLE_TO_PARSE_WALLET
                     )
-                    throw IllegalStateException(ERROR_NO_SUPPORTED_WALLET)
+                    throw IllegalStateException(ERROR_UNABLE_TO_PARSE_WALLET)
                 }
-            } else {
-                HomeServerLogger.logWarning(
-                    type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
-                    throwable = MessageErrorException(ERROR_UNABLE_TO_PARSE_WALLET),
-                    reason = ERROR_UNABLE_TO_PARSE_WALLET
-                )
-                throw IllegalStateException(ERROR_UNABLE_TO_PARSE_WALLET)
+            } catch (e: Exception) {
+                updateState(state = DataStatus.ERROR, type = type)
             }
-        } catch (e: Exception) {
-            updateState(state = DataStatus.ERROR, type = BalanceItemModel.GOPAY)
         }
     }
 
-    private suspend fun getRewardsData(): BalanceItemModel {
-        return try {
-            val rewardsData = homeRewardsRepository.getRemoteData()
-            rewardsData.tokopointsDrawerList.drawerList.firstOrNull()?.let {
-                BalanceRewardsModel(
-                    data = it,
-                    state = DataStatus.SUCCESS
-                )
-            }.ifNull {
-                updateState(state = DataStatus.ERROR, type = BalanceItemModel.REWARDS)
+    fun getRewardsData() {
+        launch {
+            val type = BalanceItemModel.REWARDS
+            try {
+                updateState(DataStatus.LOADING, type)
+                val rewardsData = homeRewardsRepository.getRemoteData()
+                rewardsData.tokopointsDrawerList.drawerList.firstOrNull()?.let {
+                    val balanceItemModel = balanceWidgetMapper.mapToBalanceItemModel(it, type)
+                    updateBalanceItem(balanceItemModel, type)
+                } ?: updateState(state = DataStatus.ERROR, type = type)
+            } catch (e: Exception) {
+                updateState(state = DataStatus.ERROR, type = type)
             }
-        } catch (e: Exception) {
-            updateState(state = DataStatus.ERROR, type = BalanceItemModel.REWARDS)
         }
     }
 
-    private suspend fun BalanceItemModel.updateBalanceWidgetModel(
-        atfMetadata: AtfMetadata
+    @SuppressLint("PII Data Exposure")
+    private fun GetHomeBalanceItem.loading(): BalanceItemModel {
+        return BalanceItemModel(
+            state = DataStatus.LOADING,
+            type = type
+        )
+    }
+
+    private suspend fun initialLoading(atfMetadata: AtfMetadata) {
+        emitData(
+            AtfData(
+                atfMetadata = atfMetadata,
+                isCache = false,
+                atfStatus = AtfKey.STATUS_LOADING
+            )
+        )
+    }
+
+    private suspend fun updateBalanceItem(
+        model: BalanceItemModel,
+        type: String
     ) {
+        val atfData = flow.value.firstOrNull() ?: return
+
         val balanceItems = balanceWidgetModel.balanceItems.toMutableList()
-        val index = balanceItems.indexOfFirst { it == this }
-        balanceItems[index] = this
-        balanceWidgetModel = balanceWidgetModel.copy(
-            balanceItems = balanceItems
-        )
-        emitData(
-            AtfData(
-                atfMetadata = atfMetadata,
-                atfContent = balanceWidgetModel,
-                atfStatus = AtfKey.STATUS_SUCCESS,
-                isCache = false
-            )
-        )
+        val index = balanceItems.indexOfFirst { it.type == type }
+        if(index == -1) return
+        balanceItems[index] = model
+        balanceWidgetModel = balanceWidgetModel.copy(balanceItems)
+
+        emitData(atfData.copy(atfContent = balanceWidgetModel))
     }
 
-    private fun GetHomeBalanceItem.initialLoading(): BalanceItemModel? {
-        return when(type) {
-            BalanceItemModel.GOPAY -> {
-                BalanceWalletModel(state = DataStatus.LOADING)
-            }
-            BalanceItemModel.REWARDS -> {
-                BalanceRewardsModel(state = DataStatus.LOADING)
-            }
-            else -> null
-        }
-    }
-
-    private suspend fun BalanceItemModel.initialLoading(index: Int, atfMetadata: AtfMetadata) {
-        val balanceItems = balanceWidgetModel.balanceItems.toMutableList()
-        balanceItems[index] = updateState(DataStatus.LOADING, type)
-        balanceWidgetModel = balanceWidgetModel.copy(
-            balanceItems = balanceItems
-        )
-        emitData(
-            AtfData(
-                atfMetadata = atfMetadata,
-                atfContent = balanceWidgetModel,
-                atfStatus = AtfKey.STATUS_SUCCESS,
-                isCache = false
-            )
-        )
-    }
-
-    private fun updateState(
+    private suspend fun updateState(
         state: DataStatus,
         type: String
-    ): BalanceItemModel {
-        return when(type) {
-            BalanceItemModel.GOPAY -> {
-                BalanceWalletModel(state = state)
-            }
-            BalanceItemModel.REWARDS -> {
-                BalanceRewardsModel(state = state)
-            }
+    ) {
+        val atfData = flow.value.firstOrNull() ?: return
 
-            else -> object : BalanceItemModel {
-                override val state: DataStatus
-                    get() = state
+        val balanceItems = balanceWidgetModel.balanceItems.toMutableList()
+        val index = balanceItems.indexOfFirst { it.type == type }
+        if(index == -1) return
+        balanceItems[index] = balanceItems[index].copy(state = state)
+        balanceWidgetModel = balanceWidgetModel.copy(balanceItems = balanceItems)
 
-            }
-        }
+        emitData(atfData.copy(atfContent = balanceWidgetModel))
     }
 }

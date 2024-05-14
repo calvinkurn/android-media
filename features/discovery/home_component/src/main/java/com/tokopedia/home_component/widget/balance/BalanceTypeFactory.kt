@@ -1,6 +1,6 @@
 package com.tokopedia.home_component.widget.balance
 
-import android.view.ViewGroup
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
 /**
@@ -11,5 +11,5 @@ interface BalanceTypeFactory {
     fun type(visitable: BalanceItemErrorUiModel): Int
     fun type(visitable: BalanceItemLoadingUiModel): Int
     fun type(visitable: AddressUiModel): Int
-    fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): AbstractViewHolder<BalanceItemVisitable>
+    fun onCreateViewHolder(view: View, viewType: Int): AbstractViewHolder<BalanceItemVisitable>
 }

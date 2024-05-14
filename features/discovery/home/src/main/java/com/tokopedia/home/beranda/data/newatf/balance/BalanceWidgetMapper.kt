@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.newatf.balance
 
+import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.newatf.AtfData
@@ -36,84 +37,92 @@ class BalanceWidgetMapper @Inject constructor() {
         } else {
             val balanceItems = mutableListOf<BalanceItemVisitable>()
             data.balanceItems.forEachIndexed { idx, it ->
-                when(it) {
-                    is BalanceWalletModel -> balanceItems.addIfNotNull(it.mapToBalanceItemVisitable(idx))
-                    is BalanceRewardsModel -> balanceItems.addIfNotNull(it.mapToBalanceItemVisitable(idx))
-                }
+                balanceItems.addIfNotNull(it.mapToBalanceItemVisitable(idx))
             }
-            balanceItems.add(AddressUiModel(balanceItems.size))
             BalanceWidgetUiModel(balanceItems)
         }
     }
 
-    private fun BalanceWalletModel.mapToBalanceItemVisitable(position: Int): BalanceItemVisitable? {
-        val contentType = BalanceItemVisitable.ContentType.GOPAY
+    @SuppressLint("PII Data Exposure")
+    private fun BalanceItemModel.mapToBalanceItemVisitable(position: Int): BalanceItemVisitable? {
+        val contentType = when(type) {
+            BalanceItemModel.GOPAY -> BalanceItemVisitable.ContentType.GOPAY
+            BalanceItemModel.REWARDS -> BalanceItemVisitable.ContentType.REWARDS
+            BalanceItemModel.ADDRESS -> BalanceItemVisitable.ContentType.ADDRESS
+            else -> return null
+        }
         return when(state) {
             DataStatus.LOADING -> BalanceItemLoadingUiModel(contentType, position)
             DataStatus.ERROR -> BalanceItemErrorUiModel(contentType, position)
-            DataStatus.SUCCESS -> data?.mapToBalanceItemUiModel(contentType, position)
+            DataStatus.SUCCESS -> mapToBalanceItemUiModel(contentType, position)
             else -> null
         }
     }
 
-    private fun Balances.mapToBalanceItemUiModel(
+    private fun BalanceItemModel.mapToBalanceItemUiModel(
         contentType: BalanceItemVisitable.ContentType,
         position: Int
-    ): BalanceItemUiModel? {
+    ): BalanceItemVisitable {
+        return if(contentType == BalanceItemVisitable.ContentType.ADDRESS) {
+            AddressUiModel(position)
+        } else {
+            BalanceItemUiModel(
+                contentType = contentType,
+                applink = applink,
+                url = url,
+                imageUrl = imageUrl,
+                text = text,
+                position = position,
+            )
+        }
+    }
+
+    fun mapToBalanceItemModel(
+        data: Balances,
+        type: String
+    ): BalanceItemModel? {
         val balanceTitle: String
-        if (isLinked) {
-            val gopayBalance = balance.find { it.walletCode == WALLET_CODE_GOPAY } ?: return null
-            if (gopayBalance.amountFmt.isEmpty()) {
+        if (data.isLinked) {
+            val gopayBalance = data.balance.find { it.walletCode == WALLET_CODE_GOPAY }
+            if (gopayBalance?.amountFmt.isNullOrEmpty()) {
                 HomeServerLogger.logWarning(
                     type = HomeServerLogger.TYPE_WALLET_BALANCE_EMPTY,
                     throwable = MessageErrorException(ERROR_GOPAY_EMPTY),
                     reason = ERROR_GOPAY_EMPTY,
-                    data = walletName
+                    data = data.walletName
                 )
                 return null
             } else {
-                balanceTitle = gopayBalance.amountFmt
+                balanceTitle = gopayBalance?.amountFmt.orEmpty()
             }
         } else {
-            val reserveBalance = reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS } ?: return null
-            if (reserveBalance.amount.isMoreThanZero()) {
-                balanceTitle = RESERVE_BALANCE_FORMAT.format(reserveBalance.amountFmt)
+            val reserveBalance = data.reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
+            if (reserveBalance?.amount.isMoreThanZero()) {
+                balanceTitle = RESERVE_BALANCE_FORMAT.format(reserveBalance?.amountFmt)
             } else {
-                balanceTitle = walletName
+                balanceTitle = data.walletName
             }
         }
-        return BalanceItemUiModel(
-            contentType = contentType,
-            url = redirectUrl,
-            imageUrl = iconUrl,
+        return BalanceItemModel(
+            type = type,
+            url = data.redirectUrl,
+            imageUrl = data.iconUrl,
             text = balanceTitle,
-            position = position,
+            state = DataStatus.SUCCESS
         )
     }
 
-    private fun BalanceRewardsModel.mapToBalanceItemVisitable(position: Int): BalanceItemVisitable? {
-        val type = BalanceItemVisitable.Type.BALANCE
-        val contentType = BalanceItemVisitable.ContentType.REWARDS
-        return when(state) {
-            DataStatus.LOADING -> BalanceItemLoadingUiModel(contentType, position)
-            DataStatus.ERROR -> BalanceItemErrorUiModel(contentType, position)
-            DataStatus.SUCCESS -> data?.mapToBalanceItemUiModel(type, contentType, position)
-            else -> null
-        }
-    }
-
-    private fun TokopointsDrawer.mapToBalanceItemUiModel(
-        type: BalanceItemVisitable.Type,
-        contentType: BalanceItemVisitable.ContentType,
-        position: Int
-    ): BalanceItemUiModel {
-        return BalanceItemUiModel(
-            contentType = contentType,
-            applink = redirectAppLink,
-            url = redirectURL,
-            imageUrl = iconImageURL,
-            text = label,
-            position = position,
+    fun mapToBalanceItemModel(
+        data: TokopointsDrawer,
+        type: String,
+    ): BalanceItemModel {
+        return BalanceItemModel(
+            type = type,
+            applink = data.redirectAppLink,
+            url = data.redirectURL,
+            imageUrl = data.iconImageURL,
+            text = data.label,
+            state = DataStatus.SUCCESS
         )
     }
 

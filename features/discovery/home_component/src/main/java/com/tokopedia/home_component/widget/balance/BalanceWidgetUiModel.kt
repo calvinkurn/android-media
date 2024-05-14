@@ -8,8 +8,7 @@ data class BalanceWidgetUiModel (
     }
 
     override fun areItemsTheSame(newItem: BalanceWidgetVisitable): Boolean {
-        // there must be exactly 1 balance widget, so areItemsTheSame is always true.
-        return true
+        return newItem is BalanceWidgetUiModel
     }
 
     override fun type(typeFactory: BalanceWidgetTypeFactory): Int {

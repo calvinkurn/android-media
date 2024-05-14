@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.widget.balance
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,7 +20,8 @@ class BalanceWidgetAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<BalanceItemVisitable> {
-        return balanceTypeFactory.onCreateViewHolder(parent, viewType)
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return balanceTypeFactory.onCreateViewHolder(view, viewType)
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -1,6 +1,6 @@
 package com.tokopedia.home_component.widget.balance
 
-import android.view.ViewGroup
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
@@ -24,12 +24,12 @@ class BalanceTypeFactoryImpl: BaseAdapterTypeFactory(), BalanceTypeFactory {
         return AddressViewHolder.LAYOUT
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): AbstractViewHolder<BalanceItemVisitable> {
+    override fun onCreateViewHolder(view: View, viewType: Int): AbstractViewHolder<BalanceItemVisitable> {
         return when(viewType) {
-            BalanceItemViewHolder.LAYOUT -> BalanceItemViewHolder(viewGroup)
-            BalanceItemErrorViewHolder.LAYOUT -> BalanceItemErrorViewHolder(viewGroup)
-            BalanceItemLoadingViewHolder.LAYOUT -> BalanceItemLoadingViewHolder(viewGroup)
-            else -> super.createViewHolder(viewGroup, viewType)
+            BalanceItemViewHolder.LAYOUT -> BalanceItemViewHolder(view)
+            BalanceItemErrorViewHolder.LAYOUT -> BalanceItemErrorViewHolder(view)
+            BalanceItemLoadingViewHolder.LAYOUT -> BalanceItemLoadingViewHolder(view)
+            else -> super.createViewHolder(view, viewType)
         } as AbstractViewHolder<BalanceItemVisitable>
     }
 }
