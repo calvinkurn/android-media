@@ -1004,7 +1004,7 @@ open class BuyerOrderDetailFragment :
                 val ctaCopyLink: String =
                     data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK).orEmpty()
 
-                showCommonToaster(messageFailGenerateAffiliateLink, ctaCopyLink) {
+                showErrorToaster(messageFailGenerateAffiliateLink, ctaCopyLink) {
                     showCommonToaster(messageCopyLink)
                 }
             }
