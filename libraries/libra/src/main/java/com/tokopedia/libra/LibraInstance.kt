@@ -17,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
  * How-to use:
  *
  * 1. You have to hit the fetcher first, this action will be invoked the remote service and store locally,
- * hence, the N+1 session will able to consume the data:
+ * hence, the N+1 session will able to consume the data. Please execute this method either onCreate nor onResume lifecycle.
  *
  * ```
  * LibraInstance.get(context).fetch(LibraOwner)
@@ -25,10 +25,15 @@ import kotlin.coroutines.CoroutineContext
  *
  * 2. To fetch the variant, we have 2 options:
  * 2.1. Variant as a raw data which returns as String
- * 2.2. Variant as a state (control-variant built-in handled)
+ * 2.2. Variant as a data which returns as LibraResult
+ * 2.3. Variant as a state (control-variant built-in handled)
  *
  * ```
- * LibraInstance.get(context).variant(LibraOwner, experiment): String
+ * LibraInstance.get(context).variant(LibraOwner, experiment): LibraResult
+ * ```
+ * or
+ * ```
+ * LibraInstance.get(context).variantAsString(LibraOwner, experiment): String
  * ```
  * or
  * ```
@@ -36,7 +41,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * when(state) {
  *   is LibraState.Control -> // control
- *   is LibraState.Variant -> // state.variant
+ *   is LibraState.Variant -> // state.data.variant
  * }
  * ```
  *
