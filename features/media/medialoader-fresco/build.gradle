@@ -28,6 +28,9 @@ dependencies {
 
     implementation rootProject.ext.bytedanceFrescoDependencies.fresco
     implementation rootProject.ext.bytedanceFrescoDependencies.statistic
+    implementation rootProject.ext.bytedanceFrescoDependencies.okhttp3
+
+    implementation rootProject.ext.networkDependencies.retrofit
 
     implementation rootProject.ext.slardarDependencies.commonMonitor
     implementation rootProject.ext.ttnetDependencies.baseLibsTtnet

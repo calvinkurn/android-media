@@ -590,6 +590,7 @@ ext {
             websupport        : "com.bytedance.fresco:webpsupport:$bytedanceFrescoVersion",
             statistic         : "com.bytedance.fresco:statistics:$bytedanceFrescoVersion",
             heif              : "com.bytedance.fresco:heif:$bytedanceFrescoVersion",
-            encoder           : "com.bytedance.fresco:encoder:$bytedanceFrescoVersion"
+            encoder           : "com.bytedance.fresco:encoder:$bytedanceFrescoVersion",
+            okhttp3           : "com.bytedance.fresco:imagepipeline-okhttp3:$bytedanceFrescoVersion"
     ]
 }

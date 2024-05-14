@@ -1,6 +1,5 @@
 package com.tokopedia.media.loaderfresco.tracker
 
-import android.util.Log
 import com.bytedance.apm.ApmAgent
 import com.optimize.statistics.FrescoMonitor
 import com.optimize.statistics.FrescoMonitorConst

@@ -421,5 +421,6 @@ dependencies {
     //Fresco Bytedance
     implementation rootProject.ext.bytedanceFrescoDependencies.fresco
     implementation rootProject.ext.bytedanceFrescoDependencies.statistic
+    implementation rootProject.ext.bytedanceFrescoDependencies.okhttp3
 
 }
