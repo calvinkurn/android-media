@@ -10,8 +10,6 @@ import com.tokopedia.logisticcart.datamock.DummyProvider
 import com.tokopedia.logisticcart.datamock.DummyProvider.getRatesResponseWithPromo
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPaidSection
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoAndPreOrderModel
-import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
-import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaErrorAndTextEta
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceUiRatesHidden
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithoutEligibleCourierPromo
@@ -38,7 +36,6 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
@@ -375,7 +372,10 @@ class ShippingDurationViewModelTest {
         val initialList = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
 
         // When
-        viewModel.onCollapseClicked(!shippingRecommendationData.paidSectionInfoUiModel.isCollapsed, isOcc = false)
+        viewModel.onCollapseClicked(
+            !shippingRecommendationData.paidSectionInfoUiModel.isCollapsed,
+            isOcc = false
+        )
 
         // Then
         val result = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
@@ -442,66 +442,6 @@ class ShippingDurationViewModelTest {
 
         // Then
         assert(actual.find { it is NotifierModel } != null)
-    }
-
-    @Test
-    fun `When in checkout and promo has eta error code Then initiate showcase`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaError()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, false)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
-        assert(firstDuration.isShowShowCase)
-    }
-
-    @Test
-    fun `When in checkout and promo has eta error code but no services data Then do nothing`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaError()
-        shippingRecommendationData.shippingDurationUiModels = listOf()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, false)
-
-        // Then
-        val firstDuration = shippingRecommendationData.shippingDurationUiModels.firstOrNull()
-        assertNull(firstDuration?.isShowShowCase)
-    }
-
-    @Test
-    fun `When in checkout and promo has no eta text but error code is not true Then dont initiate showcase`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaErrorAndTextEta()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, false)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
-        assertFalse(firstDuration.isShowShowCase)
-    }
-
-    @Test
-    fun `When in occ and promo has eta error code Then dont initiate showcase`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaError()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, true)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
-        assertFalse(firstDuration.isShowShowCase)
     }
 
     /*

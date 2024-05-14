@@ -226,10 +226,6 @@ class ShippingDurationViewModel @Inject constructor(
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
         val eligibleServices = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }
-        if (!isOcc && promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
-            initiateShowcase(eligibleServices)
-        }
-
         val uiModelList: MutableList<RatesViewModelType> = mutableListOf()
 
         // paid shipping
@@ -257,10 +253,6 @@ class ShippingDurationViewModel @Inject constructor(
         }
 
         return uiModelList
-    }
-
-    private fun initiateShowcase(services: List<ShippingDurationUiModel>) {
-        services.firstOrNull()?.isShowShowCase = true
     }
 
     fun onCollapseClicked(collapsed: Boolean, isOcc: Boolean) {
