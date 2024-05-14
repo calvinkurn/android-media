@@ -96,6 +96,6 @@ data class Product(
     val productMaxOrder: Int = 0,
     @SerializedName("product_invenage_value")
     val productInvenageValue: Int = 0,
-    @SerializedName("product_switch_value")
-    val productSwitchValue: Int = 0
+    @SerializedName("product_switch_invenage")
+    val productSwitchInvenage: Int = 0
 )

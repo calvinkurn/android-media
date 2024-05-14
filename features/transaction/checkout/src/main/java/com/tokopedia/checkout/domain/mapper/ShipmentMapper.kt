@@ -470,7 +470,7 @@ class ShipmentMapper @Inject constructor() {
                     productMinOrder = product.productMinOrder
                     productMaxOrder = product.productMaxOrder
                     productInvenageValue = product.productInvenageValue
-                    productSwitchInvenage = product.productSwitchValue
+                    productSwitchInvenage = product.productSwitchInvenage
                 }
                 productListResult.add(productResult)
             }
