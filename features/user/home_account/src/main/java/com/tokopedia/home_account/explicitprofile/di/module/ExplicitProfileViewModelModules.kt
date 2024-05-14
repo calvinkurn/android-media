@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileSharedViewModel
 import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileViewModel
 import com.tokopedia.home_account.explicitprofile.features.categories.CategoryViewModel
+import com.tokopedia.home_account.explicitprofile.personalize.ExplicitPersonalizeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,5 +37,11 @@ abstract class ExplicitProfileViewModelModules {
     @IntoMap
     @ViewModelKey(CategoryViewModel::class)
     abstract fun categoryViewModel(viewModel: CategoryViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(ExplicitPersonalizeViewModel::class)
+    abstract fun explicitPersonalizeViewModel(viewModel: ExplicitPersonalizeViewModel): ViewModel
 
 }

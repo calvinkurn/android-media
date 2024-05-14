@@ -15,7 +15,7 @@ class FilterMenuViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var icon: ImageView? = itemView.findViewById(R.id.ivIcon)
     private var title: TextView? = itemView.findViewById(R.id.tvTitle)
 
-    fun bind(menu: TopchatItemMenu, onClick: ((TopchatItemMenu, Int) -> Unit)?) {
+    fun bind(menu: TopchatItemMenu, onClick: ((TopchatItemMenu) -> Unit)?) {
         bindCheckIcon(menu)
         bindTitle(menu)
         bindClickListener(menu, onClick)
@@ -29,9 +29,12 @@ class FilterMenuViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         title?.text = menu.title
     }
 
-    private fun bindClickListener(menu: TopchatItemMenu, onClick: ((TopchatItemMenu, Int) -> Unit)?) {
+    private fun bindClickListener(
+        menu: TopchatItemMenu,
+        onClick: ((TopchatItemMenu) -> Unit)?
+    ) {
         itemView.setOnClickListener {
-            onClick?.let { click -> click(menu, adapterPosition) }
+            onClick?.let { click -> click(menu) }
         }
     }
 

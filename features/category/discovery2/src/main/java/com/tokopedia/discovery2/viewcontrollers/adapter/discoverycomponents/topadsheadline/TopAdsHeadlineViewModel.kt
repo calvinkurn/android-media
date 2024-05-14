@@ -8,7 +8,7 @@ import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class TopAdsHeadlineViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class TopAdsHeadlineViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
 
     @JvmField
     @Inject
