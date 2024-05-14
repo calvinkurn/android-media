@@ -13,20 +13,20 @@ class ProductStockBar(private val view: View) {
     private val stockBarInActive = view.findViewById<View>(R.id.stockbar_inactive)
     private val icFire = view.findViewById<ImageView>(R.id.ic_fire)
 
-    fun shouldShowStockBar(isStockBarSupported: Boolean, percentage: Int) {
+    fun shouldShowStockBar(isStockBarSupported: Boolean, model: SmallProductModel.StockBar) {
         if (!isStockBarSupported) {
             hideStockBar()
             return
         }
 
         view.post {
-            val width = view.measuredWidth * percentage / 100
+            val width = view.measuredWidth * model.percentage / 100
             setStockBarActiveLength(width)
 
-            if (percentage <= MIN_THRESHOLD_FIRE_VISIBLE) {
-                showStockBar()
-            } else {
-                showStockBarWithFire()
+            when (model.shouldHandleFireIconVisibility()) {
+                is SmallProductModel.StockBar.Type.Inactive -> showInactiveStockBar()
+                is SmallProductModel.StockBar.Type.ActiveWithoutFire -> showStockBar()
+                is SmallProductModel.StockBar.Type.ActiveWithFire -> showStockBarWithFire()
             }
         }
     }
@@ -41,6 +41,8 @@ class ProductStockBar(private val view: View) {
         stockBarActive.show()
         stockBarInActive.show()
         icFire.gone()
+
+        stockBarActive.requestLayout()
     }
 
     private fun showStockBarWithFire() {
@@ -49,15 +51,19 @@ class ProductStockBar(private val view: View) {
         stockBarActive.show()
         stockBarInActive.show()
         icFire.show()
+
+        stockBarActive.requestLayout()
+    }
+
+    private fun showInactiveStockBar() {
+        stockBarInActive.show()
+        stockBarActive.gone()
+        icFire.gone()
     }
 
     private fun hideStockBar() {
         stockBarActive.gone()
         stockBarInActive.gone()
         icFire.gone()
-    }
-
-    companion object {
-        const val MIN_THRESHOLD_FIRE_VISIBLE = 20
     }
 }

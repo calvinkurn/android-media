@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:card_type="clear"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="4dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,7 +22,7 @@
             android:maxLines="1"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             tools:text="Lanjut cek yuk"/>

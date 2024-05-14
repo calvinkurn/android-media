@@ -11,13 +11,13 @@ import com.tokopedia.home_component.util.ShortenUtils.TWO_SQUARE_MAX_PRODUCT_LIM
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.viewholder.item.ItemContentCardAdapter
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
+import com.tokopedia.home_component.widget.card.timer.CountdownTimer
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.DateHelper
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
@@ -78,8 +78,8 @@ class ProductWidgetViewHolder(
             binding?.timerCountdown?.show()
             binding?.timerCountdown?.run {
                 isShowClockIcon = false
-                timerVariant = TimerUnifySingle.VARIANT_MAIN
-                timerFormat = TimerUnifySingle.FORMAT_HOUR
+                timerVariant = CountdownTimer.VARIANT_MAIN
+                timerFormat = CountdownTimer.FORMAT_HOUR
                 targetDate = Calendar.getInstance().apply {
                     val currentDate = Date()
                     val currentMillisecond: Long = currentDate.time + header.serverTimeOffset

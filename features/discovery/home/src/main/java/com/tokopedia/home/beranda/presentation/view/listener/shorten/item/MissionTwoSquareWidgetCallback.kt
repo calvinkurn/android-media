@@ -32,7 +32,8 @@ class MissionTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Missi
 
         AppLogAnalytics.putPageData(
             key = AppLogParam.ENTER_METHOD,
-            value = AppLogHomeChannel.missionEnterMethod(
+            value = AppLogHomeChannel.getEnterMethod(
+                data.tracker.layoutTrackerType,
                 data.tracker.recomPageName,
                 position
             )

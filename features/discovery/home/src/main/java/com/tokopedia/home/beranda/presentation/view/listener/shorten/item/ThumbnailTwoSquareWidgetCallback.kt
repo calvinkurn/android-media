@@ -29,7 +29,8 @@ class ThumbnailTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Thu
 
         AppLogAnalytics.putPageData(
             key = AppLogParam.ENTER_METHOD,
-            value = AppLogHomeChannel.dealsEnterMethod(
+            value = AppLogHomeChannel.getEnterMethod(
+                data.tracker.layoutTrackerType,
                 data.tracker.recomPageName,
                 position
             )

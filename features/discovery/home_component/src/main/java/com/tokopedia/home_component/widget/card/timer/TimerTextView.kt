@@ -38,7 +38,7 @@ class TimerTextView : View {
             newFirstPosY = mHeight * -1
             newSecondPosY = mHeight * -1
         }
-    private var textColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
+    private var textColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
     private var textSize = resources.getDimensionPixelSize(R.dimen.count_down_timer_timertextview_text_size).toFloat()
     private var typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
 

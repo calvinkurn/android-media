@@ -5,11 +5,9 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.core.view.marginStart
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.WidgetSmallProductCardBinding
 import com.tokopedia.home_component.util.loadImage
-import com.tokopedia.home_component.widget.card.ProductStockBar.Companion.MIN_THRESHOLD_FIRE_VISIBLE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -68,15 +66,10 @@ class SmallProductCard @JvmOverloads constructor(
     }
 
     private fun renderStockBar(data: SmallProductModel.StockBar) {
-        stockBar?.shouldShowStockBar(data.isEnabled, data.percentage)
-
-        val value = if (data.isEnabled && data.percentage > MIN_THRESHOLD_FIRE_VISIBLE) {
-            4.toPx()
-        } else {
-            2.toPx()
-        }
-
+        val value = if (data.isEnabled && data.percentageOnFireRange()) 4.toPx() else 2.toPx()
         binding.txtTitle.setCustomMargin(MarginArea.Top(value))
+
+        stockBar?.shouldShowStockBar(data.isEnabled, data)
     }
 
     private fun setupProductBannerImage(url: String) {
@@ -125,16 +118,14 @@ class SmallProductCard @JvmOverloads constructor(
 
     private fun basicTextStyle(typography: Typography?, text: String, style: SmallProductModel.TextStyle) {
         typography?.text = if (style.shouldRenderHtmlFormat.not()) text else HtmlUtil.fromHtml(text)
+        if (style.textColor.isNotEmpty()) typography?.setTextColor(Color.parseColor(style.textColor))
 
         val weight = if (style.isBold) Typography.BOLD else Typography.REGULAR
         typography?.setWeight(weight)
 
         if (style.isTextStrikethrough) {
             typography?.strikethrough()
-        }
-
-        if (style.textColor.isNotEmpty()) {
-            typography?.setTextColor(Color.parseColor(style.textColor))
+            typography?.requestLayout()
         }
     }
 
