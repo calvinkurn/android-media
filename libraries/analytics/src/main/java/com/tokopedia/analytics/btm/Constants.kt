@@ -7,7 +7,8 @@ enum class Page(val str: String) {
     HOMEPAGE("a87943.b83792"),
     FEED("a87943.b3679"),
     WISHLIST("a87943.b0751"),
-    ORDERLIST("a87943.b1605")
+    ORDERLIST("a87943.b1605"),
+    PDP("a87943.b2815")
 }
 
 /**

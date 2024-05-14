@@ -6,7 +6,6 @@ import com.bytedance.android.btm.api.BtmSDK
 import com.bytedance.android.btm.api.model.BtmModel
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
-import com.tokopedia.analytics.btm.InitBtmSdk
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
@@ -209,9 +208,11 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        val enterMethod = if(pageDataList.size > 1)
+        val enterMethod = if (pageDataList.size > 1) {
             getLastDataBeforeCurrent(ENTER_METHOD)
-        else getLastData(ENTER_METHOD)
+        } else {
+            getLastData(ENTER_METHOD)
+        }
         put(ENTER_METHOD, enterMethod)
     }
 
@@ -232,10 +233,12 @@ object AppLogAnalytics {
         }
     }
 
-    fun sendWithBtmModel(event: String, btmModel: BtmModel, params: JSONObject) {
-        val btmParams = BtmSDK.createReportParams(btmModel.btm,btmModel.pageFinder)
-        btmParams.forEach { (key, value) ->
-            params.put(key,value)
+    fun sendWithBtmModel(event: String, btmModel: BtmModel?, params: JSONObject) {
+        if (btmModel != null) {
+            val btmParams = BtmSDK.createReportParams(btmModel.btm, btmModel.pageFinder)
+            btmParams.forEach { (key, value) ->
+                params.put(key, value)
+            }
         }
         send(event, params)
     }
@@ -304,7 +307,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-                ?.get(IS_SHADOW) == true
+            ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -512,19 +515,23 @@ object AppLogAnalytics {
             it.put("funnel", if (buyType == AtcBuyType.ATC) "regular" else "occ")
             it.put("buy_type", buyType.code.toString())
             it.put("os_name", "android")
-            it.put("cart_item", JSONArray().also { item ->
-                cartIds.forEach { id ->
-                    item.put(JSONObject().also { j ->
-                        j.put("cart_id", id)
-                        if (buyType == AtcBuyType.ATC) {
-                            j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
-                        } else {
-                            j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutOcc())
-                        }
-
-                    })
+            it.put(
+                "cart_item",
+                JSONArray().also { item ->
+                    cartIds.forEach { id ->
+                        item.put(
+                            JSONObject().also { j ->
+                                j.put("cart_id", id)
+                                if (buyType == AtcBuyType.ATC) {
+                                    j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
+                                } else {
+                                    j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutOcc())
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }.toString()
     }
 

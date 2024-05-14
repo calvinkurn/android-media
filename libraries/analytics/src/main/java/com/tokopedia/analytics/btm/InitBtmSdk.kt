@@ -22,86 +22,86 @@ object InitBtmSdk {
 
     fun init(context: Context) {
         Timber.tag(TAG).i("-------init-------")
-        BtmSDK.init(BtmSDKBuilder().apply {
-            app = context.applicationContext as Application
-            appIds = arrayOf(AppLog.getAppId())
-            debug = false
-            versionName = "1"
-            updateVersionCode = "1"
-            appLogDepend = object : IAppLogDepend {
-                override fun onEventV1(model: EventModelV1) {
-                }
-
-                override fun onEventV3(model: EventModelV3) {
-                    if (model.event == null) {
-                        return
+        BtmSDK.init(
+            BtmSDKBuilder().apply {
+                app = context.applicationContext as Application
+                appIds = arrayOf(AppLog.getAppId())
+                debug = false
+                versionName = "1"
+                updateVersionCode = "1"
+                appLogDepend = object : IAppLogDepend {
+                    override fun onEventV1(model: EventModelV1) {
                     }
-                    var modelV3 = EventModelV3(model.event, model.params)
-                    modelV3 = BtmSDK.addBtmEventParam(modelV3)
-                    Log.d(TAG, modelV3.event + " -> " + modelV3.params)
-                    model.event?.let {
-                        AppLog.onEventV3(it, model.params)
+
+                    override fun onEventV3(model: EventModelV3) {
+                        if (model.event == null) {
+                            return
+                        }
+                        var modelV3 = EventModelV3(model.event, model.params)
+                        modelV3 = BtmSDK.addBtmEventParam(modelV3)
+                        Log.d(TAG, modelV3.event + " -> " + modelV3.params)
+                        model.event?.let {
+                            AppLog.onEventV3(it, model.params)
+                        }
                     }
                 }
-            }
-            aLogDepend = object : IALogDepend {
-                override fun v(tag: String, msg: String) {
-                    Timber.tag(tag).v(msg)
+                aLogDepend = object : IALogDepend {
+                    override fun v(tag: String, msg: String) {
+                        Timber.tag(tag).v(msg)
+                    }
+
+                    override fun i(tag: String, msg: String) {
+                        Timber.tag(tag).i(msg)
+                    }
+
+                    override fun d(tag: String, msg: String) {
+                        Timber.tag(tag).d(msg)
+                    }
+
+                    override fun w(tag: String, msg: String) {
+                        Timber.tag(tag).w(msg)
+                    }
+
+                    override fun e(tag: String, msg: String) {
+                        Timber.tag(tag).e(msg)
+                    }
+                }
+                logDepend = object : ILogDepend {
+                    override fun v(tag: String, msg: String) {
+                        Timber.tag(tag).v(msg)
+                    }
+
+                    override fun i(tag: String, msg: String) {
+                        Timber.tag(tag).i(msg)
+                    }
+
+                    override fun d(tag: String, msg: String) {
+                        Timber.tag(tag).d(msg)
+                    }
+
+                    override fun w(tag: String, msg: String) {
+                        Timber.tag(tag).w(msg)
+                    }
+
+                    override fun e(tag: String, msg: String) {
+                        Timber.tag(tag).e(msg)
+                    }
                 }
 
-                override fun i(tag: String, msg: String) {
-                    Timber.tag(tag).i(msg)
-                }
+                settingDepend = object : ISettingDepend {
+                    override fun getSetting(): String? {
+                        return Settings
+                    }
 
-                override fun d(tag: String, msg: String) {
-                    Timber.tag(tag).d(msg)
+                    override fun registerUpdateCallback(callback: OnSettingUpdateCallback) {
+                    }
                 }
-
-                override fun w(tag: String, msg: String) {
-                    Timber.tag(tag).w(msg)
-                }
-
-                override fun e(tag: String, msg: String) {
-                    Timber.tag(tag).e(msg)
-                }
-            }
-            logDepend = object : ILogDepend {
-                override fun v(tag: String, msg: String) {
-                    Timber.tag(tag).v(msg)
-                }
-
-                override fun i(tag: String, msg: String) {
-                    Timber.tag(tag).i(msg)
-                }
-
-                override fun d(tag: String, msg: String) {
-                    Timber.tag(tag).d(msg)
-                }
-
-                override fun w(tag: String, msg: String) {
-                    Timber.tag(tag).w(msg)
-                }
-
-                override fun e(tag: String, msg: String) {
-                    Timber.tag(tag).e(msg)
-                }
-            }
-
-            settingDepend = object : ISettingDepend {
-                override fun getSetting(): String? {
-                    return Settings
-                }
-
-                override fun registerUpdateCallback(callback: OnSettingUpdateCallback) {
-
-                }
-            }
-            defaultA = "a87943"
-            deviceId = AppLog.getDid()
-            enableDebugCrash = false
-            enableBtmPageAnnotation = false
-            appId = Integer.getInteger(AppLog.getAppId()) ?: 0
-            //TODO TOKO does not have thread pool management and uses the default thread pool
+                defaultA = "a87943"
+                deviceId = AppLog.getDid()
+                enableDebugCrash = false
+                enableBtmPageAnnotation = false
+                appId = Integer.getInteger(AppLog.getAppId()) ?: 0
+                // TODO TOKO does not have thread pool management and uses the default thread pool
 //            executorDepend = object : IExecutorDepend {
 //                override fun getCPUExecutor(): ExecutorService? {
 //                    return ThreadPoolHelper.getDefaultExecutor()
@@ -119,16 +119,17 @@ object InitBtmSdk {
 //                    return ThreadPoolHelper.getSerialExecutor()
 //                }
 //            }
-            //TODO When pulled up by other applications, we need to pay attention to the name of the pulled up application.
+                // TODO When pulled up by other applications, we need to pay attention to the name of the pulled up application.
 //            appLaunchDepend = object : IAppLaunchDepend {
 //                override fun getReferrer(): String {
 //                    return ServiceManager.get().getService(IRouteMonitorApi::class.java)
 //                        .getReferrer()
 //                }
 //            }
-        })
+            }
+        )
         BtmSDK.getDepend().addUnknownWhiteClass(
-            
+            "com.tokopedia.tkpd.ConsumerSplashScreen"
         )
         AppLog.addEventObserver(appLogEventListener)
     }
@@ -156,7 +157,6 @@ object InitBtmSdk {
         }
     }
 }
-
 
 const val Settings = """
     {

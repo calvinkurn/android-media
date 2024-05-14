@@ -7,14 +7,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.lifecycleScope
-import com.bytedance.android.btm.api.BtmSDK
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.IAppLogPdpActivity
 import com.tokopedia.analytics.byteio.PageName
-import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
@@ -44,8 +44,12 @@ import javax.inject.Inject
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface, HasComponent<ProductDetailComponent>,
-    IAppLogPdpActivity, AppLogInterface {
+open class ProductDetailActivity :
+    BaseSimpleActivity(),
+    ProductDetailActivityInterface,
+    HasComponent<ProductDetailComponent>,
+    IAppLogPdpActivity,
+    AppLogInterface {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -290,6 +294,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        BtmApi.registerBtmPageOnCreate(this, Page.PDP)
         try {
             initBlocksPLTMonitoring()
             userSessionInterface = UserSession(this)
@@ -301,8 +306,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         } catch (e: Throwable) {
             onApplinkParseError(e)
         }
-        //TODO:
-        BtmSDK.registerBtmPageOnCreate(this,"a0.b2333",null)
 
         productDetailComponent = initializeComponent()
         productDetailComponent?.inject(this)
@@ -525,7 +528,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     override fun isEnterFromWhitelisted(): Boolean {
         return false
-
     }
 }
 
