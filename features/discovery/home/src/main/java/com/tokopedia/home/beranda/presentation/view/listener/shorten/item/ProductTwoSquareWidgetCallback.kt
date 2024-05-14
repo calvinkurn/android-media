@@ -24,6 +24,7 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
     }
 
     override fun itemProductClicked(data: ItemProductWidgetUiModel, position: Int) {
+        listener.onDynamicChannelClicked(data.appLink)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Kd2SquareTracker.cardClicked(
                 data.tracker,

@@ -29,6 +29,7 @@ object TwoSquareProductWidgetMapper : BaseShortenWidgetMapper<ProductWidgetUiMod
                             percentage = grid.soldPercentage
                         )
                     ),
+                    appLink = grid.applink,
                     tracker = DynamicChannelComponentMapper.mapHomeChannelTrackerToModel(channel, grid),
                     verticalPosition = verticalPosition
                 )
