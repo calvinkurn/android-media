@@ -9,12 +9,12 @@ import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsPageUiModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -42,26 +42,48 @@ class StoriesSettingsViewModel @Inject constructor(
             is StoriesSettingsAction.Navigate -> viewModelScope.launch {
                 _event.emit(StoriesSettingEvent.Navigate(action.appLink))
             }
+
             else -> {}
+        }
+    }
+
+    private val onEligibleError = CoroutineExceptionHandler { _, _ ->
+        _pageInfo.update { data ->
+            data.copy(
+                state = ResultState.Success,
+                config = data.config.copy(isEligible = false)
+            )
         }
     }
 
     private fun getList() {
         viewModelScope.launchCatchError(block = {
-            val isEligible = withContext(dispatchers.io) {
-                storiesChecker.isEligible()
+            val eligibleJob = viewModelScope.launch(onEligibleError) {
+                val value = storiesChecker.isEligible()
+                _pageInfo.update { data -> data.copy(config = data.config.copy(isEligible = value)) }
             }
-            val data = repository.getOptions()
-            _pageInfo.update { result ->
-                result.copy(
-                    state = ResultState.Success,
-                    config = data.config.copy(isEligible = isEligible),
-                    options = data.options
-                )
+
+            eligibleJob.join()
+
+            if (eligibleJob.isCancelled) return@launchCatchError
+
+            viewModelScope.launchCatchError(block = {
+                val data = repository.getOptions()
+                _pageInfo.update { result ->
+                    result.copy(
+                        state = ResultState.Success,
+                        options = data.options,
+                        config = result.config.copy(
+                            articleWebLink = data.config.articleWebLink,
+                            articleAppLink = data.config.articleAppLink,
+                            articleCopy = data.config.articleCopy
+                        ),
+                    )
+                }
+            }) {
+                _pageInfo.update { data -> data.copy(state = ResultState.Fail(it)) }
             }
-        }) {
-            _pageInfo.update { data -> data.copy(state = ResultState.Fail(it)) }
-        }
+        }) {}
     }
 
     private fun updateOption(option: StoriesSettingOpt) {

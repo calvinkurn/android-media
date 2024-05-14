@@ -51,6 +51,7 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
     NestTheme(isOverrideStatusBarColor = false) {
         val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
 
+
         when (val state = pageInfo.state) {
             ResultState.Success -> StoriesSettingsSuccess(
                 viewModel = viewModel,
@@ -310,7 +311,7 @@ data class StoriesSettingsPageUiModel(
         val Empty
             get() = StoriesSettingsPageUiModel(
                 options = emptyList(),
-                config = StoriesSettingConfig("", "", "", true),
+                config = StoriesSettingConfig("", "", "", false),
                 state = ResultState.Loading,
             )
     }
