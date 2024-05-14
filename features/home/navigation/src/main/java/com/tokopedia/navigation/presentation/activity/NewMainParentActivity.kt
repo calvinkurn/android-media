@@ -102,7 +102,7 @@ import com.tokopedia.navigation_common.ui.BottomNavBarItemType
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.BottomNavItemId
 import com.tokopedia.navigation_common.ui.DiscoId
-import com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
+import com.tokopedia.navigation_common.ui.BottomNavBarView
 import com.tokopedia.navigation_common.util.inDarkMode
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -879,9 +879,9 @@ class NewMainParentActivity :
     }
 
     private fun setupBottomNavigation() {
-        binding.dynamicNavbar.setListener(object : DynamicHomeNavBarView.Listener {
+        binding.dynamicNavbar.setListener(object : BottomNavBarView.Listener {
             override fun onItemSelected(
-                view: DynamicHomeNavBarView,
+                view: BottomNavBarView,
                 model: BottomNavBarUiModel,
                 isReselected: Boolean,
                 isJumper: Boolean

@@ -41,6 +41,9 @@ data class FragmentCreator(
     val create: FragmentManager.(AppCompatActivity, Bundle) -> Fragment
 )
 
+/**
+ * Type
+ */
 val BottomNavHomeType = BottomNavBarItemType("home")
 val BottomNavFeedType = BottomNavBarItemType("feed")
 val BottomNavDiscoType = BottomNavBarItemType("discopage")
@@ -48,6 +51,9 @@ val BottomNavWishlistType = BottomNavBarItemType("wishlist")
 val BottomNavTransactionType = BottomNavBarItemType("transaction")
 val BottomNavMePageType = BottomNavBarItemType("me_page")
 
+/**
+ * Id
+ */
 val BottomNavHomeId = BottomNavItemId(BottomNavHomeType)
 val BottomNavFeedId = BottomNavItemId(BottomNavFeedType)
 val BottomNavOfficialStoreId = BottomNavItemId(BottomNavDiscoType, DiscoId(DISCOVERY_SOS_END_POINT))
@@ -55,6 +61,9 @@ val BottomNavWishlistId = BottomNavItemId(BottomNavWishlistType)
 val BottomNavTransactionId = BottomNavItemId(BottomNavTransactionType)
 val BottomNavMePageId = BottomNavItemId(BottomNavMePageType)
 
+/**
+ * Creator
+ */
 val HomeFragmentCreator = FragmentCreator(
     requireLogin = false
 ) { activity, args ->
@@ -122,6 +131,9 @@ val ProfileFragmentCreator = FragmentCreator(
     RouteManager.instantiateFragment(activity, FragmentConst.HOME_NAV_FRAGMENT, extras)
 }
 
+/**
+ * Mapper
+ */
 val supportedMainFragments = mapOf(
     BottomNavHomeType to HomeFragmentCreator,
     BottomNavFeedType to FeedFragmentCreator,

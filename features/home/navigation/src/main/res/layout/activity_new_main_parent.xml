@@ -20,7 +20,7 @@
         android:layout_height="1dp"
         android:background="@color/Unify_NN50"/>
 
-    <com.tokopedia.navigation_common.ui.DynamicHomeNavBarView
+    <com.tokopedia.navigation_common.ui.BottomNavBarView
         android:id="@+id/dynamic_navbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

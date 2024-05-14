@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import com.airbnb.lottie.Lottie
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
@@ -30,7 +29,7 @@ import com.tokopedia.unifyprinciples.NestShadow.isDarkMode
 import com.tokopedia.navigation_common.R as navigation_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class DynamicHomeNavBarView : LinearLayout {
+class BottomNavBarView : LinearLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -285,7 +284,7 @@ class DynamicHomeNavBarView : LinearLayout {
         prevIsSelected: Boolean?,
         prevIsJumper: Boolean,
     ): AssetPlaylist? {
-        val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
+        val isDarkMode = this@BottomNavBarView.isDarkMode
         val variant = if (isDarkMode) Variant.Dark else Variant.Light
         return when {
             isSelected == null -> {
@@ -349,7 +348,7 @@ class DynamicHomeNavBarView : LinearLayout {
         prevIsJumper: Boolean,
     ): AssetPlaylist? {
         val assets = model.jumper?.assets ?: return null
-        val isDarkMode = this@DynamicHomeNavBarView.isDarkMode
+        val isDarkMode = this@BottomNavBarView.isDarkMode
         val variant = if (isDarkMode) Variant.Dark else Variant.Light
         return when {
             isSelected != true -> {
@@ -415,7 +414,7 @@ class DynamicHomeNavBarView : LinearLayout {
 
     interface Listener {
         fun onItemSelected(
-            view: DynamicHomeNavBarView,
+            view: BottomNavBarView,
             model: BottomNavBarUiModel,
             isReselected: Boolean,
             isJumper: Boolean,
