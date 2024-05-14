@@ -33,13 +33,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.CardUnify.Companion.TYPE_BORDER
+import com.tokopedia.unifycomponents.CardUnify.Companion.TYPE_CLEAR
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 import kotlin.math.roundToInt
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -333,6 +333,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                         unifyprinciplesR.color.Unify_NN950
                     )
                 )
+                // if background color is not empty, card border should be clear
+                if (boxColor?.isNotEmpty() == true || useFullImage) {
+                    calendarCardUnify.cardType = TYPE_BORDER
+                } else {
+                    calendarCardUnify.cardType = TYPE_CLEAR
+                }
                 // content BG
                 calendarParent.setBackgroundColor(
                     getColorBackendOrDefault(

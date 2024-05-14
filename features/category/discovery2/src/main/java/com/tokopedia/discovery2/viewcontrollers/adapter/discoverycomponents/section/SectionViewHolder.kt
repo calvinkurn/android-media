@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sec
 
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -138,7 +139,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveForeground.setImageBitmap(bitmap)
                     addHeightForeground(festiveForeground)
                     festiveForeground.minimumHeight = 0
-                }, 350)
+                }, 400)
             },
                 onError = { festiveForeground.hide() })
         })
@@ -155,28 +156,19 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveBackground.setImageBitmap(bitmap)
                     addHeightBgOnce(festiveBackground)
                     festiveBackground.minimumHeight = 0
-                }, 350)
+                }, 400)
             },
                 onError = { festiveBackground.hide() })
         })
     }
 
     private fun addHeightBgOnce(view: View) {
-        if (!addHeightBackground && view.height > 0) {
-            view.layoutParams.height = view.height + 4.toPx()
-            addHeightBackground = true
-        }
+        view.layoutParams.height = festiveContainer.height + 8.toPx()
     }
 
     private fun addHeightForeground(view: View) {
-        if (!addHeightForeground && view.height > 0) {
-            view.layoutParams.height = view.height + 4.toPx()
-            addHeightForeground = true
-        }
+        view.layoutParams.height = festiveContainer.height + 8.toPx()
     }
-
-    var addHeightForeground = false
-    var addHeightBackground = false
 
     private fun Context?.getMinHeight(): Int? {
         return this?.resources?.getDimensionPixelOffset(festive_section_min_height)
