@@ -89,13 +89,14 @@ private fun StoriesSettingsSuccess(
             AndroidView(modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
-                .padding(vertical = 16.dp)
                 .constrainAs(tickerEligible) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 }, factory = {
                 Ticker(it).apply {
                     tickerType = Ticker.TYPE_ANNOUNCEMENT
+                    tickerShape = Ticker.SHAPE_LOOSE
+                    tickerTitle = ""
                     setTextDescription(ctx.getString(R.string.stories_ticker_title))
                 }
             })
