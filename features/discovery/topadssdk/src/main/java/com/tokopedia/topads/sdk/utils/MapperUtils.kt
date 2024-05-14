@@ -1,5 +1,6 @@
 package com.tokopedia.topads.sdk.utils
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
@@ -71,7 +72,13 @@ object MapperUtils {
         }
         return productCardModel.copy(
             slashedPrice = product.campaign.originalPrice,
-            countSoldRating = convertRatingScaleToString(product.productRating),
+            countSoldRating = product.headlineProductRatingAverage.ifEmpty {
+                if (product.productRating > 0) {
+                    convertRatingScaleToString(product.productRating)
+                } else {
+                    String.EMPTY
+                }
+            },
             labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                 product.labelGroupList.map {
                     if (it.position == "integrity") {
