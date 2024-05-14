@@ -46,8 +46,8 @@ class HomeAtfRepository @Inject constructor(
     }
 
     private fun putExperimentParam() {
-        val variant = libraInstance.variant(LibraOwner.Home, LibraConst.HOME_REVAMP_3_TYPE)
-        params.putString(EXPERIMENT, LibraConst.HOME_REVAMP_3_TYPE)
-        params.putString(VARIANT, variant)
+        val mLibra = libraInstance.variant(LibraOwner.Home, LibraConst.HOME_REVAMP_3_TYPE)
+        params.putString(EXPERIMENT, mLibra.experiment)
+        params.putString(VARIANT, mLibra.variant)
     }
 }
