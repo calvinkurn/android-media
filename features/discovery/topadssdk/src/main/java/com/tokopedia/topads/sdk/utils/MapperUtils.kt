@@ -1,13 +1,18 @@
 package com.tokopedia.topads.sdk.utils
 
+import android.annotation.SuppressLint
+import android.util.Log
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.R.color
 import com.tokopedia.unifycomponents.UnifyButton
+import java.util.*
+import kotlin.collections.ArrayList
 
 object MapperUtils {
     fun getProductCardModels(products: List<Product>, hasAddProductToCartButton: Boolean): ArrayList<ProductCardModel> {
@@ -67,13 +72,22 @@ object MapperUtils {
                 )
             }
         }
-
         return productCardModel.copy(
             slashedPrice = product.campaign.originalPrice,
-            countSoldRating = product.headlineProductRatingAverage,
+            countSoldRating = convertRatingScaleToString(product.productRating),
             labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                 product.labelGroupList.map {
-                    add(
+                    if (it.position == "integrity") {
+                        add(
+                            ProductCardModel.LabelGroup(
+                                position = LABEL_REIMAGINE_CREDIBILITY,
+                                title = it.title,
+                                type = it.type,
+                                imageUrl = it.imageUrl,
+                                styleList = listOf(),
+                            )
+                        )
+                    } else add(
                         ProductCardModel.LabelGroup(
                             position = it.position,
                             title = it.title,
@@ -125,4 +139,11 @@ object MapperUtils {
             it.position == TopAdsConstants.FULFILLMENT && it.title == TopAdsConstants.DILYANI_TOKOPEDIA
         } != null
     }
+
+    private fun convertRatingScaleToString(rating: Int): String {
+        val convertedRating = (rating / 100.0) * 5
+        val result = String.format(Locale.US, "%.1f", convertedRating)
+        return result
+    }
+
 }
