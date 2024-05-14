@@ -333,6 +333,11 @@ class FeedFragment :
             }
         }
 
+    private val cartResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            feedPostViewModel.fetchCartCount()
+        }
+
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
 
     private val layoutManager by lazy {
@@ -2015,7 +2020,8 @@ class FeedFragment :
     }
 
     override fun onCartClicked() {
-        /** JOE TODO: handle this */
+        /** JOE TODO: add validation if its logged in or not */
+        router.route(cartResult, router.getIntent(context, ApplinkConst.CART))
     }
 
     private fun observeReminder() {
