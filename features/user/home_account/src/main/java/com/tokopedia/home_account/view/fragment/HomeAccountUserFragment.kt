@@ -29,7 +29,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -161,7 +163,8 @@ open class HomeAccountUserFragment :
     BaseDaggerFragment(),
     HomeAccountUserListener,
     BalanceAndPointListener,
-    TokopediaPlusListener {
+    TokopediaPlusListener,
+    AppLogInterface {
 
     @Inject
     lateinit var mapper: DataViewMapper
@@ -1905,5 +1908,13 @@ open class HomeAccountUserFragment :
                 arguments = bundle
             }
         }
+    }
+
+    override fun getPageName(): String {
+        return PageName.ACCOUNT
+    }
+
+    override fun shouldTrackEnterPage(): Boolean {
+        return true
     }
 }
