@@ -33,11 +33,16 @@ class PromoSimpleView @JvmOverloads constructor(
     }
 
     fun bind(promo: PromoSimpleItem, isFullWidth: Boolean) {
+        bindCircleCut(promo)
         bindCardBackground(promo)
         bindIcon(promo, isFullWidth)
         bindTitleText(promo)
         bindTypeText(promo)
         bindDescText(promo)
+    }
+
+    private fun bindCircleCut(promo: PromoSimpleItem) {
+        binding.promoMiniCard.changeCircleCutColor(promo.curveColor, promo.curveAlpha)
     }
 
     private fun bindCardBackground(promo: PromoSimpleItem) {

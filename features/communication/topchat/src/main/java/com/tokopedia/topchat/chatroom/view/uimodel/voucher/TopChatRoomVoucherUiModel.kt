@@ -15,6 +15,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.promousage.domain.entity.list.PromoSimpleItem
 import com.tokopedia.topchat.chatroom.domain.pojo.voucher.TopChatRoomVoucherAttachmentDto
 import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TopChatRoomVoucherUiModel private constructor(
     builder: Builder
@@ -101,7 +102,9 @@ class TopChatRoomVoucherUiModel private constructor(
                 backgroundUrl = displayDto.voucherBackgroundUrl,
                 backgroundUrlDark = displayDto.voucherBackgroundUrl,
                 iconUrl = displayDto.voucherIconUrl,
-                iconUrlDark = displayDto.voucherIconUrl
+                iconUrlDark = displayDto.voucherIconUrl,
+                curveColor = unifyprinciplesR.color.Unify_NN50,
+                curveAlpha = 50
             )
         }
 
