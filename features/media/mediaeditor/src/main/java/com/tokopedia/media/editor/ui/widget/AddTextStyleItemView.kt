@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as principleR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AddTextStyleItemView(
     val card: CardUnify2,
@@ -21,20 +21,21 @@ class AddTextStyleItemView(
         )
         lp.rightMargin = RIGHT_MARGIN.toPx()
         card.layoutParams = lp
+        card.cardOpacity = CardUnify2.CARD_OPACITY_TRANSPARENT
     }
 
     fun setActive() {
         card.cardType = CardUnify2.TYPE_BORDER_ACTIVE
         typography.setBackgroundColor(Color.TRANSPARENT)
-        typography.setTextColorCompat(principleR.color.Unify_GN400)
+        typography.setTextColorCompat(unifyprinciplesR.color.Unify_GN400)
     }
 
     fun setInactive() {
         card.cardType = CardUnify2.TYPE_BORDER
         typography.setBackgroundColor(
-            ContextCompat.getColor(card.context, principleR.color.Unify_NN0)
+            ContextCompat.getColor(card.context, unifyprinciplesR.color.Unify_NN0)
         )
-        typography.setTextColorCompat(principleR.color.Unify_NN600)
+        typography.setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
     }
 
     fun setStyleBold() {

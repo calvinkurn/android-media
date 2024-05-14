@@ -176,9 +176,9 @@ class ShopDiscountManageViewModel @Inject constructor(
         val minStartDateUnix = getStartDate(setupProductUiModel).takeIf {
             it.allCheckEmptyList { it > 0 }
         }?.minOrNull()
-        val minEndDateUnix = getEndDate(setupProductUiModel).takeIf {
+        val maxEndDateUnix = getEndDate(setupProductUiModel).takeIf {
             it.allCheckEmptyList { it > 0 }
-        }?.minOrNull()
+        }?.maxOrNull()
         return ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
             minOriginalPrice = getOriginalPrice(setupProductUiModel).minOrNull().orZero(),
             maxOriginalPrice = getOriginalPrice(setupProductUiModel).maxOrNull().orZero(),
@@ -190,7 +190,7 @@ class ShopDiscountManageViewModel @Inject constructor(
             totalDiscountedVariant = getTotalDiscountedVariant(setupProductUiModel),
             totalLocation = getTotalLocation(setupProductUiModel),
             minStartDateUnix = minStartDateUnix,
-            minEndDateUnix = minEndDateUnix
+            maxEndDateUnix = maxEndDateUnix
         )
     }
 

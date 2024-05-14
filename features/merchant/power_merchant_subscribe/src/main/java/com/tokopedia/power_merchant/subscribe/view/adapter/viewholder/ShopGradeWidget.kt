@@ -28,6 +28,8 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmShopGradeBinding
 import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
+import com.tokopedia.unifycomponents.radiusClip
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -54,11 +56,21 @@ class ShopGradeWidget(
 
     override fun bind(element: WidgetShopGradeUiModel) {
         setupShopGrade(element)
+        setupVerificationStatus(element)
         setupShopScore(element)
         showTopedIllustration(element)
         setupCurrentGradeStepper(element)
     }
-
+    private fun setupVerificationStatus(element: WidgetShopGradeUiModel) {
+        binding?.run {
+            icNotVerified.isVisible = !element.isKyc
+            tvNotVerified.isVisible = !element.isKyc
+            clVerification.isVisible = !element.isKyc
+            btnStartVerification.setOnClickListener {
+                listener.goToKyc()
+            }
+        }
+    }
     private fun setupCurrentGradeStepper(element: WidgetShopGradeUiModel) {
         binding?.run {
             val isPm = element.shopGrade == PMConstant.ShopGrade.PM
@@ -114,43 +126,17 @@ class ShopGradeWidget(
     private fun getIllustrationUrl(element: WidgetShopGradeUiModel): Triple<Int, Int, String> {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
         val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        return when {
-            isPmPro && isPmActive && element.isNewSeller -> {
-                Triple(
-                    com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                    com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                    PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
-                )
-            }
-            !isPmPro && isPmActive && element.isNewSeller -> {
-                Triple(
-                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                    com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                    PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_ACTIVE
-                )
-            }
-            isPmPro && isPmActive && !element.isNewSeller -> {
-                Triple(
+        return if (isPmPro)
+            Triple(
                     com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
                     com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
                     PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
-                )
-            }
-            !isPmPro && isPmActive && !element.isNewSeller -> {
-                Triple(
+                ) else
+            Triple(
                     com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
                     com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
                     PMConstant.Images.IMG_TOPED_PM_ACTIVE
                 )
-            }
-            else -> {
-                Triple(
-                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                    com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                    PMConstant.Images.IMG_TOPED_PM_INACTIVE
-                )
-            }
-        }
     }
 
     private fun setTopedImageSize(illustrationSize: Pair<Int, Int>) =
@@ -294,6 +280,7 @@ class ShopGradeWidget(
 
     private fun setupShopGrade(element: WidgetShopGradeUiModel) = binding?.run {
         tvPmShopGrade.text = getPmTireLabel(element)
+        imgPmShopGradeBackground.radiusClip(8.toPx().toFloat(), 8.toPx().toFloat(), 0.toPx().toFloat(), 0.toPx().toFloat())
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
         showBadgeImageUrl(element)
 
@@ -380,5 +367,6 @@ class ShopGradeWidget(
         fun showPmProStatusInfo(model: PMProStatusInfoUiModel)
         fun showHelpPmNotActive()
         fun goToMembershipDetail()
+        fun goToKyc()
     }
 }
