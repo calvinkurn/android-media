@@ -755,6 +755,7 @@ open class DiscoveryFragment :
                         ComponentNames.ProductCardSingleItem.componentName,
                         ComponentNames.ProductCardSingleItemReimagine.componentName,
                         ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                        ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName,
                         ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
 
                         else -> 2
