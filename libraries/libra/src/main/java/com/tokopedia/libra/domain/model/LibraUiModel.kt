@@ -1,15 +1,12 @@
 package com.tokopedia.libra.domain.model
 
+import com.tokopedia.libra.LibraResult
+
 data class LibraUiModel(
-    val experiments: List<ItemLibraUiModel>
+    val experiments: List<LibraResult>
 ) {
 
     companion object {
         fun default() = LibraUiModel(listOf())
     }
 }
-
-data class ItemLibraUiModel(
-    val experiment: String,
-    val variant: String
-)

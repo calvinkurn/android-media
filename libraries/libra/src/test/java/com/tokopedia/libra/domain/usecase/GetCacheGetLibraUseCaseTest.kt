@@ -2,8 +2,7 @@ package com.tokopedia.libra.domain.usecase
 
 import com.tokopedia.libra.LibraOwner
 import com.tokopedia.libra.data.repository.CacheRepository
-import com.tokopedia.libra.domain.model.ItemLibraUiModel
-import com.tokopedia.libra.domain.model.LibraUiModel
+import com.tokopedia.libra.domain.robot.createSetLibraUseCaseRobot
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -18,21 +17,15 @@ class GetCacheGetLibraUseCaseTest {
     @Test
     fun `should able to get a libra cache`() {
         // Given
-        val owner = LibraOwner.Home
-        val expectedValue = LibraUiModel(
-            listOf(
-                ItemLibraUiModel("foo", "bar")
-            )
-        )
-
-        every { repository.get(owner) } returns expectedValue
+        val robot = createSetLibraUseCaseRobot(cacheRepository = repository)
+        every { repository.get(robot.owner) } returns robot.libraUiModel
 
         // When
         val useCase = GetLibraCacheUseCase(repository)
-        val result = useCase(owner)
+        val result = useCase(robot.owner)
 
         // Then
-        assert(result == expectedValue)
+        assert(result == robot.libraUiModel)
     }
 
     @Test

@@ -20,13 +20,22 @@ interface Libra {
     suspend fun fetch(owner: LibraOwner)
 
     /**
-     * Get variant status based on [LibraOwner] and experiment name.
+     * Get variant detail based on [LibraOwner] and experiment name.
      *
      * @param: [LibraOwner] a owner of experiment
      * @param: [experiment] the name of experiment
-     * @return: A string of variant name, invalid if return an empty string.
+     * @return: A [LibraResult] of experimental data, invalid if return an empty string.
      */
-    fun variant(owner: LibraOwner, experiment: String): String
+    fun variant(owner: LibraOwner, experiment: String): LibraResult
+
+    /**
+     * Get a variant result based on [LibraOwner] and experiment name.
+     *
+     * @param: [LibraOwner] a owner of experiment
+     * @param: [experiment] the name of experiment
+     * @return: A string of variant status, invalid if return an empty string.
+     */
+    fun variantAsString(owner: LibraOwner, experiment: String): String
 
     /**
      * A variant getter with state version.

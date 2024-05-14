@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.libra.di.DaggerLibraComponent
 import com.tokopedia.libra.domain.usecase.GetLibraCacheUseCase
 import com.tokopedia.libra.domain.usecase.GetLibraRemoteUseCase
-import com.tokopedia.libra.domain.model.ItemLibraUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -65,16 +64,26 @@ class LibraInstance(context: Context) : Libra, CoroutineScope {
         } catch (_: Throwable) {}
     }
 
-    override fun variant(owner: LibraOwner, experiment: String): String {
+    override fun variant(owner: LibraOwner, experiment: String): LibraResult {
+        return shouldGetExperiment(owner, experiment) ?: LibraResult.empty()
+    }
+
+    override fun variantAsString(owner: LibraOwner, experiment: String): String {
         return shouldGetExperiment(owner, experiment)?.variant.orEmpty()
     }
 
     override fun variantAsState(owner: LibraOwner, experiment: String): LibraState {
-        val variant = shouldGetExperiment(owner, experiment)?.variant.orEmpty()
+        val result = shouldGetExperiment(owner, experiment)
+        val variant = result?.variant.orEmpty()
 
         return when {
             variant.isEmpty() || variant == Const.CONTROL_VARIANT -> LibraState.Control
-            else -> LibraState.Variant(variant)
+            else -> LibraState.Variant(
+                LibraResult(
+                    experiment = result?.experiment.orEmpty(),
+                    variant = variant
+                )
+            )
         }
     }
 
@@ -82,11 +91,11 @@ class LibraInstance(context: Context) : Libra, CoroutineScope {
         getLibraCacheUseCase.clear(owner)
     }
 
-    private fun shouldGetExperiment(owner: LibraOwner, experiment: String): ItemLibraUiModel? {
+    private fun shouldGetExperiment(owner: LibraOwner, experiment: String): LibraResult? {
         return shouldGetExperimentList(owner).firstOrNull { it.experiment == experiment }
     }
 
-    private fun shouldGetExperimentList(owner: LibraOwner): List<ItemLibraUiModel> {
+    private fun shouldGetExperimentList(owner: LibraOwner): List<LibraResult> {
         return getLibraCacheUseCase(owner).experiments
     }
 
