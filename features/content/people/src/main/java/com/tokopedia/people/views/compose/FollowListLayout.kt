@@ -192,7 +192,7 @@ private fun UserFollowListItemRow(
 
             if (item.username.isNotBlank()) {
                 NestTypography(
-                    text = item.username,
+                    text = "@${item.username}",
                     textStyle = NestTheme.typography.body3.copy(
                         color = NestTheme.colors.NN._600
                     ),
