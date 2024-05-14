@@ -88,44 +88,44 @@ class TopChatRoomBuyerBroadcastFlashSaleTest : TopchatRoomTest() {
                 isDisplayed()
             )
 
-            // product oos
+            // product without rating
             broadcastRobot {
                 scrollBroadcastFlashSaleProduct(2)
             }
             assertNewBroadcastFlashSaleProductCarouselItem(
                 2,
                 productcardR.id.productCardName,
-                withText("Product Attachment 3")
+                withText("Product Attachment 4")
             )
             assertNewBroadcastFlashSaleProductCarouselItem(
                 2,
-                productcardR.id.productCardLabelPreventiveBlock,
-                withText("Stok Habis")
+                productcardR.id.productCardRatingIcon,
+                not(isDisplayed())
             )
             assertNewBroadcastFlashSaleProductCarouselItem(
                 2,
-                productcardR.id.productCardLabelCredibility,
-                withText("terjual 12rb")
+                productcardR.id.productCardRating,
+                not(isDisplayed())
             )
 
-            // product without rating
+            // product oos
             broadcastRobot {
                 scrollBroadcastFlashSaleProduct(3)
             }
             assertNewBroadcastFlashSaleProductCarouselItem(
                 3,
                 productcardR.id.productCardName,
-                withText("Product Attachment 4")
+                withText("Product Attachment 3")
             )
             assertNewBroadcastFlashSaleProductCarouselItem(
                 3,
-                productcardR.id.productCardRatingIcon,
-                not(isDisplayed())
+                productcardR.id.productCardLabelPreventiveBlock,
+                withText("Stok Habis")
             )
             assertNewBroadcastFlashSaleProductCarouselItem(
                 3,
-                productcardR.id.productCardRating,
-                not(isDisplayed())
+                productcardR.id.productCardLabelCredibility,
+                withText("terjual 12rb")
             )
 
             // see more
