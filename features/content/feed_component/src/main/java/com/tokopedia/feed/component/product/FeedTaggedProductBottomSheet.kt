@@ -170,9 +170,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
                     listener?.cartCount?.collectLatest {
-                        val notificationText = if (it <= 0) "" else it.toString()
-
-                        binding.header.setIconNotificationText(notificationText)
+                        binding.header.setIconNotificationText(getCartCountText(it))
                     }
                 }
             }
@@ -268,6 +266,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 /** No implementation */
             }
         })
+    }
+
+    private fun getCartCountText(cartCount: Int): String {
+        return if (cartCount <= 0) ""
+        else if (cartCount >= 100) "99+"
+        else cartCount.toString()
     }
 
     interface Listener {
