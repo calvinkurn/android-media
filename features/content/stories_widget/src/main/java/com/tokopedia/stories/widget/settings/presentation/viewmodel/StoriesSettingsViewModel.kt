@@ -94,7 +94,6 @@ class StoriesSettingsViewModel @Inject constructor(
                 _event.emit(StoriesSettingEvent.ClickTrack(option.copy(isSelected = !option.isSelected)))
             } else throw Exception()
         }) {
-            updatePageOption(option)
             _event.emit(StoriesSettingEvent.ShowErrorToaster(it) {
                 updateOption(option)
             })
