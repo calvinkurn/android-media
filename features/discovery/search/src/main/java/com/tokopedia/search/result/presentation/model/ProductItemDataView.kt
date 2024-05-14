@@ -216,12 +216,15 @@ class ProductItemDataView:
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
 
+    private val productIdByteIo: String
+        get() = if (parentId.isBlank() || parentId == "0") productID else parentId
+
     fun asAdsLogShowModel(): AdsLogShowModel {
         return AdsLogShowModel(
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogShowModel.AdExtraData(
-                productId = productID,
+                productId = productIdByteIo,
                 productName = productName
             )
         )
@@ -232,7 +235,7 @@ class ProductItemDataView:
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogShowOverModel.AdExtraData(
-                productId = productID,
+                productId = productIdByteIo,
                 productName = productName,
                 sizePercent = visiblePercentage.toString()
             )
@@ -245,7 +248,7 @@ class ProductItemDataView:
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
-                productId = productID,
+                productId = productIdByteIo,
                 productName = productName
             )
         )

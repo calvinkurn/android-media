@@ -197,6 +197,8 @@ data class DynamicHomeChannel(
         val id: String = "",
         @SerializedName("trackerJson")
         val trackerJson: String = "",
+        @SerializedName("parentProductID")
+        val parentProductID: String = "",
         @Expose
         @SerializedName("back_color", alternate = ["backColor"])
         val backColor: String = "",

@@ -700,6 +700,9 @@ data class DataItem(
             return rightMarginMobile?.toIntOrNull() ?: 0
         }
 
+    val productIdByteIo: String
+        get() = if (parentProductId == "0" || parentProductId?.isBlank() == true) productId.orEmpty() else parentProductId.orEmpty()
+
     val appLogImpressHolder: ImpressHolder = ImpressHolder()
     private var appLog: RecommendationAppLog? = null
     var source: ComponentSourceData = ComponentSourceData.Unknown
@@ -733,8 +736,8 @@ data class DataItem(
             topAdsCreativeId.toLongOrZero(),
             topAdsLogExtra.orEmpty(),
             AdsLogRealtimeClickModel.AdExtraData(
-            productId = productId.orEmpty(),
-            productName = getRealProductName(),
+            productId = productIdByteIo,
+            productName = productName.orEmpty(),
         ))
     }
 
@@ -743,8 +746,8 @@ data class DataItem(
             topAdsCreativeId.toLongOrZero(),
             topAdsLogExtra.orEmpty(),
             AdsLogShowOverModel.AdExtraData(
-                productId = productId.orEmpty(),
-                productName = getRealProductName(),
+                productId = productIdByteIo,
+                productName = productName.orEmpty(),
                 sizePercent = visiblePercentage.toString())
         )
     }
@@ -754,8 +757,8 @@ data class DataItem(
             topAdsCreativeId.toLongOrZero(),
             topAdsLogExtra.orEmpty(),
             AdsLogShowModel.AdExtraData(
-            productId = productId.orEmpty(),
-            productName = getRealProductName(),
+                productId = productIdByteIo,
+                productName = productName.orEmpty(),
         ))
     }
 

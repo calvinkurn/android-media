@@ -223,6 +223,9 @@ data class RecommendationItem(
         )
 
     fun isUseQuantityEditor(): Boolean = addToCartType == AddToCartType.QuantityEditor
+
+    val productIdByteIo: String
+        get() = if (parentID == 0L) productId.toString() else parentID.toString()
 }
 
 data class RecommendationSpecificationLabels(

@@ -8,7 +8,6 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
 
@@ -170,6 +169,7 @@ object DynamicChannelComponentMapper {
             channelGrids = channel.grids.mapIndexed { index, it ->
                 ChannelGrid(
                     id = it.id,
+                    parentProductId = it.parentProductID,
                     warehouseId = it.warehouseId,
                     minOrder = it.minOrder,
                     price = it.price,
@@ -280,6 +280,7 @@ object DynamicChannelComponentMapper {
 
         return ChannelGrid(
             id = id,
+            parentProductId = parentProductID,
             warehouseId = warehouseId,
             minOrder = minOrder,
             price = price,
@@ -405,6 +406,7 @@ object DynamicChannelComponentMapper {
 
     fun RecommendationItem.mapToChannelGrid(index: Int) = ChannelGrid(
         id = productId.toString(),
+        parentProductId = parentID.toString(),
         warehouseId = warehouseId.toString(),
         minOrder = minOrder,
         price = price,
