@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.model.TrackVisitChannelResponse
@@ -19,6 +20,7 @@ import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.feed.common.comment.model.CountComment
 import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
@@ -98,6 +100,8 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -105,6 +109,7 @@ import org.junit.Test
 /**
  * Created By : Muhammad Furqan on 22/05/23
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class FeedPostViewModelTest {
 
     @get:Rule
@@ -141,6 +146,7 @@ class FeedPostViewModelTest {
     private val uiEventManager = UiEventManager<FeedPostEvent>()
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase = mockk()
+    private val getCartCountUseCase: UpdateCartCounterUseCase = mockk()
     private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
@@ -174,6 +180,7 @@ class FeedPostViewModelTest {
             uiEventManager = uiEventManager,
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             feedGetChannelStatusUseCase = feedGetChannelStatusUseCase,
+            getCartCountUseCase = getCartCountUseCase,
             dispatchers = testDispatcher,
             tooltipManager = tooltipManager,
         )
@@ -2196,6 +2203,35 @@ class FeedPostViewModelTest {
 
             coVerify(exactly = if (it == 4) 1 else 0) { tooltipManager.showTooltipEvent() }
         }
+    }
+
+    /** Cart Count */
+    @Test
+    fun cartCount_successGetCartCount() = runTest(testDispatcher.coroutineDispatcher) {
+        val expectedCartCount = 17
+
+        backgroundScope.launch {
+            viewModel.cartCount.collect { }
+        }
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
+
+        viewModel.fetchCartCount()
+
+        viewModel.cartCount.value.assertEqualTo(expectedCartCount)
+    }
+
+    @Test
+    fun cartCount_errorGetCartCount() = runTest(testDispatcher.coroutineDispatcher) {
+        val expectedException = Exception("Network Issue")
+
+        backgroundScope.launch {
+            viewModel.cartCount.collect { }
+        }
+        coEvery { getCartCountUseCase(Unit) } throws expectedException
+
+        viewModel.fetchCartCount()
+
+        viewModel.cartCount.value.assertEqualTo(0)
     }
 
     private fun provideDefaultFeedPostMockData() {
