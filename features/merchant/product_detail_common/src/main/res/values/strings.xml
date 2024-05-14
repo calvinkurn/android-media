@@ -24,6 +24,7 @@
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
     <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
     <string name="merchant_product_detail_success_atc_default">barang berhasil ditambahkan ke keranjang belanja.</string>
+    <string name="cta_text_atc_success">Lihat</string>
 
     <string name="atc_variant_promo">PROMO</string>
     <string name="atc_variant_empty">Habis</string>

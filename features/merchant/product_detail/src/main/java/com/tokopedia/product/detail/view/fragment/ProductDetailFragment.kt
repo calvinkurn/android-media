@@ -3641,11 +3641,8 @@ open class ProductDetailFragment :
     }
 
     private fun goToCartCheckout(cartId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
-        intent?.run {
-            putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
-            startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
-        }
+        val activity = activity ?: return
+        ProductCartHelper.goToCartCheckout(activity, cartId)
     }
 
     override fun updateUi() {
@@ -4090,7 +4087,25 @@ open class ProductDetailFragment :
         val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
         val postAtcLayout = cartRedirData?.postAtcLayout ?: PostAtcLayout()
 
-        showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
+        if (postAtcLayout.showPostAtc) {
+            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
+        } else {
+            showAtcSuccessToaster(cartDataModel = cartDataModel)
+        }
+    }
+
+    private fun showAtcSuccessToaster(cartDataModel: DataModel) {
+        val message = context?.getString(
+            productdetailcommonR.string.merchant_product_detail_success_atc_default
+        ) ?: return
+
+        view?.showToasterSuccess(
+            message = message,
+            ctaText = getString(productdetailcommonR.string.cta_text_atc_success),
+            ctaListener = {
+                goToCartCheckout(cartId = cartDataModel.cartId)
+            }
+        )
     }
 
     private fun showGlobalPostATC(
