@@ -333,6 +333,12 @@ class FeedFragment :
             }
         }
 
+    private val openCartPageLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (!userSession.isLoggedIn) return@registerForActivityResult
+            openCartPage()
+        }
+
     private val cartResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             feedPostViewModel.fetchCartCount()
@@ -2020,8 +2026,15 @@ class FeedFragment :
     }
 
     override fun onCartClicked() {
-        /** JOE TODO: add validation if its logged in or not */
-        router.route(cartResult, router.getIntent(context, ApplinkConst.CART))
+        if (!userSession.isLoggedIn) {
+            router.route(requireContext(), openCartPageLoginResult, ApplinkConst.LOGIN)
+        } else {
+            openCartPage()
+        }
+    }
+
+    private fun openCartPage() {
+        router.route(requireContext(), cartResult, ApplinkConst.CART)
     }
 
     private fun observeReminder() {
