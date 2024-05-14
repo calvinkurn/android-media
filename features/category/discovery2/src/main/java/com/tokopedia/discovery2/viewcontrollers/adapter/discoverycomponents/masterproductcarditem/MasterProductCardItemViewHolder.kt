@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
-import android.graphics.Rect
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +27,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -38,6 +35,7 @@ import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -45,8 +43,13 @@ import timber.log.Timber
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener, AppLogRecTriggerInterface {
+class MasterProductCardItemViewHolder(
+    itemView: View,
+    val fragment: Fragment
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner),
+    ATCNonVariantListener,
+    AppLogRecTriggerInterface
+{
 
     private var masterProductCardItemViewModel: MasterProductCardItemViewModel? = null
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -62,13 +65,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var isFullFilment: Boolean = false
     private var isRecommendation = false
 
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
-
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         isRecommendation = masterProductCardItemViewModel?.components?.recomQueryProdId != null
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
@@ -77,13 +73,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
         lastClickTime = 0L
         initView()
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        dataItem?.let {
-            AppLogTopAds.sendEventShowOver(itemView.context, it.asAdsLogShowOverModel(visiblePercentage))
-            setVisiblePercentage(Int.ZERO)
-        }
     }
 
     private fun initView() {
@@ -243,6 +232,18 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
         lifecycleOwner?.let { lifecycle ->
             masterProductCardItemViewModel?.getDataItemValue()?.observe(lifecycle) { data ->
+                if (masterProductCardListView !=  null) {
+                    masterProductCardListView?.setVisibilityPercentListener(
+                        isTopAds = data.isTopads.orFalse(),
+                        eventListener = createVisibilityPercentCallback(data)
+                    )
+                } else {
+                    masterProductCardGridView?.setVisibilityPercentListener(
+                        isTopAds = data.isTopads.orFalse(),
+                        eventListener = createVisibilityPercentCallback(data)
+                    )
+                }
+
                 dataItem = data
             }
             masterProductCardItemViewModel?.getProductModelValue()?.observe(lifecycle) { data ->
@@ -496,8 +497,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        dataItem?.let { AppLogTopAds.sendEventShow(itemView.context, it.asAdsLogShowModel()) }
-
         masterProductCardItemViewModel?.trackShowProductCard()
         masterProductCardItemViewModel?.sendTopAdsView()
         masterProductCardItemViewModel?.let {
@@ -595,5 +594,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun isEligibleToTrack(): Boolean {
         return dataItem?.isEligibleToTrackRecTrigger(masterProductCardItemViewModel?.getComponentName().orEmpty()).orFalse()
+    }
+
+    private fun createVisibilityPercentCallback(data: DataItem) = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        override fun onShow() {
+            if (data.isTopads.orFalse()) {
+                AppLogTopAds.sendEventShow(itemView.context, data.asAdsLogShowModel())
+            }
+        }
+
+        override fun onShowOver(maxPercentage: Int) {
+            if (data.isTopads.orFalse()) {
+                AppLogTopAds.sendEventShowOver(itemView.context, data.asAdsLogShowOverModel(maxPercentage))
+            }
+        }
     }
 }

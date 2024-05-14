@@ -4,13 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
@@ -23,21 +21,11 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val listener: RewardsRecomListener) :
     RecyclerView.Adapter<RewardsRecommAdapter.ProductCardViewHolder>() {
 
-    inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        IAdsViewHolderTrackListener {
+    inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val productView = itemView.findViewById<ProductCardGridView>(R.id.productCardView)
 
         private var uiModel: RecommendationItem? = null
-
-        private var visibleViewPercentage: Int = 0
-
-        init {
-            itemView.addOnAttachStateChangeListener(
-                onViewAttachedToWindow = { onViewAttachedToWindow() },
-                onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-            )
-        }
 
         fun bind(model: RecommendationWrapper) {
             productView.setProductModel(model.recomData)
@@ -85,23 +73,19 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                 }
             })
 
-        }
+            productView.setVisibilityPercentListener(
+                isTopAds =  model.recomendationItem.isTopAds,
+                eventListener = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                    override fun onShow() {
+                        model.recomendationItem.sendShowAdsByteIo(itemView.context)
+                    }
 
-        override fun onViewAttachedToWindow() {
-            uiModel?.sendShowAdsByteIo(itemView.context)
+                    override fun onShowOver(maxPercentage: Int) {
+                        model.recomendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                    }
+                }
+            )
         }
-
-        override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-            uiModel?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-            setVisiblePercentage(Int.ZERO)
-        }
-
-        override fun setVisiblePercentage(visiblePercentage: Int) {
-            this.visibleViewPercentage = visiblePercentage
-        }
-
-        override val visiblePercentage: Int
-            get() = visibleViewPercentage
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductCardViewHolder {

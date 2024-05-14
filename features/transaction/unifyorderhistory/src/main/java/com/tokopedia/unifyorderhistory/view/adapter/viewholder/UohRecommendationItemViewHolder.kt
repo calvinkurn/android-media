@@ -2,13 +2,11 @@ package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
@@ -18,19 +16,13 @@ import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.UohRecommendationItemBinding
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
-class UohRecommendationItemViewHolder(private val binding: UohRecommendationItemBinding, private val actionListener: UohItemAdapter.ActionListener?)
-    : RecyclerView.ViewHolder(binding.root), IAdsViewHolderTrackListener {
+class UohRecommendationItemViewHolder(
+    private val binding: UohRecommendationItemBinding,
+    private val actionListener: UohItemAdapter.ActionListener?
+) : RecyclerView.ViewHolder(binding.root) {
     private val productCardView: ProductCardGridView by lazy { binding.uohProductItem }
 
-    private var visibleViewPercentage = 0
     private var recommendationItem: RecommendationItem? = null
-
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
 
     fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is RecommendationItem) {
@@ -70,23 +62,20 @@ class UohRecommendationItemViewHolder(private val binding: UohRecommendationItem
                         }
                     }
                 )
+
+                setVisibilityPercentListener(
+                    isTopAds = item.dataObject.isTopAds,
+                    eventListener = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                        override fun onShow() {
+                            item.dataObject.sendShowAdsByteIo(itemView.context)
+                        }
+
+                        override fun onShowOver(maxPercentage: Int) {
+                            item.dataObject.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                        }
+                    }
+                )
             }
         }
     }
-
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
-    }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.visibleViewPercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = visibleViewPercentage
 }

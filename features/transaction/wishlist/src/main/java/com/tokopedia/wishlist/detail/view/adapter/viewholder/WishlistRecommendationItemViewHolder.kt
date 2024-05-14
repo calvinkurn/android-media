@@ -2,19 +2,17 @@ package com.tokopedia.wishlist.detail.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
@@ -28,21 +26,10 @@ import com.tokopedia.wishlist.databinding.WishlistRecommendationItemBinding
 class WishlistRecommendationItemViewHolder(
     private val binding: WishlistRecommendationItemBinding,
     private val actionListener: WishlistAdapter.ActionListener?
-) : RecyclerView.ViewHolder(binding.root), AppLogRecTriggerInterface, IAdsViewHolderTrackListener {
+) : RecyclerView.ViewHolder(binding.root), AppLogRecTriggerInterface {
     private val cardView: ProductCardGridView by lazy { binding.wishlistProductItem }
 
     private var recTriggerObject = RecommendationTriggerObject()
-
-    private var recommendationItem: RecommendationItem? = null
-
-    private var viewVisiblePercentage: Int = 0
-
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
 
     fun bind(item: WishlistTypeLayoutData, adapterPosition: Int) {
         setRecTriggerObject(item.recommItem)
@@ -86,6 +73,19 @@ class WishlistRecommendationItemViewHolder(
                     }
                 )
 
+                setVisibilityPercentListener(
+                    isTopAds = item.recommItem.isTopAds,
+                    eventListener = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                        override fun onShow() {
+                            item.recommItem.sendShowAdsByteIo(itemView.context)
+                        }
+
+                        override fun onShowOver(maxPercentage: Int) {
+                            item.recommItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                        }
+                    }
+                )
+
                 addOnImpression1pxListener(item.recommItem.appLogImpressHolder) {
                     AppLogRecommendation.sendProductShowAppLog(
                         item.recommItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
@@ -94,22 +94,6 @@ class WishlistRecommendationItemViewHolder(
             }
         }
     }
-
-    override fun onViewAttachedToWindow() {
-        recommendationItem?.sendShowAdsByteIo(itemView.context)
-    }
-
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        recommendationItem?.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
-    }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.viewVisiblePercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = viewVisiblePercentage
 
     private fun setRecTriggerObject(model: RecommendationItem) {
         recTriggerObject = RecommendationTriggerObject(
