@@ -76,7 +76,11 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
 
     private suspend fun getDataFromNetwork(): List<BottomNavBarUiModel> {
         val response: GetHomeBottomNavigationResponse = graphqlRepository.request(graphqlQuery(), Unit)
-        return response.data.bottomNavigations.map { data ->
+        return response.toNavBarModelList()
+    }
+
+    private fun GetHomeBottomNavigationResponse.toNavBarModelList(): List<BottomNavBarUiModel> {
+        return data.bottomNavigations.map { data ->
             val jumper = data.jumper
             BottomNavBarUiModel(
                 id = data.id.toInt(),
@@ -86,14 +90,14 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
                     BottomNavBarJumper(
                         id = jumper.id.toInt(),
                         title = jumper.name,
-                        assets = jumper.imageList.toAssetsMap(),
+                        assets = jumper.imageList.toAssetsMap()
                     )
                 } else {
                     null
                 },
                 assets = data.imageList.toAssetsMap(),
                 discoId = DiscoId(data.discoId),
-                queryParams = data.queryParams,
+                queryParams = data.queryParams
             )
         }
     }
@@ -101,11 +105,16 @@ class GetHomeBottomNavigationUseCase @Inject constructor(
     private fun List<GetHomeBottomNavigationResponse.Image>.toAssetsMap(): Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type> {
         return associate {
             BottomNavBarAsset.Id(it.type) to when (val type = it.imageType) {
-                "image" -> BottomNavBarAsset.Type.ImageUrl(it.imageUrl)
-                "lottie" -> BottomNavBarAsset.Type.LottieUrl(it.imageUrl)
+                ASSET_TYPE_IMAGE -> BottomNavBarAsset.Type.ImageUrl(it.imageUrl)
+                ASSET_TYPE_LOTTIE -> BottomNavBarAsset.Type.LottieUrl(it.imageUrl)
                 else -> error("Not supported for type $type")
             }
         }
+    }
+
+    companion object {
+        private const val ASSET_TYPE_IMAGE = "image"
+        private const val ASSET_TYPE_LOTTIE = "lottie"
     }
 
     @JvmInline
