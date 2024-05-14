@@ -45,7 +45,6 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -1042,7 +1041,7 @@ open class DiscoveryFragment :
 
     private fun trackEnterPage() {
         if (hasTrackEnterPage || getPageName().isEmpty()) return
-        pageInfoHolder?.let { AppLogAnalytics.putPageData(PAGE_NAME, it.label.trackingPagename) }
+        pageInfoHolder?.let { AppLogAnalytics.putPageData(PAGE_NAME, it.label.enterFromPage) }
             ?: return
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
@@ -2698,7 +2697,7 @@ open class DiscoveryFragment :
     }
 
     override fun getPageName(): String {
-        return pageInfoHolder?.label?.trackingPagename.orEmpty()
+        return pageInfoHolder?.label?.trackingPageName.orEmpty()
     }
 
     fun setCurrentTabPosition(tabPosition: Int) {

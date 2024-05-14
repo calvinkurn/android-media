@@ -56,6 +56,22 @@ data class PageInfo(
 ) {
     data class Label(
         @SerializedName("tracking_pagename")
-        val trackingPagename: String = ""
-    )
+        val trackingPageName: String = ""
+    ) {
+        val enterFromPage: String
+            get() = formatEnterFromPage()
+
+        private fun formatEnterFromPage(): String {
+            return if (trackingPageName.equals(ADS_LANDING_PAGE_ORIGIN, false)) {
+                ADS_LANDING_PAGE_FORMATTED
+            } else {
+                trackingPageName
+            }
+        }
+
+        companion object {
+            private const val ADS_LANDING_PAGE_ORIGIN = "ads_landing_page"
+            private const val ADS_LANDING_PAGE_FORMATTED = "external_promo"
+        }
+    }
 }
