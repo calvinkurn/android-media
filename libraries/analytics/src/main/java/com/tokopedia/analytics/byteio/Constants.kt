@@ -233,7 +233,14 @@ object AppLogParam {
     const val ACTION_TYPE = "action_type"
     const val BAR_NAME = "bar_name"
     const val CARD_NAME = "card_name"
+
+    // enter_from
+    // Indicates where the page user is coming from
+    // If from external (browser) and user enter pdp or discovery, this will be set to "external_promo"
+    // Otherwise, this enter_from will be set automatically within activity lifecycle from page_name,
+    //  as long as isWhitelisted is set to true.
     const val ENTER_FROM = "enter_from"
+
     const val ENTER_FROM_INFO = "enter_from_info" // supporting legacy param, only meant for getter
     const val ENTER_METHOD = "enter_method"
     const val ENTRANCE_INFO = "entrance_info"

@@ -916,6 +916,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url, Bundle bundle) {
+        addProductAppLog();
         openInternalDeeplink(url, bundle);
         context.finish();
     }
