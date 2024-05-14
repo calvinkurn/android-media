@@ -335,9 +335,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 )
                 // if background color is not empty, card border should be clear
                 if (boxColor?.isNotEmpty() == true || useFullImage) {
-                    calendarCardUnify.cardType = TYPE_BORDER
-                } else {
                     calendarCardUnify.cardType = TYPE_CLEAR
+                } else {
+                    calendarCardUnify.cardType = TYPE_BORDER
                 }
                 // content BG
                 calendarParent.setBackgroundColor(
