@@ -1,7 +1,5 @@
 package com.tokopedia.topads.sdk.utils
 
-import android.annotation.SuppressLint
-import android.util.Log
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
@@ -12,7 +10,6 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.R.color
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
-import kotlin.collections.ArrayList
 
 object MapperUtils {
     fun getProductCardModels(products: List<Product>, hasAddProductToCartButton: Boolean): ArrayList<ProductCardModel> {
