@@ -52,7 +52,7 @@ object QuestWidgetMapper {
                         ),
                         questUser = QuestUser("5", "Claimed"),
                         task = listOf(Task("7", "Quest Task", Progress(0f, 100f))),
-                        sequenceQuestIDs = emptyList()
+                        sequenceQuestIDs = listOf(0)
                     ),
                     QuestList(
                         id = "255",
@@ -64,7 +64,7 @@ object QuestWidgetMapper {
                         ),
                         questUser = QuestUser("5", "Idle"),
                         task = listOf(Task("7", "Quest Task", Progress(0f, 100f))),
-                        sequenceQuestIDs = emptyList()
+                        sequenceQuestIDs = listOf(0)
                     )
                 ),
                 resultStatus = ResultStatus(
