@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -77,6 +78,10 @@ class PartialProductItemViewHolder(
     }
 
     private fun setupShareButton(productUrl: String?) {
+        if (isUsingShareEx()) {
+            return
+        }
+
         if (productUrl?.isEmpty() == true) {
             btnShareProduct?.hide()
         }
@@ -225,6 +230,15 @@ class PartialProductItemViewHolder(
             R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
             R.id.btnShareProduct -> openShareBottomSheet()
         }
+    }
+
+    private fun isUsingShareEx(): Boolean {
+        return true
+//        val rollenceKey = "shareex_an_order"
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+//            rollenceKey,
+//            ""
+//        ) == rollenceKey
     }
 
     private fun openShareBottomSheet() {

@@ -1140,7 +1140,15 @@ open class BuyerOrderDetailFragment :
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
         if (isUsingShareEx()) {
-            initializeShareEx(element)
+            // Validate archived product
+            if (element.productUrl.isBlank()) {
+                showCommonToaster(
+                    getString(R.string.buyer_order_detail_share_product_archived),
+                    getString(R.string.buyer_order_detail_share_product_archived_cta)
+                )
+            } else {
+                shareProduct(element)
+            }
             return
         }
 
@@ -1214,7 +1222,7 @@ open class BuyerOrderDetailFragment :
         ) == rollenceKey
     }
 
-    private fun initializeShareEx(element: ProductListUiModel.ProductUiModel) {
+    private fun shareProduct(element: ProductListUiModel.ProductUiModel) {
         val label = "{share_id} - ${element.productId} - ${element.orderId} - ${element.orderStatusId}"
         val affiliateLabel = "{share_id} - ${element.productId} - ${element.orderId}"
         val shareApplink = "${ApplinkConstInternalShare.SHARE}?" +

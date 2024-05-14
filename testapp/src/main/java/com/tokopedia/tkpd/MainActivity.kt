@@ -164,7 +164,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia-android-internal://order/unified"
     }
 
     data class Model(
