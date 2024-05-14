@@ -5,14 +5,27 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnAttachStateChangeListener
+import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
-import com.tokopedia.productcard.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import timber.log.Timber
 import com.tokopedia.productcard.R as productcardR
 
-open class ProductConstraintLayout : ConstraintLayout {
+open class ProductConstraintLayout :
+    ConstraintLayout,
+    OnAttachStateChangeListener,
+    LifecycleEventObserver,
+    OnScrollChangedListener {
 
     protected var mPercentageListener: OnVisibilityPercentChanged? = null
     private var lastPercentageWidht = 0
@@ -30,20 +43,26 @@ open class ProductConstraintLayout : ConstraintLayout {
     private val TOP_AND_BOTTOM = 6
     private val NOWHERE = 7
     private var duplicateEnabled = false
-    private var viewDetachedFromWindows = false
+    private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
     private val set = ConstraintSet()
     private val rectf = Rect()
 
-    constructor(context: Context) : super(context)
+    constructor(context: Context) : super(context) {
+        inflateView()
+    }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        inflateView()
+    }
 
     constructor(
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr)
+    ) : super(context, attrs, defStyleAttr) {
+        inflateView()
+    }
 
     private fun calculateVisibility() {
         getLocalVisibleRect(rectf)
@@ -95,7 +114,7 @@ open class ProductConstraintLayout : ConstraintLayout {
                 if (viewDetachedFromWindows) {
                     maxAreaPercentage = 0
                 }
-                when(alignment) {
+                when (alignment) {
                     TOP -> toBottom()
                     BOTTOM -> toTop()
                     RIGHT -> toLeft()
@@ -162,33 +181,105 @@ open class ProductConstraintLayout : ConstraintLayout {
     }
 
     fun setVisibilityPercentListener(isTopAds: Boolean, eventListener: OnVisibilityPercentChanged?) {
-        if (isTopAds && mPercentageListener == null) {
-            inflateView()
-            mPercentageListener = eventListener
-            this.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(p0: View) {
-                    mPercentageListener?.onShow()
-                    viewDetachedFromWindows = false
-                }
-
-                override fun onViewDetachedFromWindow(p0: View) {
-                    mPercentageListener?.onShowOver(maxAreaPercentage)
-                    viewDetachedFromWindows = true
-                }
-            })
-            this.viewTreeObserver.addOnScrollChangedListener { calculateVisibility() }
+        if (isTopAds) {
+            setListener(eventListener)
+            debugTextView?.addTo(this)
+        } else {
+            unsetListener()
+            debugTextView?.removeSelf()
         }
     }
 
+    private fun unsetListener() {
+        val activity = (context as AppCompatActivity)
+        val fragment = getVisibleFragment(activity)
+        val lifecycle = fragment?.lifecycle ?: activity.lifecycle
+        lifecycle.removeObserver(this)
+        this.viewTreeObserver.removeOnScrollChangedListener(this)
+        removeVisibilityPercentageListener()
+        this.removeOnAttachStateChangeListener(this)
+    }
+
+    private fun setListener(eventListener: OnVisibilityPercentChanged?) {
+        val activity = (context as AppCompatActivity)
+        val fragment = getVisibleFragment(activity)
+        val lifecycle = fragment?.lifecycle ?: activity.lifecycle
+        mPercentageListener = eventListener
+        lifecycle.addObserver(this)
+        this.addOnAttachStateChangeListener(this)
+        this.viewTreeObserver.addOnScrollChangedListener(this)
+    }
+
+    private fun View?.removeSelf() {
+        this ?: return
+        val parent = parent as? ViewGroup ?: return
+        parent.removeView(this)
+    }
+
+    private fun View?.addTo(parent: ViewGroup?) {
+        this ?: return
+        parent ?: return
+        if (this.parent == null) {
+            parent.addView(this)
+        }
+    }
+
+    open fun getVisibleFragment(activity: AppCompatActivity): Fragment? {
+        val fragmentManager: FragmentManager = activity.supportFragmentManager
+        val fragments: List<Fragment> = fragmentManager.fragments
+        for (fragment in fragments) {
+            if (fragment.userVisibleHint) return fragment
+        }
+        return null
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (source is Fragment && !source.userVisibleHint) return
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                if (maxAreaPercentage > 0) onShow()
+            }
+            Lifecycle.Event.ON_PAUSE -> onShowOver()
+            else -> {}
+        }
+    }
+
+    override fun onViewAttachedToWindow(p0: View) {
+        onShow()
+    }
+
+    override fun onViewDetachedFromWindow(p0: View) {
+        onShowOver()
+    }
+
+    override fun onScrollChanged() {
+        calculateVisibility()
+    }
+
+    private fun onShow() {
+        if (viewDetachedFromWindows) {
+            mPercentageListener?.onShow()
+            viewDetachedFromWindows = false
+            Timber.tag("ProductConstrainLayout").i("on show $maxAreaPercentage%")
+        }
+    }
+
+    private fun onShowOver() {
+        if (!viewDetachedFromWindows && maxAreaPercentage > 0) {
+            mPercentageListener?.onShowOver(maxAreaPercentage)
+            viewDetachedFromWindows = true
+            Timber.tag("ProductConstrainLayout").i("on show over $maxAreaPercentage%")
+        }
+    }
     private fun inflateView() {
         if (isPercentViewEnabled(context)) {
             set.clone(this)
             val view = LayoutInflater.from(context).inflate(
                 productcardR.layout.product_card_percent_text_view,
-                this, false
+                this,
+                false
             )
-            debugTextView = view.findViewById(R.id.productCardPercentText)
-            addView(view)
+            debugTextView = view.findViewById(productcardR.id.productCardPercentText)
         }
     }
 
