@@ -100,9 +100,9 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
+import com.tokopedia.navigation_common.ui.BottomNavBarView
 import com.tokopedia.navigation_common.ui.BottomNavItemId
 import com.tokopedia.navigation_common.ui.DiscoId
-import com.tokopedia.navigation_common.ui.BottomNavBarView
 import com.tokopedia.navigation_common.util.inDarkMode
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -1154,8 +1154,6 @@ class NewMainParentActivity :
 
         private const val ARGS_HAS_RUN_ON_RESUME_PLT = "has_run_on_resume_plt"
         internal const val SCROLL_RECOMMEND_LIST = "recommend_list"
-
-        private const val TAB_TYPE_HOME = "home"
 
         private const val MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf"
         private const val MAIN_PARENT_ON_CREATE_METRICS = "mp_main_parent_on_create_metrics"
