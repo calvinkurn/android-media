@@ -1,13 +1,16 @@
 package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
@@ -30,8 +33,17 @@ object TrackDiscoveryRecommendationMapper {
             originalPrice = price.toFloatOrZero(),
             salesPrice = discountedPrice.toFloatOrZero(),
             isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule(),
-            isEligibleForRecTrigger = isEligibleToTrackRecTrigger(componentNames)
+            isEligibleForRecTrigger = isEligibleToTrackRecTrigger(componentNames),
+            additionalParam = anchorProductId.toLongOrZero().getAdditionalParam()
         )
+    }
+
+    private fun Long.getAdditionalParam(): AppLogAdditionalParam {
+        return if (isMoreThanZero()) {
+            AppLogAdditionalParam.DiscoveryWithAnchorProduct(toString())
+        } else {
+            AppLogAdditionalParam.None
+        }
     }
 
     private fun String.isTrackAsHorizontalSourceModule() : Boolean{

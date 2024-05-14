@@ -33,6 +33,23 @@ interface AppLogAdditionalParam {
         }
     }
 
+    data class DiscoveryWithAnchorProduct(
+        val productId: String = "",
+    ): AppLogAdditionalParam {
+
+        override val parameters: Map<String, Any>
+            get() = hashMapOf(
+                AppLogParam.PARENT_PRODUCT_ID to productId
+            )
+
+        override fun setAdditionalToGlobalParam() {
+            super.setAdditionalToGlobalParam()
+            AppLogAnalytics.setGlobalParams(
+                parentProductId = productId
+            )
+        }
+    }
+
     fun setAdditionalToGlobalParam() {}
 
     object None : AppLogAdditionalParam
