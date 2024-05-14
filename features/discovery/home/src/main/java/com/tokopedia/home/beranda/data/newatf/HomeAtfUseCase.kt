@@ -11,6 +11,8 @@ import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetRepository
 import com.tokopedia.home.beranda.data.newatf.ticker.TickerRepository
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.constant.AtfKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -104,6 +106,14 @@ class HomeAtfUseCase @Inject constructor(
                 }
             }
         }
+    }
+
+    /**
+     * Refresh balance widget data
+     */
+    fun refreshBalanceWidget(contentType: BalanceItemVisitable.ContentType? = null) {
+        val type = contentType ?: return balanceWidgetUseCase.fetchFullData()
+        balanceWidgetUseCase.refresh(type)
     }
 
     fun dispose() {

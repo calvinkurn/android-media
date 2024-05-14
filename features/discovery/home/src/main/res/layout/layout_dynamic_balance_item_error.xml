@@ -5,7 +5,7 @@
     android:id="@+id/containerBalance"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/home_component_bg_rounded_balance"
+    android:background="@drawable/home_bg_rounded_balance"
     android:padding="8dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -20,11 +20,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textErrorBalance"
-        tools:text="GoPay fwdwdw"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constrainedWidth="true"
         android:lines="1"
+        android:text="@string/retry"
         android:singleLine="true"
         android:textColor="@color/Unify_NN950"
         android:layout_marginStart="4dp"

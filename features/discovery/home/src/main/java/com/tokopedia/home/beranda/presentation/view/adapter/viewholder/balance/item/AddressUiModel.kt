@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item
 
 import android.annotation.SuppressLint
 
@@ -8,13 +8,14 @@ data class AddressUiModel (
 ): BalanceItemVisitable {
     @SuppressLint("PII Data Exposure")
     override val type: BalanceItemVisitable.Type = BalanceItemVisitable.Type.ADDRESS
-    override val contentType: BalanceItemVisitable.ContentType = BalanceItemVisitable.ContentType.ADDRESS
+    @SuppressLint("PII Data Exposure")
+    override val contentType: BalanceItemVisitable.ContentType = BalanceItemVisitable.ContentType.Address
     override fun areContentsTheSame(newItem: BalanceItemVisitable): Boolean {
         return newItem == this
     }
 
     override fun areItemsTheSame(newItem: BalanceItemVisitable): Boolean {
-        return newItem.contentType == contentType
+        return newItem is AddressUiModel && newItem.contentType == contentType
     }
 
     override fun type(typeFactory: BalanceTypeFactory): Int {

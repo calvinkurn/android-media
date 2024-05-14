@@ -10,13 +10,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.WA
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.WALLET_CODE_GOPAY_POINTS
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
-import com.tokopedia.home_component.widget.balance.AddressUiModel
-import com.tokopedia.home_component.widget.balance.BalanceItemErrorUiModel
-import com.tokopedia.home_component.widget.balance.BalanceItemLoadingUiModel
-import com.tokopedia.home_component.widget.balance.BalanceItemUiModel
-import com.tokopedia.home_component.widget.balance.BalanceItemVisitable
-import com.tokopedia.home_component.widget.balance.BalanceWidgetErrorUiModel
-import com.tokopedia.home_component.widget.balance.BalanceWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.AddressUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemErrorUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemLoadingUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetErrorUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
 import com.tokopedia.home_component.widget.common.DataStatus
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
@@ -46,9 +46,9 @@ class BalanceWidgetMapper @Inject constructor() {
     @SuppressLint("PII Data Exposure")
     private fun BalanceItemModel.mapToBalanceItemVisitable(position: Int): BalanceItemVisitable? {
         val contentType = when(type) {
-            BalanceItemModel.GOPAY -> BalanceItemVisitable.ContentType.GOPAY
-            BalanceItemModel.REWARDS -> BalanceItemVisitable.ContentType.REWARDS
-            BalanceItemModel.ADDRESS -> BalanceItemVisitable.ContentType.ADDRESS
+            BalanceItemModel.GOPAY -> BalanceItemVisitable.ContentType.GoPay(isLinked)
+            BalanceItemModel.REWARDS -> BalanceItemVisitable.ContentType.Rewards
+            BalanceItemModel.ADDRESS -> BalanceItemVisitable.ContentType.Address
             else -> return null
         }
         return when(state) {
@@ -63,7 +63,7 @@ class BalanceWidgetMapper @Inject constructor() {
         contentType: BalanceItemVisitable.ContentType,
         position: Int
     ): BalanceItemVisitable {
-        return if(contentType == BalanceItemVisitable.ContentType.ADDRESS) {
+        return if(contentType is BalanceItemVisitable.ContentType.Address) {
             AddressUiModel(position)
         } else {
             BalanceItemUiModel(
@@ -108,7 +108,8 @@ class BalanceWidgetMapper @Inject constructor() {
             url = data.redirectUrl,
             imageUrl = data.iconUrl,
             text = balanceTitle,
-            state = DataStatus.SUCCESS
+            state = DataStatus.SUCCESS,
+            isLinked = data.isLinked
         )
     }
 

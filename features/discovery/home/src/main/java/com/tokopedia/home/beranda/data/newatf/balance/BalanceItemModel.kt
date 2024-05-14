@@ -9,6 +9,7 @@ data class BalanceItemModel(
     val url: String = "",
     val imageUrl: String? = null,
     val text: String = "",
+    val isLinked: Boolean = false,
 ) {
 
     companion object {

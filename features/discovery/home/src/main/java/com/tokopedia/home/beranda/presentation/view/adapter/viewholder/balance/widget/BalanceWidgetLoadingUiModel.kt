@@ -1,13 +1,12 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget
 
-class BalanceWidgetErrorUiModel: BalanceWidgetVisitable {
+class BalanceWidgetLoadingUiModel: BalanceWidgetVisitable {
     override fun areContentsTheSame(newItem: BalanceWidgetVisitable): Boolean {
         return true
     }
 
     override fun areItemsTheSame(newItem: BalanceWidgetVisitable): Boolean {
-        // there must be exactly 1 balance widget, so areItemsTheSame is always true.
-        return true
+        return newItem is BalanceWidgetLoadingUiModel
     }
 
     override fun type(typeFactory: BalanceWidgetTypeFactory): Int {

@@ -1,9 +1,12 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetDiffCallback
 
 /**
  * Created by frenzel

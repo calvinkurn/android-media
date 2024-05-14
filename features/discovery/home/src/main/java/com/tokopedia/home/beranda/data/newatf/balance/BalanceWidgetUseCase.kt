@@ -12,6 +12,8 @@ import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.widget.common.DataStatus
@@ -67,9 +69,15 @@ class BalanceWidgetUseCase @Inject constructor(
             throw MessageErrorException(balanceWidget.getHomeBalanceList.error)
         } else {
             addPlaceholder(balanceWidget)
-            balanceWidgetModel.balanceItems.forEachIndexed { idx, it ->
-                fetchData(it.type)
-            }
+            fetchFullData()
+        }
+    }
+
+    fun refresh(contentType: BalanceItemVisitable.ContentType) {
+        when(contentType) {
+            is BalanceItemVisitable.ContentType.GoPay -> getWalletData()
+            is BalanceItemVisitable.ContentType.Rewards -> getRewardsData()
+            else -> { }
         }
     }
 
@@ -81,10 +89,12 @@ class BalanceWidgetUseCase @Inject constructor(
         )
     }
 
-    private fun fetchData(type: String) {
-        when(type) {
-            BalanceItemModel.GOPAY -> getWalletData()
-            BalanceItemModel.REWARDS -> getRewardsData()
+    fun fetchFullData() {
+        balanceWidgetModel.balanceItems.forEachIndexed { idx, it ->
+            when(it.type) {
+                BalanceItemModel.GOPAY -> getWalletData()
+                BalanceItemModel.REWARDS -> getRewardsData()
+            }
         }
     }
 

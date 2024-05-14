@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item
 
 
 data class BalanceItemErrorUiModel (

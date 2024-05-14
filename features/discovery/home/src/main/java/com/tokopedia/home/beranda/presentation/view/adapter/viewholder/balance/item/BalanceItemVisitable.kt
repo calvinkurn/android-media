@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
@@ -10,8 +10,8 @@ interface BalanceItemVisitable : Visitable<BalanceTypeFactory> {
     fun areItemsTheSame(newItem: BalanceItemVisitable): Boolean
     override fun type(typeFactory: BalanceTypeFactory): Int
 
-    val type: BalanceItemVisitable.Type
-    val contentType: BalanceItemVisitable.ContentType
+    val type: Type
+    val contentType: ContentType
     val position: Int
 
     enum class Type {
@@ -19,10 +19,9 @@ interface BalanceItemVisitable : Visitable<BalanceTypeFactory> {
         ADDRESS,
     }
 
-    enum class ContentType(val value: String) {
-        GOPAY("gopay"),
-        REWARDS("rewards"),
-        ADDRESS("address"),
-        UNKNOWN("unknown")
+    sealed class ContentType {
+        class GoPay(val isLinked: Boolean): ContentType()
+        object Rewards : ContentType()
+        object Address : ContentType()
     }
 }

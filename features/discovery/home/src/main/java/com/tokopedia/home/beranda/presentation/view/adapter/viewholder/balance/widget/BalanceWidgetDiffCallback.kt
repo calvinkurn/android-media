@@ -1,6 +1,7 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget
 
 import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 
 /**
  * Created by frenzel

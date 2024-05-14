@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item
 
 
 data class BalanceItemUiModel (
@@ -6,8 +6,8 @@ data class BalanceItemUiModel (
     val url: String = "",
     val imageUrl: String? = null,
     val text: String = "",
-    override val position: Int,
     override val contentType: BalanceItemVisitable.ContentType,
+    override val position: Int,
 ): BalanceItemVisitable {
     override val type: BalanceItemVisitable.Type = BalanceItemVisitable.Type.BALANCE
     override fun areContentsTheSame(newItem: BalanceItemVisitable): Boolean {
@@ -15,10 +15,16 @@ data class BalanceItemUiModel (
     }
 
     override fun areItemsTheSame(newItem: BalanceItemVisitable): Boolean {
-        return newItem.contentType == contentType
+        return newItem is BalanceItemUiModel && newItem.contentType == contentType
     }
 
     override fun type(typeFactory: BalanceTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    sealed class ContentType {
+        class GoPay(val isLinked: Boolean): ContentType()
+        object Rewards : ContentType()
+        object Address : ContentType()
     }
 }

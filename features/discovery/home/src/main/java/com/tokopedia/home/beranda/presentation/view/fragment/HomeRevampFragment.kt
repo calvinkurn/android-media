@@ -100,6 +100,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
@@ -3129,7 +3130,11 @@ open class HomeRevampFragment :
     }
 
     override fun refreshBalanceWidget() {
-        getHomeViewModel().getBalanceWidgetData()
+        getHomeViewModel().refreshBalanceWidget()
+    }
+
+    override fun refreshBalanceWidget(contentType: BalanceItemVisitable.ContentType?) {
+        getHomeViewModel().refreshBalanceWidget(contentType)
     }
 
     override fun refreshShortenWidget() {

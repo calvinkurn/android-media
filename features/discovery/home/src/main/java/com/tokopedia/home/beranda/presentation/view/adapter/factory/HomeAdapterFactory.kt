@@ -41,6 +41,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeIniti
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CMHomeWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
@@ -160,13 +161,14 @@ import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
-import com.tokopedia.home_component.widget.balance.BalanceWidgetErrorUiModel
-import com.tokopedia.home_component.widget.balance.BalanceWidgetErrorViewHolder
-import com.tokopedia.home_component.widget.balance.BalanceWidgetLoadingUiModel
-import com.tokopedia.home_component.widget.balance.BalanceWidgetLoadingViewHolder
-import com.tokopedia.home_component.widget.balance.BalanceWidgetTypeFactory
-import com.tokopedia.home_component.widget.balance.BalanceWidgetUiModel
-import com.tokopedia.home_component.widget.balance.DynamicBalanceWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetErrorUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetErrorViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetLoadingUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetLoadingViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetViewHolder
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
@@ -243,7 +245,7 @@ class HomeAdapterFactory(
 {
 
     override fun type(visitable: BalanceWidgetUiModel): Int {
-        return DynamicBalanceWidgetViewHolder.LAYOUT
+        return BalanceWidgetViewHolder.LAYOUT
     }
 
     override fun type(visitable: BalanceWidgetErrorUiModel): Int {
@@ -252,6 +254,10 @@ class HomeAdapterFactory(
 
     override fun type(visitable: BalanceWidgetLoadingUiModel): Int {
         return BalanceWidgetLoadingViewHolder.LAYOUT
+    }
+
+    override fun type(visitable: LoginWidgetUiModel): Int {
+        return LoginWidgetViewHolder.LAYOUT
     }
 
     override fun type(pullToRefreshDataModel: PullToRefreshDataModel): Int {
@@ -709,9 +715,10 @@ class HomeAdapterFactory(
             CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
             ContainerMultiTwoSquareViewHolder.LAYOUT -> viewHolder = ContainerMultiTwoSquareViewHolder(view, multiTwoSquareWidgetListener, parentRecycledViewPool)
             PullToRefreshViewHolder.LAYOUT -> viewHolder = PullToRefreshViewHolder(view, listener)
-            DynamicBalanceWidgetViewHolder.LAYOUT -> viewHolder = DynamicBalanceWidgetViewHolder(view)
-            BalanceWidgetErrorViewHolder.LAYOUT -> viewHolder = BalanceWidgetErrorViewHolder(view)
+            BalanceWidgetViewHolder.LAYOUT -> viewHolder = BalanceWidgetViewHolder(view, listener)
+            BalanceWidgetErrorViewHolder.LAYOUT -> viewHolder = BalanceWidgetErrorViewHolder(view, listener)
             BalanceWidgetLoadingViewHolder.LAYOUT -> viewHolder = BalanceWidgetLoadingViewHolder(view)
+            LoginWidgetViewHolder.LAYOUT -> viewHolder = LoginWidgetViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

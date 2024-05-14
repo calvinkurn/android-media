@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.balance
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
