@@ -88,7 +88,8 @@ class PartialProductItemViewHolder(
     }
 
     fun bindProductItemPayload(
-        oldItem: ProductListUiModel.ProductUiModel, newItem: ProductListUiModel.ProductUiModel
+        oldItem: ProductListUiModel.ProductUiModel,
+        newItem: ProductListUiModel.ProductUiModel
     ) {
         container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         this.element = newItem
@@ -233,12 +234,11 @@ class PartialProductItemViewHolder(
     }
 
     private fun isUsingShareEx(): Boolean {
-        return true
-//        val rollenceKey = "shareex_an_order"
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-//            rollenceKey,
-//            ""
-//        ) == rollenceKey
+        val rollenceKey = "shareex_an_order"
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            rollenceKey,
+            ""
+        ) == rollenceKey
     }
 
     private fun openShareBottomSheet() {
