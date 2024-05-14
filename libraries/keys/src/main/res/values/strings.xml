@@ -61,5 +61,6 @@
     <string name="tikanshfd" translatable="false"></string>
     <string name="aokfokotd" translatable="false"></string>
     <string name="ainfhfjsd" translatable="false"></string>
+    <string name="sso_lark_key" translatable="false">cli_a6a8acbf677e900e</string>
 </resources>
 
