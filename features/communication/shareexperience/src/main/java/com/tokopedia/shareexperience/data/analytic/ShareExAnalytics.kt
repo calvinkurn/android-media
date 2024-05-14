@@ -211,6 +211,66 @@ class ShareExAnalytics @Inject constructor(
         shareId: String?,
         label: String
     ) {
+        when (pageTypeEnum) {
+            ShareExPageTypeEnum.PDP -> {
+                trackImpressionTickerAffiliateEnhancedEcommerce(
+                    label,
+                    shareId,
+                    pageTypeEnum,
+                    identifier
+                )
+            }
+
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                trackImpressionTickerAffiliateGeneralEvent(
+                    identifier,
+                    pageTypeEnum,
+                    shareId,
+                    label
+                )
+            }
+
+            else -> Unit
+        }
+    }
+
+    private fun trackImpressionTickerAffiliateGeneralEvent(
+        identifier: String,
+        pageTypeEnum: ShareExPageTypeEnum,
+        shareId: String?,
+        label: String
+    ) {
+        val updatedLabel = updateLabel(
+            label = label,
+            shareId = shareId.toString()
+        )
+        val map: MutableMap<String, Any> = DataLayer.mapOf(
+            ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.VIEW_COMMUNICATION,
+            ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.IMPRESSION_TICKER_AFFILIATE,
+            ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel,
+            ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE,
+            ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE
+        )
+        when (pageTypeEnum) {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50278
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+            }
+            else -> Unit
+        }
+        if (userSession.isLoggedIn) {
+            map[ShareExAnalyticsConst.Key.USER_ID] = userSession.userId
+        }
+        tracker.sendGeneralEvent(map)
+    }
+
+    private fun trackImpressionTickerAffiliateEnhancedEcommerce(
+        label: String,
+        shareId: String?,
+        pageTypeEnum: ShareExPageTypeEnum,
+        identifier: String
+    ) {
         val updatedLabel = updateLabel(
             label = label,
             shareId = shareId.toString()
@@ -226,11 +286,6 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.PDP -> {
                 bundle.putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_31185)
                 bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.PDP)
-                bundle.putString(ShareExAnalyticsConst.Key.PRODUCT_ID, identifier)
-            }
-            ShareExPageTypeEnum.ORDER_DETAIL -> {
-                bundle.putString(ShareExAnalyticsConst.Key.TRACKER_ID, ShareExAnalyticsConst.Tracker.ID_50278)
-                bundle.putString(ShareExAnalyticsConst.Key.EVENT_CATEGORY, ShareExAnalyticsConst.Category.ORDER_DETAIL)
                 bundle.putString(ShareExAnalyticsConst.Key.PRODUCT_ID, identifier)
             }
             else -> Unit
