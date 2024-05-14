@@ -86,7 +86,7 @@ data class SmallProductModel(
 
         companion object {
             const val MIN_THRESHOLD = 20
-            const val MAX_THRESHOLD = 90
+            const val MAX_THRESHOLD = 95
         }
     }
 

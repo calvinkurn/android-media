@@ -79,7 +79,6 @@ class ProductWidgetViewHolder(
             binding?.timerCountdown?.run {
                 isShowClockIcon = false
                 timerVariant = CountdownTimer.VARIANT_MAIN
-                timerFormat = CountdownTimer.FORMAT_HOUR
                 targetDate = Calendar.getInstance().apply {
                     val currentDate = Date()
                     val currentMillisecond: Long = currentDate.time + header.serverTimeOffset

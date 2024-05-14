@@ -20,7 +20,9 @@ class ProductStockBar(private val view: View) {
         }
 
         view.post {
-            val width = view.measuredWidth * model.percentage / 100
+            val forceMaxPercentageThreshold = shouldSetMaxPercentageForcibly(model.percentage)
+            val width = view.measuredWidth * forceMaxPercentageThreshold / 100
+
             setStockBarActiveLength(width)
 
             when (model.shouldHandleFireIconVisibility()) {
@@ -31,6 +33,16 @@ class ProductStockBar(private val view: View) {
                 }
                 is SmallProductModel.StockBar.Type.ActiveWithFire -> showStockBarWithFire()
             }
+        }
+    }
+
+    private fun shouldSetMaxPercentageForcibly(percentage: Int): Int {
+        val maxValue = SmallProductModel.StockBar.MAX_THRESHOLD
+
+        return if (percentage > maxValue) {
+            maxValue
+        } else {
+            percentage
         }
     }
 
