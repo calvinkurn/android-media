@@ -46,7 +46,7 @@ object TrackDiscoveryRecommendationMapper {
 
     fun DataItem.asTrackConfirmCart(): TrackConfirmCart {
         return TrackConfirmCart(
-            productId = parentProductId.orEmpty(),
+            productId = getAppLogSPUId(),
             productCategory = String.EMPTY,
             productType = getProductType(),
             originalPrice = price.cleanUpCurrencyValue(),
@@ -62,7 +62,7 @@ object TrackDiscoveryRecommendationMapper {
         cartId: String?
     ): TrackConfirmCartResult {
         return TrackConfirmCartResult(
-            productId = parentProductId.orEmpty(),
+            productId = getAppLogSPUId(),
             productCategory = String.EMPTY,
             productType = getProductType(),
             originalPrice = price.cleanUpCurrencyValue(),
@@ -81,7 +81,7 @@ object TrackDiscoveryRecommendationMapper {
         reason: String
     ): TrackConfirmCartResult {
         return TrackConfirmCartResult(
-            productId = parentProductId.orEmpty(),
+            productId = getAppLogSPUId(),
             productCategory = String.EMPTY,
             productType = getProductType(),
             originalPrice = price.cleanUpCurrencyValue(),
@@ -95,6 +95,8 @@ object TrackDiscoveryRecommendationMapper {
             failReason = reason
         )
     }
+
+
 
     private fun DataItem.getProductType(): ProductType {
         val productType = if (isActiveProductCard == true) {
