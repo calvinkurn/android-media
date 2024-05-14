@@ -71,7 +71,7 @@ private fun StoriesSettingsSuccess(
     pageInfo: StoriesSettingsPageUiModel,
     viewModel: StoriesSettingsViewModel
 ) {
-    val isStoryEnable = pageInfo.options.any { it.isSelected }
+    val isStoryEnable = pageInfo.options.drop(1).any { it.isSelected }
     val isEligible = pageInfo.config.isEligible
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("", "", false)
 
@@ -172,7 +172,7 @@ private fun StoriesSettingsSuccess(
                 }
             },
             update = { switchUnify ->
-                switchUnify.isChecked = checked
+                switchUnify.isChecked = isStoryEnable || checked
                 switchUnify.isEnabled = isEligible
             },
         )
@@ -226,7 +226,7 @@ private fun StoriesSettingsSuccess(
                 end.linkTo(parent.end)
             }) {
             items(pageInfo.options.drop(1)) { item ->
-                SettingOptItem(item, isEligible, textColor) {
+                SettingOptItem(item, isEligible, textColor, checked) {
                     viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
                 }
             }
@@ -256,6 +256,7 @@ private fun SettingOptItem(
     item: StoriesSettingOpt,
     isEligible: Boolean,
     textColor: Color,
+    checked: Boolean,
     onOptionClicked: (StoriesSettingOpt) -> Unit,
 ) {
     Row(
@@ -280,7 +281,7 @@ private fun SettingOptItem(
                 }
             },
             update = { v ->
-                v.isChecked = item.isSelected
+                v.isChecked = item.isSelected || checked
                 v.isEnabled = isEligible
             },
         )
