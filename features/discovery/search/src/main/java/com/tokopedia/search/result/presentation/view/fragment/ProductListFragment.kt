@@ -298,11 +298,7 @@ class ProductListFragment :
     private var searchSortFilter: SortFilter? = null
     private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
-    private val enterFrom: String
-        get() {
-            val lastEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
-            return if (lastEnterFrom == HOMEPAGE) HOMEPAGE else ""
-        }
+
     private val searchEntrance: String
         get() = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty()
 
@@ -672,7 +668,7 @@ class ProductListFragment :
 
         presenter?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        AppLogSearch.updateSearchPageData(this)
+        if(isVisibleToUser) AppLogSearch.updateSearchPageData(this)
     }
 
     override fun trackScreenAuthenticated() {

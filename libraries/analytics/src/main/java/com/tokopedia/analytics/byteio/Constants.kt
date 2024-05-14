@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 
 internal val TAG = "BYTEIO"
 
@@ -109,7 +110,7 @@ data class SubmitOrderResult(
         @SerializedName("shipping_type")
         val shippingType: String,
         @SerializedName("eta")
-        val eta: String,
+        val eta: String
     ) {
         fun toJsonString(): String = Gson().toJson(this)
     }
@@ -124,8 +125,8 @@ data class CartClickAnalyticsModel(
     val skuNum: Int,
     val ItemCnt: Int,
     val salePriceValue: Double,
-    val discountedAmount: Double,
-    )
+    val discountedAmount: Double
+)
 
 enum class ProductType(val type: Int) {
     AVAILABLE(1),
@@ -213,6 +214,12 @@ object EventName {
     const val SLIDE_BAR = "tiktokec_slide_bar"
     const val CART_ENTRANCE_SHOW = "tiktokec_cart_entrance_show"
     const val CART_ENTRANCE_CLICK = "tiktokec_cart_entrance_click"
+
+    //region https://bytedance.sg.larkoffice.com/sheets/YVaGsNyMfhqbjzt7HJvlH4FIgof
+    const val PDP_BUTTON_SHOW = "tiktokec_button_show"
+    const val PDP_BUTTON_CLICK = "tiktokec_button_click"
+    const val PDP_BUTTON_CLICK_COMPLETED = "tiktokec_confirm_sku"
+    //endregion
 }
 
 object ActionType {
@@ -270,4 +277,40 @@ object AppLogParam {
     val ENTER_METHOD_SEE_MORE
         get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"
+    const val SOURCE_CONTENT_ID = "source_content_id"
+}
+
+data class ButtonShowAnalyticData(
+    val buttonName: String,
+    val productId: String,
+    val isSingleSku: Boolean,
+    val buyType: AtcBuyType,
+    val shopId: String
+)
+
+data class ButtonClickAnalyticData(
+    val buttonName: String,
+    val productId: String,
+    val isSingleSku: Boolean,
+    val buyType: AtcBuyType,
+    val shopId: String
+)
+
+data class ButtonClickCompletedAnalyticData(
+    val productId: String,
+    val isSingleSku: Boolean,
+    val skuId: String,
+    val quantity: String,
+    val productType: ProductType,
+    val originalPrice: Double,
+    val salePrice: Double,
+    val followStatus: FollowStatus,
+    val buyType: AtcBuyType,
+    val cartId: String,
+    val shopId: String
+) {
+    enum class FollowStatus(val value: Int) {
+        UNFOLLOWED(0),
+        FOLLOWED(3)
+    }
 }

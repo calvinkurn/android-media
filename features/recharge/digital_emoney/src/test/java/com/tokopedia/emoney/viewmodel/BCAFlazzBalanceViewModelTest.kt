@@ -3,6 +3,10 @@ package com.tokopedia.emoney.viewmodel
 import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumber
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.usecase.GetBCAGenCheckerUseCase
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
@@ -16,6 +20,7 @@ import com.tokopedia.emoney.domain.response.BCAFlazzResponseMapper
 import com.tokopedia.emoney.domain.usecase.GetBCAFlazzUseCase
 import com.tokopedia.emoney.integration.BCALibraryIntegration
 import com.tokopedia.emoney.integration.data.JNIResult
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -41,6 +46,9 @@ class BCAFlazzBalanceViewModelTest {
 
     @RelaxedMockK
     lateinit var bcaFlazzUseCase: GetBCAFlazzUseCase
+
+    @RelaxedMockK
+    lateinit var bcaCheckGen: GetBCAGenCheckerUseCase
 
     @RelaxedMockK
     private lateinit var bcaLibrary: BCALibraryIntegration
@@ -96,6 +104,8 @@ class BCAFlazzBalanceViewModelTest {
     private val accessCardNumber = "9849384938"
     private val accessCode = "9894uijsiafjd"
     private val amount = 30000
+    private var messageTopUp2 = "Message Top Up 2"
+    private var messageTopUp1 = "Message Top Up 1"
 
     private val checkNoPendingBalanceGen1Result = """
         {"Action":0,"Status":1,"Attributes":{"CardNumber":"0145201100001171","CardData":"","Amount":0,"LastBalance":2000,"TransactionID":"","ButtonText":"Topup Sekarang","ImageIssuer":"https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png","Message":"Ini saldo kamu yang paling baru, ya.","HasMorePendingBalance":false,"AccessCardNumber":"","AccessCode":""},"EncKey":"","EncPayload":""}
@@ -291,6 +301,15 @@ class BCAFlazzBalanceViewModelTest {
         "0000"
     )
 
+    private val session1SizePrefixResult = JNIResult(
+        0,
+        "0000",
+        0,
+        balance,
+        cardNumber,
+        "0000"
+    )
+
     private val session2Result = JNIResult(
         1,
         "0000$strLogSession2",
@@ -366,7 +385,8 @@ class BCAFlazzBalanceViewModelTest {
                 bcaLibrary,
                 gson,
                 electronicMoneyEncryption,
-                bcaFlazzUseCase
+                bcaFlazzUseCase,
+                bcaCheckGen
             )
         )
     }
@@ -387,6 +407,40 @@ class BCAFlazzBalanceViewModelTest {
         every { isoDep.tag.id } returns emptyByteNFC
     }
 
+    val bcaGenCheck = TopupBillsPersoFavNumberData(
+        persoFavoriteNumber = TopupBillsPersoFavNumber(
+            items = listOf(
+                TopupBillsPersoFavNumberItem(
+                    label1 = "1",
+                    label2 = messageTopUp1
+                )
+            )
+        )
+    )
+
+    val bcaGenCheckEmpty = TopupBillsPersoFavNumberData(
+        persoFavoriteNumber = TopupBillsPersoFavNumber(
+            items = listOf(
+                TopupBillsPersoFavNumberItem(
+                    label1 = "1",
+                    label2 = ""
+                )
+            )
+        )
+    )
+
+    private fun genCheckExecute() {
+        coEvery { bcaCheckGen.execute(any()) } returns bcaGenCheck
+    }
+
+    private fun genCheckExecuteEmpty() {
+        coEvery { bcaCheckGen.execute(any()) } returns bcaGenCheckEmpty
+    }
+
+    private fun genCheckExecuteThrows() {
+        coEvery { bcaCheckGen.execute(any()) } throws MessageErrorException()
+    }
+
     @Test
     fun checkBalanceGen1ShouldReturnLastBalance_Success() {
         //given
@@ -397,6 +451,8 @@ class BCAFlazzBalanceViewModelTest {
             checkBalanceResult.balance,
             GEN_ONE
         )
+
+        genCheckExecute()
 
         every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
 
@@ -418,7 +474,7 @@ class BCAFlazzBalanceViewModelTest {
             bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
         } returns responseCheckBalanceEnc
         //when
-        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString)
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString, messageTopUp1)
         //then
         Assert.assertEquals(
             (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
@@ -431,6 +487,118 @@ class BCAFlazzBalanceViewModelTest {
                 responseCheckBalance.status,
                 responseCheckBalance.attributes.message,
                 responseCheckBalance.attributes.hasMorePendingBalance,
+                false,
+                messageTopUp1,
+                "",
+                false
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen1ShouldReturnLastBalance_CheckGenEmpty_Success() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_ONE
+        )
+
+        genCheckExecuteEmpty()
+
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkNoPendingBalanceGen1Result, BCAFlazzData::class.java)
+
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkNoPendingBalanceGen1Result
+
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+        //when
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString, messageTopUp1)
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseCheckBalance.attributes.lastBalance,
+                responseCheckBalance.attributes.imageIssuer,
+                true,
+                responseCheckBalance.attributes.amount,
+                responseCheckBalance.status,
+                responseCheckBalance.attributes.message,
+                responseCheckBalance.attributes.hasMorePendingBalance,
+                false,
+                messageTopUp1,
+                "",
+                false
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen1ShouldReturnLastBalance_CheckGenError_Success() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_ONE
+        )
+
+        genCheckExecuteThrows()
+
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkNoPendingBalanceGen1Result, BCAFlazzData::class.java)
+
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkNoPendingBalanceGen1Result
+
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+        //when
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString, messageTopUp1)
+        //then
+        Assert.assertEquals(
+            (bcaBalanceViewModel.bcaInquiry.value) as EmoneyInquiry,
+            BCAFlazzResponseMapper.bcaMapper(
+                cardNumber,
+                responseCheckBalance.attributes.lastBalance,
+                responseCheckBalance.attributes.imageIssuer,
+                true,
+                responseCheckBalance.attributes.amount,
+                responseCheckBalance.status,
+                responseCheckBalance.attributes.message,
+                responseCheckBalance.attributes.hasMorePendingBalance,
+                false,
+                messageTopUp1,
+                "",
+                false
             )
         )
     }
@@ -441,9 +609,10 @@ class BCAFlazzBalanceViewModelTest {
         //given
         initSuccessData()
         every { bcaLibrary.bcaCheckBalance() } throws IOException(ERROR_MESSAGE)
+        genCheckExecute()
 
         //when
-        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString)
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, mockPublicKeyString, mockPrivateKeyString, messageTopUp1)
         // then
         Assert.assertEquals(
             ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
@@ -502,7 +671,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -559,7 +730,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -615,7 +788,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -674,7 +849,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -733,7 +910,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -793,7 +972,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -848,7 +1029,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -935,7 +1118,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1018,7 +1203,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1097,7 +1284,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1159,7 +1348,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1220,7 +1411,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1281,7 +1474,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1342,7 +1537,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1428,7 +1625,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1442,6 +1641,10 @@ class BCAFlazzBalanceViewModelTest {
                 responseReversal.status,
                 responseReversal.attributes.message,
                 responseReversal.attributes.hasMorePendingBalance,
+                false,
+                "",
+                messageTopUp2,
+                false
             )
         )
     }
@@ -1506,7 +1709,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1586,7 +1791,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1662,7 +1869,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1742,7 +1951,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1818,7 +2029,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1905,7 +2118,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -1921,6 +2136,95 @@ class BCAFlazzBalanceViewModelTest {
                     0,
                     checkBalanceResult.cardNo,
                     "${BCABalanceViewModel.TAG_PROCESS_SDK_SESSION_1}: 9498",
+                    checkBalanceResult.balance.toDouble()
+                )
+            )
+        )
+    }
+
+    @Test
+    fun checkBalanceGen2ShouldProcessSession_Fail_JNI_PrefixSize() {
+        //given
+        initSuccessData()
+        val createPendingBalanceParam = BCAFlazzRequestMapper.createGetPendingBalanceParam(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+
+        every { bcaLibrary.bcaSetConfig(mtID) } returns setConfigResult
+        every { bcaLibrary.bcaCheckBalance() } returns checkBalanceResult
+        every { electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam) } returns  pairEncryptionResult
+        val encParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createPendingBalanceParam)
+        val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+        val responseCheckBalanceEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encKeyAes,
+            encPayloadAes
+        ))
+        val responseCheckBalance = gson.fromJson(checkBalanceStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encKeyAes, encPayloadAes)
+        } returns checkBalanceStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
+        } returns responseCheckBalanceEnc
+
+
+        val createTrxIdParam = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+            gson,
+            checkBalanceResult.cardNo,
+            checkBalanceResult.balance,
+            GEN_TWO
+        )
+        every {
+            electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        } returns pairBCATrxIdEncryptionResult
+        val encTrxIdParam = electronicMoneyEncryption.createEncryptedPayload(mockPublicKeyString, createTrxIdParam)
+        val paramGetTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encTrxIdParam.first, encTrxIdParam.second)
+        val responseTrxEnc = BCAFlazzResponse(data = CommonBodyEnc(
+            encTrxIdKeyAes, encTrxIdPayloadAes
+        ))
+        val responseTrxId = gson.fromJson(trxIdStatus0Result, BCAFlazzData::class.java)
+        every {
+            electronicMoneyEncryption.createDecryptedPayload(mockPrivateKeyString, encTrxIdKeyAes, encTrxIdPayloadAes)
+        } returns trxIdStatus0Result
+        coEvery {
+            bcaFlazzUseCase.execute(paramGetTrxIdQuery)
+        } returns responseTrxEnc
+
+
+        every {
+            bcaLibrary.bcaDataSession1(
+                transactionId, ATD, strCurrDateTime
+            )
+        } returns session1SizePrefixResult
+
+        //when
+        bcaBalanceViewModel.processBCATagBalance(
+            isoDep,
+            merchantId,
+            terminalId,
+            mockPublicKeyString,
+            mockPrivateKeyString,
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
+        )
+        //then
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).first.message,
+            ERROR_MESSAGE
+        )
+
+        Assert.assertEquals(
+            ((bcaBalanceViewModel.errorCardMessage.value) as Pair<Throwable, RechargeEmoneyInquiryLogRequest>).second,
+            RechargeEmoneyInquiryLogRequest(
+                log = EmoneyInquiryLogRequest(
+                    5,
+                    0,
+                    checkBalanceResult.cardNo,
+                    "${BCABalanceViewModel.TAG_PROCESS_SDK_SESSION_1}: 0000",
                     checkBalanceResult.balance.toDouble()
                 )
             )
@@ -1992,7 +2296,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2103,7 +2409,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2210,7 +2518,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2321,7 +2631,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2432,7 +2744,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2543,7 +2857,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2658,7 +2974,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2784,7 +3102,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -2910,7 +3230,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -3090,7 +3412,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -3266,7 +3590,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -3442,7 +3768,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -3590,7 +3918,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -3742,7 +4072,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -3921,7 +4253,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -3935,6 +4269,9 @@ class BCAFlazzBalanceViewModelTest {
                 responseACK.status,
                 responseACK.attributes.message,
                 responseACK.attributes.hasMorePendingBalance,
+                false,
+                "",
+                messageTopUp2,
             )
         )
     }
@@ -4100,7 +4437,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4114,8 +4453,22 @@ class BCAFlazzBalanceViewModelTest {
                 responseACK.status,
                 responseACK.attributes.message,
                 responseACK.attributes.hasMorePendingBalance,
+                false,
+                "",
+                messageTopUp2,
+                true
             )
         )
+
+        Assert.assertEquals((bcaBalanceViewModel.errorTagLog.value) as RechargeEmoneyInquiryLogRequest, RechargeEmoneyInquiryLogRequest(
+            log = EmoneyInquiryLogRequest(
+                5L,
+                0,
+                cardNumber,
+                "PROCESS_SDK_TOP_UP_2: 0000",
+                2000.0
+            )
+        ))
     }
 
     @Test
@@ -4273,6 +4626,7 @@ class BCAFlazzBalanceViewModelTest {
             bcaFlazzUseCase.execute(paramGetBCALastQuery)
         } returns responseBCALastEnc
 
+
         //when
         bcaBalanceViewModel.processBCATagBalance(
             isoDep,
@@ -4280,7 +4634,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4294,6 +4650,10 @@ class BCAFlazzBalanceViewModelTest {
                 responseACK.status,
                 responseACK.attributes.message,
                 responseACK.attributes.hasMorePendingBalance,
+                false,
+                "",
+                messageTopUp2,
+                true
             )
         )
     }
@@ -4434,7 +4794,9 @@ class BCAFlazzBalanceViewModelTest {
             terminalId,
             mockPublicKeyString,
             mockPrivateKeyString,
-            strCurrDateTime, ATD
+            strCurrDateTime,
+            ATD,
+            messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4462,7 +4824,7 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKBCADataSession1(
             nullIsoDep,
             "",
-            0,"","","","","",""
+            0,"","","","","","", messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4490,7 +4852,7 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKBCADataSession2(
             nullIsoDep,
             "",
-            0,"","","","","","", BCAFlazzData()
+            0,"","","","","","", BCAFlazzData(), messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4518,7 +4880,7 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKBCATopUp1(
             nullIsoDep,
             "",
-            0,"","","","","","",BCAFlazzData()
+            0,"","","","","","",BCAFlazzData(), messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4546,7 +4908,7 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKBCATopUp2(
             nullIsoDep,
             "",
-            "","","","",BCAFlazzData(), 0
+            "","","","",BCAFlazzData(), 0, messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4574,7 +4936,7 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKReversal(
             nullIsoDep,
             "",
-            "","",0,"","","", BCAFlazzData()
+            "","",0,"","","", BCAFlazzData(), messageTopUp2
         )
         //then
         Assert.assertEquals(
@@ -4602,7 +4964,7 @@ class BCAFlazzBalanceViewModelTest {
         bcaBalanceViewModel.processSDKBCAlastBCATopUp(
             nullIsoDep,
             "",
-            "","","","", 0
+            "","","","", 0, messageTopUp2, false
         )
         //then
         Assert.assertEquals(

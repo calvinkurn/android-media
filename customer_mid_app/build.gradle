@@ -36,6 +36,7 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
     lintOptions {
         abortOnError false
@@ -71,6 +72,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.productCardCompact)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
