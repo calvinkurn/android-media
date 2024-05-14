@@ -50,8 +50,6 @@ import java.net.UnknownHostException
 internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
     NestTheme(isOverrideStatusBarColor = false) {
         val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
-
-
         when (val state = pageInfo.state) {
             ResultState.Success -> StoriesSettingsSuccess(
                 viewModel = viewModel,
@@ -127,6 +125,7 @@ private fun StoriesSettingsSuccess(
                 color = textColor
             )
         )
+
         //Icon - Mobile
         NestIcon(iconId = IconUnify.SOCIAL_STORY,
             colorNightDisable = textColor,
@@ -163,8 +162,8 @@ private fun StoriesSettingsSuccess(
             factory = { context ->
                 SwitchUnify(context).apply {
                     this.setOnCheckedChangeListener { view, isActive ->
+                        checked = isActive
                         if (view.isPressed) {
-                            checked = isActive
                             viewModel.onEvent(
                                 StoriesSettingsAction.SelectOption(itemFirst)
                             )
@@ -173,7 +172,7 @@ private fun StoriesSettingsSuccess(
                 }
             },
             update = { switchUnify ->
-                switchUnify.isChecked = isStoryEnable || checked
+                switchUnify.isChecked = (isStoryEnable || checked) && itemFirst.isSelected
                 switchUnify.isEnabled = isEligible
             },
         )
@@ -260,6 +259,8 @@ private fun SettingOptItem(
     checked: Boolean,
     onOptionClicked: (StoriesSettingOpt) -> Unit,
 ) {
+    //trigger recompose to update
+    var selected by remember { mutableStateOf(item.isSelected || checked) }
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -274,7 +275,8 @@ private fun SettingOptItem(
         AndroidView(
             factory = { context ->
                 CheckboxUnify(context).apply {
-                    this.setOnCheckedChangeListener { view, _ ->
+                    this.setOnCheckedChangeListener { view, isActive ->
+                        selected = isActive
                         if (view.isPressed) {
                             onOptionClicked(item)
                         }
@@ -282,7 +284,7 @@ private fun SettingOptItem(
                 }
             },
             update = { v ->
-                v.isChecked = item.isSelected || checked
+                v.isChecked = (item.isSelected || checked) && selected
                 v.isEnabled = isEligible
             },
         )
