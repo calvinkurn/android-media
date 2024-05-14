@@ -22,6 +22,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
+import com.tokopedia.unifycomponents.UnifyButton
 import java.text.NumberFormat
 
 object ShopPageProductListMapper {
@@ -222,7 +223,8 @@ object ShopPageProductListMapper {
         isForceLightMode: Boolean = false,
         patternType: String = "",
         backgroundColor: String = "",
-        makeProductCardTransparent: Boolean
+        makeProductCardTransparent: Boolean,
+        atcVariantButtonText: String
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -276,7 +278,8 @@ object ShopPageProductListMapper {
             val productCardModel = if (shopProductUiModel.isVariant) {
                 createProductCardWithVariantAtcModel(
                     shopProductUiModel,
-                    baseProductCardModel
+                    baseProductCardModel,
+                    atcVariantButtonText
                 )
             } else {
                 if (shopProductUiModel.productInCart.isZero()) {
@@ -312,11 +315,17 @@ object ShopPageProductListMapper {
 
     private fun createProductCardWithVariantAtcModel(
         shopProductUiModel: ShopProductUiModel,
-        baseProductCardModel: ProductCardModel
+        baseProductCardModel: ProductCardModel,
+        atcVariantButtonText: String
     ): ProductCardModel {
         return baseProductCardModel.copy(
             variant = ProductCardModel.Variant(
                 shopProductUiModel.productInCart
+            ),
+            productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                copyWriting = atcVariantButtonText,
+                mainButtonVariant = UnifyButton.Variant.GHOST,
+                mainButtonType = UnifyButton.Type.MAIN
             )
         )
     }

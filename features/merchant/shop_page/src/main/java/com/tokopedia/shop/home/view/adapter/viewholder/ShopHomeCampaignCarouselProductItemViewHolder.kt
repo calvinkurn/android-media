@@ -68,7 +68,8 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                 isOverrideTheme = shopHomeCampaignNplWidgetListener.isOverrideTheme(),
                 patternColorType = shopHomeCampaignNplWidgetListener.getPatternColorType(),
                 backgroundColor = shopHomeCampaignNplWidgetListener.getBackgroundColor(),
-                isFestivity = shopHomeNewProductLaunchCampaignUiModel.isFestivity.orFalse()
+                isFestivity = shopHomeNewProductLaunchCampaignUiModel.isFestivity.orFalse(),
+                atcVariantButtonText = productCard?.context?.getString(R.string.shop_atc).orEmpty()
             ).copy(
                 stockBarLabelColor = stockBarLabelColor
             )

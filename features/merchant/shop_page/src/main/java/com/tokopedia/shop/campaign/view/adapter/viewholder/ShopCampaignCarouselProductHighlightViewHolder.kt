@@ -91,7 +91,8 @@ class ShopCampaignCarouselProductHighlightViewHolder(
                 isOverrideTheme = false,
                 patternColorType = listener.getPatternColorType(),
                 backgroundColor = listener.getBackgroundColor(),
-                isFestivity = uiModel.isFestivity
+                isFestivity = uiModel.isFestivity,
+                atcVariantButtonText = recyclerView?.context?.getString(R.string.shop_atc).orEmpty()
             ).copy(
                 stockBarLabelColor = stockBarLabelColor
             )

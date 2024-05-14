@@ -57,7 +57,8 @@ open class ShopHomeProductViewHolder(
             patternColorType = shopHomeListener.getPatternColorType(),
             backgroundColor = shopHomeListener.getBackgroundColor(),
             isFestivity = false,
-            makeProductCardTransparent = true
+            makeProductCardTransparent = true,
+            atcVariantButtonText = productCard?.context?.getString(R.string.shop_atc).orEmpty()
         )
 
         productCard?.setProductModel(productCardModel)
@@ -72,6 +73,9 @@ open class ShopHomeProductViewHolder(
             )
         }
         shopHomeProductViewModel?.let { shopHomeProductViewModel ->
+            productCard?.setGenericCtaButtonOnClickListener {
+                shopHomeEndlessProductListener?.onProductAtcVariantClick(shopHomeProductViewModel)
+            }
             productCard?.setImageProductViewHintListener(
                 shopHomeProductViewModel,
                 object : ViewHintListener {

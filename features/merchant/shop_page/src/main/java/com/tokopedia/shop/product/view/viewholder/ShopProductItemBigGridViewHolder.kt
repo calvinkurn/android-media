@@ -54,7 +54,8 @@ class ShopProductItemBigGridViewHolder(
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
             patternType = productTabInterface?.getPatternColorType().orEmpty(),
             backgroundColor = productTabInterface?.getBackgroundColor().orEmpty(),
-            makeProductCardTransparent = true
+            makeProductCardTransparent = true,
+            atcVariantButtonText = productCard?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
@@ -94,6 +95,12 @@ class ShopProductItemBigGridViewHolder(
                 )
             }
         })
+
+        productCard?.setGenericCtaButtonOnClickListener {
+            shopProductClickedListener?.onProductAtcVariantClick(
+                shopProductUiModel
+            )
+        }
 
         productCard?.setAddVariantClickListener {
             shopProductClickedListener?.onProductAtcVariantClick(

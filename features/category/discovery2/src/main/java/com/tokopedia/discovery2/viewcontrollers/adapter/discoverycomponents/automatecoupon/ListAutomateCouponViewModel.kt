@@ -16,9 +16,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ListAutomateCouponViewModel(
     application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
 
     @JvmField

@@ -233,7 +233,7 @@ internal class ProductCardCartExtension(
         if (colorMode == null) return
 
         colorMode.quantityEditorColor?.quantityTextColor?.let { quantityTextColor ->
-            quantityEditor?.editText?.setTextColor(quantityTextColor)
+            quantityEditor?.editText?.setTextColor(ContextCompat.getColor(context, quantityTextColor))
         }
 
         if (colorMode.quantityEditorColor?.buttonDeleteCartColorLight != null && colorMode.quantityEditorColor?.buttonDeleteCartColorDark != null) {

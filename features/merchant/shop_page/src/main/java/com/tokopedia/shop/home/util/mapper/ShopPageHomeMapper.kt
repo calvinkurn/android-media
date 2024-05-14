@@ -134,7 +134,8 @@ object ShopPageHomeMapper {
         isOverrideTheme: Boolean,
         patternColorType: String,
         backgroundColor: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        atcButtonText: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -214,7 +215,7 @@ object ShopPageHomeMapper {
             ) && isProductCardIsNotSoldOut(shopHomeProductViewModel.isSoldOut)
         ) {
             if (shopHomeProductViewModel.isVariant) {
-                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel, atcButtonText)
             } else {
                 if (shopHomeProductViewModel.productInCart.isZero()) {
                     createProductCardWithDefaultAddToCardModel(baseProductCardModel)
@@ -251,7 +252,8 @@ object ShopPageHomeMapper {
         patternColorType: String,
         backgroundColor: String,
         isFestivity: Boolean,
-        makeProductCardTransparent: Boolean
+        makeProductCardTransparent: Boolean,
+        atcVariantButtonText: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -308,7 +310,7 @@ object ShopPageHomeMapper {
             )
         ) {
             val productCardModel = if (shopHomeProductViewModel.isVariant) {
-                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel, atcVariantButtonText)
             } else {
                 if (shopHomeProductViewModel.productInCart.isZero()) {
                     createProductCardWithDefaultAddToCardModel(baseProductCardModel)
@@ -339,14 +341,20 @@ object ShopPageHomeMapper {
 
     private fun createProductCardWithVariantAtcModel(
         shopHomeProductViewModel: ShopHomeProductUiModel,
-        baseProductCardModel: ProductCardModel
+        baseProductCardModel: ProductCardModel,
+        atcButtonText: String
     ): ProductCardModel {
         return baseProductCardModel.copy(
             variant = ProductCardModel.Variant(
                 shopHomeProductViewModel.productInCart
             ),
             nonVariant = null,
-            hasAddToCartButton = false
+            hasAddToCartButton = false,
+            productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                copyWriting = atcButtonText,
+                mainButtonVariant = UnifyButton.Variant.GHOST,
+                mainButtonType = UnifyButton.Type.MAIN
+            )
         )
     }
 
@@ -375,7 +383,8 @@ object ShopPageHomeMapper {
         patternColorType: String,
         backgroundColor: String,
         isFestivity: Boolean,
-        makeProductCardTransparent: Boolean = false
+        makeProductCardTransparent: Boolean = false,
+        atcVariantButtonText: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -432,7 +441,7 @@ object ShopPageHomeMapper {
             isStatusCampaignIsOngoing(statusCampaign)
         ) {
             if (shopHomeProductViewModel.isVariant) {
-                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel, atcVariantButtonText)
             } else {
                 if (shopHomeProductViewModel.productInCart.isZero()) {
                     createProductCardWithDefaultAddToCardModel(baseProductCardModel)

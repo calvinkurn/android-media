@@ -91,7 +91,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 isOverrideTheme = shopHomeListener.isOverrideTheme(),
                 patternColorType = shopHomeListener.getPatternColorType(),
                 backgroundColor = shopHomeListener.getBackgroundColor(),
-                isFestivity = element.isFestivity
+                isFestivity = element.isFestivity,
+                atcButtonText = recyclerView?.context?.getString(R.string.shop_atc).orEmpty()
             )
         }
 

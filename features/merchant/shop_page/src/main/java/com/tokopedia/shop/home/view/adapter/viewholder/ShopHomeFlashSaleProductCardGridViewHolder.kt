@@ -75,7 +75,8 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
             patternColorType = listener.getPatternColorType(),
             backgroundColor = listener.getBackgroundColor(),
             isFestivity = fsUiModel?.isFestivity.orFalse(),
-            makeProductCardTransparent = false
+            makeProductCardTransparent = false,
+            atcVariantButtonText = productCardGrid?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor,
             isInBackground = true,

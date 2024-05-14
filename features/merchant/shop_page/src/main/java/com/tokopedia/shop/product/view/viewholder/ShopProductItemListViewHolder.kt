@@ -54,7 +54,8 @@ class ShopProductItemListViewHolder(
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
             patternType = productTabInterface?.getPatternColorType().orEmpty(),
             backgroundColor = productTabInterface?.getBackgroundColor().orEmpty(),
-            makeProductCardTransparent = true
+            makeProductCardTransparent = true,
+            atcVariantButtonText = productCardView?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
@@ -91,6 +92,11 @@ class ShopProductItemListViewHolder(
             }
         })
 
+        productCardView?.setGenericCtaButtonOnClickListener {
+            shopProductClickedListener?.onProductAtcVariantClick(
+                shopProductUiModel
+            )
+        }
         productCardView?.setAddVariantClickListener {
             shopProductClickedListener?.onProductAtcVariantClick(
                 shopProductUiModel

@@ -8,6 +8,7 @@ import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductU
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
+import com.tokopedia.shop.common.util.ShopPageExperiment
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
@@ -150,9 +151,24 @@ object ShopPageWidgetMapper {
                         )
                     }
                 ),
-                it.options
+                handleOptions(it.options)
             )
         }
+    }
+
+    private fun handleOptions(options: List<ShopPageWidgetRequestModel.Option>): List<ShopPageWidgetRequestModel.Option> {
+        return if (ShopPageExperiment.isProductCardV5ExperimentActive()) {
+            options
+        } else {
+            options.useProductCardV4()
+        }
+    }
+
+    private fun List<ShopPageWidgetRequestModel.Option>.useProductCardV4(): List<ShopPageWidgetRequestModel.Option> {
+        val options = this
+        val modifiedOptions = options.toMutableList()
+        modifiedOptions.removeAll { option -> option.key == "product_card_ver" }
+        return modifiedOptions
     }
 
     fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule?): DynamicRule {

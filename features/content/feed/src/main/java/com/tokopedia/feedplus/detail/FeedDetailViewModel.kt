@@ -4,7 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.detail.data.FeedDetailRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,14 +19,29 @@ class FeedDetailViewModel @Inject constructor(
     private val repository: FeedDetailRepository
 ) : ViewModel() {
 
-    val titleLiveData: LiveData<String>
-        get() = _titleLiveData
-    private val _titleLiveData = MutableLiveData<String>()
+    private val _headerDetail = MutableStateFlow(HeaderDetailModel.DEFAULT)
 
-    fun getTitle(source: String) {
+    val headerDetail = _headerDetail.asStateFlow()
+
+    fun getHeader(
+        source: String,
+        isShowSearchbar: Boolean
+    ) {
         viewModelScope.launch {
-            val response = repository.getTitle(source)
-            _titleLiveData.value = response
+            if (isShowSearchbar) {
+                _headerDetail.update {
+                    it.copy(
+                        isShowSearchBar = true,
+                    )
+                }
+            } else {
+                val response = repository.getTitle(source)
+                _headerDetail.update {
+                    it.copy(
+                        title = response
+                    )
+                }
+            }
         }
     }
 }

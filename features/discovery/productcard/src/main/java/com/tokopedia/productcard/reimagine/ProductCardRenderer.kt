@@ -1,6 +1,5 @@
 package com.tokopedia.productcard.reimagine
 
-import android.graphics.PorterDuff
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -64,13 +63,13 @@ internal class ProductCardRenderer(
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val shopNameBadgeText by view.lazyView<Typography?>(R.id.productCardShopNameLocation)
     private val buttonAddToCart by view.lazyView<UnifyButton?>(R.id.productCardAddToCart)
-    private val buttonGenericCta by view.lazyView<UnifyButton?>(R.id.productCardGenericCta)
     private val labelBenefitView by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
     private val credibilityText by view.lazyView<Typography?>(R.id.productCardLabelCredibility)
     private val ratingText by view.lazyView<Typography?>(R.id.productCardRating)
-    
+    private val productCardRatingDots by view.lazyView<Typography?>(R.id.productCardRatingDots)
+
     fun setProductModel(productCardModel: ProductCardModel) {
         renderOutline(productCardModel)
         renderCardContainer(productCardModel)
@@ -410,7 +409,6 @@ internal class ProductCardRenderer(
 
         colorMode.buttonColorMode?.let { buttonColorMode ->
             buttonAddToCart?.applyColorMode(buttonColorMode)
-            buttonGenericCta?.applyColorMode(buttonColorMode)
         }
 
         colorMode.labelBenefitViewColor?.let { labelBenefitViewColor ->
@@ -420,6 +418,10 @@ internal class ProductCardRenderer(
             } else {
                 labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
             }
+        }
+
+        colorMode.ratingDotColor?.let { ratingDotColor ->
+            productCardRatingDots?.setTextColor(ContextCompat.getColor(context, ratingDotColor))
         }
 
         outlineView?.isVisible = colorMode.showOutlineView

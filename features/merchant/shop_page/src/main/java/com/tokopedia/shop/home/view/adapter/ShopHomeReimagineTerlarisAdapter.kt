@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.databinding.ItemShopHomeReimagineTerlarisProductRankBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
@@ -69,7 +70,8 @@ class ShopHomeReimagineTerlarisAdapter(
                 patternColorType = listener.getPatternColorType(),
                 backgroundColor = listener.getBackgroundColor(),
                 isFestivity = element.isFestivity,
-                makeProductCardTransparent = true
+                makeProductCardTransparent = true,
+                atcVariantButtonText = binding.productCard.context?.getString(R.string.shop_atc).orEmpty()
             )
 
             binding.productCard.setProductModel(productCardModel)

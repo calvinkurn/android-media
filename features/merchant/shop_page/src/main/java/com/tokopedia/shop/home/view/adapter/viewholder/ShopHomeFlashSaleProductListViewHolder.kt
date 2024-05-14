@@ -67,7 +67,8 @@ class ShopHomeFlashSaleProductListViewHolder(
             isOverrideTheme = listener.isOverrideTheme(),
             patternColorType = listener.getPatternColorType(),
             backgroundColor = listener.getBackgroundColor(),
-            isFestivity = fsUiModel?.isFestivity.orFalse()
+            isFestivity = fsUiModel?.isFestivity.orFalse(),
+            atcVariantButtonText = productCardList?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor,
             isInBackground = true,

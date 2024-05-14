@@ -38,7 +38,8 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
                         cursor = cursor,
                         sourceId = sourceId,
                         sourceType = sourceType,
-                        isWifi = connectionUtil.isEligibleForHeavyDataUsage()
+                        isWifi = connectionUtil.isEligibleForHeavyDataUsage(),
+                        searchKeyword = "",
                     )
                 )
             )
