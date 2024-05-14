@@ -1,12 +1,17 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
 import org.json.JSONObject
 
 /**
@@ -54,6 +59,31 @@ object AppLogRecommendation {
                 addPage()
             }
         )
+    }
+
+    fun sendConfirmCartAppLog(model: AppLogRecommendationProductModel, product: TrackConfirmCart) {
+        AppLogAnalytics.send(EventName.CONFIRM_CART, JSONObject().apply {
+            addPage()
+            addEnterFrom()
+            addEntranceInfo()
+
+            put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+            put(SOURCE_MODULE, model.sourceModule)
+            put(AppLogParam.TRACK_ID, model.trackId)
+            put(AppLogParam.REQUEST_ID, model.requestId)
+            put(AppLogParam.ENTRANCE_FORM, model.entranceForm)
+
+            put(AppLogParam.PRODUCT_ID, product.productId)
+            put("product_category", product.productCategory)
+            put("product_type", product.productType.type)
+            put("original_price_value", product.originalPrice)
+            put("sale_price_value", product.salePrice)
+            put("button_type", "able_to_cart")
+            put("sku_id", product.skuId)
+            put("currency", "IDR")
+            put("add_sku_num", product.addSkuNum)
+            put("buy_type", 1) // ATC will use code 1, otherwise Buy Now use 0
+        })
     }
 
     private fun AppLogRecommendationProductModel.setGlobalParams() {

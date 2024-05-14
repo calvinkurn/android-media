@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCart
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
 import com.tokopedia.discovery2.data.DataItem
@@ -516,6 +517,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                     requestingComponent = masterProductCardItemViewModel.components
                                 )
                             )
+
+                            if (productItem.isEligibleToTrack()) {
+                                AppLogRecommendation.sendConfirmCartAppLog(
+                                    productItem.asProductTrackModel(productCardName),
+                                    productItem.asTrackConfirmCart()
+                                )
+                            }
                         }
                     }
                 }

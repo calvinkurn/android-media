@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.ProductType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.discovery2.ComponentNames
@@ -10,7 +12,9 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
@@ -36,6 +40,33 @@ object TrackDiscoveryRecommendationMapper {
             isEligibleForRecTrigger = isEligibleToTrackRecTrigger(componentNames),
             additionalParam = anchorProductId.toLongOrZero().getAdditionalParam()
         )
+    }
+
+    fun DataItem.asTrackConfirmCart(): TrackConfirmCart {
+        return TrackConfirmCart(
+            productId = parentProductId.orEmpty(),
+            productCategory = categoryDeptId.orEmpty(),
+            productType = getProductType(),
+            originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
+            salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
+            buttonType = "able_to_cart",
+            skuId = productId.orEmpty(),
+            currency = "IDR",
+            addSkuNum = minQuantity
+        )
+    }
+
+    private fun DataItem.getProductType(): ProductType {
+        val productType = if (isActiveProductCard == true) {
+            ProductType.AVAILABLE
+        } else {
+            if (stock.toIntOrZero().isMoreThanZero()) {
+                ProductType.NOT_AVAILABLE
+            } else {
+                ProductType.SOLD_OUT
+            }
+        }
+        return productType
     }
 
     private fun Long.getAdditionalParam(): AppLogAdditionalParam {
