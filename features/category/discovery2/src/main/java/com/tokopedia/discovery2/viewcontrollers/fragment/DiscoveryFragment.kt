@@ -45,6 +45,7 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -291,6 +292,7 @@ open class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
+
     // current index of navigation tab in the page.
     private var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
@@ -1753,7 +1755,14 @@ open class DiscoveryFragment :
 
     private fun checkTabPositionBeforeRefresh() {
         if (!isFromCategory && currentTabPosition != null) {
-            this.arguments?.putString(ACTIVE_TAB, (currentTabPosition).toString())
+            this.arguments?.putString(
+                QUERY_PARENT,
+                Utils.upsertQueryParam(
+                    this.arguments?.getString(QUERY_PARENT) ?: "",
+                    ACTIVE_TAB,
+                    (currentTabPosition).toString()
+                )
+            )
         }
     }
 

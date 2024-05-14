@@ -12,9 +12,9 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
 import com.tokopedia.topchat.chatroom.view.uimodel.ChatFilterUiModel
 
 class ChatFilterAdapter constructor(
-        private val typeFactory: ChatFilterTypeFactory
+    private val typeFactory: ChatFilterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ChatFilterTypeFactory>(typeFactory),
-        ChatFilterViewHolder.Listener {
+    ChatFilterViewHolder.Listener {
 
     var filterListener: ChatFilterView.FilterListener? = null
 
@@ -29,7 +29,8 @@ class ChatFilterAdapter constructor(
     }
 
     override fun onCreateViewHolder(
-            parent: ViewGroup, viewType: Int
+        parent: ViewGroup,
+        viewType: Int
     ): AbstractViewHolder<out Visitable<*>> {
         return typeFactory.onCreateViewHolder(parent, viewType, this)
     }
@@ -57,7 +58,7 @@ class ChatFilterAdapter constructor(
         } else {
             selectedFilter = element
         }
-        filterListener?.onFilterChanged(selectedFilter.id)
+        filterListener?.onFilterChanged(selectedFilter.filterEnum)
     }
 
     fun hasTopBotFilter(): Boolean {
@@ -66,10 +67,9 @@ class ChatFilterAdapter constructor(
 
     fun addTopBotFilter(topBotFilter: ChatFilterUiModel) {
         handler.post {
-            val index= visitables.size
+            val index = visitables.size
             visitables.add(topBotFilter)
             notifyItemInserted(index)
         }
     }
-
 }

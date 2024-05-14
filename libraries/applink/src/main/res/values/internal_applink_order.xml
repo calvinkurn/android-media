@@ -29,6 +29,7 @@
     <string name="path_buyer_order_detail_extension" translatable="false">/buyer-order-extension</string>
     <string name="path_buyer_order_detail_partial_fulfillment" translatable="false">/buyer-partial-order-fulfillment</string>
     <string name="path_buyer_order_request_cancel_respond" translatable="false">/buyer-request-cancel-respond</string>
+    <string name="path_seller_order_extension_request" translatable="false">/seller-order-extension-request</string>
 
     <string name="path_orderlist" translatable="false">/orderlist</string>
     <string name="path_track" translatable="false">/track</string>

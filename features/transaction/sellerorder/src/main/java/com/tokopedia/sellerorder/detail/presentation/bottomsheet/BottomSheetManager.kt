@@ -8,14 +8,14 @@ import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequest
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import com.tokopedia.sellerorder.orderextension.presentation.bottomsheet.SomBottomSheetOrderExtensionRequest
-import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
-import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
+import com.tokopedia.sellerorder.orderextension.presentation.delegate.ISomBottomSheetOrderExtensionRequestManager
+import com.tokopedia.sellerorder.orderextension.presentation.delegate.SomBottomSheetOrderExtensionRequestManagerImpl
 
 class BottomSheetManager(
     private val view: ViewGroup,
     private val fragmentManager: FragmentManager
-): IBuyerRequestCancelRespondBottomSheetManager by BuyerRequestCancelRespondBottomSheetManagerImpl() {
+): IBuyerRequestCancelRespondBottomSheetManager by BuyerRequestCancelRespondBottomSheetManagerImpl(),
+    ISomBottomSheetOrderExtensionRequestManager by SomBottomSheetOrderExtensionRequestManagerImpl() {
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
     private var somRejectReasonBottomSheet: SomRejectReasonBottomSheet? = null
     private var somProductEmptyBottomSheet: SomBottomSheetProductEmpty? = null
@@ -24,7 +24,6 @@ class BottomSheetManager(
     private var bottomSheetBuyerNoResponse: SomBottomSheetBuyerNoResponse? = null
     private var bottomSheetBuyerOtherReason: SomBottomSheetBuyerOtherReason? = null
     private var bottomSheetChangeAwb: SomOrderEditAwbBottomSheet? = null
-    private var bottomSheetOrderExtensionRequest: SomBottomSheetOrderExtensionRequest? = null
     private var bottomSheetSetDelivered: SomBottomSheetSetDelivered? = null
 
     private fun createSomRejectReasonBottomSheet(
@@ -175,31 +174,6 @@ class BottomSheetManager(
         }
     }
 
-    private fun createSomBottomSheetOrderExtensionRequest(
-        data: OrderExtensionRequestInfoUiModel,
-        orderId: String,
-        viewModel: SomOrderExtensionViewModel
-    ): SomBottomSheetOrderExtensionRequest {
-        return SomBottomSheetOrderExtensionRequest(
-            fragmentManager,
-            view.context,
-            orderId,
-            data,
-            viewModel
-        )
-    }
-
-    private fun reInitSomBottomSheetOrderExtensionRequest(
-        data: OrderExtensionRequestInfoUiModel,
-        orderId: String
-    ) {
-        bottomSheetOrderExtensionRequest?.run {
-            setOrderId(orderId)
-            setData(data)
-            init(view)
-        }
-    }
-
     private fun createSomBottomSheetSetDelivered(
         listener: SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener
     ): SomBottomSheetSetDelivered {
@@ -291,17 +265,6 @@ class BottomSheetManager(
         bottomSheetBuyerOtherReason?.show()
     }
 
-    fun showSomBottomSheetOrderExtensionRequest(
-        data: OrderExtensionRequestInfoUiModel,
-        orderId: String,
-        viewModel: SomOrderExtensionViewModel
-    ) {
-        bottomSheetOrderExtensionRequest = bottomSheetOrderExtensionRequest
-            ?: createSomBottomSheetOrderExtensionRequest(data, orderId, viewModel)
-        reInitSomBottomSheetOrderExtensionRequest(data, orderId)
-        bottomSheetOrderExtensionRequest?.show()
-    }
-
     fun showSomBottomSheetSetDelivered(
         listener: SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener
     ) {
@@ -336,7 +299,7 @@ class BottomSheetManager(
         bottomSheetBuyerNoResponse?.clearViewBinding()
         bottomSheetBuyerOtherReason?.clearViewBinding()
         bottomSheetChangeAwb?.clearViewBinding()
-        bottomSheetOrderExtensionRequest?.clearViewBinding()
+        somBottomSheetOrderExtensionRequest?.clearViewBinding()
         bottomSheetSetDelivered?.clearViewBinding()
     }
 
@@ -352,7 +315,7 @@ class BottomSheetManager(
         bottomSheetDismissed = bottomSheetBuyerOtherReason?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = bottomSheetSetDelivered?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = bottomSheetChangeAwb?.dismiss() == true || bottomSheetDismissed
-        bottomSheetDismissed = bottomSheetOrderExtensionRequest?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somBottomSheetOrderExtensionRequest?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = bottomSheetSetDelivered?.dismiss() == true || bottomSheetDismissed
         return bottomSheetDismissed
     }
