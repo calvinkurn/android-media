@@ -28,6 +28,7 @@ class TopChatRoomBroadcastProductCarouselAdapter(
     }
 
     fun updateData(newList: List<Visitable<*>>) {
-        this.submitList(newList)
+        val sortedList = typeFactory.sortData(newList)
+        this.submitList(sortedList)
     }
 }
