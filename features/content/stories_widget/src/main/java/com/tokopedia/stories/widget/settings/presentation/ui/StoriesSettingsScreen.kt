@@ -40,6 +40,7 @@ import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSetti
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.net.UnknownHostException
 
 /**
@@ -79,13 +80,15 @@ private fun StoriesSettingsSuccess(
 
     val textColor = if (isEligible) NestTheme.colors.NN._950 else NestTheme.colors.NN._400
 
+    var dismissed by remember { mutableStateOf(false) }
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         val (tickerEligible, tvHeader, ivIconHeader, switchHeader, tvDescription, tvAll, tvCategory, rvOptions) = createRefs()
-        if (isEligible.not()) {
+        if (isEligible.not() && dismissed.not()) {
             AndroidView(modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
@@ -98,6 +101,13 @@ private fun StoriesSettingsSuccess(
                     tickerShape = Ticker.SHAPE_LOOSE
                     tickerTitle = ""
                     setTextDescription(ctx.getString(R.string.stories_ticker_title))
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDismiss() {
+                            dismissed = true
+                        }
+
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+                    })
                 }
             })
         }
