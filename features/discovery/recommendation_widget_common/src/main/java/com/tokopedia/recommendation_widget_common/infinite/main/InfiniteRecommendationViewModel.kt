@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingUiModel
@@ -31,6 +32,7 @@ class InfiniteRecommendationViewModel @Inject constructor(
 
     private var currentPage = DEFAULT_CURRENT_PAGE
     private var nextPage = DEFAULT_NEXT_PAGE
+    private var totalData: Int = 0
     private var appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None
 
     fun init(
@@ -38,6 +40,7 @@ class InfiniteRecommendationViewModel @Inject constructor(
     ) {
         currentPage = DEFAULT_CURRENT_PAGE
         nextPage = DEFAULT_NEXT_PAGE
+        totalData = 0
         _components.value = listOf(InfiniteLoadingUiModel)
         this.appLogAdditionalParam = appLogAdditionalParam
     }
@@ -50,10 +53,13 @@ class InfiniteRecommendationViewModel @Inject constructor(
 
         viewModelScope.launch(dispatchers.io) {
             val overrideRequestParam = requestParam.copy(
-                pageNumber = nextPage
+                pageNumber = nextPage,
+                totalData = totalData
             )
             val recommendationResponse = getRecommendationUseCase.getData(overrideRequestParam)
             val recommendationWidget = recommendationResponse.firstOrNull()
+
+            totalData += recommendationWidget?.recommendationItemList?.size.orZero()
 
             val components = recommendationWidget.toComponents()
             _components.postValue(components)
