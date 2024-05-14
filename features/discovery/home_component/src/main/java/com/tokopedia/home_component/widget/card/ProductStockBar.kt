@@ -25,7 +25,10 @@ class ProductStockBar(private val view: View) {
 
             when (model.shouldHandleFireIconVisibility()) {
                 is SmallProductModel.StockBar.Type.Inactive -> showInactiveStockBar()
-                is SmallProductModel.StockBar.Type.ActiveWithoutFire -> showStockBar()
+                is SmallProductModel.StockBar.Type.ActiveWithoutFire -> {
+                    val needRounded = model.percentage > SmallProductModel.StockBar.MAX_THRESHOLD
+                    showStockBar(needRounded)
+                }
                 is SmallProductModel.StockBar.Type.ActiveWithFire -> showStockBarWithFire()
             }
         }
@@ -35,8 +38,20 @@ class ProductStockBar(private val view: View) {
         stockBarActive.setLayoutWidth(size)
     }
 
-    private fun showStockBar() {
+    private fun setRectangleBackgroundActiveBar() {
         stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_shape_foreground)
+    }
+
+    private fun setRoundedBackgroundActiveBar() {
+        stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_foreground)
+    }
+
+    private fun showStockBar(shouldRounded: Boolean) {
+        if (shouldRounded) {
+            setRoundedBackgroundActiveBar()
+        } else {
+            setRectangleBackgroundActiveBar()
+        }
 
         stockBarActive.show()
         stockBarInActive.show()
@@ -46,7 +61,7 @@ class ProductStockBar(private val view: View) {
     }
 
     private fun showStockBarWithFire() {
-        stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_foreground)
+        setRoundedBackgroundActiveBar()
 
         stockBarActive.show()
         stockBarInActive.show()
