@@ -3201,7 +3201,9 @@ open class ProductDetailFragment :
                 val hasInfinite = viewModel.getProductInfoP1?.hasInfiniteRecommendation ?: false
                 if (hasInfinite && concatAdapter?.adapters?.size != 2) {
                     concatAdapter?.addAdapter(it.adapter)
-                    it.requestParam = GetRecommendationRequestParam()
+                    it.requestParam = GetRecommendationRequestParam(
+                        pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty()
+                    )
                 }
             }
         }

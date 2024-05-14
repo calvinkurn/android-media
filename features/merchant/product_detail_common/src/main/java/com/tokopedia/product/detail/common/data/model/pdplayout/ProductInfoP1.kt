@@ -15,7 +15,8 @@ data class ProductInfoP1(
     val requestId: String = "",
     val isCampaign: Boolean = false,
     val cacheState: CacheState = CacheState(),
-    val hasInfiniteRecommendation: Boolean = false
+    val hasInfiniteRecommendation: Boolean = false,
+    val infiniteRecommendationPageName: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant

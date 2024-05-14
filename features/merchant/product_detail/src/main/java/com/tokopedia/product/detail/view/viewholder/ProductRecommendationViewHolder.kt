@@ -337,6 +337,7 @@ class ProductRecommendationViewHolder(
             SlideTrackObject(
                 moduleName = model.recomWidgetData?.pageName.orEmpty(),
                 barName = model.recomWidgetData?.pageName.orEmpty(),
+                additionalParams = listener.getAppLogAdditionalParam()
             )
         )
     }
