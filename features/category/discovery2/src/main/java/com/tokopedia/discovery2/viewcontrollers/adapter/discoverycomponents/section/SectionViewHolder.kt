@@ -163,14 +163,14 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun addHeightBgOnce(view: View) {
         if (!addHeightBackground && view.height > 0) {
-            view.layoutParams.height = view.height + 8.toPx()
+            view.layoutParams.height = view.height + 4.toPx()
             addHeightBackground = true
         }
     }
 
     private fun addHeightForeground(view: View) {
         if (!addHeightForeground && view.height > 0) {
-            view.layoutParams.height = view.height + 8.toPx()
+            view.layoutParams.height = view.height + 4.toPx()
             addHeightForeground = true
         }
     }
