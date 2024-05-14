@@ -10,6 +10,7 @@ object ShareExAnalyticsConst {
         const val TRACKER_ID = "trackerId"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
+        const val SHOP_ID = "shopId"
         const val PRODUCT_ID = "productId"
         const val USER_ID = "userId"
         const val PROMOTIONS = "promotions"

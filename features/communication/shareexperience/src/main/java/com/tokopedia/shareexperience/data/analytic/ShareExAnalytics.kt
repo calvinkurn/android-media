@@ -19,6 +19,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackActionClickIconShare(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -52,6 +53,7 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45653
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
             }
             else -> Unit
         }
@@ -63,6 +65,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackActionClickClose(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -96,6 +99,7 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45654
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
             }
             else -> Unit
         }
@@ -107,6 +111,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackActionClickChannel(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         channel: String,
@@ -144,6 +149,7 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45655
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
             }
             else -> Unit
         }
@@ -155,6 +161,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackImpressionBottomSheet(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -188,6 +195,7 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.ORDER_DETAIL -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45656
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
             }
             else -> Unit
         }
