@@ -1146,7 +1146,9 @@ class FeedPostViewModel @Inject constructor(
                     )
                 )
             }.executeOnBackground().also {
-                fetchCartCount()
+                if (!it.isDataError()) {
+                    fetchCartCount()
+                }
             }
         }
 

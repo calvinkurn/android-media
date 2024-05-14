@@ -457,7 +457,7 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun onAtc_whenFailed() {
+    fun onAtc_whenFailed() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -485,7 +485,9 @@ class FeedPostViewModelTest {
             ),
             ContentTaggedProductUiModel.Stock.Available
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns AddToCartDataModel(
@@ -504,10 +506,11 @@ class FeedPostViewModelTest {
         assert(viewModel.observeAddProductToCart.value is Fail)
         assert((viewModel.observeAddProductToCart.value as Fail).throwable is ResponseErrorException)
         assert((viewModel.observeAddProductToCart.value as Fail).throwable.message == "Error Message")
+        viewModel.cartCount.value.assertEqualTo(0)
     }
 
     @Test
-    fun onAtc_whenSuccess() {
+    fun onAtc_whenSuccess() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -550,7 +553,9 @@ class FeedPostViewModelTest {
             product = dummyData,
             source = FeedProductActionModel.Source.BottomSheet
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns dummyAtcResult
@@ -562,6 +567,7 @@ class FeedPostViewModelTest {
         // then
         assert(viewModel.observeAddProductToCart.value is Success)
         assert((viewModel.observeAddProductToCart.value as Success).data == dummySuccess)
+        viewModel.cartCount.value.assertEqualTo(expectedCartCount)
     }
 
     @Test
@@ -609,7 +615,7 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun onBuyProduct_whenFailed() {
+    fun onBuyProduct_whenFailed() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -637,7 +643,9 @@ class FeedPostViewModelTest {
             ),
             ContentTaggedProductUiModel.Stock.Available
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
@@ -656,10 +664,11 @@ class FeedPostViewModelTest {
         assert(viewModel.observeBuyProduct.value is Fail)
         assert((viewModel.observeBuyProduct.value as Fail).throwable is ResponseErrorException)
         assert((viewModel.observeBuyProduct.value as Fail).throwable.message == "Error Message")
+        viewModel.cartCount.value.assertEqualTo(0)
     }
 
     @Test
-    fun onBuyProduct_whenSuccess() {
+    fun onBuyProduct_whenSuccess() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -702,7 +711,9 @@ class FeedPostViewModelTest {
             product = dummyData,
             source = FeedProductActionModel.Source.BottomSheet
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns dummyAtcResult
@@ -714,6 +725,7 @@ class FeedPostViewModelTest {
         // then
         assert(viewModel.observeBuyProduct.value is Success)
         assert((viewModel.observeBuyProduct.value as Success).data == dummySuccess)
+        viewModel.cartCount.value.assertEqualTo(expectedCartCount)
     }
 
     @Test
@@ -2207,12 +2219,9 @@ class FeedPostViewModelTest {
 
     /** Cart Count */
     @Test
-    fun cartCount_successGetCartCount() = runTest(testDispatcher.coroutineDispatcher) {
+    fun cartCount_successGetCartCount() = runTest {
         val expectedCartCount = 17
 
-        backgroundScope.launch {
-            viewModel.cartCount.collect { }
-        }
         coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
 
         viewModel.fetchCartCount()
@@ -2221,17 +2230,22 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun cartCount_errorGetCartCount() = runTest(testDispatcher.coroutineDispatcher) {
+    fun cartCount_errorGetCartCount() = runTest {
         val expectedException = Exception("Network Issue")
 
-        backgroundScope.launch {
-            viewModel.cartCount.collect { }
-        }
         coEvery { getCartCountUseCase(Unit) } throws expectedException
 
         viewModel.fetchCartCount()
 
         viewModel.cartCount.value.assertEqualTo(0)
+    }
+
+    private fun runTest(block: () -> Unit) = runTest(testDispatcher.coroutineDispatcher) {
+        backgroundScope.launch {
+            viewModel.cartCount.collect { }
+        }
+
+        block()
     }
 
     private fun provideDefaultFeedPostMockData() {
