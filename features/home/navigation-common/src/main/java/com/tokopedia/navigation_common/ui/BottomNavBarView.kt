@@ -197,7 +197,7 @@ class BottomNavBarView : LinearLayout {
         isSelected: Boolean?,
         prevIsSelected: Boolean?,
         shouldUseJumper: Boolean,
-        prevIsJumper: Boolean,
+        prevIsJumper: Boolean
     ) {
         val assetPlaylist = if (shouldUseJumper) {
             getJumperAssets(model, isSelected, prevIsSelected, prevIsJumper)
@@ -276,13 +276,12 @@ class BottomNavBarView : LinearLayout {
         }
     }
 
-
-    //TODO("Revisit this logic")
+    // TODO("Revisit this logic")
     private fun getNormalAssets(
         model: BottomNavBarUiModel,
         isSelected: Boolean?,
         prevIsSelected: Boolean?,
-        prevIsJumper: Boolean,
+        prevIsJumper: Boolean
     ): AssetPlaylist? {
         val isDarkMode = this@BottomNavBarView.isDarkMode
         val variant = if (isDarkMode) Variant.Dark else Variant.Light
@@ -302,8 +301,7 @@ class BottomNavBarView : LinearLayout {
                     val asset = if (prevIsJumper && model.jumper != null) {
                         if (isSelected) {
                             LottiePlaylist.of(model.jumper.assets[Key.AnimInactive + variant])
-                        }
-                        else {
+                        } else {
                             ImagePlaylist.of(model.assets[Key.ImageInactive + variant])
                         }
                     } else {
@@ -319,8 +317,9 @@ class BottomNavBarView : LinearLayout {
                     }
 
                     if (firstAssetCached) {
-                        if (secondAssetCached) asset
-                        else {
+                        if (secondAssetCached) {
+                            asset
+                        } else {
                             val lottiePlaylist = asset as LottiePlaylist
                             LottiePlaylist.of(lottiePlaylist.firstAsset, isInfinite = lottiePlaylist.isInfinite)
                         }
@@ -345,7 +344,7 @@ class BottomNavBarView : LinearLayout {
         model: BottomNavBarUiModel,
         isSelected: Boolean?,
         prevIsSelected: Boolean?,
-        prevIsJumper: Boolean,
+        prevIsJumper: Boolean
     ): AssetPlaylist? {
         val assets = model.jumper?.assets ?: return null
         val isDarkMode = this@BottomNavBarView.isDarkMode
@@ -358,12 +357,13 @@ class BottomNavBarView : LinearLayout {
                 LottiePlaylist.of(assets[Key.AnimActive + variant])
             }
             isSelected == prevIsSelected -> {
-                if (prevIsJumper) null
-                else {
+                if (prevIsJumper) {
+                    null
+                } else {
                     LottiePlaylist.of(
                         assets[Key.AnimActive + variant],
                         assets[Key.AnimIdle + variant],
-                        isInfinite = true,
+                        isInfinite = true
                     )
                 }
             }
@@ -374,7 +374,11 @@ class BottomNavBarView : LinearLayout {
     }
 
     private fun TextView.bindText(model: BottomNavBarUiModel, isSelected: Boolean?, shouldUseJumper: Boolean) {
-        text = if (!shouldUseJumper || model.jumper == null) model.title else model.jumper.title
+        text = if (!shouldUseJumper || model.jumper == null || isSelected != true) {
+            model.title
+        } else {
+            model.jumper.title
+        }
         setTextColor(
             ContextCompat.getColor(
                 uiModeAwareContext,
@@ -417,14 +421,14 @@ class BottomNavBarView : LinearLayout {
             view: BottomNavBarView,
             model: BottomNavBarUiModel,
             isReselected: Boolean,
-            isJumper: Boolean,
+            isJumper: Boolean
         ): Boolean
     }
 
     data class StateHolder(
         val model: BottomNavBarUiModel,
         val isSelected: Boolean?,
-        val isJumper: Boolean = false,
+        val isJumper: Boolean = false
     ) {
         companion object {
             fun init(model: BottomNavBarUiModel): StateHolder {
@@ -447,7 +451,7 @@ class BottomNavBarView : LinearLayout {
     private data class LottiePlaylist(
         val firstAsset: Type.Lottie,
         val nextAsset: Type.Lottie?,
-        val isInfinite: Boolean,
+        val isInfinite: Boolean
     ) : AssetPlaylist {
         companion object {
             fun of(firstAsset: Type?, secondAsset: Type? = null, isInfinite: Boolean = false): LottiePlaylist? {
