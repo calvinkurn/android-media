@@ -24,9 +24,7 @@ object PMRegistrationBenefitHelper {
         } else {
             listOf(
                 getPMBenefits(context, shopInfo),
-                getPMProAdvanceBenefits(context, shopInfo),
-                getPMProExpertBenefits(context, shopInfo),
-                getPMProUltimateBenefits(context, shopInfo)
+                getPMProBenefits(context, shopInfo),
             )
         }
     }
@@ -109,11 +107,32 @@ object PMRegistrationBenefitHelper {
             isTabActive = shopInfo.shopLevel <= PMConstant.ShopLevel.ONE
                     || !shopInfo.isEligiblePm || !shopInfo.isEligiblePmPro,
             tabLabel = context.getString(R.string.pm_power_merchant),
-            tabResIcon = IconUnify.BADGE_PM_FILLED,
             benefitList = listOf(
                 getTopAdsBenefit(context, Constant.PM_TOP_ADS_CREDIT, Constant.PM_BROAD_CAST_CHAT),
                 getSpecialReleaseBenefit(context, Constant.PM_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRODUCT_BUNDLING)
+            )
+        )
+    }
+
+    private fun getPMProBenefits(
+        context: Context,
+        shopInfo: PMShopInfoUiModel
+    ): PMGradeWithBenefitsUiModel {
+        return PMGradeWithBenefitsUiModel.PM(
+            gradeName = Constant.POWER_MERCHANT,
+            isTabActive = shopInfo.shopLevel <= PMConstant.ShopLevel.ONE
+                || !shopInfo.isEligiblePm || !shopInfo.isEligiblePmPro,
+            tabLabel = context.getString(R.string.pm_pm_pro),
+            benefitList = listOf(
+                getTopAdsBenefit(
+                    context,
+                    Constant.PM_PRO_EXP_TOP_ADS_CREDIT,
+                    Constant.PM_PRO_EXP_BROAD_CAST_CHAT
+                ),
+                getSpecialReleaseBenefit(context, Constant.PM_PRO_EXP_SPECIAL_RELEASE),
+                getProductBundlingBenefit(context, Constant.PM_PRO_EXP_PRODUCT_BUNDLING),
+                getFlashSaleBenefit(context)
             )
         )
     }
