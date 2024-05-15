@@ -16,11 +16,12 @@ import android.view.ViewConfiguration
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.OverScroller
+import androidx.core.graphics.scale
 import androidx.core.view.ViewCompat
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import com.tokopedia.media.loader.data.Resize
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.getBitmapImageUrl
 import timber.log.Timber
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -343,9 +344,26 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         this.zoomInfo = zoomInfo
         this.asset = asset
 
-        this.loadImage(asset.contentUri) {
-            fitCenter()
+        asset.contentUri.toString().getBitmapImageUrl(context, properties = {
             overrideSize(Resize(width, height))
+            fitCenter()
+        }) {
+            var newWidth = it.width
+            var newHeight = it.height
+
+            if (it.width > width) {
+                newWidth = width
+                newHeight = ((width / it.width.toFloat()) * it.height).toInt()
+            }
+
+            if (it.height > height) {
+                newHeight = height
+                newWidth = ((height / it.height.toFloat()) * it.width).toInt()
+            }
+
+            // cap image size
+            val newBitmap = it.scale(newWidth, newHeight)
+            setImageBitmap(newBitmap)
         }
     }
 
