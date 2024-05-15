@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.globalerror.compose.NestGlobalError
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
@@ -41,6 +43,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import kotlinx.coroutines.delay
 import java.net.UnknownHostException
 
 /**
@@ -52,8 +55,7 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
         val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
         when (val state = pageInfo.state) {
             ResultState.Success -> StoriesSettingsSuccess(
-                viewModel = viewModel,
-                pageInfo = pageInfo
+                viewModel = viewModel, pageInfo = pageInfo
             )
 
             is ResultState.Fail -> StoriesSettingsError(error = state.error, viewModel = viewModel)
@@ -67,25 +69,33 @@ val tagLink = "{{Selengkapnya}}"
 
 @Composable
 private fun StoriesSettingsSuccess(
-    pageInfo: StoriesSettingsPageUiModel,
-    viewModel: StoriesSettingsViewModel
+    pageInfo: StoriesSettingsPageUiModel, viewModel: StoriesSettingsViewModel
 ) {
     val isStoryEnable = pageInfo.options.drop(1).any { it.isSelected }
     val isEligible = pageInfo.config.isEligible
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("", "", false)
 
-    val ctx = LocalContext.current
     var checked by remember { mutableStateOf(isStoryEnable) }
+    var dismissed by remember { mutableStateOf(false) }
+    var coolingDown by remember { mutableStateOf(false) }
 
     val textColor = if (isEligible) NestTheme.colors.NN._950 else NestTheme.colors.NN._400
 
-    var dismissed by remember { mutableStateOf(false) }
+    val ctx = LocalContext.current
+
+    LaunchedEffect(coolingDown) {
+        if (coolingDown) {
+            delay(5000L)
+            coolingDown = false
+        }
+    }
 
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+
         val (tickerEligible, tvHeader, ivIconHeader, switchHeader, tvDescription, tvAll, tvCategory, rvOptions) = createRefs()
         if (isEligible.not() && dismissed.not()) {
             AndroidView(modifier = Modifier
@@ -121,8 +131,7 @@ private fun StoriesSettingsSuccess(
                 },
             text = stringResource(id = R.string.stories_settings_header),
             textStyle = NestTheme.typography.display1.copy(
-                fontWeight = FontWeight.Bold,
-                color = textColor
+                fontWeight = FontWeight.Bold, color = textColor
             )
         )
 
@@ -130,11 +139,10 @@ private fun StoriesSettingsSuccess(
         NestIcon(iconId = IconUnify.SOCIAL_STORY,
             colorNightDisable = textColor,
             colorLightEnable = textColor,
-            modifier = Modifier
-                .constrainAs(ivIconHeader) {
-                    top.linkTo(tvHeader.bottom)
-                    start.linkTo(tvHeader.start)
-                })
+            modifier = Modifier.constrainAs(ivIconHeader) {
+                top.linkTo(tvHeader.bottom)
+                start.linkTo(tvHeader.start)
+            })
 
         //Text - Buat Stories Otomatis
         NestTypography(
@@ -144,11 +152,8 @@ private fun StoriesSettingsSuccess(
                     start.linkTo(ivIconHeader.end)
                     top.linkTo(ivIconHeader.top)
                     bottom.linkTo(ivIconHeader.bottom)
-                },
-            text = itemFirst.text,
-            textStyle = NestTheme.typography.display2.copy(
-                fontWeight = FontWeight.Bold,
-                color = textColor
+                }, text = itemFirst.text, textStyle = NestTheme.typography.display2.copy(
+                fontWeight = FontWeight.Bold, color = textColor
             )
         )
 
@@ -162,17 +167,25 @@ private fun StoriesSettingsSuccess(
             factory = { context ->
                 SwitchUnify(context).apply {
                     this.setOnCheckedChangeListener { view, isActive ->
-                        checked = isActive
-                        if (view.isPressed) {
+                        if (!view.isPressed) return@setOnCheckedChangeListener
+                        if (!coolingDown) {
+                            checked = isActive
+                            coolingDown = true
                             viewModel.onEvent(
                                 StoriesSettingsAction.SelectOption(itemFirst)
+                            )
+                        } else {
+                            viewModel.onEvent(
+                                StoriesSettingsAction.ShowCoolingDown(
+                                    MessageErrorException("Tunggu 5 detik dulu ya")
+                                )
                             )
                         }
                     }
                 }
             },
             update = { switchUnify ->
-                switchUnify.isChecked = (isStoryEnable || checked) && itemFirst.isSelected
+                switchUnify.isChecked = isStoryEnable || checked
                 switchUnify.isEnabled = isEligible
             },
         )
@@ -181,8 +194,7 @@ private fun StoriesSettingsSuccess(
             append(pageInfo.config.articleCopy.replace(tagLink, ""))
             withStyle(
                 style = SpanStyle(
-                    color = NestTheme.colors.GN
-                        ._500,
+                    color = NestTheme.colors.GN._500,
                     fontWeight = FontWeight.Bold,
                 ),
             ) {
@@ -190,21 +202,19 @@ private fun StoriesSettingsSuccess(
                 append(finalText)
             }
         }
-        NestTypography(
-            modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 12.dp)
-                .constrainAs(tvAll) {
-                    top.linkTo(tvDescription.bottom)
-                    start.linkTo(tvDescription.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
+        NestTypography(modifier = Modifier
+            .padding(vertical = 16.dp, horizontal = 12.dp)
+            .constrainAs(tvAll) {
+                top.linkTo(tvDescription.bottom)
+                start.linkTo(tvDescription.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
             text = text,
             textStyle = NestTheme.typography.display3.copy(color = textColor),
             onClickText = {
                 viewModel.onEvent(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
-            }
-        )
+            })
         //Text - Kategori update produk
         NestTypography(
             modifier = Modifier
@@ -226,9 +236,22 @@ private fun StoriesSettingsSuccess(
                 end.linkTo(parent.end)
             }) {
             items(pageInfo.options.drop(1)) { item ->
-                SettingOptItem(item, isEligible, textColor, checked) {
-                    viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
-                }
+                SettingOptItem(item,
+                    isEligible,
+                    textColor,
+                    checked,
+                    coolingDown,
+                    onOptionClicked = {
+                        coolingDown = true
+                        viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                    },
+                    onCoolingDown = {
+                        viewModel.onEvent(
+                            StoriesSettingsAction.ShowCoolingDown(
+                                MessageErrorException("Tunggu 5 detik dulu ya")
+                            )
+                        )
+                    })
             }
         }
     }
@@ -257,10 +280,10 @@ private fun SettingOptItem(
     isEligible: Boolean,
     textColor: Color,
     checked: Boolean,
+    coolingDown: Boolean,
     onOptionClicked: (StoriesSettingOpt) -> Unit,
+    onCoolingDown: () -> Unit,
 ) {
-    //trigger recompose to update
-    var selected by remember { mutableStateOf(item.isSelected || checked) }
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -275,16 +298,18 @@ private fun SettingOptItem(
         AndroidView(
             factory = { context ->
                 CheckboxUnify(context).apply {
-                    this.setOnCheckedChangeListener { view, isActive ->
-                        selected = isActive
-                        if (view.isPressed) {
+                    this.setOnCheckedChangeListener { view, _ ->
+                        if (!view.isPressed) return@setOnCheckedChangeListener
+                        if (!coolingDown) {
                             onOptionClicked(item)
+                        } else {
+                            onCoolingDown()
                         }
                     }
                 }
             },
             update = { v ->
-                v.isChecked = (item.isSelected || checked) && selected
+                v.isChecked = (item.isSelected || checked)
                 v.isEnabled = isEligible
             },
         )

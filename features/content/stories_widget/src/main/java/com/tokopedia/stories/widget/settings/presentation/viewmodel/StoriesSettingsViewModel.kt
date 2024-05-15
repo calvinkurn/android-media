@@ -2,7 +2,6 @@ package com.tokopedia.stories.widget.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
@@ -23,7 +22,6 @@ import javax.inject.Inject
 class StoriesSettingsViewModel @Inject constructor(
     private val repository: StoriesSettingsRepository,
     private val storiesChecker: StoriesSettingsChecker,
-    private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
     private val _pageInfo = MutableStateFlow(StoriesSettingsPageUiModel.Empty)
@@ -42,7 +40,9 @@ class StoriesSettingsViewModel @Inject constructor(
             is StoriesSettingsAction.Navigate -> viewModelScope.launch {
                 _event.emit(StoriesSettingEvent.Navigate(action.appLink))
             }
-
+            is StoriesSettingsAction.ShowCoolingDown -> viewModelScope.launch {
+                _event.emit(StoriesSettingEvent.ShowErrorToaster(action.throwable, {}))
+            }
             else -> {}
         }
     }

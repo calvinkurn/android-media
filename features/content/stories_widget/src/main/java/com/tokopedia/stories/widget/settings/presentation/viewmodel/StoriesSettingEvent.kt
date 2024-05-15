@@ -23,4 +23,5 @@ sealed class StoriesSettingsAction {
     object FetchPageInfo : StoriesSettingsAction()
     data class SelectOption(val option: StoriesSettingOpt) : StoriesSettingsAction()
     data class Navigate(val appLink: String) : StoriesSettingsAction()
+    data class ShowCoolingDown(val throwable: Throwable) : StoriesSettingsAction()
 }

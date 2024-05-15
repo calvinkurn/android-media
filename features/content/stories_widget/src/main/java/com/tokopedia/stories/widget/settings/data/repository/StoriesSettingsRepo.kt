@@ -67,28 +67,22 @@ class StoriesSettingsRepo @Inject constructor(
         option: StoriesSettingOpt
     ): Boolean =
         withContext(dispatchers.io) {
-            return@withContext if (isAvailable) {
-                lastRequestTime = System.currentTimeMillis()
-                val response =
-                    updateStoriesSettingUseCase(
-                        UpdateStoriesSettingUseCase.Param(
-                            req = UpdateStoriesSettingUseCase.Param.Author(
-                                authorId = entryPoint.authorId,
-                                authorType = entryPoint.authorType,
-                                optionType = option.optionType,
-                                isDisabled = option.isSelected
-                            )
-                        )
+            val response = updateStoriesSettingUseCase(
+                UpdateStoriesSettingUseCase.Param(
+                    req = UpdateStoriesSettingUseCase.Param.Author(
+                        authorId = entryPoint.authorId,
+                        authorType = entryPoint.authorType,
+                        optionType = option.optionType,
+                        isDisabled = option.isSelected
                     )
-                response.response.success
-            } else {
-                throw Exception(ERROR_MESSAGE)
-            }
+                )
+            )
+
+            return@withContext response.response.success
         }
 
     companion object {
         private const val DELAY_MS = 5000L
-        private const val ERROR_MESSAGE = "Tunggu 5 detik dulu ya"
     }
 }
 
