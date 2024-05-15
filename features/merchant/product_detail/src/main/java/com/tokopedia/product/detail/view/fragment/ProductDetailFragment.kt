@@ -39,6 +39,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
@@ -500,7 +502,7 @@ open class ProductDetailFragment :
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
                 query?.let { qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry) }
 
-                affiliateSubIds?.let{ subIds ->
+                affiliateSubIds?.let { subIds ->
                     putParcelable(ARG_AFFILIATE_SUB_IDS, subIds)
                 }
                 affiliateSource?.let { source -> putString(ARG_AFFILIATE_SOURCE, source) }
@@ -731,8 +733,9 @@ open class ProductDetailFragment :
     fun getStayAnalyticsData(): TrackStayProductDetail {
         val data = viewModel.getStayAnalyticsData()
         return data.copy(
-            isSkuSelected = data.isSkuSelected
-                || pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.all { it.value != "0" }.orFalse())
+            isSkuSelected = data.isSkuSelected ||
+                pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.all { it.value != "0" }.orFalse()
+        )
     }
 
     private fun setPDPDebugMode() {
@@ -891,6 +894,7 @@ open class ProductDetailFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        BtmApi.registerBtmPageOnCreate(this, Page.PDP)
         if (savedInstanceState != null) {
             doActivityResult =
                 savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
@@ -916,10 +920,14 @@ open class ProductDetailFragment :
             prefetchCacheId = it.getString(ProductDetailConstant.ARG_PREFETCH_CACHE_ID, "")
 
             processAffiliateSubIds(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) it.getParcelable(
-                    ARG_AFFILIATE_SUB_IDS,
-                    Bundle::class.java
-                ) else it.getParcelable(ARG_AFFILIATE_SUB_IDS)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.getParcelable(
+                        ARG_AFFILIATE_SUB_IDS,
+                        Bundle::class.java
+                    )
+                } else {
+                    it.getParcelable(ARG_AFFILIATE_SUB_IDS)
+                }
             )
         }
         activity?.let {
@@ -976,9 +984,9 @@ open class ProductDetailFragment :
 
     private fun reloadFintechWidget() {
         if (pdpUiUpdater == null || (
-                pdpUiUpdater?.fintechWidgetMap == null &&
-                    pdpUiUpdater?.fintechWidgetV2Map == null
-                )
+            pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null
+            )
         ) {
             return
         }
@@ -3024,7 +3032,7 @@ open class ProductDetailFragment :
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtonsPriority?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false &&
+                ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -3097,10 +3105,10 @@ open class ProductDetailFragment :
             failReason = reason
             cartItemId = cartId
         }
-        if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-            || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+        if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON ||
+            buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
 //            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
-            ) {
+        ) {
             AppLogPdp.sendConfirmCartResult(model)
         }
     }
@@ -3314,7 +3322,7 @@ open class ProductDetailFragment :
             mStoriesWidgetManager.updateStories(
                 shopIds = listOf(p1.basic.shopID),
                 categoryIds = viewModel.getProductInfoP1?.basic?.category?.detail?.map { it.id }.orEmpty(),
-                productIds = listOf(viewModel.getProductInfoP1?.basic?.productID.orEmpty()),
+                productIds = listOf(viewModel.getProductInfoP1?.basic?.productID.orEmpty())
             )
 
             handleShareAdditionalCheck(p2Data.shopInfo)
@@ -5361,7 +5369,7 @@ open class ProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-                ?.restrictionShopFollowersType() == false
+            ?.restrictionShopFollowersType() == false
         ) {
             return
         }

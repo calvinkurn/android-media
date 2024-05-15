@@ -28,12 +28,16 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.bytedance.android.btm.api.model.BtmModel
+import com.bytedance.android.btm.api.model.PageFinder
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
@@ -452,6 +456,10 @@ open class HomeRevampFragment :
 
     private var hasApplogScrollListener = false
 
+    init {
+        BtmApi.registerBtmPageOnCreate(this, Page.HOMEPAGE)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()
@@ -822,11 +830,11 @@ open class HomeRevampFragment :
             val balanceWidgetSubscriptionView =
                 getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && (
-                    (
-                        balanceWidgetSubscriptionView?.y
-                            ?: VIEW_DEFAULT_HEIGHT
-                        ) > VIEW_DEFAULT_HEIGHT
-                    )
+                (
+                    balanceWidgetSubscriptionView?.y
+                        ?: VIEW_DEFAULT_HEIGHT
+                    ) > VIEW_DEFAULT_HEIGHT
+                )
             ) {
                 return balanceWidgetSubscriptionView
             }
@@ -1502,8 +1510,11 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition()
-                    ?: DEFAULT_BLOCK_SIZE) >= 0) {
+            val takeLimit: Int = if ((
+                layoutManager?.findLastVisibleItemPosition()
+                    ?: DEFAULT_BLOCK_SIZE
+                ) >= 0
+            ) {
                 layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
             } else {
                 DEFAULT_BLOCK_SIZE
@@ -2102,7 +2113,7 @@ open class HomeRevampFragment :
                         HOME_SOURCE,
                         data.keyword.safeEncodeUtf8(),
                         isFirstInstall().toString(),
-                        AppLogSearch.ParamValue.ENTER,
+                        AppLogSearch.ParamValue.ENTER
                     )
 
                     navToolbarMicroInteraction
@@ -2112,12 +2123,14 @@ open class HomeRevampFragment :
                 searchbarImpressionCallback = {},
                 shouldShowTransition = false,
                 hintImpressionCallback = { hintData, index ->
-                    if (hintData.imprId.isNotBlank())
+                    if (hintData.imprId.isNotBlank()) {
                         AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
+                    }
                 },
                 hintClickCallback = { hintData, index ->
-                    if (hintData.imprId.isNotBlank())
+                    if (hintData.imprId.isNotBlank()) {
                         AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
+                    }
                 }
             )
         }
@@ -2130,7 +2143,7 @@ open class HomeRevampFragment :
             groupId = hintData.groupId,
             imprId = hintData.imprId,
             wordsSource = hintData.wordsSource,
-            searchEntrance = PageName.HOME,
+            searchEntrance = PageName.HOME
         )
 
     private fun hints(data: SearchPlaceholder.Data): List<HintData> {
@@ -2139,22 +2152,23 @@ open class HomeRevampFragment :
                 ?.filter { !it.placeholder.isNullOrBlank() && !it.keyword.isNullOrEmpty() }
                 ?: listOf()
 
-        return if (placeholders.isNotEmpty())
+        return if (placeholders.isNotEmpty()) {
             placeholders.map { hintData(it, data.wordsSource, data.imprId) }
-        else
+        } else {
             listOf(hintData(data, data.wordsSource, data.imprId))
+        }
     }
 
     private fun hintData(
         placeholder: SearchPlaceholder.PlaceHolder,
         wordsSource: String,
-        imprId: String,
+        imprId: String
     ) = HintData(
         placeholder = placeholder.placeholder ?: "",
         keyword = placeholder.keyword ?: "",
         groupId = placeholder.groupId,
         imprId = imprId,
-        wordsSource = wordsSource,
+        wordsSource = wordsSource
     )
 
     private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
@@ -2268,7 +2282,11 @@ open class HomeRevampFragment :
 
     private fun openApplink(applink: String, trackingAttribution: String) {
         if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(activity, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
+            val btmModel = BtmModel().apply {
+                this.btm = Page.HOMEPAGE.str
+                this.pageFinder = PageFinder.via(this@HomeRevampFragment)
+            }
+            RouteManager.routeWithBtmModel(activity, btmModel, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
         }
     }
 
@@ -2792,17 +2810,17 @@ open class HomeRevampFragment :
     private fun initEggDragListener() {
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.setOnDragListener(object :
-            FloatingEggButtonFragment.OnDragListener {
-            override fun onDragStart() {
-                refreshLayout?.setCanChildScrollUp(true)
-                refreshLayoutOld?.setCanChildScrollUp(true)
-            }
+                FloatingEggButtonFragment.OnDragListener {
+                override fun onDragStart() {
+                    refreshLayout?.setCanChildScrollUp(true)
+                    refreshLayoutOld?.setCanChildScrollUp(true)
+                }
 
-            override fun onDragEnd() {
-                refreshLayout?.setCanChildScrollUp(false)
-                refreshLayoutOld?.setCanChildScrollUp(false)
-            }
-        })
+                override fun onDragEnd() {
+                    refreshLayout?.setCanChildScrollUp(false)
+                    refreshLayoutOld?.setCanChildScrollUp(false)
+                }
+            })
     }
 
     override fun onPromoDragStart() {}

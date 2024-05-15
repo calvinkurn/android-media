@@ -28,6 +28,8 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
@@ -222,6 +224,10 @@ class FeedFragment :
     lateinit var commentFactory: ContentCommentFactory.Creator
 
     private var mDataSource: DataSource? = null
+
+    init {
+        BtmApi.registerBtmPageOnCreate(this, Page.FEED)
+    }
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = { parentFragment ?: this },
@@ -1450,10 +1456,10 @@ class FeedFragment :
                 is Success -> {
                     currentTrackerData?.let { data ->
                         if (it.data.source == FeedProductActionModel.Source.CardHighlight) {
-                           feedAnalytics?.atcFromProductHighlight(
-                               trackerModel = data,
-                               product = it.data
-                           )
+                            feedAnalytics?.atcFromProductHighlight(
+                                trackerModel = data,
+                                product = it.data
+                            )
                         } else {
                             feedAnalytics?.eventClickBuyButton(
                                 trackerData = data,
@@ -2250,8 +2256,9 @@ class FeedFragment :
     private fun removeRefreshForRelevantPostArgument(isRemoveParent: Boolean) {
         arguments?.remove(UF_EXTRA_REFRESH_FOR_RELEVANT_POST)
 
-        if (isRemoveParent)
+        if (isRemoveParent) {
             parentFragment?.arguments?.remove(UF_EXTRA_REFRESH_FOR_RELEVANT_POST)
+        }
     }
 
     private fun fetchInitialPost() {

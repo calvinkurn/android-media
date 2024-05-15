@@ -198,6 +198,9 @@ dependencies {
 
     //Slardar
     implementation rootProject.ext.slardarDependencies.commonMonitor
+
+    //Btm
+    api files(project.rootDir.absolutePath + '/aars/btm-api.aar')
 }
 
 project.ext {

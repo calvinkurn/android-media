@@ -23,6 +23,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
@@ -394,6 +396,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
         const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
         const val RESULT_CODE_SUCCESS = 1
+    }
+
+    init {
+        BtmApi.registerBtmPageOnCreate(this, Page.TRANSAKSI)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
