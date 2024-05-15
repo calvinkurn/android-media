@@ -257,15 +257,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initFresco() {
-        AddHeaderInterceptor interceptor = new AddHeaderInterceptor("X-Tkp-Fmt", "image/webp");
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .build();
-
         Set<RequestListener> listeners = new HashSet<>();
         listeners.add(new FrescoTraceListener());
 
-        //ImagePipelineConfig.Builder imagePipelineBuilder = OkHttpImagePipelineConfigFactory.newBuilder(context, okHttpClient);
         ImagePipelineConfig.Builder imagePipelineBuilder = ImagePipelineConfig.newBuilder(this);
         imagePipelineBuilder.setRequestListeners(listeners);
         imagePipelineBuilder.setNetworkFetcher(new FrescoTTNetFetcher());

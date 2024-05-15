@@ -22,8 +22,8 @@ import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loaderfresco.loadImage
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loaderfresco.loadImageFresco
 import kotlin.math.abs
 
 /**
@@ -127,7 +127,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
         section: RechargeHomepageSections.Section
     ) {
         with(bind) {
-            parallaxImage.loadImage(section.mediaUrl)
+            parallaxImage.loadImageFresco(section.mediaUrl)
             try {
                 if (section.label1.isNotEmpty()) parallaxBackground.setBackgroundColor(Color.parseColor(section.label1))
             } catch (e: IllegalArgumentException) {
