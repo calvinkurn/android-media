@@ -1,5 +1,9 @@
+@file:SuppressLint("DeprecatedMethod")
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.home.beranda.presentation.view.listener.shorten.item
 
+import android.annotation.SuppressLint
 import com.tokopedia.home.analytics.v2.Kd2SquareTracker
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.viewholders.shorten.viewholder.listener.ProductWidgetListener
@@ -9,8 +13,13 @@ import com.tokopedia.track.TrackApp
 
 class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : ProductWidgetListener {
 
-    override fun productChannelHeaderClicked(appLink: String) {
-        listener.onDynamicChannelClicked(appLink)
+    override fun productChannelHeaderClicked(data: ProductWidgetUiModel) {
+        listener.onDynamicChannelClicked(data.header.applink)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Kd2SquareTracker.channelHeaderClicked(
+                data.channelModel
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun productImpressed(data: ProductWidgetUiModel, position: Int) {

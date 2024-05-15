@@ -43,17 +43,18 @@ class ProductWidgetViewHolder(
     override fun bind(element: ProductWidgetUiModel?) {
         if (element == null) return
 
+        setupWidgetHeader(element)
         widgetImpressionListener(element)
-        setupWidgetHeader(element.header)
         mAdapter?.submitList(element.data)
     }
 
-    private fun setupWidgetHeader(header: ChannelHeader) {
+    private fun setupWidgetHeader(model: ProductWidgetUiModel) {
+        val header = model.header
         handleCountdownTimer(header, ::shouldShowRetryWhenCampaignTimeout)
 
         binding?.txtHeader?.text = header.name
         binding?.txtHeader?.setOnClickListener {
-            listener.productChannelHeaderClicked(header.applink)
+            listener.productChannelHeaderClicked(model)
         }
     }
 

@@ -67,6 +67,27 @@ object Kd2SquareTracker : BaseTrackerConst() {
         return trackingBuilder.build()
     }
 
+    // TrackerID: 50032
+    private const val CHEVRON_CLICK_TRACKER_ID = "50032"
+    private const val CHEVRON_CLICK_ACTION = "click view all chevron on ${Const.ITEM_NAME}"
+    fun channelHeaderClicked(model: ChannelModel): Map<String, Any> {
+        val attribute = model.trackingAttributionModel
+
+        val trackingBuilder = BaseTrackerBuilder().constructBasicGeneralClick(
+            event = Event.CLICK_HOMEPAGE,
+            eventAction = CHEVRON_CLICK_ACTION,
+            eventCategory = Category.HOMEPAGE,
+            eventLabel = "${attribute.channelId} - ${attribute.headerName}"
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendChannelId(attribute.channelId)
+            .appendCustomKeyValue(TrackerId.KEY, CHEVRON_CLICK_TRACKER_ID)
+            .appendCampaignCode(attribute.campaignCode)
+
+        return trackingBuilder.build()
+    }
+
     object Const {
         const val ITEM_NAME = "dynamic channel 2 square"
     }

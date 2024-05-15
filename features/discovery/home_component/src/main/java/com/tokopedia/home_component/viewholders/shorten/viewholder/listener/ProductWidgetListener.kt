@@ -5,7 +5,7 @@ import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
 
 interface ProductWidgetListener {
 
-    fun productChannelHeaderClicked(appLink: String)
+    fun productChannelHeaderClicked(data: ProductWidgetUiModel)
     fun retryWidget()
 
     fun productImpressed(data: ProductWidgetUiModel, position: Int)
