@@ -13,7 +13,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -22,6 +21,14 @@ object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
         componentNames: String
     ): AppLogRecommendationProductModel {
+        val originalPriceValue = CurrencyFormatHelper
+            .convertRupiahToDouble(price.orEmpty())
+            .toFloat()
+
+        val salesPriceValue = CurrencyFormatHelper
+            .convertRupiahToDouble(discountedPrice.orEmpty())
+            .toFloat()
+
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
             parentProductId = parentProductId.orEmpty(),
@@ -36,8 +43,8 @@ object TrackDiscoveryRecommendationMapper {
             recParams = getAppLog()?.recParams.orEmpty(),
             shopId = shopId.orEmpty(),
             entranceForm = componentNames.getEntranceForm(),
-            originalPrice = price.toFloatOrZero(),
-            salesPrice = discountedPrice.toFloatOrZero(),
+            originalPrice = originalPriceValue,
+            salesPrice = salesPriceValue,
             isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule(),
             isEligibleForRecTrigger = isEligibleToTrackRecTrigger(componentNames),
             additionalParam = anchorProductId.toLongOrZero().getAdditionalParam()
