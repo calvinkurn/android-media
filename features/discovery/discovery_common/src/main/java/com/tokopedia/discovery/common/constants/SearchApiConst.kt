@@ -109,6 +109,7 @@ class SearchApiConst {
         const val ENTER_METHOD = "enter_method"
         const val USECASE = "usecase"
         const val COUNT_PRODUCT = "count_product"
+        const val CHANNEL = "channel"
 
         const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"
         const val MPS = "mps"

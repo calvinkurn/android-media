@@ -1,5 +1,6 @@
 package com.tokopedia.topads.sdk.utils
 
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import java.util.HashMap
@@ -9,6 +10,7 @@ private const val HEADLINE_TEMPLATE_VALUE = "3,4"
 private const val HEADLINE_PRODUCT_COUNT = 3
 private const val INFINITESEARCH = "infinitesearch"
 private const val SEEN_ADS = "seen_ads"
+private const val CHANNEL = "channel"
 
 object TopAdsHeadlineViewParams {
     fun createHeadlineParams(
@@ -24,6 +26,7 @@ object TopAdsHeadlineViewParams {
         headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = HEADLINE_PRODUCT_COUNT
         headlineParams[INFINITESEARCH] = true
         if (impressionCount.toIntOrZero() != 0) headlineParams[SEEN_ADS] = impressionCount
+        headlineParams[CHANNEL] = AppLogTopAds.getChannelNameParam()
 
         return UrlParamHelper.generateUrlParamString(headlineParams)
     }
