@@ -82,8 +82,8 @@ data class GetRecommendationRequestParam(
         private const val CRITERIA_THEMATIC_IDS = "criteriaThematicIDs"
         private const val REFRESH_TYPE = "refreshType"
         private const val CURRENT_SESSION_ID = "currentSessionID"
-        private const val ENTER_FROM = "enter_from"
-        private const val SOURCE_PAGE_TYPE = "source_page_type"
+        private const val ENTER_FROM = "enterFrom"
+        private const val SOURCE_PAGE_TYPE = "sourcePageType"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0
