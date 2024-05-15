@@ -3,6 +3,7 @@ package com.tokopedia.media.loaderfresco
 import android.app.Activity
 import android.content.Context
 import android.widget.ImageView
+import com.tokopedia.media.loaderfresco.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loaderfresco.data.Properties
 
 @PublishedApi
@@ -15,7 +16,8 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
         } catch (e: Exception) {
             e.printStackTrace()
 
-            //TODO Error Image
+            //still render image if there is error happen
+            setImageResource(ERROR_RES_UNIFY)
         }
     }
 }

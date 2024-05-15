@@ -30,7 +30,6 @@ import com.bytedance.applog.util.EventsSenderUtils;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.listener.RequestListener;
@@ -100,7 +99,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
-import com.tokopedia.media.loaderfresco.network.AddHeaderInterceptor;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
@@ -148,7 +146,6 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
-import okhttp3.OkHttpClient;
 import timber.log.Timber;
 
 /**

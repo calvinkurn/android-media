@@ -12,11 +12,7 @@ import com.tokopedia.media.loaderfresco.data.Properties
 internal object FrescoDataSourceRequest {
     fun frescoDataSourceBuilder(properties: Properties, context: Context): DataSource<CloseableReference<CloseableImage>> {
         val source = properties.data
-        val generatedUri = if (source is String) {
-            source.generateFrescoUri()
-        } else {
-            Uri.parse("") //TODO non String
-        }
+        val generatedUri = (source as String).generateFrescoUri()
 
         val request = ImageRequestBuilder.newBuilderWithSource(generatedUri).build()
 
