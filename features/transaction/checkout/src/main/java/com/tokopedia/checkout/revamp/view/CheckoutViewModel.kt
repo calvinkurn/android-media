@@ -225,7 +225,8 @@ class CheckoutViewModel @Inject constructor(
         gatewayCode: String = "",
         tenor: Int = 0,
         checkoutItems: MutableList<CheckoutItem>? = null,
-        itemIndex: Int? = null
+        itemIndex: Int? = null,
+        usePreviousGateway: Boolean = false
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         viewModelScope.launch(dispatchers.io) {
@@ -341,12 +342,21 @@ class CheckoutViewModel @Inject constructor(
                             metadata = saf.cartShipmentAddressFormData.paymentWidget.metadata,
                             enable = saf.cartShipmentAddressFormData.paymentWidget.enable,
                             defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage,
-                            originalData = OriginalCheckoutPaymentData(
-                                gatewayCode = gatewayCode.ifBlank { saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode },
-                                tenureType = if (gatewayCode.isNotBlank()) tenor else saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
-                                optionId = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.optionId,
-                                metadata = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.metadata
-                            )
+                            originalData = if (usePreviousGateway) {
+                                OriginalCheckoutPaymentData(
+                                    gatewayCode = listData.value.payment()?.originalData?.gatewayCode ?: "",
+                                    tenureType = listData.value.payment()?.originalData?.tenureType ?: 0,
+                                    optionId = listData.value.payment()?.originalData?.optionId ?: "",
+                                    metadata = listData.value.payment()?.originalData?.metadata ?: ""
+                                )
+                            } else {
+                                OriginalCheckoutPaymentData(
+                                    gatewayCode = gatewayCode.ifBlank { saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode },
+                                    tenureType = if (gatewayCode.isNotBlank()) tenor else saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
+                                    optionId = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.optionId,
+                                    metadata = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.metadata
+                                )
+                            }
                         )
 
                         cartType = saf.cartShipmentAddressFormData.cartType
@@ -3248,6 +3258,7 @@ class CheckoutViewModel @Inject constructor(
     private suspend fun getCheckoutPaymentData() {
         val checkoutItems = listData.value.toMutableList()
         var payment = checkoutItems.payment() ?: return
+        println("++ cek gatewayCode = ${checkoutItems.payment()?.originalData?.gatewayCode ?: ""}")
 
         // show loading
         payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
@@ -3675,7 +3686,8 @@ class CheckoutViewModel @Inject constructor(
                         skipUpdateOnboardingState = true,
                         isReloadAfterPriceChangeHigher = false,
                         checkoutItems = checkoutItems,
-                        itemIndex = itemIndex
+                        itemIndex = itemIndex,
+                        usePreviousGateway = true
                     )
                     listData.value = checkoutItems
                     calculateTotal()
