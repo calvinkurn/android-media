@@ -57,6 +57,11 @@ class CountdownTimer : ConstraintLayout {
     private var isAttributeSetterDisabled = true
 
     /**
+     * This a overridden of textSize of [dayTextView].
+     */
+    private val textSize = resources.getDimensionPixelSize(R.dimen.count_down_timer_timertextview_text_size).toFloat()
+
+    /**
      * manipulated timer var over the time
      */
     private var tempRemainingMillis: Long = 0
@@ -287,7 +292,9 @@ class CountdownTimer : ConstraintLayout {
         } else {
             // static days text
             val timerTitle = context.getString(R.string.count_down_timer_day_title, days)
+
             dayTextView?.setText(timerTitle)
+            dayTextView?.textSize = textSize
             dayTextView?.visibility = View.VISIBLE
 
             // animation-related number digits
