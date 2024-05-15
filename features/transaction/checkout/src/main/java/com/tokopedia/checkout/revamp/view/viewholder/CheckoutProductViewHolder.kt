@@ -296,86 +296,81 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderQuantity(product: CheckoutProductModel) {
-        // if (product.enableQtyEdit) {
-        val qtyEditorProduct = productBinding.qtyEditorProduct
-        if (product.isError) {
-            qtyEditorProduct.gone()
-            return
-        } else {
-            qtyEditorProduct.show()
-        }
-
-        showHideQuantityError(product)
-
-        qtyEditorProduct.apply {
-            onFocusChanged = { focus ->
-                val currentFocus = qtyState.value
-                if (currentFocus is QtyState.Focus && !focus.isFocused) {
-                    val newQty = qtyValue.value
-                    listener.onCheckoutItemQuantityChanged(product, newQty)
-                    hideKeyboard()
-                    listener.clearAllFocus()
-                }
-                qtyState.value = if (focus.isFocused) QtyState.Focus else QtyState.Enabled
+        if (product.enableQtyEdit) {
+            val qtyEditorProduct = productBinding.qtyEditorProduct
+            if (product.isError) {
+                qtyEditorProduct.gone()
+                return
+            } else {
+                qtyEditorProduct.show()
             }
-            keyboardOptions.value = KeyboardOptions(
-                imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Number
-            )
-            keyboardActions.value = KeyboardActions(
-                onDone = {
-                        /*val newQty = qtyValue.value
-                        if (newQty == 0) {
-                            listener.onProductEventEmittedListener(
-                                CartProductEvent.OnProductDeleted(
-                                    data.identifier,
-                                    CartDeleteButtonSource.QuantityEditorImeAction
-                                )
-                            )
-                            return@KeyboardActions
-                        }*/
-                    hideKeyboard()
-                    listener.clearAllFocus()
-                }
-            )
-            qtyValue.value = product.quantity
-            configState.value = configState.value.copy(
-                qtyMinusButton = configState.value.qtyMinusButton.copy(
-                    onClick = {
-                        if (position != RecyclerView.NO_POSITION) {
-                                /*sendAnalyticEvent(
-                                    CartProductAnalyticEvent.OnCartQuantityPlusClicked
-                                )*/
-                        }
-                    }
-                ),
-                qtyPlusButton = configState.value.qtyPlusButton.copy(
-                    onClick = {
-                        if (position != RecyclerView.NO_POSITION) {
-                                /*sendAnalyticEvent(
-                                    CartProductAnalyticEvent.OnCartQuantityPlusClicked
-                                )*/
-                        }
-                    }
-                ),
-                minInt = product.minOrder,
-                maxInt = product.maxOrder
-            )
 
-            onValueChanged = { qty ->
-                if (qtyState.value !is QtyState.Focus) {
-                    if (qty != 0) {
-                        listener.onCheckoutItemQuantityChanged(product, qty)
+            val maxQty = if (product.invenageValue < product.maxOrder) {
+                product.invenageValue
+            } else {
+                product.maxOrder
+            }
+            showHideQuantityError(product, maxQty)
+
+            qtyEditorProduct.apply {
+                onFocusChanged = { focus ->
+                    val currentFocus = qtyState.value
+                    if (currentFocus is QtyState.Focus && !focus.isFocused) {
+                        val newQty = qtyValue.value
+                        listener.onCheckoutItemQuantityChanged(product, newQty)
+                        hideKeyboard()
+                        listener.clearAllFocus()
                     }
-                } else {
-                    qtyValue.value = qty
+                    qtyState.value = if (focus.isFocused) QtyState.Focus else QtyState.Enabled
+                }
+                keyboardOptions.value = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                )
+                keyboardActions.value = KeyboardActions(
+                    onDone = {
+                        hideKeyboard()
+                        listener.clearAllFocus()
+                    }
+                )
+                qtyValue.value = product.quantity
+                configState.value = configState.value.copy(
+                    qtyMinusButton = configState.value.qtyMinusButton.copy(
+                        onClick = {
+                            if (position != RecyclerView.NO_POSITION) {
+                                    /*sendAnalyticEvent(
+                                        CartProductAnalyticEvent.OnCartQuantityPlusClicked
+                                    )*/
+                            }
+                        }
+                    ),
+                    qtyPlusButton = configState.value.qtyPlusButton.copy(
+                        onClick = {
+                            if (position != RecyclerView.NO_POSITION) {
+                                    /*sendAnalyticEvent(
+                                        CartProductAnalyticEvent.OnCartQuantityPlusClicked
+                                    )*/
+                            }
+                        }
+                    ),
+                    minInt = product.minOrder,
+                    maxInt = maxQty
+                )
+
+                onValueChanged = { qty ->
+                    if (qtyState.value !is QtyState.Focus) {
+                        if (qty != 0) {
+                            listener.onCheckoutItemQuantityChanged(product, qty)
+                        }
+                    } else {
+                        qtyValue.value = qty
+                    }
                 }
             }
         }
-        // }
     }
 
-    private fun showHideQuantityError(product: CheckoutProductModel) {
+    private fun showHideQuantityError(product: CheckoutProductModel, maxQty: Int) {
         if (product.shouldShowMaxQtyError || product.shouldShowMinQtyError) {
             productBinding.labelQuantityError.show()
             productBinding.labelQuantityError.setPadding(
