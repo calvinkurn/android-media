@@ -183,11 +183,11 @@ open class ProductConstraintLayout :
     }
 
     fun setVisibilityPercentListener(isTopAds: Boolean, eventListener: OnVisibilityPercentChanged?) {
+        unsetListener()
         if (isTopAds) {
             setListener(eventListener)
             debugTextView?.addTo(this)
         } else {
-            unsetListener()
             debugTextView?.removeSelf()
         }
     }
@@ -195,7 +195,9 @@ open class ProductConstraintLayout :
     private fun unsetListener() {
         removeVisibilityPercentageListener()
         lifecycleOwner?.lifecycle?.removeObserver(this)
-        this.viewTreeObserver.removeOnScrollChangedListener(this)
+        if (this.viewTreeObserver.isAlive) {
+            this.viewTreeObserver.removeOnScrollChangedListener(this)
+        }
         this.removeOnAttachStateChangeListener(this)
     }
 
