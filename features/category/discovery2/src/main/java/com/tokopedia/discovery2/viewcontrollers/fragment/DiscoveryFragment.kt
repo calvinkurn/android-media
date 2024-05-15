@@ -2681,6 +2681,10 @@ open class DiscoveryFragment :
         return pageInfoHolder?.label?.trackingPagename.orEmpty()
     }
 
+    override fun getAdsPageName(): String {
+        return pageInfoHolder?.label?.trackingPagename.orEmpty()
+    }
+
     fun setCurrentTabPosition(tabPosition: Int) {
         currentTabPosition = tabPosition
         val tabPositionString = tabPosition.toString()

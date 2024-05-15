@@ -129,6 +129,10 @@ internal class ShopListFragment @Inject constructor(
         return AppLogSearch.ParamValue.STORE_SEARCH
     }
 
+    override fun getAdsPageName(): String {
+        return AppLogSearch.ParamValue.STORE_SEARCH
+    }
+
     private fun initViews() {
         initRefreshLayout()
         initGridLayoutManager()

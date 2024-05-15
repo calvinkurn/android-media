@@ -10,13 +10,13 @@ class AppLogFragmentLifecycleCallback: FragmentManager.FragmentLifecycleCallback
         when {
             visibleFragment is IAdsLog -> {
                 AppLogAnalytics.currentActivityName = visibleFragment.activity?.javaClass?.simpleName.orEmpty()
-                AppLogAnalytics.currentPageName = visibleFragment.getPageName()
-                AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, visibleFragment.getPageName())
+                AppLogAnalytics.currentPageName = visibleFragment.getAdsPageName()
+                AppLogAnalytics.updateAdsFragmentPageData(visibleFragment.activity, AppLogParam.PAGE_NAME, visibleFragment.getAdsPageName())
             }
             f is IAdsLog -> {
                 AppLogAnalytics.currentActivityName = f.activity?.javaClass?.simpleName.orEmpty()
-                AppLogAnalytics.currentPageName = f.getPageName()
-                AppLogAnalytics.updateAdsFragmentPageData(AppLogParam.PAGE_NAME, f.getPageName())
+                AppLogAnalytics.currentPageName = f.getAdsPageName()
+                AppLogAnalytics.updateAdsFragmentPageData(f.activity, AppLogParam.PAGE_NAME, f.getAdsPageName())
             }
         }
     }

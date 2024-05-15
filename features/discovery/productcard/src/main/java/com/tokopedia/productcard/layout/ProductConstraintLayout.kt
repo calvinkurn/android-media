@@ -42,8 +42,8 @@ open class ProductConstraintLayout :
     private val NOWHERE = 7
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
-    private val set = ConstraintSet()
-    private val rectf = Rect()
+    private val set: ConstraintSet by lazy { ConstraintSet() }
+    private val rectf: Rect by lazy { Rect() }
     private val lifecycleOwner by lazy { findLifecycleOwner(context) }
 
     constructor(context: Context) : super(context) {

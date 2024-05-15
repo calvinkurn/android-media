@@ -552,6 +552,10 @@ open class HomeRevampFragment :
         return PageName.HOME
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.HOME
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

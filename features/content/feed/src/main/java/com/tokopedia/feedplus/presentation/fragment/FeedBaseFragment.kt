@@ -324,6 +324,10 @@ class FeedBaseFragment :
         return PageName.FEED
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.FEED
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

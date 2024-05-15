@@ -197,5 +197,8 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppL
         return (fragment as? AppLogInterface)?.getPageName().orEmpty()
     }
 
+    override fun getAdsPageName(): String {
+        return (fragment as? AppLogInterface)?.getPageName().orEmpty()
+    }
 }
 

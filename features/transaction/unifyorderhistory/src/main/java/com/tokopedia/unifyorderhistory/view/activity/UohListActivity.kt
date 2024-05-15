@@ -44,5 +44,7 @@ class UohListActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
 
     override fun getPageName(): String = PageName.UOH
 
+    override fun getAdsPageName(): String = PageName.UOH
+
     override fun isEnterFromWhitelisted(): Boolean = true
 }

@@ -360,6 +360,10 @@ open class NotificationActivity :
         return PageName.NOTIFICATION
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.NOTIFICATION
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

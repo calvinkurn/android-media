@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.analytics.byteio.topads.AdsLogConst
-import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
@@ -21,7 +19,6 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 
 class ProductCardColumnListViewHolder(
@@ -129,49 +126,6 @@ class ProductCardColumnListViewHolder(
             trackTopAdsClick(itemPosition)
 
             RouteManager.route(itemView.context, product?.applinks)
-        }
-    }
-
-    override fun onAreaClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
-        sendAdsRealtimeClickByteIo(AdsLogConst.Refer.AREA, itemPosition)
-    }
-
-    override fun onProductImageClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
-        sendAdsRealtimeClickByteIo(AdsLogConst.Refer.COVER, itemPosition)
-    }
-
-    override fun onSellerInfoClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
-        sendAdsRealtimeClickByteIo(AdsLogConst.Refer.SELLER_NAME, itemPosition)
-    }
-
-    override fun onViewAttachedToWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
-        viewModel?.run {
-            val product = getProduct(itemPosition)
-
-            if (product?.isTopads == true) {
-                AppLogTopAds.sendEventShow(itemView.context, product.asAdsLogShowModel())
-            }
-        }
-    }
-
-    override fun onViewDetachedFromWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int, visiblePercentage: Int) {
-        viewModel?.run {
-            val product = getProduct(itemPosition)
-
-            if (product?.isTopads == true) {
-                AppLogTopAds.sendEventShowOver(itemView.context, product.asAdsLogShowOverModel(visiblePercentage))
-                setVisiblePercentage(Int.ZERO)
-            }
-        }
-    }
-
-    private fun sendAdsRealtimeClickByteIo(refer: String, itemPosition: Int) {
-        viewModel?.run {
-            val product = getProduct(itemPosition)
-
-            if (product?.isTopads == true) {
-                AppLogTopAds.sendEventRealtimeClick(itemView.context, product.asAdsLogRealtimeClickModel(refer))
-            }
         }
     }
 

@@ -13,4 +13,6 @@ open class AutoCompleteActivity:
     override fun getTelemetrySectionName() = "autocomplete"
 
     override fun getPageName(): String = ""
+
+    override fun getAdsPageName(): String = ""
 }

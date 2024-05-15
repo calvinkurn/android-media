@@ -162,6 +162,10 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
         return PageName.INBOX
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.INBOX
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }

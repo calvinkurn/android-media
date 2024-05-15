@@ -25,5 +25,8 @@ class WishlistCollectionActivity : BaseSimpleActivity(), AppLogInterface, IAdsLo
 
     override fun getPageName(): String = PageName.WISHLIST
 
+    override fun getAdsPageName(): String = PageName.WISHLIST
+
+
     override fun isEnterFromWhitelisted() = true
 }

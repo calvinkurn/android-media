@@ -521,6 +521,10 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         return PageName.PDP
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.PDP
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return false
 

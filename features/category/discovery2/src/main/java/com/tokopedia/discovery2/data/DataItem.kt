@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
@@ -723,7 +724,7 @@ data class DataItem(
             topAdsLogExtra.orEmpty(),
             AdsLogRealtimeClickModel.AdExtraData(
             productId = productId.orEmpty(),
-            productName = productName.orEmpty(),
+            productName = getRealProductName(),
         ))
     }
 
@@ -733,7 +734,7 @@ data class DataItem(
             topAdsLogExtra.orEmpty(),
             AdsLogShowOverModel.AdExtraData(
                 productId = productId.orEmpty(),
-                productName = productName.orEmpty(),
+                productName = getRealProductName(),
                 sizePercent = visiblePercentage.toString())
         )
     }
@@ -744,9 +745,11 @@ data class DataItem(
             topAdsLogExtra.orEmpty(),
             AdsLogShowModel.AdExtraData(
             productId = productId.orEmpty(),
-            productName = productName.orEmpty(),
+            productName = getRealProductName(),
         ))
     }
+
+    private fun getRealProductName() = if (productName?.isNotBlank().orFalse()) productName.orEmpty() else name.orEmpty()
 
     private fun findLabelGroup(position: String): LabelsGroup? {
         return labelsGroupList?.find { it.position == position }

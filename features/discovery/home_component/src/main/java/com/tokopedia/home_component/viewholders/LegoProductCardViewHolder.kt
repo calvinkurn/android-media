@@ -2,7 +2,6 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.LegoProductCardDataModel
@@ -15,9 +14,8 @@ import com.tokopedia.home_component.analytics.sendEventShowAdsByteIo
 import com.tokopedia.home_component.analytics.sendEventShowOverAdsByteIo
 import com.tokopedia.home_component.databinding.LayoutLegoProductCardItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnAttachStateChangeListener
 import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
@@ -26,7 +24,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 class LegoProductCardViewHolder(
     v: View,
     private val channels: ChannelModel
-): RecyclerView.ViewHolder(v), IAdsViewHolderTrackListener {
+): RecyclerView.ViewHolder(v) {
     companion object {
         val LAYOUT = R.layout.layout_lego_product_card_item
         private const val className = "com.tokopedia.home_component.visitable.DeclutteredProductCardViewHolder"
@@ -36,16 +34,7 @@ class LegoProductCardViewHolder(
 
     private val productCardView: ProductCardGridView? by lazy { binding?.productCard }
 
-    private var viewVisiblePercentage = 0
-
     private var channelGrid: ChannelGrid? = null
-
-    init {
-        itemView.addOnAttachStateChangeListener(
-            onViewAttachedToWindow = { onViewAttachedToWindow() },
-            onViewDetachedFromWindow = { onViewDetachedFromWindow(visiblePercentage) }
-        )
-    }
 
     fun bind(element: LegoProductCardDataModel) {
         setLayout(element)
@@ -90,21 +79,18 @@ class LegoProductCardViewHolder(
                 }
             })
         }
-    }
 
-    override fun onViewAttachedToWindow() {
-        channelGrid.sendEventShowAdsByteIo(itemView.context)
-    }
+        productCardView?.setVisibilityPercentListener(
+            isTopAds = element.grid.isTopads,
+            eventListener = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.grid.sendEventShowAdsByteIo(itemView.context)
+                }
 
-    override fun onViewDetachedFromWindow(visiblePercentage: Int) {
-        channelGrid.sendEventShowOverAdsByteIo(itemView.context, visiblePercentage)
-        setVisiblePercentage(Int.ZERO)
+                override fun onShowOver(maxPercentage: Int) {
+                    element.grid.sendEventShowOverAdsByteIo(itemView.context, maxPercentage)
+                }
+            }
+        )
     }
-
-    override fun setVisiblePercentage(visiblePercentage: Int) {
-        this.viewVisiblePercentage = visiblePercentage
-    }
-
-    override val visiblePercentage: Int
-        get() = viewVisiblePercentage
 }
