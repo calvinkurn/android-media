@@ -103,6 +103,10 @@
                 android:id="@+id/timer_unify_day_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/Unify_NN0"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
                 android:visibility="gone" />
 
         </LinearLayout>
