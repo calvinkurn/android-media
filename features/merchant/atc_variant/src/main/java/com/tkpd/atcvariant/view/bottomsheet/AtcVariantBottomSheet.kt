@@ -805,7 +805,10 @@ class AtcVariantBottomSheet :
                 successMessage
             }
 
-            showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+            showToasterSuccess(
+                message,
+                ctaText = getString(productdetailcommonR.string.cta_text_atc_success)
+            ) {
                 val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
                 ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(
                     message,
