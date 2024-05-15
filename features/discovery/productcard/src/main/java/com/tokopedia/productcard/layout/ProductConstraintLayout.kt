@@ -110,8 +110,6 @@ open class ProductConstraintLayout :
                 if (maxAreaPercentage < areaPercentage) {
                     maxAreaPercentage = areaPercentage
                 }
-                Timber.tag("ProductConstrainLayout").i("on calculation viewDetachedFromWindows$viewDetachedFromWindows isVisible:$isVisible orientation:$alignment heightPercentage:$heightPercentage widthPercentage:$widthPercentage area:$areaPercentage")
-
                 if (areaPercentage > 0 && isVisible) {
                     onShow()
                 } else {
