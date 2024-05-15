@@ -60,6 +60,7 @@ class CountdownTimer : ConstraintLayout {
      * This a overridden of textSize of [dayTextView].
      */
     private val textSize = resources.getDimensionPixelSize(R.dimen.count_down_timer_timertextview_text_size).toFloat()
+    private var typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
 
     /**
      * manipulated timer var over the time
@@ -295,6 +296,7 @@ class CountdownTimer : ConstraintLayout {
 
             dayTextView?.setText(timerTitle)
             dayTextView?.textSize = textSize
+            dayTextView?.typeface = typeface
             dayTextView?.visibility = View.VISIBLE
 
             // animation-related number digits
