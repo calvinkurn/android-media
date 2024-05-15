@@ -160,7 +160,6 @@ abstract class BasePdpViewModelTest {
         mockkStatic(GlobalConfig::class)
         mockkObject(ProductDetailServerLogger)
         mockkStatic(TrackApp::class)
-        mockkObject(ProductRollenceHelper)
         normalizeOs()
         spykViewModel = spyk(viewModel)
     }

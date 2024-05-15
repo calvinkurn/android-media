@@ -66,8 +66,6 @@ import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -1981,7 +1979,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             assertTrue(source is AffiliateSdkPageSource.PDP)
         }
 
-        with (subIdsSlot.captured) {
+        with(subIdsSlot.captured) {
             assertEquals(size, 2)
 
             assertEquals(get(0).key, "1")
@@ -3226,13 +3224,6 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
     //region atc animation
     @Test
     fun `success atc and animation`() = runTest {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.PDP_ATC_ANIMATION_KEY,
-                ""
-            )
-        } returns RollenceKey.PDP_ATC_ANIMATION_VARIANT
-
         val successAtcAndAnimation = mutableListOf<Boolean>()
         backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
@@ -3257,13 +3248,6 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `success atc and animation when rollence false`() = runTest {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.PDP_ATC_ANIMATION_KEY,
-                ""
-            )
-        } returns ""
-
         val successAtcAndAnimation = mutableListOf<Boolean>()
         backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
@@ -3274,8 +3258,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.onFinishAtc()
 
         advanceUntilIdle()
-        assertEquals(successAtcAndAnimation.size, 1)
-        assertEquals(successAtcAndAnimation.first(), true)
+        assertEquals(successAtcAndAnimation.size, 0)
     }
     //endregion
 

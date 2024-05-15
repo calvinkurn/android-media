@@ -11,8 +11,6 @@ import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -376,7 +374,6 @@ import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.ceil
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -835,15 +832,6 @@ open class ProductDetailFragment :
     }
 
     private fun observeOneTimeMethod() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.successAtcAndAnimation.collectLatest {
-                val atcData = viewModel.addToCartLiveData.value as? Success ?: return@collectLatest
-                showAddToCartDoneBottomSheet(
-                    atcData.data.data
-                )
-            }
-        }
-
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.oneTimeMethodState.collect {
                 when (it.event) {
@@ -2729,7 +2717,7 @@ open class ProductDetailFragment :
         viewModel.playWidgetModel.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> handlePlayWidgetUiModel(it.data)
-                is Fail -> pdpUiUpdater?.removeComponent(ProductDetailConstant.PLAY_CAROUSEL)
+                is Fail -> pdpUiUpdater?.removeComponent(PLAY_CAROUSEL)
             }
             updateUi()
         }
@@ -3066,40 +3054,41 @@ open class ProductDetailFragment :
     }
 
     private fun observeAddToCart() {
-        viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
-            actionButtonView.hideLoading()
+        lifecycleScope.launchWhenStarted {
+            viewModel.addToCartResultState.collectLatest { data ->
+                actionButtonView.hideLoading()
 
-            var cartId = ""
-            var success = false
-            var reason = ""
+                var cartId = ""
+                var success = false
+                var reason = ""
 
-            data.doSuccessOrFail({
-                if (it.data.errorReporter.eligible) {
-                    view?.showToasterError(
-                        it.data.errorReporter.texts.submitTitle,
-                        ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                data.doSuccessOrFail({
+                    if (it.data.errorReporter.eligible) {
+                        view?.showToasterError(
+                            it.data.errorReporter.texts.submitTitle,
+                            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                        )
+                    } else {
+                        success = true
+                        onSuccessAtc(it.data)
+                        ProductDetailServerLogger.logBreadCrumbAtc(
+                            isSuccess = true,
+                            errorMessage = it.data.getAtcErrorMessage() ?: "",
+                            atcType = buttonActionType
+                        )
+                    }
+                    cartId = it.data.data.cartId
+                }, {
+                    ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
+                        it.message.orEmpty(),
+                        viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
+                        viewModel.userId
                     )
-                } else {
-                    success = true
-                    onSuccessAtc(it.data)
-                    ProductDetailServerLogger.logBreadCrumbAtc(
-                        isSuccess = true,
-                        errorMessage = it.data.getAtcErrorMessage() ?: "",
-                        atcType = buttonActionType
-                    )
-                }
-                cartId = it.data.data.cartId
-            }, {
-                viewModel.onFinishAtc()
-                ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
-                    it.message.orEmpty(),
-                    viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
-                    viewModel.userId
-                )
-                handleAtcError(it)
-                reason = it.message.orEmpty()
-            })
-            sendConfirmResultByteIoTracker(cartId, reason, success)
+                    handleAtcError(it)
+                    reason = it.message.orEmpty()
+                })
+                sendConfirmResultByteIoTracker(cartId, reason, success)
+            }
         }
     }
 
@@ -3502,6 +3491,7 @@ open class ProductDetailFragment :
 
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
+
         if (viewModel.getProductInfoP1?.basic?.isTokoNow == true) {
             showAtcSuccessToaster(result)
             return
@@ -3542,7 +3532,7 @@ open class ProductDetailFragment :
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
                 navToolbar?.updateNotification()
-                viewModel.onFinishAtc()
+                showAddToCartDoneBottomSheet(cartDataModel = result.data)
             }
 
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
@@ -5045,17 +5035,6 @@ open class ProductDetailFragment :
                     ?: ""
             )
             goToAtcVariant()
-        }
-    }
-
-    private fun getStatusBarHeight(context: Context): Int {
-        val resources = context.resources
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resourceId > 0) {
-            resources.getDimensionPixelSize(resourceId)
-        } else {
-            ceil(((if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density).toDouble())
-                .toInt()
         }
     }
 
