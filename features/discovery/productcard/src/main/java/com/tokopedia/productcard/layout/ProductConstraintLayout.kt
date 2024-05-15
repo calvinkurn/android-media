@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.layout
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -9,12 +10,9 @@ import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -42,11 +40,11 @@ open class ProductConstraintLayout :
     private val LEFT_AND_RIGHT = 5
     private val TOP_AND_BOTTOM = 6
     private val NOWHERE = 7
-    private var duplicateEnabled = false
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
     private val set = ConstraintSet()
     private val rectf = Rect()
+    private val lifecycleOwner by lazy { findLifecycleOwner(context) }
 
     constructor(context: Context) : super(context) {
         inflateView()
@@ -92,8 +90,9 @@ open class ProductConstraintLayout :
             NOWHERE
         }
 
-        val heightPixels: Int = height + top - bottom
-        val widthPixels: Int = width + left - right
+        val isVisible = isVisible()
+        var heightPixels: Int = height + top - bottom
+        var widthPixels: Int = width + left - right
 
         heightPercentage = (100 - heightPixels.toDouble() / height * 100).toInt()
         widthPercentage = (100 - widthPixels.toDouble() / width * 100).toInt()
@@ -104,14 +103,17 @@ open class ProductConstraintLayout :
             widthPercentage = 0
         }
         if (isBetweenHorizontalPercentageLimits(widthPercentage) && isBetweenVerticalPercentageLimits(heightPercentage)) {
-            if (duplicateEnabled || !duplicateEnabled && (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage)) {
+            if (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage) {
                 lastPercentageHeight = heightPercentage
                 lastPercentageWidht = widthPercentage
                 val areaPercentage = (lastPercentageHeight * lastPercentageWidht) / 100
                 if (maxAreaPercentage < areaPercentage) {
                     maxAreaPercentage = areaPercentage
                 }
-                if (viewDetachedFromWindows) {
+                if (areaPercentage > 0 && isVisible) {
+                    onShow()
+                } else {
+                    onShowOver()
                     maxAreaPercentage = 0
                 }
                 when (alignment) {
@@ -191,21 +193,15 @@ open class ProductConstraintLayout :
     }
 
     private fun unsetListener() {
-        val activity = (context as AppCompatActivity)
-        val fragment = getVisibleFragment(activity)
-        val lifecycle = fragment?.lifecycle ?: activity.lifecycle
-        lifecycle.removeObserver(this)
-        this.viewTreeObserver.removeOnScrollChangedListener(this)
         removeVisibilityPercentageListener()
+        lifecycleOwner?.lifecycle?.removeObserver(this)
+        this.viewTreeObserver.removeOnScrollChangedListener(this)
         this.removeOnAttachStateChangeListener(this)
     }
 
     private fun setListener(eventListener: OnVisibilityPercentChanged?) {
-        val activity = (context as AppCompatActivity)
-        val fragment = getVisibleFragment(activity)
-        val lifecycle = fragment?.lifecycle ?: activity.lifecycle
         mPercentageListener = eventListener
-        lifecycle.addObserver(this)
+        lifecycleOwner?.lifecycle?.addObserver(this)
         this.addOnAttachStateChangeListener(this)
         this.viewTreeObserver.addOnScrollChangedListener(this)
     }
@@ -224,17 +220,18 @@ open class ProductConstraintLayout :
         }
     }
 
-    open fun getVisibleFragment(activity: AppCompatActivity): Fragment? {
-        val fragmentManager: FragmentManager = activity.supportFragmentManager
-        val fragments: List<Fragment> = fragmentManager.fragments
-        for (fragment in fragments) {
-            if (fragment.userVisibleHint) return fragment
+    private fun findLifecycleOwner(context: Context): LifecycleOwner? {
+        var currentContext = context
+        while (currentContext is ContextWrapper) {
+            if (currentContext is LifecycleOwner) {
+                return currentContext
+            }
+            currentContext = currentContext.baseContext
         }
         return null
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (source is Fragment && !source.userVisibleHint) return
         when (event) {
             Lifecycle.Event.ON_RESUME -> {
                 if (maxAreaPercentage > 0) onShow()
@@ -256,11 +253,19 @@ open class ProductConstraintLayout :
         calculateVisibility()
     }
 
+    fun isVisible(): Boolean {
+        return if (isShown) {
+            getGlobalVisibleRect(Rect())
+        } else {
+            false
+        }
+    }
+
     private fun onShow() {
-        if (viewDetachedFromWindows) {
+        if (viewDetachedFromWindows && isVisible()) {
             mPercentageListener?.onShow()
             viewDetachedFromWindows = false
-            Timber.tag("ProductConstrainLayout").i("on show $maxAreaPercentage%")
+            Timber.tag("ProductConstrainLayout").i("on show max:$maxAreaPercentage%")
         }
     }
 
@@ -268,7 +273,7 @@ open class ProductConstraintLayout :
         if (!viewDetachedFromWindows && maxAreaPercentage > 0) {
             mPercentageListener?.onShowOver(maxAreaPercentage)
             viewDetachedFromWindows = true
-            Timber.tag("ProductConstrainLayout").i("on show over $maxAreaPercentage%")
+            Timber.tag("ProductConstrainLayout").i("on show over max:$maxAreaPercentage%")
         }
     }
     private fun inflateView() {
