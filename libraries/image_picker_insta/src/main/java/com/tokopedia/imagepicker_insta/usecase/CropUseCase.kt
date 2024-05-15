@@ -32,7 +32,7 @@ class CropUseCase @Inject constructor() {
                     val h = it.second.bmpHeight!!
 
                     var mBmp = runBlocking(Dispatchers.IO) {
-                        return@runBlocking asset.contentUri.getBitmapFromUrl(context, properties = {
+                        return@runBlocking asset.contentUri.toString().getBitmapFromUrl(context, properties = {
                             overrideSize(Resize(w, h))
                         })
                     }
@@ -42,7 +42,7 @@ class CropUseCase @Inject constructor() {
                             val tmpBitmap = Bitmap.createScaledBitmap(bitmapResult, w, h, false)
                             mBmp = tmpBitmap
 
-                            if (bitmapResult.width != w || bitmapResult.height != h) {
+                            if (mBmp?.width != w || mBmp?.height != h) {
                                 throw Exception("Unable to get specified bitmap")
                             }
                         }
