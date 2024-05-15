@@ -24,6 +24,7 @@
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="login">Masuk</string>
     <string name="register">Daftar</string>
+    <string name="register_sdk_title">Daftar ke Tokopedia</string>
 
     <!-- Change Phone Number strings -->
 
@@ -89,6 +90,7 @@
     <string name="error_max_35_character">Maksimal 35 karakter</string>
     <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
     <string name="or_login_with_space">atau masuk dengan</string>
+    <string name="button_login_google">Masuk dengan Google</string>
 
     <string name="must_insert_email_or_phone">Nomor Ponsel atau Email harus diisi</string>
     <string name="change_2">Ubah</string>

@@ -78,7 +78,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment() {
         private const val SPAN_34 = 34
         private const val SPAN_54 = 54
         private const val SPAN_61 = 61
-        private const val SPAN_78 = 78
+        private const val SPAN_78 = 80
         private const val FLAG_0 = 0
 
         private const val BEARER = "Bearer"
@@ -246,7 +246,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment() {
                         )
                     ),
                     SPAN_61,
-                    SPAN_78,
+                    82,
                     FLAG_0
                 )
 

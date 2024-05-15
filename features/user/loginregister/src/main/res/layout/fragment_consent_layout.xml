@@ -152,7 +152,7 @@
             android:layout_height="wrap_content"
 
             android:layout_marginStart="6dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="17dp"
             android:text="Syarat dan ketentuan serta Kebijakan Privasi Partner"
             app:layout_constraintBottom_toTopOf="@+id/btn_login_consent"
             app:layout_constraintEnd_toEndOf="parent"

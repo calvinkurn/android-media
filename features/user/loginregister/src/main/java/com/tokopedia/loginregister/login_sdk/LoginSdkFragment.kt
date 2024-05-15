@@ -44,10 +44,10 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
 
     private fun prepareLoginTiktokView() {
         viewBinding?.apply {
+            loginOptionTitle.text = "atau"
             socmedBtn.showWithCondition(false)
             registerButton.showWithCondition(false)
-//            btnLoginTiktok.showWithCondition(false)
-//            btnLoginGoogle.showWithCondition(true)
+            btnLoginGoogle.showWithCondition(true)
         }
     }
 

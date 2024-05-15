@@ -52,6 +52,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
@@ -93,6 +94,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.track.TrackApp
@@ -360,7 +362,7 @@ class RegisterInitialFragment :
         activity?.let { activity ->
             activity.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
                 headerTitle = getString(R.string.register)
-                actionText = getString(R.string.login)
+                actionText = if (requireContext().isLoginSdkFlow()) getString(R.string.register_sdk_title) else getString(R.string.login)
                 setNavigationOnClickListener {
                     activity.onBackPressed()
                 }
@@ -477,6 +479,16 @@ class RegisterInitialFragment :
             }
 
             initTermPrivacyView()
+            if (requireContext().isLoginSdkFlow()) {
+                prepareLoginTiktokView()
+            }
+        }
+    }
+
+    private fun prepareLoginTiktokView() {
+        viewBinding?.apply {
+            socmedBtn.showWithCondition(false)
+            btnLoginGoogle.showWithCondition(true)
         }
     }
 

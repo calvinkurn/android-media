@@ -222,14 +222,14 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             // Remove last newline from text
             txtDataList.text = txtDataList.text.substring(0, txtDataList.text.length - 1)
 
-            txtConsentInfo.text = "Dengan klik tombol Izinkan, kamu menyetujui pembagian data akun di atas ke ${consentData.clientInfo.appName}"
+            txtConsentInfo.text = "Dengan klik Izinkan, kamu setuju pembagian data untuk ${consentData.termPrivacy.purpose}."
             txtFullName.text = consentData.userInfo.fullName
             txtPhoneNumber.text = consentData.userInfo.email.ifEmpty { consentData.userInfo.phone }
             imgProfile.loadImageCircle(consentData.userInfo.profilePicture)
 
             imgPartnerLogo.loadImage(consentData.clientInfo.imageUrl)
 
-            txtTncPrivPartner.text = "Syarat dan ketentuan serta Kebijakan Privasi ${consentData.clientInfo.appName}"
+            txtTncPrivPartner.text = "Syarat dan ketentuan serta Kebijakan Privasi ${consentData.clientInfo.appName}."
 
             txtTncPrivPartner.clickableText(
                 requireContext(),
