@@ -916,7 +916,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url, Bundle bundle) {
-        String recommendationPath = "discovery/rekomendasi";
+        String recommendationPath = "rekomendasi";
         if (url.contains(recommendationPath)) {
             addProductAppLog();
         }
