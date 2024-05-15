@@ -57,7 +57,9 @@ android {
                         'src/main/res/layouts/chatroom/attachment/invoice',
                         'src/main/res/layouts/chatroom/attachment/reviewreminder',
                         'src/main/res/layouts/chatroom/orderprogress',
+                        'src/main/res/layouts/chatroom/broadcast/base',
                         'src/main/res/layouts/chatroom/broadcast',
+                        'src/main/res/layouts/chatroom/broadcast/old',
                         'src/main/res/layouts/chatroom/bubbles',
 
                         'src/main/res/layouts/chatlist/page',
@@ -93,6 +95,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
+    implementation projectOrAar(rootProject.ext.features.promoUsage)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.productCardCompact)
 
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.mediauploader)

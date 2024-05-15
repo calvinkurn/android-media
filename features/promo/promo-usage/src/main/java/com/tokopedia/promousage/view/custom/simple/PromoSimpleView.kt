@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoSimpleBinding
@@ -25,7 +26,10 @@ class PromoSimpleView @JvmOverloads constructor(
 
     init {
         binding = PromoUsageItemPromoSimpleBinding.inflate(
-            LayoutInflater.from(context), this, true)
+            LayoutInflater.from(context),
+            this,
+            true
+        )
     }
 
     fun bind(promo: PromoSimpleItem, isFullWidth: Boolean) {
@@ -85,5 +89,11 @@ class PromoSimpleView @JvmOverloads constructor(
     private fun bindDescText(promo: PromoSimpleItem) {
         binding.promoTvDescMiniCard.text = promo.desc
         binding.promoTvDescMiniCard.showWithCondition(promo.desc.isNotBlank())
+    }
+
+    fun cleanUp() {
+        binding.promoIvBackgroundMiniCard.clearImage()
+        binding.promoIvIconBigMiniCard.clearImage()
+        binding.promoIvIconSmallMiniCard.clearImage()
     }
 }

@@ -45,15 +45,11 @@ object RollenceKey {
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
-    const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CART_BUY_AGAIN = "buyagain_cart"
     const val CART_BUY_AGAIN_CONTROL = "no_buyagain_cart"
     const val CART_BUY_AGAIN_VARIANT = "with_buyagain_cart"
     const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
     const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
-    const val UOH_BUY_AGAIN_WIDGET = "buyagain_uoh"
-    const val UOH_BUY_AGAIN_WIDGET_CONTROL = "without_buyagain_uoh"
-    const val UOH_BUY_AGAIN_WIDGET_VARIANT = "with_buyagain_uoh"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
