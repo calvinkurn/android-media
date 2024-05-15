@@ -41,7 +41,6 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             pageDataList.lastOrNull() as? HashMap<String, Any>
         )
         AppLogFirstTrackId.updateFirstTrackId()
-        AppLogFirstTrackId.showToast(activity)
         setCurrent(activity)
     }
 
@@ -122,7 +121,6 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         }
 
         AppLogFirstTrackId.updateFirstTrackId()
-        AppLogFirstTrackId.showToast(activity)
     }
 
     private fun getCurrentActivity(): Activity? {

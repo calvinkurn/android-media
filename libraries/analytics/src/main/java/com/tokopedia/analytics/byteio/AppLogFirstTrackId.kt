@@ -1,11 +1,17 @@
 package com.tokopedia.analytics.byteio
 
 import android.app.Activity
-import android.widget.Toast
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 
+/**
+ * This class will be reflection of AppLogAnalytics but the different is all of the activity
+ * even not implemented byte io interface, will still put in this stack.
+ *
+ * If you want to include your page in the first track id flow, put your activity key or page name
+ * in additionalPageName.
+ */
 object AppLogFirstTrackId {
 
     private var _firstTrackId = ""
@@ -126,20 +132,6 @@ object AppLogFirstTrackId {
             val shadowPageIndex = index - 1
             // Remove shadow stack
             removeShadowStack(shadowPageIndex)
-        }
-    }
-
-    fun showToast(activity: Activity) {
-        val currentPageName = _pdpPageDataList.lastOrNull()?.get(PAGE_NAME) as? String ?: ""
-        if (currentPageName == PageName.PDP ||
-            additionalPageName.isContainsOneOfString(currentPageName)
-        ) {
-            Toast.makeText(
-                activity.applicationContext,
-                "First Track Id = $firstTrackId\n" +
-                    "First Page Source = $firstSourcePage",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
