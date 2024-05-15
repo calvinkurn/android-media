@@ -25,7 +25,7 @@ open class ProductConstraintLayout :
     LifecycleEventObserver,
     OnScrollChangedListener {
 
-    protected var mPercentageListener: OnVisibilityPercentChanged? = null
+    private var mPercentageListener: OnVisibilityPercentChanged? = null
     private var lastPercentageWidht = 0
     private var lastPercentageHeight = 0
     private var minHorizontalPercentage = 0
