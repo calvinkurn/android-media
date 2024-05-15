@@ -529,6 +529,8 @@ class CheckoutProductViewHolder(
         renderAdjustableFirstItemMarginBmgm()
         renderAdjustableSeparatorMarginBmgm()
 
+        renderNotes(product)
+        renderQuantity(product)
         renderAddOnBMGM(product)
         renderAddOnGiftingProductBmgm(product)
     }
