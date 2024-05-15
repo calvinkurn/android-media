@@ -240,17 +240,17 @@ private fun StoriesSettingsSuccess(
                     isEligible,
                     textColor,
                     checked,
-                    coolingDown,
                     onOptionClicked = {
-                        coolingDown = true
-                        viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
-                    },
-                    onCoolingDown = {
-                        viewModel.onEvent(
-                            StoriesSettingsAction.ShowCoolingDown(
-                                MessageErrorException("Tunggu 5 detik dulu ya")
+                        if (!coolingDown) {
+                            coolingDown = true
+                            viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                        } else {
+                            viewModel.onEvent(
+                                StoriesSettingsAction.ShowCoolingDown(
+                                    MessageErrorException("Tunggu 5 detik dulu ya")
+                                )
                             )
-                        )
+                        }
                     })
             }
         }
@@ -280,9 +280,7 @@ private fun SettingOptItem(
     isEligible: Boolean,
     textColor: Color,
     checked: Boolean,
-    coolingDown: Boolean,
     onOptionClicked: (StoriesSettingOpt) -> Unit,
-    onCoolingDown: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -300,11 +298,7 @@ private fun SettingOptItem(
                 CheckboxUnify(context).apply {
                     this.setOnCheckedChangeListener { view, _ ->
                         if (!view.isPressed) return@setOnCheckedChangeListener
-                        if (!coolingDown) {
-                            onOptionClicked(item)
-                        } else {
-                            onCoolingDown()
-                        }
+                        onOptionClicked(item)
                     }
                 }
             },
