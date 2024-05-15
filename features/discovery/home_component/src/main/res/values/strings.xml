@@ -60,4 +60,6 @@
     <string name="content_desc_small_product_card_image">Small Banner Product Card</string>
     <string name="content_desc_small_product_card_net_price">Net Price</string>
     <string name="content_desc_small_product_card_stockbar_fire">Stockbar Fire Icon</string>
+
+    <string name="count_down_timer_day_title">%d Hari</string>
 </resources>

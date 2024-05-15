@@ -46,6 +46,8 @@ class CountdownTimer : ConstraintLayout {
     private var colonFirstTextView: Typography? = null
     private var colonSecondTextView: Typography? = null
 
+    private var dayTextView: Typography? = null
+
     private val handlerTimer = Handler(Looper.getMainLooper())
 
     /**
@@ -139,12 +141,6 @@ class CountdownTimer : ConstraintLayout {
         }
 
     var timerTextWidth = TEXT_WRAP
-        set(value) {
-            field = value
-            updateUI()
-        }
-
-    var timerFormat = FORMAT_AUTO
         set(value) {
             field = value
             updateUI()
@@ -248,6 +244,8 @@ class CountdownTimer : ConstraintLayout {
 
         colonFirstTextView = findViewById(R.id.timer_unify_colon_first_text)
         colonSecondTextView = findViewById(R.id.timer_unify_colon_second_text)
+
+        dayTextView = findViewById(R.id.timer_unify_day_text)
     }
 
     private fun renderFromMillis(millisUntilFinished: Long) {
@@ -262,7 +260,11 @@ class CountdownTimer : ConstraintLayout {
         val minuteText = timeFormatter(minutes.toInt())
         val hourText = hours.toString()
 
-        if (timerFormat == FORMAT_HOUR || (timerFormat == FORMAT_AUTO && days < 1)) {
+        if (days < 1) {
+            // static days text
+            dayTextView?.visibility = View.GONE
+
+            // animation-related number digits
             clockText?.text = ""
             hourTextView?.setText(hourText)
             minuteTextView?.setText(minuteText)
@@ -282,40 +284,16 @@ class CountdownTimer : ConstraintLayout {
 
             colonFirstTextView?.visibility = View.VISIBLE
             colonSecondTextView?.visibility = View.VISIBLE
-        } else if (timerFormat == FORMAT_MINUTE) {
-            clockText?.text = ""
-            minuteTextView?.setText(minuteText)
-            minuteTextView?.visibility = View.VISIBLE
-            secondTextView?.setText(secondText)
-            secondTextView?.visibility = View.VISIBLE
-            minuteTextViewText?.setText(minuteText)
-            secondTextViewText?.setText(secondText)
-            minuteTextViewText?.visibility = View.VISIBLE
-            secondTextViewText?.visibility = View.VISIBLE
-            hourTextViewText?.visibility = View.GONE
-            hourTextView?.visibility = View.GONE
-            colonFirstTextView?.visibility = View.GONE
-            colonSecondTextView?.visibility = View.GONE
-        } else if (timerFormat == FORMAT_MINUTE_DIGIT) {
-            clockText?.text = ""
-            minuteTextView?.setText(minuteText)
-            minuteTextView?.visibility = View.VISIBLE
-            secondTextView?.setText(secondText)
-            secondTextView?.visibility = View.VISIBLE
-            minuteTextViewText?.setText(minuteText)
-            secondTextViewText?.setText(secondText)
-            minuteTextViewText?.visibility = View.VISIBLE
-            secondTextViewText?.visibility = View.VISIBLE
-            hourTextViewText?.visibility = View.GONE
-            hourTextView?.visibility = View.GONE
-            colonFirstTextView?.visibility = View.GONE
-            colonSecondTextView?.visibility = View.VISIBLE
         } else {
+            // static days text
+            val timerTitle = context.getString(R.string.count_down_timer_day_title, days)
+            dayTextView?.setText(timerTitle)
+            dayTextView?.visibility = View.VISIBLE
+
+            // animation-related number digits
             clockText?.text = ""
-            secondTextView?.setText(secondText)
-            secondTextView?.visibility = View.VISIBLE
-            secondTextViewText?.setText(secondText)
-            secondTextViewText?.visibility = View.VISIBLE
+            secondTextView?.visibility = View.GONE
+            secondTextViewText?.visibility = View.GONE
             hourTextView?.visibility = View.GONE
             minuteTextView?.visibility = View.GONE
             hourTextViewText?.visibility = View.GONE
@@ -786,13 +764,6 @@ class CountdownTimer : ConstraintLayout {
         const val VARIANT_ALTERNATE = 2
         const val VARIANT_GENERAL = 3
         const val VARIANT_INFORMATIVE_ALTERNATE = 4
-
-        const val FORMAT_AUTO = 0
-        const val FORMAT_DAY = 1
-        const val FORMAT_HOUR = 2
-        const val FORMAT_MINUTE = 3
-        const val FORMAT_SECOND = 4
-        const val FORMAT_MINUTE_DIGIT = 5
 
         const val TEXT_WRAP = 0
         const val TEXT_FULL_RADIUS = 1

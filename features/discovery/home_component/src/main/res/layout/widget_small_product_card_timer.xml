@@ -98,6 +98,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/timer_unify_day_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
         </LinearLayout>
 
     </LinearLayout>
