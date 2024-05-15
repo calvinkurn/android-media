@@ -3670,8 +3670,6 @@ class CheckoutViewModel @Inject constructor(
                     )
                     pageState.value = CheckoutPageState.Normal
                 } else {
-                    listData.value = checkoutItems
-                    calculateTotal()
                     loadSAF(
                         isReloadData = true,
                         skipUpdateOnboardingState = true,
@@ -3679,6 +3677,8 @@ class CheckoutViewModel @Inject constructor(
                         checkoutItems = checkoutItems,
                         itemIndex = itemIndex
                     )
+                    listData.value = checkoutItems
+                    calculateTotal()
                 }
             }
         }
