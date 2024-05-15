@@ -6,12 +6,8 @@ import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 /**
  * Created By @ilhamsuaib on 15/03/21
@@ -87,7 +83,6 @@ object PMRegistrationTermHelper {
                 title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
                 description = context.getString(
                     R.string.pm_shop_score_eligible_description,
-                    shopInfo.shopScoreThreshold,
                     shopInfo.shopScorePmProThreshold
                 )
             } else {
