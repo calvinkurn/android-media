@@ -12,7 +12,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loaderfresco.loadImageRoundedFresco
 
 class RechargeCustomBannerProductCardAdapter(
     val items: List<RechargeHomepageSections.Item>,
@@ -43,7 +43,7 @@ class RechargeCustomBannerProductCardAdapter(
 
                 tvRechargeProductDiscountPrice.text = MethodChecker.fromHtml(element.label2)
 
-                ivRechargeProductImage.loadImageRounded(element.mediaUrl)
+                ivRechargeProductImage.loadImageRoundedFresco(element.mediaUrl)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ivRechargeProductImage.clipToOutline = true
                 }

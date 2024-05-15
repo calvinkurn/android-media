@@ -22,8 +22,8 @@ import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loaderfresco.loadImageFresco
+import com.tokopedia.media.loaderfresco.loadImageRoundedFresco
 import kotlin.math.abs
 
 /**
@@ -85,7 +85,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
                     tvRechargeProductOriPrice.paintFlags = tvRechargeProductDiscountPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tvRechargeProductDiscountPrice.text = MethodChecker.fromHtml(element.label2)
 
-                    ivRechargeProductImage.loadImageRounded(element.mediaUrl)
+                    ivRechargeProductImage.loadImageRoundedFresco(element.mediaUrl)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         ivRechargeProductImage.clipToOutline = true
                     }
