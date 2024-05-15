@@ -13,6 +13,9 @@ import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
 object MapperUtils {
+
+    private const val RATING_SCALE = 100.0
+    private const val MAX_RATING = 5.0
     fun getProductCardModels(products: List<Product>, hasAddProductToCartButton: Boolean): ArrayList<ProductCardModel> {
         return ArrayList<ProductCardModel>().apply {
             products.map {
@@ -145,7 +148,7 @@ object MapperUtils {
     }
 
     private fun convertRatingScaleToString(rating: Int): String {
-        val convertedRating = (rating / 100.0) * 5
+        val convertedRating = (rating / RATING_SCALE) * MAX_RATING
         val result = String.format(Locale.US, "%.1f", convertedRating)
         return result
     }
