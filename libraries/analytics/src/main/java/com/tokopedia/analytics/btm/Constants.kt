@@ -7,13 +7,21 @@ import androidx.annotation.Keep
  */
 @Keep
 enum class Page(val str: String) {
+    // Home part
     HOMEPAGE("a87943.b83792"),
     FEED("a87943.b3679"),
     WISHLIST("a87943.b0751"),
     OFFICIAL_STORE("a87943.b9256"),
-    ORDER_LIST("a87943.b1605"),
     TRANSAKSI("a87943.b0775"),
-    PDP("a87943.b2815")
+    PDP("a87943.b2815"),
+
+    // Search part
+    PRODUCT_SEARCH_RESULT("a87943.b4850"),
+    SHOP_SEARCH_RESULT("a87943.b98217"),
+
+    // transaction path
+    ORDER_LIST("a87943.b1605"),
+
 }
 
 /**
