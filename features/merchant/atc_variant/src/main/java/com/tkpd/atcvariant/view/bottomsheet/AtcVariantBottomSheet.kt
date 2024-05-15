@@ -67,6 +67,8 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_C
 import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTracker
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTracker
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
@@ -114,7 +116,9 @@ class AtcVariantBottomSheet :
     PartialAtcButtonListener,
     PartialButtonShopFollowersListener,
     AtcVariantBottomSheetListener,
-    HasComponent<AtcVariantComponent> {
+    HasComponent<AtcVariantComponent>,
+    ICartRedirectionButtonsByteIOTracker.Mediator,
+    ICartRedirectionButtonsByteIOTracker by CartRedirectionButtonsByteIOTracker() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -172,6 +176,7 @@ class AtcVariantBottomSheet :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+        registerCartRedirectionButtonsByteIOTracker(mediator = this)
     }
 
     override fun onCreateView(
@@ -570,16 +575,16 @@ class AtcVariantBottomSheet :
                 baseAtcBtn?.hideLoading()
 
                 val model = getConfirmCartAnalyticsModel(it)
-                if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-                    || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
-    //                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
-                    ) {
+                if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON ||
+                    buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+                ) {
                     AppLogPdp.sendConfirmCartResult(model)
                 }
 
                 when (it) {
                     is Success -> {
                         onSuccessTransaction(it.data)
+                        trackOnButtonClickCompleted(it.data)
                         dismissAfterTransaction()
                     }
 
@@ -944,6 +949,10 @@ class AtcVariantBottomSheet :
         goToTopChat()
     }
 
+    override fun onButtonShowed(buttonCartTypes: List<String>) {
+        trackOnButtonsShowed(buttonCartTypes)
+    }
+
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         val productIdPreviousPage = sharedViewModel.aggregatorParams.value?.productId ?: ""
@@ -1085,6 +1094,8 @@ class AtcVariantBottomSheet :
             if (openShipmentBottomSheetWhenError()) return@let
 
             showWaitingIndicator(action = buttonAction)
+
+            trackOnButtonClick(buttonAction)
 
             viewModel.hitAtc(
                 buttonAction,
@@ -1353,6 +1364,10 @@ class AtcVariantBottomSheet :
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
         }
     }
+
+    override fun getCartRedirectionButtonsByteIOTrackerViewModel() = viewModel
+
+    override fun getCartRedirectionButtonsByteIOTrackerActionType() = buttonActionType
 }
 
 interface AtcVariantBottomSheetListener {

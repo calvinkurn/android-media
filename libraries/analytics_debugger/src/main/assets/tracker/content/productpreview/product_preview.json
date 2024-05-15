@@ -192,6 +192,67 @@
       "productId": ".*",
       "userId": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "click - add to cart media fullscreen",
+      "eventCategory": "product detail page - unified content viewing",
+      "eventLabel": "(Produk|Ulasan) - .*",
+      "trackerId": "50427",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "category_id": ".*",
+          "item_brand": ".*",
+          "item_category": ".* / .* / .*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*",
+          "shop_id": ".*",
+          "shop_name": ".*"
+        }
+      ],
+      "productId": ".*",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - variant bottomsheet atc entry point",
+      "eventCategory": "product detail page - unified content viewing",
+      "eventLabel": "(Produk|Ulasan) - .*",
+      "trackerId": "50428",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - bottom nav",
+      "eventCategory": "product detail page - unified content viewing",
+      "eventLabel": ".*",
+      "trackerId": "50664",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/product detail page - unified content viewing",
+      "items": [
+        {
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".* / .* / .*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "productId": ".*",
+      "userId": ".*",
+      "sessionIris": ".*"
     }
   ]
 }

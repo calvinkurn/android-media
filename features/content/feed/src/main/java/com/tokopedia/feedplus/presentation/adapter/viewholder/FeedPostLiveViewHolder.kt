@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.util.ContentItemComponentsAlphaAnimator
@@ -27,6 +28,8 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.util.extension.changeConstraint
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updatePadding
 
 /**
  * Created By : Muhammad Furqan on 09/03/23
@@ -81,6 +84,13 @@ class FeedPostLiveViewHolder(
                 onNotSelected()
             }
         })
+
+        binding.layoutFeedCaption.doOnApplyWindowInsets { view, insets, padding, _ ->
+            val systemBarInset = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(
+                bottom = padding.bottom + systemBarInset.bottom
+            )
+        }
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -209,7 +219,7 @@ class FeedPostLiveViewHolder(
         authorView.bindData(
             data.author,
             data.isLive,
-            !data.followers.isFollowed,
+            false,
             trackerDataModel,
             null
         )

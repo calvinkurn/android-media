@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.setup
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
@@ -30,6 +31,7 @@ fun productSetupViewModel(
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
     isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
+    selectedAccount: ContentAccountUiModel = ContentAccountUiModel.Empty
 ): ContentProductPickerSellerViewModel {
     return ContentProductPickerSellerViewModel(
         creationId = creationId,
@@ -43,6 +45,7 @@ fun productSetupViewModel(
         dispatchers = dispatchers,
         isNumerationShown = isNumerationShown,
         fetchCommissionProduct = fetchCommissionProduct,
+        selectedAccount = selectedAccount
     )
 }
 
@@ -58,11 +61,11 @@ fun productUGCViewModel(
         maxSelectedProduct = 30,
         backButton = ContentProductTagConfig.BackButton.Close,
         isShowActionBarDivider = false,
-        appLinkAfterAutocomplete = "",
+        appLinkAfterAutocomplete = ""
     ),
     repo: ProductTagRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    sharedPref: ProductTagPreference = mockk(relaxed = true),
+    sharedPref: ProductTagPreference = mockk(relaxed = true)
 ): ProductTagViewModel {
     return ProductTagViewModel(
         productTagSourceRaw = productTagSourceRaw,
@@ -73,6 +76,6 @@ fun productUGCViewModel(
         productTagConfig = productTagConfig,
         repo = repo,
         userSession = userSession,
-        sharedPref = sharedPref,
+        sharedPref = sharedPref
     )
 }

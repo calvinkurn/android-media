@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/video_product_container"
     tools:background="@color/Unify_Static_Black">
 
     <com.google.android.exoplayer2.ui.PlayerView

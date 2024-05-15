@@ -5,6 +5,7 @@ import android.app.Application
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
+import com.tokopedia.analytics.byteio.AppLogParam.AUTHOR_ID
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
@@ -14,6 +15,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_CONTENT_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
@@ -118,6 +120,7 @@ object AppLogAnalytics {
             it.addSourceModulePdp()
 //            it.addEnterMethod()
             it.addEnterMethodPdp()
+            it.addSourceContentId()
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
@@ -127,6 +130,10 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addEntranceInfo() {
         put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
+    }
+
+    internal fun JSONObject.addAuthorId() {
+        put(AUTHOR_ID, getLastData(AUTHOR_ID))
     }
 
     private fun generateEntranceInfoCartJson(): JSONObject {
@@ -193,10 +200,16 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        val enterMethod = if(pageDataList.size > 1)
+        val enterMethod = if (pageDataList.size > 1) {
             getLastDataBeforeCurrent(ENTER_METHOD)
-        else getLastData(ENTER_METHOD)
+        } else {
+            getLastData(ENTER_METHOD)
+        }
         put(ENTER_METHOD, enterMethod)
+    }
+
+    internal fun JSONObject.addSourceContentId() {
+        put(SOURCE_CONTENT_ID, getLastData(SOURCE_CONTENT_ID))
     }
 
     fun lastTwoIsHavingHash(hash: Int): Boolean {
@@ -280,7 +293,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-                ?.get(IS_SHADOW) == true
+            ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -471,22 +484,26 @@ object AppLogAnalytics {
 
     fun getEntranceInfoForCheckout(buyType: AtcBuyType, cartIds: List<String>): String {
         return JSONObject().also {
-            it.put("funnel", if (buyType == AtcBuyType.ATC) "regular" else "occ")
+            it.put("funnel", buyType.funnel)
             it.put("buy_type", buyType.code.toString())
             it.put("os_name", "android")
-            it.put("cart_item", JSONArray().also { item ->
-                cartIds.forEach { id ->
-                    item.put(JSONObject().also { j ->
-                        j.put("cart_id", id)
-                        if (buyType == AtcBuyType.ATC) {
-                            j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
-                        } else {
-                            j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutOcc())
-                        }
-
-                    })
+            it.put(
+                "cart_item",
+                JSONArray().also { item ->
+                    cartIds.forEach { id ->
+                        item.put(
+                            JSONObject().also { j ->
+                                j.put("cart_id", id)
+                                if (buyType == AtcBuyType.ATC) {
+                                    j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
+                                } else { // occ & ocs
+                                    j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutInstant())
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }.toString()
     }
 
@@ -494,7 +511,7 @@ object AppLogAnalytics {
      * This method should be refactored to the normal getEntranceInfoJson, this is separated
      * to minimize changes and avoid regression during hotfix
      * */
-    internal fun getEntranceInfoJsonForCheckoutOcc(): JSONObject {
+    internal fun getEntranceInfoJsonForCheckoutInstant(): JSONObject {
         return JSONObject().also {
             it.addEnterFromInfo()
             it.addEntranceForm()

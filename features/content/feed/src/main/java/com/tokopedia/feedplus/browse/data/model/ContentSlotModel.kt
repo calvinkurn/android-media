@@ -13,6 +13,7 @@ internal sealed interface ContentSlotModel {
     ) : ContentSlotModel
 
     data class ChannelBlock(
+        val title: String,
         val channels: List<PlayWidgetChannelUiModel>,
         val config: PlayWidgetConfigUiModel,
         val nextCursor: String

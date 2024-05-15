@@ -13,9 +13,9 @@ import javax.inject.Inject
 
 class TopQuestViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
     @JvmField
     @Inject
     var hideSectionUseCase: HideSectionUseCase? = null
