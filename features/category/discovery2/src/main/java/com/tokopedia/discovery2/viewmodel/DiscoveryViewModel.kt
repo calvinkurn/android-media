@@ -38,6 +38,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartDataModel
+import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartFailedModel
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryRemoveFromCartDataModel
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryUpdateCartDataModel
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
@@ -139,9 +140,9 @@ class DiscoveryViewModel @Inject constructor(
         get() = _miniCartRemove
     private val _miniCartRemove = SingleLiveEvent<Result<DiscoveryRemoveFromCartDataModel>>()
 
-    val miniCartOperationFailed: LiveData<Pair<Int, Int>>
+    val miniCartOperationFailed: LiveData<DiscoveryAddToCartFailedModel>
         get() = _miniCartOperationFailed
-    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int, Int>>()
+    private val _miniCartOperationFailed = SingleLiveEvent<DiscoveryAddToCartFailedModel>()
 
     val addToCartActionNonVariant: LiveData<DiscoATCRequestParams>
         get() = _addToCartActionNonVariant
@@ -227,7 +228,8 @@ class DiscoveryViewModel @Inject constructor(
         }, {
             _miniCartAdd.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
-                Pair(
+                DiscoveryAddToCartFailedModel(
+                    it,
                     discoATCRequestParams.parentPosition,
                     discoATCRequestParams.position
                 )
@@ -298,7 +300,8 @@ class DiscoveryViewModel @Inject constructor(
         }, {
             _miniCartUpdate.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
-                Pair(
+                DiscoveryAddToCartFailedModel(
+                    it,
                     discoATCRequestParams.parentPosition,
                     discoATCRequestParams.position
                 )
@@ -399,7 +402,8 @@ class DiscoveryViewModel @Inject constructor(
         }, {
             _miniCartRemove.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
-                Pair(
+                DiscoveryAddToCartFailedModel(
+                    it,
                     discoATCRequestParams.parentPosition,
                     discoATCRequestParams.position
                 )

@@ -84,6 +84,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
+import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartDataModel
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -121,6 +122,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
@@ -909,6 +911,8 @@ open class DiscoveryFragment :
                             it.data.requestParams.requestingComponent,
                             it.data.addToCartDataModel.data.cartId
                         )
+
+                        trackSucceedATCAppLog(it)
                     }
                 } else {
                     analytics.trackEventProductATCTokonow(
@@ -974,7 +978,7 @@ open class DiscoveryFragment :
             }
         }
 
-        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner) { (parentPosition, position) ->
+        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner) { (throwable, parentPosition, position) ->
             if (parentPosition >= 0) {
                 discoveryAdapter.getViewModelAtPosition(parentPosition)
                     ?.let { discoveryBaseViewModel ->
@@ -988,6 +992,8 @@ open class DiscoveryFragment :
                 discoveryAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is MasterProductCardItemViewModel) {
                         discoveryBaseViewModel.handleATCFailed()
+                    } else if (discoveryBaseViewModel is ProductCardSingleViewModel) {
+                        discoveryBaseViewModel.sendFailedATCAppLog(throwable.message)
                     }
                 }
             }
@@ -1037,6 +1043,21 @@ open class DiscoveryFragment :
                     setupNavScrollListener()
                 }
             }
+    }
+
+    private fun trackSucceedATCAppLog(model: Success<DiscoveryAddToCartDataModel>) {
+        model.data.requestParams.run {
+            val viewPosition = position.coerceAtLeast(parentPosition)
+
+            discoveryAdapter.getViewModelAtPosition(viewPosition)
+                ?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ProductCardSingleViewModel) {
+                        discoveryBaseViewModel.sendSucceedATCAppLog(
+                            model.data.addToCartDataModel.data.cartId
+                        )
+                    }
+                }
+        }
     }
 
     private fun trackEnterPage() {

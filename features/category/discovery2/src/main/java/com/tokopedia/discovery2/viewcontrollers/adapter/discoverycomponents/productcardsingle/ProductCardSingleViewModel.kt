@@ -3,7 +3,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCartFailed
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCartSucceed
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.data.Properties
@@ -104,5 +108,23 @@ class ProductCardSingleViewModel(
     fun reload() {
         components.noOfPagesLoaded = 0
         fetchProductData()
+    }
+
+    fun sendFailedATCAppLog(reason: String?) {
+        productData.value?.data?.firstOrNull()?.let {
+            AppLogRecommendation.sendConfirmCartResultAppLog(
+                it.asProductTrackModel(components.name.orEmpty()),
+                it.asTrackConfirmCartFailed(reason.orEmpty())
+            )
+        }
+    }
+
+    fun sendSucceedATCAppLog(cartId: String?) {
+        productData.value?.data?.firstOrNull()?.let {
+            AppLogRecommendation.sendConfirmCartResultAppLog(
+                it.asProductTrackModel(components.name.orEmpty()),
+                it.asTrackConfirmCartSucceed(cartId)
+            )
+        }
     }
 }

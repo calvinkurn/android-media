@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.analytics
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.discovery2.ComponentNames
@@ -10,6 +11,7 @@ import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -53,6 +55,44 @@ object TrackDiscoveryRecommendationMapper {
             skuId = productId.orEmpty(),
             currency = "IDR",
             addSkuNum = minQuantity
+        )
+    }
+
+    fun DataItem.asTrackConfirmCartSucceed(
+        cartId: String?
+    ): TrackConfirmCartResult {
+        return TrackConfirmCartResult(
+            productId = parentProductId.orEmpty(),
+            productCategory = categoryDeptId.orEmpty(),
+            productType = getProductType(),
+            originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
+            salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
+            buttonType = "able_to_cart",
+            skuId = productId.orEmpty(),
+            currency = "IDR",
+            addSkuNum = minQuantity,
+            cartItemId = cartId.orEmpty(),
+            isSuccess = true,
+            failReason = String.EMPTY
+        )
+    }
+
+    fun DataItem.asTrackConfirmCartFailed(
+        reason: String
+    ): TrackConfirmCartResult {
+        return TrackConfirmCartResult(
+            productId = parentProductId.orEmpty(),
+            productCategory = categoryDeptId.orEmpty(),
+            productType = getProductType(),
+            originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
+            salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
+            buttonType = "able_to_cart",
+            skuId = productId.orEmpty(),
+            currency = "IDR",
+            addSkuNum = minQuantity,
+            cartItemId = String.EMPTY,
+            isSuccess = false,
+            failReason = reason
         )
     }
 
