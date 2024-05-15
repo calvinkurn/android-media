@@ -8,7 +8,6 @@ import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
 import com.tokopedia.navigation.util.CompletableTask
 import com.tokopedia.navigation_common.ui.BottomNavBarAsset
 import com.tokopedia.navigation_common.ui.BottomNavBarItemType
-import com.tokopedia.navigation_common.ui.BottomNavBarJumper
 import com.tokopedia.navigation_common.ui.BottomNavBarUiModel
 import com.tokopedia.navigation_common.ui.BottomNavItemId
 import com.tokopedia.navigation_common.ui.DiscoId
@@ -44,26 +43,6 @@ class MainParentViewModelTest {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private lateinit var viewModel: MainParentViewModel
-
-//    private val mockBottomNavBarHome = BottomNavBarUiModel(
-//        id = 1,
-//        title = "Home",
-//        type = BottomNavBarItemType("home"),
-//        jumper = BottomNavBarJumper(
-//            id = 1,
-//            title = "Buat Kamu",
-//            assets = mapOf(
-//                BottomNavBarAsset.Key.ImageActive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.ImageUrl("home_jumper_img"),
-//                BottomNavBarAsset.Key.ImageInactive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.ImageUrl("home_jumper_img"),
-//            ),
-//        ),
-//        assets = mapOf(
-//            BottomNavBarAsset.Key.ImageActive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.ImageUrl("home_img"),
-//            BottomNavBarAsset.Key.ImageInactive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.ImageUrl("home_img"),
-//        ),
-//        discoId = DiscoId.Empty,
-//        queryParams = "",
-//    )
 
     @Before
     fun setUp() {
@@ -254,11 +233,11 @@ class MainParentViewModelTest {
             assets = mapOf(
                 BottomNavBarAsset.Key.ImageActive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.ImageUrl("navbar $id img"),
                 BottomNavBarAsset.Key.ImageInactive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.ImageUrl("navbar $id img"),
-                BottomNavBarAsset.Key.AnimActive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.LottieUrl("navbar $id lottie"),
+                BottomNavBarAsset.Key.AnimActive + BottomNavBarAsset.Variant.Dark to BottomNavBarAsset.Type.LottieUrl("navbar $id lottie")
             ),
             discoId = DiscoId(id.toString()),
             type = BottomNavBarItemType(id.toString()),
-            queryParams = id.toString(),
+            queryParams = id.toString()
         )
     }
 }

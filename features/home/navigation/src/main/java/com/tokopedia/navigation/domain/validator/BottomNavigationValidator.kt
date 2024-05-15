@@ -10,12 +10,12 @@ import javax.inject.Inject
 class BottomNavigationValidator @Inject constructor() {
 
     fun validate(models: List<BottomNavBarUiModel>) {
-        models.requireDistinctTypes()
+        models.requireDistinctUniqueId()
         models.requireHomeType()
         models.requireMandatoryImageAssets()
     }
 
-    private fun List<BottomNavBarUiModel>.requireDistinctTypes() {
+    private fun List<BottomNavBarUiModel>.requireDistinctUniqueId() {
         val nonDistinctType = groupingBy { it.uniqueId }.eachCount().filter { it.value > 1 }
         require(nonDistinctType.isEmpty()) { "Bottom nav bar contains duplication" }
     }
