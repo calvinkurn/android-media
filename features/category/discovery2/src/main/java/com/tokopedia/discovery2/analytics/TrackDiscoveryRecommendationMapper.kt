@@ -54,7 +54,7 @@ object TrackDiscoveryRecommendationMapper {
     fun DataItem.asTrackConfirmCart(): TrackConfirmCart {
         return TrackConfirmCart(
             productId = parentProductId.orEmpty(),
-            productCategory = categoryDeptId.orEmpty(),
+            productCategory = String.EMPTY,
             productType = getProductType(),
             originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
             salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
@@ -70,7 +70,7 @@ object TrackDiscoveryRecommendationMapper {
     ): TrackConfirmCartResult {
         return TrackConfirmCartResult(
             productId = parentProductId.orEmpty(),
-            productCategory = categoryDeptId.orEmpty(),
+            productCategory = String.EMPTY,
             productType = getProductType(),
             originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
             salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
@@ -89,7 +89,7 @@ object TrackDiscoveryRecommendationMapper {
     ): TrackConfirmCartResult {
         return TrackConfirmCartResult(
             productId = parentProductId.orEmpty(),
-            productCategory = categoryDeptId.orEmpty(),
+            productCategory = String.EMPTY,
             productType = getProductType(),
             originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
             salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
