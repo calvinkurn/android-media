@@ -3202,7 +3202,8 @@ open class ProductDetailFragment :
                 if (hasInfinite && concatAdapter?.adapters?.size != 2) {
                     concatAdapter?.addAdapter(it.adapter)
                     it.requestParam = GetRecommendationRequestParam(
-                        pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty()
+                        pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
+                        productIds = listOf(productId.orEmpty())
                     )
                 }
             }
