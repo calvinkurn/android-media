@@ -8,7 +8,9 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCartFailed
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCartSucceed
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
@@ -111,7 +113,7 @@ class ProductCardSingleViewModel(
     }
 
     fun sendFailedATCAppLog(reason: String?) {
-        productData.value?.data?.firstOrNull()?.let {
+        eligibleToTrack {
             AppLogRecommendation.sendConfirmCartResultAppLog(
                 it.asProductTrackModel(components.name.orEmpty()),
                 it.asTrackConfirmCartFailed(reason.orEmpty())
@@ -120,11 +122,19 @@ class ProductCardSingleViewModel(
     }
 
     fun sendSucceedATCAppLog(cartId: String?) {
-        productData.value?.data?.firstOrNull()?.let {
+        eligibleToTrack {
             AppLogRecommendation.sendConfirmCartResultAppLog(
                 it.asProductTrackModel(components.name.orEmpty()),
                 it.asTrackConfirmCartSucceed(cartId)
             )
+        }
+    }
+
+    private fun eligibleToTrack(action: (data: DataItem) -> Unit) {
+        productData.value?.data?.firstOrNull()?.let {
+            if (it.isEligibleToTrack()) {
+                action.invoke(it)
+            }
         }
     }
 }
