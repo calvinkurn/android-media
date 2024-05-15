@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders.shorten
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -37,7 +38,7 @@ class ContainerMultiTwoSquareViewHolder(
 
     override fun bind(element: MultiTwoSquareWidgetUiModel?) {
         if (element == null) return
-        itemView.setGradientBackground(element.backgroundGradientColor)
+        binding?.root?.setGradientBackground(element.backgroundGradientColor)
 
         val visitableList = MultiTwoSquareWidgetUiModel.visitableList(element)
         if (shouldWidgetContainValidGrids(visitableList)) {
@@ -76,6 +77,7 @@ class ContainerMultiTwoSquareViewHolder(
     }
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.global_component_container_multi_2square
     }
 }
