@@ -185,7 +185,7 @@ private fun StoriesSettingsSuccess(
                 }
             },
             update = { switchUnify ->
-                switchUnify.isChecked = isStoryEnable || checked
+                switchUnify.isChecked = pageInfo.options.any { it.isSelected }
                 switchUnify.isEnabled = isEligible
             },
         )
@@ -296,14 +296,14 @@ private fun SettingOptItem(
         AndroidView(
             factory = { context ->
                 CheckboxUnify(context).apply {
-                    this.setOnCheckedChangeListener { view, _ ->
+                    this.setOnCheckedChangeListener { view, isActive ->
                         if (!view.isPressed) return@setOnCheckedChangeListener
                         onOptionClicked(item)
                     }
                 }
             },
             update = { v ->
-                v.isChecked = (item.isSelected || checked)
+                v.isChecked = item.isSelected || checked
                 v.isEnabled = isEligible
             },
         )
