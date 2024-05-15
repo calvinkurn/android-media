@@ -368,6 +368,20 @@ object AppLogAnalytics {
         return null
     }
 
+    fun getLastAdsPageNameBeforeCurrent(key: String): Any? {
+        if (_adsPageDataList.isEmpty()) return null
+        val adsPageDataNonEmpty = _adsPageDataList.filter { map -> map.values.any { (it.third as? String)?.isNotBlank() == true } }
+        var idx = adsPageDataNonEmpty.lastIndex - 1
+        while (idx >= 0) {
+            val map = adsPageDataNonEmpty[idx]
+            map[key]?.let {
+                return it.third
+            }
+            idx--
+        }
+        return null
+    }
+
     /**
      * To update current page data
      */
