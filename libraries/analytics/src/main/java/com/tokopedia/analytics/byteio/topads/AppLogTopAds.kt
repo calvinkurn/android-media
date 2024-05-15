@@ -145,6 +145,10 @@ object AppLogTopAds {
         )
     }
 
+    fun getChannelNameParam(): String {
+        return getChannel()
+    }
+
     private fun getPageName() = AppLogAnalytics.currentPageName
 
     private fun getSystemBootTime(): String = (System.currentTimeMillis() - SystemClock.elapsedRealtime()).toString()
@@ -158,8 +162,7 @@ object AppLogTopAds {
         val prevPageName = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
         return when(prevPageName) {
             AppLogSearch.ParamValue.GOODS_SEARCH, PageName.SEARCH_RESULT,
-            PageName.HOME, PageName.OFFICIAL_STORE ->
-                AdsLogConst.Channel.PRODUCT_SEARCH
+            PageName.HOME, PageName.OFFICIAL_STORE -> AdsLogConst.Channel.PRODUCT_SEARCH
             PageName.PDP -> AdsLogConst.Channel.PDP_SEARCH
             PageName.SHOP -> AdsLogConst.Channel.STORE_SEARCH
             PageName.FIND_PAGE -> AdsLogConst.Channel.FIND_SEARCH
