@@ -37,9 +37,6 @@ object InitBtmSdk {
                         if (model.event == null) {
                             return
                         }
-                        var modelV3 = EventModelV3(model.event, model.params)
-                        modelV3 = BtmSDK.addBtmEventParam(modelV3)
-                        Log.d(TAG, modelV3.event + " -> " + modelV3.params)
                         model.event?.let {
                             AppLog.onEventV3(it, model.params)
                         }
