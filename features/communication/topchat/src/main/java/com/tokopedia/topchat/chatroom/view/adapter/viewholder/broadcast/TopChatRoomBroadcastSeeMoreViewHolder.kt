@@ -34,9 +34,9 @@ class TopChatRoomBroadcastSeeMoreViewHolder(
     }
 
     private fun impressTracker(uiModel: ProductAttachmentUiModel) {
-        binding?.root?.addOnImpressionListener(uiModel.impressHolder) {
-            val banner = broadcastUiModel.banner
-            if (banner != null) {
+        val banner = broadcastUiModel.banner
+        if (banner != null && !banner.isLoading) {
+            binding?.root?.addOnImpressionListener(uiModel.impressHolder) {
                 productListener.onImpressionBroadcastSeeMoreProduct(
                     blastId = broadcastUiModel.blastId,
                     campaignStatus = banner.getCampaignStatusString(),
