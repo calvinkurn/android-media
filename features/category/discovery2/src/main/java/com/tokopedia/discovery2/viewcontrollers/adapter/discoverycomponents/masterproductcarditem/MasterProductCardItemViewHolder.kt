@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
@@ -514,7 +516,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                     quantity = quantity,
                                     shopId = if (isGeneralCartATC) productItem.shopId else null,
                                     isGeneralCartATC = isGeneralCartATC,
-                                    requestingComponent = masterProductCardItemViewModel.components
+                                    requestingComponent = masterProductCardItemViewModel.components,
+                                    appLogParam = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
                                 )
                             )
 

@@ -6,10 +6,13 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -211,15 +214,16 @@ class DiscoveryViewModel @Inject constructor(
     private fun addItemToCart(
         discoATCRequestParams: DiscoATCRequestParams
     ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+        val addToCartRequestParams = AddToCartRequestParams(
             productId = discoATCRequestParams.productId,
-            shopId = discoATCRequestParams.shopId ?: "",
+            shopId = discoATCRequestParams.shopId.orEmpty(),
             quantity = discoATCRequestParams.quantity,
-            atcExternalSource = if (isAffiliateInitialized) {
+            atcFromExternalSource = if (isAffiliateInitialized) {
                 AtcFromExternalSource.ATC_FROM_DISCOVERY
             } else {
                 AtcFromExternalSource.ATC_FROM_OTHERS
-            }
+            },
+            trackerData = discoATCRequestParams.appLogParam
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
