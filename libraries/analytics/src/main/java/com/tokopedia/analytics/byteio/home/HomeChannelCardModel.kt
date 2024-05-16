@@ -8,6 +8,8 @@ import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
 import org.json.JSONObject
 
 data class HomeChannelCardModel(
+    val listName: String,
+    val listNum: String,
     val cardName: String,
     val sourceModule: String,
     val productId: String,
@@ -29,14 +31,14 @@ data class HomeChannelCardModel(
         addEnterFrom()
         put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
-        put(AppLogParam.PRODUCT_ID, productId.zeroAsEmpty())
+        put(AppLogParam.PRODUCT_ID, productId.ifEmpty { "0" })
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REC_PARAMS, recParams)
-        put(AppLogParam.SHOP_ID, shopId)
-        put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.SHOP_ID, shopId.ifEmpty { "0" })
+        put(AppLogParam.ITEM_ORDER, itemOrder.toInt())
     }
 }

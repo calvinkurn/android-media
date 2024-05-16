@@ -10,8 +10,8 @@ object TwoThumbnailSquareTrackingMapper {
         enterMethod: String = "",
     ): HomeChannelProductModel {
         return HomeChannelProductModel(
-            listName = tracker.listName,
-            listNum = tracker.listNum,
+            listName = tracker.listName ?: "",
+            listNum = tracker.listNum ?: "",
             entranceForm = tracker.entranceForm,
             sourceModule = tracker.sourceModule(),
             enterMethod = enterMethod,
@@ -32,6 +32,8 @@ object TwoThumbnailSquareTrackingMapper {
         enterMethod: String = "",
     ): HomeChannelCardModel {
         return HomeChannelCardModel(
+            listName = "",
+            listNum = "",
             cardName = tracker.cardName,
             sourceModule = tracker.sourceModule(),
             productId = tracker.productId,

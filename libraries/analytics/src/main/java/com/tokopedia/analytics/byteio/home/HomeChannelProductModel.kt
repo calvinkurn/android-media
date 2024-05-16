@@ -28,6 +28,8 @@ data class HomeChannelProductModel(
 
     fun asCardModel(): HomeChannelCardModel {
         return HomeChannelCardModel(
+            listName = listName,
+            listNum = listNum,
             cardName = cardName,
             sourceModule = sourceModule,
             productId = productId.zeroAsEmpty(),
@@ -53,14 +55,14 @@ data class HomeChannelProductModel(
         put(AppLogParam.ENTRANCE_FORM, entranceForm)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
         addEnterMethod()
-        put(AppLogParam.PRODUCT_ID, productId)
+        put(AppLogParam.PRODUCT_ID, productId.ifEmpty { "0" })
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.REQUEST_ID, requestId)
-        put(AppLogParam.SHOP_ID, shopId)
-        put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.SHOP_ID, shopId.ifEmpty { "0" })
+        put(AppLogParam.ITEM_ORDER, itemOrder.toInt())
     }
 }

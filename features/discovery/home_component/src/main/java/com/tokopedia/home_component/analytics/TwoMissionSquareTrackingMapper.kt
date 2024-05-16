@@ -11,7 +11,7 @@ object TwoMissionSquareTrackingMapper {
     ): HomeChannelProductModel {
         return HomeChannelProductModel(
             listName = "",
-            listNum = "0",
+            listNum = "",
             entranceForm = tracker.entranceForm,
             sourceModule = tracker.sourceModule(),
             enterMethod = enterMethod,
@@ -32,6 +32,8 @@ object TwoMissionSquareTrackingMapper {
         enterMethod: String = "",
     ): HomeChannelCardModel {
         return HomeChannelCardModel(
+            listName = "",
+            listNum = "",
             cardName = tracker.cardName,
             sourceModule = tracker.sourceModule(),
             productId = tracker.productId,
