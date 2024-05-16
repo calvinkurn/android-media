@@ -519,10 +519,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                             )
 
                             if (productItem.isEligibleToTrack()) {
-                                AppLogRecommendation.sendConfirmCartAppLog(
-                                    productItem.asProductTrackModel(productCardName),
-                                    productItem.asTrackConfirmCart()
-                                )
+                                productItem.trackConfirmCartAppLog()
                             }
                         }
                     }
@@ -532,6 +529,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 (fragment as DiscoveryFragment).openLoginScreen()
             }
         }
+    }
+
+    private fun DataItem.trackConfirmCartAppLog() {
+        val productTrackModel = asProductTrackModel(productCardName)
+        /**
+         * This product click event is sent as requested to accommodate
+         * value for entrance info. From an analytical point of view,
+         * When pressing the ATC button on the Discovery page, the journey will be the same
+         * like going to PDP and pressing the ATC button there.
+         */
+        AppLogRecommendation.sendProductClickAppLog(productTrackModel)
+
+        AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, asTrackConfirmCart())
     }
 
     companion object {
