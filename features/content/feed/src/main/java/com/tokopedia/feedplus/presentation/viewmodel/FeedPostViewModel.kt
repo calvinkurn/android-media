@@ -15,9 +15,6 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
-import com.tokopedia.content.common.track.usecase.ContentType
-import com.tokopedia.content.common.track.usecase.GetReportSummaryRequest
-import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase.Companion.isVisit
@@ -47,7 +44,6 @@ import com.tokopedia.feedplus.domain.usecase.FeedGetChannelStatusUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
-import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
@@ -61,6 +57,7 @@ import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -129,7 +126,6 @@ class FeedPostViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase,
-    private val getReportSummariesUseCase: GetReportSummaryUseCase,
     private val tooltipManager: FeedTooltipManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -1228,36 +1224,25 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Track
      */
-    private val productIds = mutableListOf<String>()
+    private val trackedProductIds = mutableListOf<String>()
     fun trackPerformance(playChannelId: String, ids: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         if (playChannelId.isBlank()) return
 
-        val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
+        val hasChanged = ids.filterNot { trackedProductIds.contains(it) }.isNotEmpty()
         if (hasChanged || event.isVisit) {
-            productIds.clear()
-            ids.map { productIds.add(it) }
+            trackedProductIds.clear()
+            ids.map { trackedProductIds.add(it) }
         } else { return }
 
         viewModelScope.launchCatchError(dispatchers.io, block = {
             trackReportTrackViewerUseCase.apply {
                 params = BroadcasterReportTrackViewerUseCase.createParams(
                     channelId = playChannelId,
-                    productIds = productIds,
+                    productIds = trackedProductIds,
                     event = event,
                     type = TrackContentType.Play
                 )
             }.executeOnBackground()
-        }) {}
-    }
-
-    fun getReportSummaries(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
-        if (playChannelId.isBlank()) return
-
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            getReportSummariesUseCase(
-                GetReportSummaryRequest.create(playChannelId, ContentType.Play)
-            )
         }) {}
     }
 

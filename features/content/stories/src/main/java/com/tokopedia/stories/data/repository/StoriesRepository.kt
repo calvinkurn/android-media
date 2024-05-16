@@ -1,7 +1,6 @@
 package com.tokopedia.stories.data.repository
 
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
-import com.tokopedia.content.common.track.response.GetReportSummaryResponse
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.uimodel.AuthorType
@@ -65,10 +64,6 @@ interface StoriesRepository {
         timestamp: Long,
         reportDesc: String
     ): Boolean
-
-    suspend fun getReportSummary(
-        storyId: String,
-    ) : GetReportSummaryResponse
 
     suspend fun trackContent(
         storyId: String,

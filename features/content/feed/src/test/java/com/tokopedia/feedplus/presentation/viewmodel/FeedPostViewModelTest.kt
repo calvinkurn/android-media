@@ -139,7 +139,6 @@ class FeedPostViewModelTest {
     private val uiEventManager = UiEventManager<FeedPostEvent>()
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase = mockk()
-    private val getReportSummariesUseCase : GetReportSummaryUseCase = mockk()
     private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
@@ -174,7 +173,6 @@ class FeedPostViewModelTest {
             uiEventManager = uiEventManager,
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             feedGetChannelStatusUseCase = feedGetChannelStatusUseCase,
-            getReportSummariesUseCase = getReportSummariesUseCase,
             dispatchers = testDispatcher,
             tooltipManager = tooltipManager,
         )
@@ -2502,13 +2500,4 @@ class FeedPostViewModelTest {
             )
         )
     )
-
-    @Test
-    fun getReportSummaryVideo() {
-        coEvery { getReportSummariesUseCase(any()) } returns GetReportSummaryResponse()
-
-        viewModel.getReportSummaries(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
-
-        coVerify { getReportSummariesUseCase(any()) }
-    }
 }

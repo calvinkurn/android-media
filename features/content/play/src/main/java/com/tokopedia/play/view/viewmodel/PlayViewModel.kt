@@ -1343,15 +1343,15 @@ class PlayViewModel @AssistedInject constructor(
      * by getting the product ids of the given products
      * @param productList the product list which tracker will be sent to bro
      */
-    private val productIds = mutableListOf<String>()
+    private val trackedProductIds = mutableListOf<String>()
     private fun sendProductTrackerToBro(productList: List<PlayProductUiModel.Product>) {
-        val hasChanged = productList.filterNot { productIds.contains(it.id) }.isNotEmpty()
+        val hasChanged = productList.filterNot { trackedProductIds.contains(it.id) }.isNotEmpty()
         if (hasChanged) {
-            productIds.clear()
-            productList.map { productIds.add(it.id) }
+            trackedProductIds.clear()
+            productList.map { trackedProductIds.add(it.id) }
         } else { return }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            repo.trackProducts(channelId, productIds)
+            repo.trackProducts(channelId, trackedProductIds)
         }) {}
     }
 

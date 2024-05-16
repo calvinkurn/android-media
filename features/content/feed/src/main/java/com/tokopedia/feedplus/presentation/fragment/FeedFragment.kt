@@ -853,7 +853,6 @@ class FeedFragment :
         trackerModel: FeedTrackerDataModel
     ) {
         feedPostViewModel.trackPerformance(model.playChannelId, model.products.map(FeedCardProductModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
-        feedPostViewModel.getReportSummaries(model)
     }
 
     override fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel) {

@@ -5,10 +5,6 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
-import com.tokopedia.content.common.track.response.GetReportSummaryResponse
-import com.tokopedia.content.common.track.usecase.ContentType
-import com.tokopedia.content.common.track.usecase.GetReportSummaryRequest
-import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
@@ -53,7 +49,6 @@ class StoriesRepositoryImpl @Inject constructor(
     private val storiesPrefUtil: StoriesPreferenceUtil,
     private val getReportUseCase: GetUserReportListUseCase,
     private val postReportUseCase: PostUserReportUseCase,
-    private val getReportSummariesUseCase: GetReportSummaryUseCase,
     private val broadcasterReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase
 ) : StoriesRepository {
 
@@ -247,15 +242,6 @@ class StoriesRepositoryImpl @Inject constructor(
 
             response.submissionReport.status.equals("success", true)
         }
-
-    override suspend fun getReportSummary(storyId: String): GetReportSummaryResponse = withContext(dispatchers.io) {
-        return@withContext getReportSummariesUseCase(
-            GetReportSummaryRequest.create(
-                contentId = storyId,
-                contentType = ContentType.Story
-            )
-        )
-    }
 
     override suspend fun trackContent(storyId: String, productIds: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         withContext(dispatchers.io) {

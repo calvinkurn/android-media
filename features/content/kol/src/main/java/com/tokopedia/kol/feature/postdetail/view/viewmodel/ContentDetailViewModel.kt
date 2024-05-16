@@ -269,19 +269,19 @@ class ContentDetailViewModel @Inject constructor(
         trackPerformance(channelId, rowNumber, BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges, products.map(FeedXProduct::id))
     }
 
-    private val productIds = mutableListOf<String>()
+    private val trackedProductIds = mutableListOf<String>()
     private fun trackPerformance(channelId: String, rowNumber: Int, event: BroadcasterReportTrackViewerUseCase.Companion.Event, ids: List<String>){
         if (channelId.isBlank()) return
 
-        val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
+        val hasChanged = ids.filterNot { trackedProductIds.contains(it) }.isNotEmpty()
         if (hasChanged) {
-            productIds.clear()
-            ids.map { productIds.add(it) }
+            trackedProductIds.clear()
+            ids.map { trackedProductIds.add(it) }
         } else { return }
 
         _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            val response = repository.trackPerformance(channelId, rowNumber, productIds, event)
+            val response = repository.trackPerformance(channelId, rowNumber, trackedProductIds, event)
             _trackVodVisitContentData.value = ContentDetailResult.Success(response)
         }) {
             _trackVodVisitContentData.value = ContentDetailResult.Failure(it)

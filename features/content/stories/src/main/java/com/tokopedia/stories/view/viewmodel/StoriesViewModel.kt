@@ -381,7 +381,6 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleContentIsLoaded() {
         updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
-        checkReportSummary()
         setupOnboard()
 
         run {
@@ -787,16 +786,12 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
-    private fun checkReportSummary() {
-        viewModelScope.launchCatchError(block = { repository.getReportSummary(storyId)}) {}
-    }
-
-    private val productIds = mutableListOf<String>()
+    private val trackedProductIds = mutableListOf<String>()
     private fun trackVisitContent(ids: List<String> = emptyList(), event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
-        val hasChanged = ids.filterNot { productIds.contains(it) }.isNotEmpty()
+        val hasChanged = ids.filterNot { trackedProductIds.contains(it) }.isNotEmpty()
         if (hasChanged || event.isVisit) {
-            productIds.clear()
-            ids.map { productIds.add(it) }
+            trackedProductIds.clear()
+            ids.map { trackedProductIds.add(it) }
         } else { return }
         viewModelScope.launchCatchError(block = { repository.trackContent(storyId, ids, event)}) {}
     }
