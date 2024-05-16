@@ -1,0 +1,75 @@
+[
+  {
+    "GetOfferingInfoForBuyer": {
+      "response_header": {
+        "status": "200",
+        "errorMessage": [],
+        "errorCode": 0,
+        "success": true,
+        "processTime": 308727
+      },
+      "offering_json_data": "",
+      "nearest_warehouse_id": [
+        71071
+      ],
+      "offering": [
+        {
+          "offer_id": 127049,
+          "offer_type_id": 2,
+          "shop_data": {
+            "shop_id": 5563583,
+            "shop_name": "",
+            "badge": ""
+          },
+          "offer_name": "HIJAB GRATIS 250RB BUY",
+          "start_date": "2024-03-26 11:30:00",
+          "end_date": "2024-04-05 23:59:59",
+          "tier_list": [
+            {
+              "tier_id": 394352,
+              "level": 1,
+              "tier_wording": "<b>Belanja Rp250rb dapat 1 hadiah</b>",
+              "rule": [
+                {
+                  "type_id": 2,
+                  "operation": "=",
+                  "value": 250000
+                }
+              ],
+              "benefit": [
+                {
+                  "type_id": 2,
+                  "value": 1,
+                  "product_info": [
+                    {
+                      "product_id": "5559511630",
+                      "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/3/1/b05f51b4-0d87-4679-b4ec-1f7f62994c0f.jpg",
+                      "priority": 1
+                    }
+                  ]
+                }
+              ],
+              "is_oos": false
+            }
+          ],
+          "term_and_condition": [
+            "HIJAB GRATIS 250RB BUY merupakan promosi yang ditawarkan oleh Penjual, berupa pemberian hadiah atas transaksi yang memenuhi ketentuan yang ditentukan oleh Penjual (selanjutnya disebut “Promosi”).",
+            "Promosi hanya berlaku di Toko  mulai tanggal 26 Maret 2024 pukul 11.30 WIB hingga 5 April 2024 pukul 23.59 WIB.",
+            "Promosi ini hanya berlaku untuk pembelanjaan Barang tertentu yang terdapat pada halaman Buy More Save More di Toko .",
+            "Promosi HIJAB GRATIS 250RB BUY hanya berlaku apabila pembelian Pengguna sudah memenuhi syarat dan ketentuan yang tertera pada halaman Buy More Save More",
+            "Pembeli memahami dan menyetujui bahwa Pembeli tidak dapat memilih varian dan/atau warna hadiah, varian dan/atau warna hadiah ditentukan oleh Penjual berdasarkan ketersediaan stok.",
+            "Hadiah tidak dapat ditukarkan dengan uang dan/atau Barang lain di etalase toko Penjual.",
+            "Hadiah Promosi HIJAB GRATIS 250RB BUY hanya berlaku 1 (satu) kali untuk 1 (satu) transaksi.",
+            "Apabila terjadi pengembalian dana, maka hadiah yang didapatkan akan bergantung dari hasil kesepakatan Penjual dan Pembeli di Pusat Resolusi.",
+            "Jika transaksi dibatalkan atau masuk ke Pusat Resolusi, dana yang kembali ke Pembeli akan sesuai dengan nominal pembayaran yang dilakukan.",
+            "Tokopedia berhak, tanpa pemberitahuan sebelumnya, melakukan tindakan-tindakan yang diperlukan termasuk namun tidak terbatas pada (i) pembatalan transaksi, (ii) moderasi akun Pembeli , dan/atau (iii) hal-hal lainnya jika ditemukan adanya manipulasi, pelanggaran maupun pemanfaatan Promosi untuk keuntungan pribadi Pembeli , maupun indikasi kecurangan atau pelanggaran-pelanggaran Syarat dan Ketentuan Tokopedia dan ketentuan hukum yang berlaku di wilayah negara Indonesia.",
+            "Dengan mengikuti Promosi ini, Pembeli dianggap mengerti dan menyetujui semua Syarat dan Ketentuan yang berlaku, yang merupakan bagian yang tidak terpisahkan dan satu kesatuan dengan Syarat dan Ketentuan Buy More Save More dan <a href=\"https://www.tokopedia.com/help/seller/article/syarat-dan-ketentuan-buy-more-save-more\">Ketentuan Situs Tokopedia</a>, serta dapat diubah untuk disesuaikan dengan kebijaksanaan sehubungan dengan pelaksanaan Promosi ini."
+          ],
+          "offer_landing_page_link": "https://tokopedia.com/buymoresavemore/127049?warehouse_ids=71071&shop_ids=5563583",
+          "offer_landing_page_app_link": "tokopedia://buymoresavemore/127049?warehouse_ids=71071&shop_ids=5563583",
+          "upsell_wording": "Belanja buat dapetin hadiahnya!"
+        }
+      ]
+    }
+  }
+]
