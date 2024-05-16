@@ -40,10 +40,6 @@ class GetHomeBottomNavigationUseCaseTest {
         BottomNavigationAdjustor()
     )
 
-    @Before
-    fun setUp() {
-    }
-
     @After
     fun tearDown() {
         clearAllMocks()
