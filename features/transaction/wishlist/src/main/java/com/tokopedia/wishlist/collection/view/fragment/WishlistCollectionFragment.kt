@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.btm.BtmApi
 import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -157,7 +158,7 @@ class WishlistCollectionFragment :
     private var hasApplogScrollListener: Boolean = false
 
     init {
-        BtmApi.registerBtmPageOnCreate(this, Page.WISHLIST)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Wishlist)
     }
 
     override fun getScreenName(): String = ""

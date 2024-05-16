@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.btm.BtmApi
 import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Site
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -36,7 +38,7 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     init {
-        BtmApi.registerBtmPageOnCreate(this, Page.OFFICIAL_STORE)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.OfficialStore)
     }
 
     override fun provideAnalytics(): BaseDiscoveryAnalytics {

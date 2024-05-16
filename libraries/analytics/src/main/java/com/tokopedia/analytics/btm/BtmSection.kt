@@ -1,5 +1,35 @@
 package com.tokopedia.analytics.btm
 
+object Tokopedia : Site("a87943") {
+    object HomePage : Page("b83792") {
+        object Banners : Block("c0652") {
+            object Banner: Position("d4396")
+        }
+    }
+
+    object Feed : Page("b3679")
+
+    object Wishlist: Page("b0751")
+
+    object OfficialStore: Page("b9256")
+
+    object Transaction: Page("b0775")
+
+    // SRP
+
+    object ProductSearchResult: Page("b4850")
+
+    object ShopSearchResult: Page("b98217")
+
+    // Transaction
+
+    object OrderList: Page("b1605")
+
+    object Pdp : Page("b2815")
+
+
+}
+
 open class Site(val code: String) {
     open inner class Page(protected val code: String) {
         val str: String
@@ -15,23 +45,4 @@ open class Site(val code: String) {
             }
         }
     }
-}
-
-
-object Tokopedia : Site("a87943") {
-    object Home : Page("b83792") {
-        object Banners : Block("c0652") {
-            object Banner: Position("d4396")
-        }
-    }
-
-    object Feed : Page("b3679")
-    object Pdp : Page("b2815")
-}
-
-
-fun main() {
-    println("PDP: " + Tokopedia.Pdp.str)
-    println("Banners: " + Tokopedia.Home.Banners.str)
-    println("Banner's Banner: " + Tokopedia.Home.Banners.Banner.str)
 }

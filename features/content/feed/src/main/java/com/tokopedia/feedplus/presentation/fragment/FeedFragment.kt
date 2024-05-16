@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.btm.BtmApi
 import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
@@ -226,7 +227,7 @@ class FeedFragment :
     private var mDataSource: DataSource? = null
 
     init {
-        BtmApi.registerBtmPageOnCreate(this, Page.FEED)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
     }
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(

@@ -28,7 +28,7 @@ object BtmApi {
     }
 
     @JvmStatic
-    fun registerBtmPageOnCreate(page: Fragment, pageBtm: Page, sourceBtmToken: String? = null) {
+    fun registerBtmPageOnCreate(page: Fragment, pageBtm: Site.Page, sourceBtmToken: String? = null) {
         val token = sourceBtmToken ?: findSourceBtmToken(page)
         Timber.d("[registerBtmPageOnCreate] pageBtm:$pageBtm(${pageBtm.str}),Page:${page::class.java.name} SourceBtmToken:$token")
         BtmSDK.registerBtmPageOnCreate(
@@ -41,7 +41,7 @@ object BtmApi {
     }
 
     @JvmStatic
-    fun registerBtmPageOnCreate(page: Activity, pageBtm: Page, sourceBtmToken: String? = null) {
+    fun registerBtmPageOnCreate(page: Activity, pageBtm: Site.Page, sourceBtmToken: String? = null) {
         val token = sourceBtmToken ?: findSourceBtmToken(page)
         Timber.d("[registerBtmPageOnCreate] pageBtm:$pageBtm(${pageBtm.str}),Page:${page::class.java.name} SourceBtmToken:$token")
         BtmSDK.registerBtmPageOnCreate(
