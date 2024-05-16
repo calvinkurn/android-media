@@ -343,11 +343,13 @@ class CheckoutViewModel @Inject constructor(
                             enable = saf.cartShipmentAddressFormData.paymentWidget.enable,
                             defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage,
                             originalData = if (usePreviousGateway) {
+                                val currPaymentData = listData.value.payment()
+                                val selectedTenure = currPaymentData?.data?.paymentWidgetData?.firstOrNull()?.installmentPaymentData?.selectedTenure
                                 OriginalCheckoutPaymentData(
-                                    gatewayCode = listData.value.payment()?.originalData?.gatewayCode ?: "",
-                                    tenureType = listData.value.payment()?.originalData?.tenureType ?: 0,
-                                    optionId = listData.value.payment()?.originalData?.optionId ?: "",
-                                    metadata = listData.value.payment()?.originalData?.metadata ?: ""
+                                    gatewayCode = currPaymentData?.data?.paymentWidgetData?.firstOrNull()?.gatewayCode ?: "",
+                                    tenureType = selectedTenure ?: 0,
+                                    optionId = currPaymentData?.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.optionId ?: "",
+                                    metadata = currPaymentData?.data?.paymentWidgetData?.firstOrNull()?.metadata ?: ""
                                 )
                             } else {
                                 OriginalCheckoutPaymentData(
@@ -3258,7 +3260,6 @@ class CheckoutViewModel @Inject constructor(
     private suspend fun getCheckoutPaymentData() {
         val checkoutItems = listData.value.toMutableList()
         var payment = checkoutItems.payment() ?: return
-        println("++ cek gatewayCode = ${checkoutItems.payment()?.originalData?.gatewayCode ?: ""}")
 
         // show loading
         payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
@@ -3651,12 +3652,10 @@ class CheckoutViewModel @Inject constructor(
                 quantity = newQty
             )
             checkoutItems[itemIndex] = newProduct
+            listData.value = checkoutItems
             viewModelScope.launch(dispatchers.io) {
                 doUpdateCartAndReload(checkoutItems, itemIndex)
             }
-            /*viewModelScope.launch(dispatchers.io) {
-                addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
-            }*/
         }
     }
 
@@ -3689,8 +3688,6 @@ class CheckoutViewModel @Inject constructor(
                         itemIndex = itemIndex,
                         usePreviousGateway = true
                     )
-                    listData.value = checkoutItems
-                    calculateTotal()
                 }
             }
         }
