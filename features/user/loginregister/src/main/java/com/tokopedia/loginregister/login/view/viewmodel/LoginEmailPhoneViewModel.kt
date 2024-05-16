@@ -4,11 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.icp.identity.loginsso.data.models.Profile
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tiktok.open.sdk.auth.AuthApi
-import com.tiktok.open.sdk.auth.AuthRequest
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
@@ -279,17 +276,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 { onGoToSecurityQuestion(email) }
             )
         )
-    }
-
-    fun authorize(authApi: AuthApi, codeVerifier: String) {
-        val enabledScopes: MutableList<String> = mutableListOf("user.info.basic")
-        val request = AuthRequest(
-            clientKey = "awqwcqhwliuqadwr",
-            scope = enabledScopes.joinToString(),
-            redirectUri = ApplinkConstInternalUserPlatform.TIKTOK_LOGIN,
-            codeVerifier = codeVerifier
-        )
-        authApi.authorize(request, AuthApi.AuthMethod.TikTokApp)
     }
 
     fun exchangeTiktokCode(code: String, codeVerifier: String, redirectUri: String) {
