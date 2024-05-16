@@ -133,7 +133,7 @@ data class Properties(
     val shouldAutoRefresh: Boolean = false,
 
     @SerializedName("card_type")
-    val cardType: String? = null,
+    private val cardType: String? = null,
 ) {
     data class Header(
         @SerializedName("applink")
@@ -169,5 +169,28 @@ data class Properties(
             @SerializedName("image")
             val image: String? = null
         )
+    }
+
+    fun getCardType(): CardType {
+        if (cardType.isNullOrEmpty()) return CardType.OLD_VERSION
+
+        return if (cardType.equals("v1", true)) {
+            CardType.OLD_VERSION
+        }
+        else if (cardType.equals("v2_no_background", true)) {
+            CardType.NEW_VERSION
+        }
+        else if (cardType.equals("v2_with_background", true)) {
+            CardType.NEW_VERSION_WITH_BACKGROUND
+        }
+        else {
+            CardType.OLD_VERSION
+        }
+    }
+
+    enum class CardType {
+        OLD_VERSION,
+        NEW_VERSION,
+        NEW_VERSION_WITH_BACKGROUND
     }
 }
