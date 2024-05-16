@@ -126,7 +126,7 @@ val ProfileFragmentCreator = FragmentCreator(
     with (extras) {
         putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, "HOME")
         putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH, "")
-        putBoolean(ApplinkConsInternalNavigation.PARAM_IS_CLOSEABLE, false)
+        putBoolean(ApplinkConsInternalNavigation.PARAM_ACT_AS_ACCOUNT_PAGE, true)
     }
     RouteManager.instantiateFragment(activity, FragmentConst.HOME_NAV_FRAGMENT, extras)
 }

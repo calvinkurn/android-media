@@ -24,9 +24,9 @@
             app:argType="string"
             android:defaultValue=""/>
         <argument
-            android:name="@string/main_nav_args_is_closeable_key"
+            android:name="@string/main_nav_args_is_acting_as_account_page_key"
             app:argType="boolean"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
 
     </fragment>
 

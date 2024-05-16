@@ -19,7 +19,7 @@ class HomeNavFragment : Fragment() {
 
     private var pageSource: String = ""
     private var pageSourcePath: String = ""
-    private var isCloseable: Boolean = true
+    private var isActingAsAccountPage: Boolean = false
 
     private var _binding: FragmentHomeNavBinding? = null
     val binding get() = _binding!!
@@ -38,7 +38,7 @@ class HomeNavFragment : Fragment() {
 
         pageSource = arguments?.getString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE).orEmpty()
         pageSourcePath = arguments?.getString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE_PATH).orEmpty()
-        isCloseable = arguments?.getBoolean(ApplinkConsInternalNavigation.PARAM_IS_CLOSEABLE, true) ?: true
+        isActingAsAccountPage = arguments?.getBoolean(ApplinkConsInternalNavigation.PARAM_ACT_AS_ACCOUNT_PAGE, false) ?: false
 
         setupNavigation()
         setupView()
@@ -54,7 +54,7 @@ class HomeNavFragment : Fragment() {
             MainNavFragmentArgs(
                 StringMainNavArgsSourceKey = pageSource,
                 StringMainNavArgsSourcePathKey = pageSourcePath,
-                StringMainNavArgsIsCloseableKey = isCloseable,
+                StringMainNavArgsIsActingAsAccountPageKey = isActingAsAccountPage,
             ).toBundle())
     }
 

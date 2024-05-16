@@ -85,7 +85,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     var pageSource = NavSource.DEFAULT
     var pageSourcePath: String = ""
     var pageName = DEFAULT_PAGE_NAME
-    var isCloseable: Boolean = true
+    var isActingAsAccountPage: Boolean = false
 
     override fun initInjector() {
         val baseNavComponent =
@@ -105,7 +105,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
         pageSource = args.StringMainNavArgsSourceKey.asNavSource()
         pageSourcePath = args.StringMainNavArgsSourcePathKey
-        isCloseable = args.StringMainNavArgsIsCloseableKey
+        isActingAsAccountPage = args.StringMainNavArgsIsActingAsAccountPageKey
 
         viewModel.setPageSource(pageSource)
         context?.let {
@@ -115,9 +115,17 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
-            it.setToolbarTitle(getString(R.string.title_main_nav))
+            it.setToolbarTitle(
+                getString(
+                    if (!isActingAsAccountPage) R.string.title_main_nav else R.string.title_main_nav_account_page
+                )
+            )
             it.setBackButtonType(
-                if (isCloseable) NavToolbar.Companion.BackType.BACK_TYPE_CLOSE else NavToolbar.Companion.BackType.BACK_TYPE_NONE
+                if (!isActingAsAccountPage) {
+                    NavToolbar.Companion.BackType.BACK_TYPE_CLOSE
+                } else {
+                    NavToolbar.Companion.BackType.BACK_TYPE_NONE
+                }
             ) {
                 TrackingOthers.onClickCloseButton(pageSource, pageSourcePath)
             }
