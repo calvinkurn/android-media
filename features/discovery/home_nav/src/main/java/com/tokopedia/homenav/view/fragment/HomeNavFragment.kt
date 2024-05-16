@@ -14,6 +14,7 @@ import com.tokopedia.homenav.databinding.FragmentHomeNavBinding
 import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeNavFragment : Fragment() {
 
@@ -21,16 +22,15 @@ class HomeNavFragment : Fragment() {
     private var pageSourcePath: String = ""
     private var isActingAsAccountPage: Boolean = false
 
-    private var _binding: FragmentHomeNavBinding? = null
-    val binding get() = _binding!!
+    private val _binding by viewBinding<FragmentHomeNavBinding>()
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentHomeNavBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View {
+        return FragmentHomeNavBinding.inflate(inflater, container, false).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,11 +73,6 @@ class HomeNavFragment : Fragment() {
 
             setShowShadowEnabled(true)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     fun onSupportNavigateUp(activity: AppCompatActivity): Boolean {
