@@ -1,10 +1,11 @@
+@file:SuppressLint("Invalid Data Type")
+
 package com.tokopedia.navigation_common.ui
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class BottomNavBarUiModel(
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     val id: Int,
     @SerializedName("title")
@@ -18,19 +19,18 @@ data class BottomNavBarUiModel(
     @SerializedName("discoId")
     val discoId: DiscoId,
     @SerializedName("queryParams")
-    val queryParams: String,
+    val queryParams: String
 ) {
     val uniqueId = BottomNavItemId(type, discoId)
 }
 
 data class BottomNavBarJumper(
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     val id: Int,
     @SerializedName("title")
     val title: String,
     @SerializedName("assets")
-    val assets: Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type>,
+    val assets: Map<BottomNavBarAsset.Id, BottomNavBarAsset.Type>
 )
 
 fun BottomNavItemId(type: BottomNavBarItemType, discoId: DiscoId = DiscoId.Empty): BottomNavItemId {
@@ -50,8 +50,11 @@ value class BottomNavItemId(val value: String) {
     val type: BottomNavBarItemType
         get() {
             return BottomNavBarItemType(
-                if (value.contains(DELIMITER)) value.split(DELIMITER)[0]
-                else value
+                if (value.contains(DELIMITER)) {
+                    value.split(DELIMITER)[0]
+                } else {
+                    value
+                }
             )
         }
 
