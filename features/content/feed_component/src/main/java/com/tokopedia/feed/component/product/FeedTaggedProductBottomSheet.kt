@@ -19,6 +19,7 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -153,6 +154,15 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             oldRight: Int,
             oldBottom: Int
         ) {
+            if (binding.feedProductLoadMore.isVisible) {
+                val btnHeight = binding.feedProductLoadMore.height
+                binding.rvTaggedProduct.setPadding(
+                    binding.rvTaggedProduct.paddingLeft,
+                    binding.rvTaggedProduct.paddingTop,
+                    binding.rvTaggedProduct.paddingRight,
+                    btnHeight
+                )
+            }
             if (!isListHeightTaller) return
             binding.root.layoutParams = binding.root.layoutParams.apply { height = maxHeight }
         }
