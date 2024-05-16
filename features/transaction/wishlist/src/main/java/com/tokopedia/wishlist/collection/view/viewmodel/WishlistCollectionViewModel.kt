@@ -19,12 +19,15 @@ import com.tokopedia.wishlist.collection.domain.AffiliateUserDetailOnBoardingBot
 import com.tokopedia.wishlist.collection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionUseCase
+import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_DIVIDER
 import com.tokopedia.wishlist.collection.util.WishlistCollectionUtils
 import com.tokopedia.wishlist.detail.data.model.WishlistCollectionState
 import com.tokopedia.wishlist.detail.data.model.WishlistRecommendationDataModel
 import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.detail.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.detail.util.WishlistConsts
+import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_RECOMMENDATION_LIST
+import com.tokopedia.wishlist.detail.util.WishlistConsts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.detail.util.WishlistUtils
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
@@ -83,6 +86,38 @@ class WishlistCollectionViewModel @Inject constructor(
         get() = _isUserAffiliate
 
     fun getWishlistCollections() {
+        WishlistIdlingResource.increment()
+        launchCatchError(block = {
+            val result = getWishlistCollectionUseCase(Unit)
+            if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
+                val wishlistData = WishlistCollectionUtils.mapCollection(result.getWishlistCollections.data)
+                val recommendationData = if(_collectionData.value != null) {
+                    (_collectionData.value as WishlistCollectionState.Set).items.filter {
+                        it.typeLayout == TYPE_COLLECTION_DIVIDER
+                            || it.typeLayout == TYPE_RECOMMENDATION_TITLE
+                            || it.typeLayout == TYPE_RECOMMENDATION_LIST
+                    }
+                } else {
+                    emptyList()
+                }
+                _collections.value = Success(result.getWishlistCollections)
+                _collectionData.value = WishlistCollectionState.Set(
+                        items = if (recommendationData.isNotEmpty()) wishlistData + recommendationData else wishlistData,
+                        shouldUpdateRecommendationScrollState = false
+                )
+            } else {
+                _collections.value = Fail(Throwable())
+                _collectionData.value = WishlistCollectionState.Error(Throwable())
+            }
+            WishlistIdlingResource.decrement()
+        }, onError = {
+            _collections.value = Fail(it)
+            _collectionData.value = WishlistCollectionState.Error(Throwable())
+            WishlistIdlingResource.decrement()
+        })
+    }
+
+    fun loadPage() {
         WishlistIdlingResource.increment()
         launchCatchError(block = {
             _collectionData.value = WishlistCollectionState.InitialLoading

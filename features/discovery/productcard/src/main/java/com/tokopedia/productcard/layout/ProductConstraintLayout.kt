@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -206,6 +207,13 @@ open class ProductConstraintLayout :
         lifecycleOwner?.lifecycle?.addObserver(this)
         this.addOnAttachStateChangeListener(this)
         this.viewTreeObserver.addOnScrollChangedListener(this)
+        this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    calculateVisibility()
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+        )
     }
 
     private fun View?.removeSelf() {

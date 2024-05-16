@@ -234,7 +234,7 @@ class WishlistCollectionViewModelTest {
     }
 
     @Test
-    fun `Execute GetWishlistCollections Success Status OK Error Empty`() {
+    fun `When Call loadPage Will Execute GetWishlistCollections With Success Status OK Error Empty`() {
         // given
         coEvery {
             getWishlistCollectionUseCase(Unit)
@@ -251,7 +251,7 @@ class WishlistCollectionViewModelTest {
         } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
 
         // when
-        wishlistCollectionViewModel.getWishlistCollections()
+        wishlistCollectionViewModel.loadPage()
 
         // the
         assert(wishlistCollectionViewModel.collections.value is Success)
@@ -259,7 +259,7 @@ class WishlistCollectionViewModelTest {
     }
 
     @Test
-    fun `Execute GetWishlistCollections Success EmptyState is True Status OK Error Empty`() {
+    fun `When Call loadPage Will Execute GetWishlistCollections With Success EmptyState is True Status OK Error Empty`() {
         // given
         coEvery {
             getWishlistCollectionUseCase(Unit)
@@ -276,7 +276,7 @@ class WishlistCollectionViewModelTest {
         } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
 
         // when
-        wishlistCollectionViewModel.getWishlistCollections()
+        wishlistCollectionViewModel.loadPage()
 
         // then
         assert(wishlistCollectionViewModel.collections.value is Success)
@@ -284,7 +284,7 @@ class WishlistCollectionViewModelTest {
     }
 
     @Test
-    fun `Execute GetWishlistCollections Success Status OK Error Not Empty`() {
+    fun `When Call loadPage Will Execute GetWishlistCollections With Success Status OK Error Not Empty`() {
         // given
         coEvery {
             getWishlistCollectionUseCase(Unit)
@@ -295,49 +295,49 @@ class WishlistCollectionViewModelTest {
         } returns RecommendationWidget()
 
         // when
-        wishlistCollectionViewModel.getWishlistCollections()
+        wishlistCollectionViewModel.loadPage()
 
         // then
         assert(wishlistCollectionViewModel.collections.value is Fail)
     }
 
     @Test
-    fun `Execute GetWishlistCollections Success Status ERROR Error Empty`() {
+    fun `When Call loadPage Will Execute GetWishlistCollections With Success Status ERROR Error Empty`() {
         // given
         coEvery {
             getWishlistCollectionUseCase(Unit)
         } returns collectionWishlistResponseDataStatusNotOkErrorEmpty
 
         // when
-        wishlistCollectionViewModel.getWishlistCollections()
+        wishlistCollectionViewModel.loadPage()
 
         // then
         assert(wishlistCollectionViewModel.collections.value is Fail)
     }
 
     @Test
-    fun `Execute GetWishlistCollections Success Status ERROR Error Not Empty`() {
+    fun `When Call loadPage Will Execute GetWishlistCollections With Success Status ERROR Error Not Empty`() {
         // given
         coEvery {
             getWishlistCollectionUseCase(Unit)
         } returns collectionWishlistResponseDataStatusNotOkErrorNotEmpty
 
         // when
-        wishlistCollectionViewModel.getWishlistCollections()
+        wishlistCollectionViewModel.loadPage()
 
         // then
         assert(wishlistCollectionViewModel.collections.value is Fail)
     }
 
     @Test
-    fun `Execute GetWishlistCollections Failed`() {
+    fun `When Call loadPage Will Execute GetWishlistCollections With Failed Result`() {
         // given
         coEvery {
             getWishlistCollectionUseCase(Unit)
         } throws throwable.throwable
 
         // when
-        wishlistCollectionViewModel.getWishlistCollections()
+        wishlistCollectionViewModel.loadPage()
 
         // then
         assert(wishlistCollectionViewModel.collections.value is Fail)
@@ -727,4 +727,140 @@ class WishlistCollectionViewModelTest {
         assert(wishlistCollectionViewModel.isUserAffiliate.value is Fail)
         assert((wishlistCollectionViewModel.isUserAffiliate.value as Fail).throwable == throwable.throwable)
     }
+
+    @Test
+    fun `When Call loadPage and getWishlistCollections Execute GetWishlistCollections Success Status OK Error Empty`() {
+        // given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } returns collectionWishlistResponseDataStatusOkErrorEmpty
+
+        coEvery {
+            singleRecommendationUseCase.getData(any())
+        } returns RecommendationWidget(
+            recommendationItemList = listOf(
+                RecommendationItem(),
+                RecommendationItem(),
+                RecommendationItem()
+            )
+        )
+
+        mockkStatic(RemoteConfigInstance::class)
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_AFFILIATE_TICKER, "")
+        } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
+
+        // when
+        wishlistCollectionViewModel.loadPage()
+
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        // the
+        assert(wishlistCollectionViewModel.collections.value is Success)
+        assert((wishlistCollectionViewModel.collections.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `When Call getWishlistCollections Function Will Execute GetWishlistCollections With Success Status OK Error Empty`() {
+        // given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } returns collectionWishlistResponseDataStatusOkErrorEmpty
+
+        mockkStatic(RemoteConfigInstance::class)
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_AFFILIATE_TICKER, "")
+        } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
+
+        // when
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        // the
+        assert(wishlistCollectionViewModel.collections.value is Success)
+        assert((wishlistCollectionViewModel.collections.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `When Call getWishlistCollections Function Will Execute GetWishlistCollections With Success EmptyState is True Status OK Error Empty`() {
+        // given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } returns collectionWishlistResponseDataStatusOkEmptyStateErrorEmpty
+
+        mockkStatic(RemoteConfigInstance::class)
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_AFFILIATE_TICKER, "")
+        } returns RollenceKey.WISHLIST_AFFILIATE_TICKER
+
+        // when
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        // then
+        assert(wishlistCollectionViewModel.collections.value is Success)
+        assert((wishlistCollectionViewModel.collections.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `When Call getWishlistCollections Will Execute GetWishlistCollections With Success Status OK Error Not Empty`() {
+        // given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } returns collectionWishlistResponseDataStatusOkErrorNotEmpty
+
+        coEvery {
+            singleRecommendationUseCase.getData(any())
+        } returns RecommendationWidget()
+
+        // when
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        // then
+        assert(wishlistCollectionViewModel.collections.value is Fail)
+    }
+
+    @Test
+    fun `When Call getWishlistCollections Execute GetWishlistCollections With Success Status ERROR Error Empty`() {
+        // given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } returns collectionWishlistResponseDataStatusNotOkErrorEmpty
+
+        // when
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        // then
+        assert(wishlistCollectionViewModel.collections.value is Fail)
+    }
+
+    @Test
+    fun `When Call Execute GetWishlistCollections With Success Status ERROR Error Not Empty`() {
+        // given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } returns collectionWishlistResponseDataStatusNotOkErrorNotEmpty
+
+        // when
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        // then
+        assert(wishlistCollectionViewModel.collections.value is Fail)
+    }
+
+    @Test
+    fun `When Call Execute GetWishlistCollections With Failed Result`() {
+        // given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } throws throwable.throwable
+
+        // when
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        // then
+        assert(wishlistCollectionViewModel.collections.value is Fail)
+    }
+
 }
