@@ -350,7 +350,7 @@ object AppLogAnalytics {
 
     fun removeLastAdsPageData(activity: Activity) {
         val currentIndex = _adsPageDataList.indexOfFirst { map ->
-            map.values.any { it.second == activity.hashCode() }
+            map.values.any { it.second == activity.hashCode() && it.third != PageName.FIND_PAGE }
         }
         if (currentIndex >= 0) _adsPageDataList.removeAt(currentIndex)
     }
