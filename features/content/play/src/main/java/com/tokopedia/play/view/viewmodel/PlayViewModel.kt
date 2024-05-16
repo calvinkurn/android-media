@@ -551,9 +551,6 @@ class PlayViewModel @AssistedInject constructor(
     val selectedChips: String
         get() = _exploreWidget.value.chips.items.find { it.isSelected }?.text ?: ""
 
-    val exploreWidgetConfig: PlayWidgetConfigUiModel
-        get() = PlayWidgetConfigUiModel.Empty
-
     val widgetInfo: PlayChannelRecommendationConfig
         get() = _channelDetail.value.channelRecomConfig
 

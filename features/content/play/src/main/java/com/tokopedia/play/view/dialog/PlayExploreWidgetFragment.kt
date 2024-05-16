@@ -332,7 +332,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             selectedChannel = item,
             position = channelPositionInList,
             widgetInfo = viewModel.widgetInfo,
-            config = viewModel.exploreWidgetConfig,
             type = ExploreWidgetType.Default
         )
         router.route(context, item.appLink)
@@ -343,7 +342,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             item = item,
             position = channelPositionInList,
             widgetInfo = viewModel.widgetInfo,
-            config = viewModel.exploreWidgetConfig,
             type = ExploreWidgetType.Default
         )
     }

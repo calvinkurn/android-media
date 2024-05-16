@@ -58,12 +58,12 @@ class PlayCategoryWidgetFragment @Inject constructor(
     private val categoryAdapter by lazyThreadSafetyNone {
         CategoryWidgetAdapter(object : CategoryWidgetViewHolder.Item.Listener {
             override fun onClicked(item: PlayWidgetChannelUiModel, position: Int) {
-                analytic?.clickContentCard(selectedChannel = item, position = position, widgetInfo = viewModel.widgetInfo, config = viewModel.exploreWidgetConfig, type = ExploreWidgetType.Category)
+                analytic?.clickContentCard(selectedChannel = item, position = position, widgetInfo = viewModel.widgetInfo, type = ExploreWidgetType.Category)
                 router.route(context, item.appLink)
             }
 
             override fun onImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-                analytic?.impressChannelCard(item = item, position = position, widgetInfo = viewModel.widgetInfo, config = viewModel.exploreWidgetConfig, type = ExploreWidgetType.Category)
+                analytic?.impressChannelCard(item = item, position = position, widgetInfo = viewModel.widgetInfo,type = ExploreWidgetType.Category)
             }
         })
     }
