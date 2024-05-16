@@ -20,7 +20,6 @@ import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
-import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.NotificationPresenter;
 import com.tokopedia.navigation.presentation.view.NotificationView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -70,12 +69,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                     ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent(),
                     requireContext()
                 ).inject(this);
-
-//        DaggerGlobalNavComponent.builder()
-//                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-//                .globalNavModule(new GlobalNavModule())
-//                .build()
-//                .inject(this);
     }
 
     @Override
