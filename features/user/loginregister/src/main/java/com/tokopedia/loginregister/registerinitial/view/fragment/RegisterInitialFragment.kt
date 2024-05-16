@@ -361,8 +361,8 @@ class RegisterInitialFragment :
     private fun setupToolbar() {
         activity?.let { activity ->
             activity.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
-                headerTitle = getString(R.string.register)
-                actionText = if (requireContext().isLoginSdkFlow()) getString(R.string.register_sdk_title) else getString(R.string.login)
+                headerTitle = if (requireContext().isLoginSdkFlow()) getString(R.string.register_sdk_title) else getString(R.string.register)
+                actionText = getString(R.string.login)
                 setNavigationOnClickListener {
                     activity.onBackPressed()
                 }
