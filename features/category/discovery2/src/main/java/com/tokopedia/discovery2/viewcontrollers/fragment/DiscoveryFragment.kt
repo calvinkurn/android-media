@@ -42,6 +42,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.IAdsLog
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -2682,7 +2683,7 @@ open class DiscoveryFragment :
     }
 
     override fun getAdsPageName(): String {
-        return pageInfoHolder?.label?.trackingPagename.orEmpty()
+        return PageName.DISCOVERY
     }
 
     fun setCurrentTabPosition(tabPosition: Int) {
