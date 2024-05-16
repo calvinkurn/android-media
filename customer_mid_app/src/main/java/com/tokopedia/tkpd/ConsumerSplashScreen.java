@@ -24,6 +24,7 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NewMainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -143,10 +144,25 @@ public class ConsumerSplashScreen extends SplashScreen {
         // if this SplashScreenActivity is the root means this open first time, so open Home
         // if this is not root, this SplashScreen might be triggered from opening branch link.
         if (isTaskRoot()) {
-            Intent homeIntent = new Intent(this, NewMainParentActivity.class);
+            Intent homeIntent;
+            if (newHomeNavEnabled()) {
+                homeIntent = new Intent(this, NewMainParentActivity.class);
+            } else {
+                homeIntent = new Intent(this, MainParentActivity.class);
+            }
             startActivity(homeIntent);
         }
         finish();
     }
 
+    /**
+     * Determines whether the new home nav is enabled,
+     * which will be used to route the applink to the new home nav.
+     * This is mainly used for hansel purpose.
+     *
+     * @return whether new home nav is enabled or not.
+     */
+    private boolean newHomeNavEnabled() {
+        return true;
+    }
 }

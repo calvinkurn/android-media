@@ -101,13 +101,13 @@ object DeeplinkMapperContent {
      */
     private fun goToAppLinkFeedHomeInternal(uri: Uri, isOldNav: Boolean = false): String {
         return UriUtil.buildUriAppendParams(
-            uri = if (!isOldNav) {
+            uri = if (!isOldNav && newHomeNavEnabled()) {
                 ApplinkConsInternalHome.HOME_NAVIGATION
             } else {
                 ApplinkConsInternalHome.HOME_NAVIGATION_OLD
             },
             queryParameters = buildMap {
-                if (!isOldNav) {
+                if (!isOldNav && newHomeNavEnabled()) {
                     put(EXTRA_TAB_TYPE, TAB_TYPE_FEED)
                 } else {
                     put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
@@ -229,5 +229,16 @@ object DeeplinkMapperContent {
      */
     private fun getProfileSellerAppDeepLink(): String {
         return ApplinkConstInternalContent.INTERNAL_FEATURE_PREVENTION
+    }
+
+    /**
+     * Determines whether the new home nav is enabled,
+     * which will be used to route the applink to the new home nav.
+     * This is mainly used for hansel purpose.
+     *
+     * @return whether new home nav is enabled or not.
+     */
+    private fun newHomeNavEnabled(): Boolean {
+        return true
     }
 }

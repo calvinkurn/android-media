@@ -40,10 +40,14 @@ object DeeplinkMapperHome {
 
         // tokopedia://home
         if (uri.host == Uri.parse(ApplinkConst.HOME).host && uri.pathSegments.isEmpty()) {
-            return UriUtil.buildUriAppendParams(
-                ApplinkConsInternalHome.HOME_NAVIGATION,
-                mapOf(EXTRA_TAB_TYPE to TAB_TYPE_HOME)
-            )
+            return if (newHomeNavEnabled()) {
+                UriUtil.buildUriAppendParams(
+                    ApplinkConsInternalHome.HOME_NAVIGATION,
+                    mapOf(EXTRA_TAB_TYPE to TAB_TYPE_HOME)
+                )
+            } else {
+                ApplinkConsInternalHome.HOME_NAVIGATION_OLD
+            }
         } else if (deeplink.startsWith(ApplinkConst.HOME_OLD) && uri.pathSegments.size == 1) {
             return ApplinkConsInternalHome.HOME_NAVIGATION_OLD
         } else if (deeplink.startsWith(ApplinkConst.HOME_CATEGORY) && uri.pathSegments.size == 1) {
@@ -99,5 +103,16 @@ object DeeplinkMapperHome {
 
     fun getRegisteredInboxNavigation(deeplink: String): String {
         return ApplinkConsInternalHome.HOME_INBOX
+    }
+
+    /**
+     * Determines whether the new home nav is enabled,
+     * which will be used to route the applink to the new home nav.
+     * This is mainly used for hansel purpose.
+     *
+     * @return whether new home nav is enabled or not.
+     */
+    private fun newHomeNavEnabled(): Boolean {
+        return true
     }
 }
