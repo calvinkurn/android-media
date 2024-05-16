@@ -17,6 +17,7 @@ data class ProductCardCompactUiModel(
     val slashPrice: String = "",
     val name: String = "",
     val rating: String = "",
+    val sold: String = "",
     val progressBarLabel: String = "",
     val progressBarPercentage: Int = 0,
     val hasBeenWishlist: Boolean = false,
@@ -27,6 +28,7 @@ data class ProductCardCompactUiModel(
     val labelGroupList: List<LabelGroup> = listOf(),
     val needToChangeMaxLinesName: Boolean = false,
     val hasBlockedAddToCart: Boolean = false,
+    val isPreOrder: Boolean = false,
     /**
      * use pre draw only if need dynamic height of product card (ex: carousel)
      */
@@ -42,15 +44,16 @@ data class ProductCardCompactUiModel(
     private fun isBestSellerLabelAvailable(): Boolean = getBestSellerLabelGroup() != null
 
     fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { (availableStock < minOrder || availableStock == Int.ZERO) && (it.isStatusPosition() && it.isTransparentBlackColor()) }
+    fun getPreOrderLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { (isPreOrder && it.isStatusPosition() && it.isTransparentBlackColor()) }
     fun getAssignedValueLabelGroup(): LabelGroup? = if (isBestSellerLabelAvailable()) getBestSellerLabelGroup() else getNewProductLabelGroup()
     fun getPriceLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isPricePosition() && it.isLightGreenColor() }
     fun getWeightLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isWeightPosition() }
-    fun getImageBrightness(): Float = if (isOos()) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
+    fun getImageBrightness(): Float = if (isOos() || isPreOrder) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
     fun getNowUSPLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isNowUSPPosition() && it.isTextDarkGreyColor() }
 
     fun isOos() = getOosLabelGroup() != null
     fun isFlashSale() = progressBarLabel.isNotBlank() && !isOos()
-    fun isNormal() = !isOos() && !isFlashSale()
+    fun isNormal() = !isOos() && !isFlashSale() && !isPreOrder
 
     fun getPriceLong() = price.filter { it.isDigit() }.toLongOrZero()
 
@@ -100,4 +103,3 @@ internal const val TEXT_DARK_GREY = "textDarkGrey"
  */
 internal const val LIGHT_GREEN = "lightGreen"
 internal const val LIGHT_RED = "lightRed"
-
