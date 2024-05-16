@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -21,14 +22,6 @@ object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
         componentNames: String
     ): AppLogRecommendationProductModel {
-        val originalPriceValue = CurrencyFormatHelper
-            .convertRupiahToDouble(price.orEmpty())
-            .toFloat()
-
-        val salesPriceValue = CurrencyFormatHelper
-            .convertRupiahToDouble(discountedPrice.orEmpty())
-            .toFloat()
-
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
             parentProductId = parentProductId.orEmpty(),
@@ -43,8 +36,8 @@ object TrackDiscoveryRecommendationMapper {
             recParams = getAppLog()?.recParams.orEmpty(),
             shopId = shopId.orEmpty(),
             entranceForm = componentNames.getEntranceForm(),
-            originalPrice = originalPriceValue,
-            salesPrice = salesPriceValue,
+            originalPrice = price.cleanUpCurrencyValue().toFloat(),
+            salesPrice = getSalesPrice().cleanUpCurrencyValue().toFloat(),
             isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule(),
             isEligibleForRecTrigger = isEligibleToTrackRecTrigger(componentNames),
             additionalParam = anchorProductId.toLongOrZero().getAdditionalParam()
@@ -56,8 +49,8 @@ object TrackDiscoveryRecommendationMapper {
             productId = parentProductId.orEmpty(),
             productCategory = String.EMPTY,
             productType = getProductType(),
-            originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
-            salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
+            originalPrice = price.cleanUpCurrencyValue(),
+            salePrice = getSalesPrice().cleanUpCurrencyValue(),
             buttonType = "able_to_cart",
             skuId = productId.orEmpty(),
             currency = "IDR",
@@ -72,8 +65,8 @@ object TrackDiscoveryRecommendationMapper {
             productId = parentProductId.orEmpty(),
             productCategory = String.EMPTY,
             productType = getProductType(),
-            originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
-            salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
+            originalPrice = price.cleanUpCurrencyValue(),
+            salePrice = getSalesPrice().cleanUpCurrencyValue(),
             buttonType = "able_to_cart",
             skuId = productId.orEmpty(),
             currency = "IDR",
@@ -91,8 +84,8 @@ object TrackDiscoveryRecommendationMapper {
             productId = parentProductId.orEmpty(),
             productCategory = String.EMPTY,
             productType = getProductType(),
-            originalPrice = CurrencyFormatHelper.convertRupiahToDouble(price.orEmpty()),
-            salePrice = CurrencyFormatHelper.convertRupiahToDouble(discountedPrice.orEmpty()),
+            originalPrice = price.cleanUpCurrencyValue(),
+            salePrice = getSalesPrice().cleanUpCurrencyValue(),
             buttonType = "able_to_cart",
             skuId = productId.orEmpty(),
             currency = "IDR",
@@ -170,5 +163,14 @@ object TrackDiscoveryRecommendationMapper {
 
     fun ComponentsItem.isEligibleToTrack(): Boolean {
         return getSource() == ComponentSourceData.Recommendation
+    }
+
+    private fun  String?.cleanUpCurrencyValue(): Double {
+        return CurrencyFormatHelper
+            .convertRupiahToDouble(this.orEmpty())
+    }
+
+    private fun DataItem.getSalesPrice(): String {
+        return discountedPrice.ifNullOrBlank { price.orEmpty() }
     }
 }
