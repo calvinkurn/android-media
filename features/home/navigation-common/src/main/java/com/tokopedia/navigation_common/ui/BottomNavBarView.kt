@@ -191,7 +191,6 @@ class BottomNavBarView : LinearLayout {
     private val View.stateHolder: StateHolder?
         get() = tag as? StateHolder
 
-    // TODO("Handle dark mode in a better way")
     private fun LottieAnimationView.bindAsset(
         model: BottomNavBarUiModel,
         isSelected: Boolean?,
