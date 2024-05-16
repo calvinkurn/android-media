@@ -15,6 +15,7 @@ import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_NAM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_CURRENT_SITE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ENVIRONMENT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_ACTION
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_CATEGORY
@@ -502,6 +503,7 @@ class ThankYouPageAnalytics @Inject constructor(
         map[KEY_MERCHANT_CODE] = merchantCode.orEmpty()
         map[KEY_SCROOGE_ID] = String.EMPTY
         map[KEY_PAYMENT_METHOD] = paymentMethod
+        map[KEY_ENVIRONMENT] = ANDROID
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -543,6 +545,7 @@ class ThankYouPageAnalytics @Inject constructor(
 
         const val BUSINESS_UNIT_SHARE = "sharingexperience"
         const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
+        const val ANDROID = "android"
     }
 }
 
@@ -561,6 +564,7 @@ object ParentTrackingKey {
     val PROMO_VIEW = "promoView"
     val KEY_SCROOGE_ID = "scroogeId"
     val KEY_PAYMENT_METHOD = "paymentMethod"
+    val KEY_ENVIRONMENT = "environment"
 
     val KEY_SHOP_ID = "shopId"
     val KEY_SHOP_TYPE = "shopType"
