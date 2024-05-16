@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.IAppLogPdpActivity
 import com.tokopedia.analytics.byteio.PageName
@@ -294,7 +294,7 @@ open class ProductDetailActivity :
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Page.PDP)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Pdp)
         try {
             initBlocksPLTMonitoring()
             userSessionInterface = UserSession(this)

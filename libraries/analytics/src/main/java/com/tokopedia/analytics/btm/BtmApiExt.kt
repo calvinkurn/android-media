@@ -7,7 +7,7 @@ import com.bytedance.android.btm.api.BtmSDK
 import com.bytedance.android.btm.api.FragmentPageInstance
 
 object BtmApi {
-    fun registerBtmPageOnCreate(page: Fragment, pageBtm: Page, sourceBtmToken: String? = null) {
+    fun registerBtmPageOnCreate(page: Fragment, pageBtm: Site.Page, sourceBtmToken: String? = null) {
         BtmSDK.registerBtmPageOnCreate(
             FragmentPageInstance(
                 page,
@@ -17,7 +17,7 @@ object BtmApi {
         )
     }
 
-    fun registerBtmPageOnCreate(page: Activity, pageBtm: Page, sourceBtmToken: String? = null) {
+    fun registerBtmPageOnCreate(page: Activity, pageBtm: Site.Page, sourceBtmToken: String? = null) {
         BtmSDK.registerBtmPageOnCreate(
             ActivityPageInstance(
                 page,
