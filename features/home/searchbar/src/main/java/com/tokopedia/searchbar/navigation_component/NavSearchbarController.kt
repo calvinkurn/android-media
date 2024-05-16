@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.core.widget.addTextChangedListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.R
@@ -19,6 +20,7 @@ import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,6 +42,7 @@ class NavSearchbarController(val view: View,
                              val editorActionCallback: ((hint: String)-> Unit)?,
                              val hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
                              val hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
+                             val searchBtnClickCallback: (() -> Unit)? = null
 ) : CoroutineScope {
 
     companion object {
@@ -61,9 +64,11 @@ class NavSearchbarController(val view: View,
     private val iconClear: IconUnify? by lazy {
         view.findViewById(R.id.icon_clear)
     }
-    
     private val layoutSearch: View? by lazy(NONE) {
         view.findViewById(R.id.layout_search)
+    }
+    private val searchCta: Typography? by lazy {
+        view.findViewById(R.id.tv_search_cta)
     }
 
     init {
@@ -90,6 +95,13 @@ class NavSearchbarController(val view: View,
         }
         etSearch?.setSingleLine()
         etSearch?.ellipsize = TextUtils.TruncateAt.END
+        setOnSearchCtaClicked()
+    }
+
+    private fun setOnSearchCtaClicked() {
+        searchCta?.setOnClickListener {
+            searchBtnClickCallback?.invoke()
+        }
     }
 
     fun startHintAnimation() {
@@ -127,6 +139,16 @@ class NavSearchbarController(val view: View,
                 }
             }
         )
+        setupSearchByKeyword()
+    }
+
+    private fun setupSearchByKeyword() {
+        searchCta?.setOnClickListener {
+            val keyword = etSearch?.text?.toString().orEmpty()
+            if (keyword.isNotBlank()) {
+                editorActionCallback?.invoke(keyword)
+            }
+        }
     }
 
     private fun setEditorActionListener() {

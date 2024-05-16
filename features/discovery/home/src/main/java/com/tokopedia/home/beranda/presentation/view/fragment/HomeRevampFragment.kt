@@ -47,6 +47,7 @@ import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -55,6 +56,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -668,17 +670,21 @@ open class HomeRevampFragment :
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = NavSource.HOME)
             )
-            icons.addIcon(IconList.ID_MESSAGE) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
-            icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_NOTIFICATION_HOMEPAGE) }
-            icons.apply {
-                addIcon(IconList.ID_CART) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_CART_ICON_HOMEPAGE) }
-                addIcon(IconList.ID_NAV_GLOBAL) {}
+            val shouldCombineInboxNotif = HomeRollenceController.shouldCombineInboxNotif()
+            if (shouldCombineInboxNotif) {
+                icons.addIcon(IconList.ID_MESSAGE) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
+            } else {
+                icons.addIcon(IconList.ID_MESSAGE) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
+                icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_NOTIFICATION_HOMEPAGE) }
             }
+            icons.addIcon(IconList.ID_CART) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_CART_ICON_HOMEPAGE) }
+            icons.addIcon(IconList.ID_NAV_GLOBAL) {}
             it.setIcon(icons)
             it.setupMicroInteraction(navToolbarMicroInteraction)
             it.addOnImpression1pxListener(ImpressHolder()) {
                 AppLogSearch.eventShowSearch()
             }
+            it.setSearchStyle(getSearchStyle(shouldCombineInboxNotif))
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
@@ -701,6 +707,14 @@ open class HomeRevampFragment :
 
         homeRecyclerView?.bindFpsTracer(FPS_TRACER_HOME)
         return view
+    }
+
+    private fun getSearchStyle(isCombineEnabled: Boolean): NavToolbar.Companion.SearchStyle {
+        return if (isCombineEnabled) {
+            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
+        } else {
+            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
+        }
     }
 
     private fun getSearchPlaceHolderHint() {
@@ -2096,18 +2110,7 @@ open class HomeRevampFragment :
                     PARAM_APPLINK_AUTOCOMPLETE
                 },
                 searchbarClickCallback = {
-                    val intent = RouteManager.getIntent(
-                        context,
-                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                        HOME_SOURCE,
-                        data.keyword.safeEncodeUtf8(),
-                        isFirstInstall().toString(),
-                        AppLogSearch.ParamValue.ENTER,
-                    )
-
-                    navToolbarMicroInteraction
-                        ?.animate(intent, ::startActivity)
-                        ?: startActivity(intent)
+                    navigateToInitialSearch(data)
                 },
                 searchbarImpressionCallback = {},
                 shouldShowTransition = false,
@@ -2118,9 +2121,41 @@ open class HomeRevampFragment :
                 hintClickCallback = { hintData, index ->
                     if (hintData.imprId.isNotBlank())
                         AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
+                },
+                searchBtnClickCallback = {
+                    val keyword = data.keyword.safeEncodeUtf8()
+                    if (keyword.isBlank()) {
+                        navigateToInitialSearch(data)
+                    } else {
+                        navigateToSRP(keyword)
+                    }
                 }
             )
         }
+    }
+
+    private fun navigateToSRP(keyword: String) {
+        val params = mapOf(
+            SearchApiConst.Q to keyword,
+            SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_PRODUCT
+        )
+        val srpAppLink = UriUtil.buildUriAppendParam(ApplinkConstInternalDiscovery.SEARCH_RESULT, params)
+        RouteManager.route(context, srpAppLink)
+    }
+
+    private fun navigateToInitialSearch(data: SearchPlaceholder.Data) {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+            HOME_SOURCE,
+            data.keyword.safeEncodeUtf8(),
+            isFirstInstall().toString(),
+            AppLogSearch.ParamValue.ENTER,
+        )
+
+        navToolbarMicroInteraction
+            ?.animate(intent, ::startActivity)
+            ?: startActivity(intent)
     }
 
     private fun appLogTrendingWords(index: Int, hintData: HintData) =

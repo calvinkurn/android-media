@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
 import com.tokopedia.home_component.util.HomeComponentFeatureFlag
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -16,12 +17,14 @@ object HomeRollenceController {
     var shouldGlobalComponentRecomEnabled: Boolean = false
     var iconJumperSREValue: String = ""
     var isMegaTabEnabled = false
+    private var inboxNotifValue = String.EMPTY
 
     fun fetchHomeRollenceValue() {
         fetchLoadTimeRollenceValue()
         fetchAtfCacheRollenceValue()
         fetchHomeMegaTabRollenceValue()
         HomeComponentFeatureFlag.fetchMissionRollenceValue()
+        fetchInboxNotifTopNavValue()
     }
 
     @JvmStatic
@@ -70,6 +73,20 @@ object HomeRollenceController {
         }
 
         isMegaTabEnabled = megaTab.isNotEmpty()
+    }
+
+    private fun fetchInboxNotifTopNavValue() {
+        inboxNotifValue = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_COMBINE_INBOX_NOTIF_KEY, String.EMPTY
+            )
+        } catch (e: Exception) {
+            String.EMPTY
+        }
+    }
+
+    fun shouldCombineInboxNotif(): Boolean {
+        return inboxNotifValue == RollenceKey.HOME_COMBINE_INBOX_NOTIF
     }
 
     fun isLoadAtfFromCache(): Boolean {
