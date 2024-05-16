@@ -630,7 +630,7 @@ data class CtaDataThanksPage(
     val primary: CtaDetails = CtaDetails(),
     @SerializedName("secondary")
     val secondary: CtaDetails = CtaDetails(),
-): Parcelable
+)
 
 @Parcelize
 data class CtaDetails(
@@ -644,4 +644,4 @@ data class CtaDetails(
     val applink: String = "",
     @SerializedName("hide_button")
     val hideButton: Boolean = true,
-) : Parcelable
+)
