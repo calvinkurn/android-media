@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailShareConst
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -234,7 +235,7 @@ class PartialProductItemViewHolder(
     }
 
     private fun isUsingShareEx(): Boolean {
-        val rollenceKey = "shareex_an_order"
+        val rollenceKey = BuyerOrderDetailShareConst.SHARE_EX_ROLLENCE_KEY
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
             rollenceKey,
             ""

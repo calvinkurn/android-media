@@ -38,6 +38,7 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SHOP_STATUS_AFFILIATE_LINK_ELIGIBILITY
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SITE_ID_AFFILIATE_LINK_ELIGIBILITY
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.VERTICAL_ID_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailShareConst
 import com.tokopedia.buyerorderdetail.common.extension.collectLatestWhenResumed
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderDetailBinding
@@ -1215,7 +1216,7 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun isUsingShareEx(): Boolean {
-        val rollenceKey = "shareex_an_order"
+        val rollenceKey = BuyerOrderDetailShareConst.SHARE_EX_ROLLENCE_KEY
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
             rollenceKey,
             ""
@@ -1398,7 +1399,8 @@ open class BuyerOrderDetailFragment :
                 navigator.openProductUrl(addOn.addOnsUrl)
             } else {
                 showToaster(
-                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(), context?.getString(R.string.buyer_order_detail_oke).orEmpty()
+                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(),
+                    context?.getString(R.string.buyer_order_detail_oke).orEmpty()
                 )
             }
         }
