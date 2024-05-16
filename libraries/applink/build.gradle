@@ -57,6 +57,8 @@ dependencies {
         transitive = true
     }
     testImplementation rootProject.ext.miscDependencies.gson
+
+    api files(project.rootDir.absolutePath + '/aars/btm-api.aar')
 }
 
 project.ext {

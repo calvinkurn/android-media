@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -153,6 +155,10 @@ class WishlistCollectionFragment :
 
     private var hasTrackEnterPage: Boolean = false
     private var hasApplogScrollListener: Boolean = false
+
+    init {
+        BtmApi.registerBtmPageOnCreate(this, Page.WISHLIST)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -351,7 +357,7 @@ class WishlistCollectionFragment :
     }
 
     private fun addRecommendationScrollListener() {
-        if(hasApplogScrollListener) return
+        if (hasApplogScrollListener) return
         binding?.rvWishlistCollection?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
@@ -361,7 +367,7 @@ class WishlistCollectionFragment :
     }
 
     private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
+        if (hasTrackEnterPage) return
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
     }

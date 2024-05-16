@@ -294,7 +294,6 @@ open class ProductDetailActivity :
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Pdp)
         try {
             initBlocksPLTMonitoring()
             userSessionInterface = UserSession(this)
