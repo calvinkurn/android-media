@@ -10,7 +10,6 @@ inline fun ImageView.loadImageFresco(
 ) = call(url, Properties()
     .apply(properties))
 
-//TODO usage rounded corner
 inline fun ImageView.loadImageRoundedFresco(
     url: String?,
     rounded: Float = DEFAULT_ROUNDED,

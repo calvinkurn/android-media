@@ -1,16 +1,14 @@
 package com.tokopedia.media.loaderfresco
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
+import com.facebook.drawee.generic.GenericDraweeHierarchy
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
+import com.facebook.drawee.generic.RoundingParams
+import com.facebook.drawee.view.SimpleDraweeView
 import com.tokopedia.media.loaderfresco.data.Properties
 import com.tokopedia.media.loaderfresco.tracker.FrescoLogger
-import com.tokopedia.media.loaderfresco.utils.FrescoDataSourceRequest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 internal object MediaLoaderFrescoApi {
@@ -28,24 +26,21 @@ internal object MediaLoaderFrescoApi {
             return
         }
 
-        val dataSource = FrescoDataSourceRequest.frescoDataSourceBuilder(properties, context)
-        dataSource.subscribe(object : BaseBitmapDataSubscriber() {
-            override fun onNewResultImpl(bitmap: Bitmap?) {
-                if (bitmap != null && !bitmap.isRecycled) {
-                    imageView.setImageBitmap(bitmap)
-                }
-            }
 
-            override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>?) {
-            }
-        }) { command ->
-            command.run()
-        }
+        val roundingParams = RoundingParams.fromCornersRadius(properties.roundedRadius)
+
+        val builder = GenericDraweeHierarchyBuilder(context.resources)
+        val hierarchy: GenericDraweeHierarchy = builder.setRoundingParams(roundingParams).build()
+
+        val draweeView = SimpleDraweeView(context, hierarchy)
+        imageView.setImageDrawable(draweeView.drawable)
+
+        draweeView.setImageURI(properties.data.toString())
 
         FrescoLogger.loggerSlardarFresco()
     }
 
-    //TODO ADD Enabler
+    //TODO ADD Enabler Rollence
     private fun enableFrescoLoader(context: Context): Boolean {
         val key = "android_enable_image_fresco"
         return FirebaseRemoteConfigImpl(context.applicationContext)
