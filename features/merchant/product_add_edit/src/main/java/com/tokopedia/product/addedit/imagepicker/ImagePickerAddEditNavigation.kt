@@ -45,6 +45,7 @@ object ImagePickerAddEditNavigation {
                 withRemoveBackground()
                 withAddLogo()
                 withAddText()
+                maxImageFileSize(5_000_000)
             }
         }
     }
@@ -63,6 +64,7 @@ object ImagePickerAddEditNavigation {
                 withRemoveBackground()
                 withAddLogo()
                 withAddText()
+                maxImageFileSize(5_000_000)
             }
         }
     }

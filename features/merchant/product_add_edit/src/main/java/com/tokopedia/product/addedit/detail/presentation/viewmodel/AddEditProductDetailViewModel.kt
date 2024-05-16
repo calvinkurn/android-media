@@ -279,6 +279,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun containsEmoji(input: String): Boolean {
+        val emojiRegex = Regex("[\\p{So}]")
+        return emojiRegex.containsMatchIn(input)
+    }
     private fun isInputValid(): Boolean {
         // by default the product photos are never empty
         val isProductPhotoError = mIsProductPhotoError.value ?: false
@@ -341,7 +345,15 @@ class AddEditProductDetailViewModel @Inject constructor(
             val errorMessage = provider.getEmptyProductNameErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
-        } else {
+        }else if (productNameInput.length < 25) {
+            val errorMessage = provider.getProductNameMinimumCharErrorMessage()
+            errorMessage?.let { productNameMessage = it }
+            mIsProductNameInputError.value = true
+        }else if (containsEmoji(productNameInput)) {
+            val errorMessage = provider.getProductNameEmojiMessage()
+            errorMessage?.let { productNameMessage = it }
+            mIsProductNameInputError.value = true
+        }else {
             // show product name tips
             val productNameTips = provider.getProductNameTips()
             productNameTips?.let { productNameMessage = it }

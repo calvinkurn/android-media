@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -184,6 +185,7 @@ class AddEditProductVariantFragment :
     private val recyclerViewVariantType by lazy { binding.layoutVariantType.recyclerViewVariantType }
     private val layoutSizechart by lazy { binding.layoutSizechart }
     private val cardSizechart by lazy { layoutSizechart.cardSizechart }
+    private val typographySizechartRequired by lazy { layoutSizechart.typographySizechartRequired }
     private val ivSizechartAddSign by lazy { layoutSizechart.ivSizechartAddSign }
     private val ivSizechartEditSign by lazy { layoutSizechart.ivSizechartEditSign }
     private val ivSizechart by lazy { layoutSizechart.ivSizechart }
@@ -485,6 +487,7 @@ class AddEditProductVariantFragment :
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel1(mutableListOf())
             }
+
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel2(mutableListOf())
             }
@@ -534,6 +537,7 @@ class AddEditProductVariantFragment :
                 typographyVariantValueLevel1Title.text = variantTypeDetail.name
                 viewModel.updateVariantDataMap(VARIANT_VALUE_LEVEL_ONE_POSITION, variantTypeDetail)
             }
+
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 variantValueLevel2Layout.show()
                 variantValueAdapterLevel2?.setData(selectedVariantUnitValues)
@@ -568,6 +572,7 @@ class AddEditProductVariantFragment :
                 )
                 variantValueAdapterLevel1?.setData(selectedVariantUnitValues)
             }
+
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues)
                 viewModel.updateSelectedVariantUnitMap(layoutPosition, selectedVariantUnit)
@@ -761,6 +766,7 @@ class AddEditProductVariantFragment :
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 variantValueLevel1Layout.hide()
             }
+
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 variantValueLevel2Layout.hide()
             }
@@ -876,6 +882,11 @@ class AddEditProductVariantFragment :
     private fun setupButtonSave() {
         buttonSave.setOnClickListener {
             // track click action on continue button
+            if (viewModel.isVariantSizechartVisible.value.orFalse() && viewModel.pictureSizeChart.value?.urlOriginal.orEmpty().isEmpty()){
+                cardSizechart.background = context?.let { it1 -> ContextCompat.getDrawable(it1, R.drawable.rect_red_dash_border) }
+                typographySizechartRequired.visible()
+                return@setOnClickListener
+            }
             viewModel.isEditMode.value?.let { isEditMode ->
                 if (isEditMode) ProductEditVariantTracking.continueToVariantDetailPage(shopId)
                 else ProductAddVariantTracking.continueToVariantDetailPage(shopId)
@@ -1052,6 +1063,7 @@ class AddEditProductVariantFragment :
                         selectedVariantUnitValues.toMutableList()
                     )
                 }
+
                 VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                     setupVariantValueSection(
                         VARIANT_VALUE_LEVEL_TWO_POSITION,
@@ -1122,6 +1134,7 @@ class AddEditProductVariantFragment :
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                 }
+
                 is Fail -> {
                     // end monitoring if failed
                     stopPerformanceMonitoring()
@@ -1168,8 +1181,10 @@ class AddEditProductVariantFragment :
                 ivSizechart.visible()
                 typographySizechartDescription.text =
                     getString(R.string.label_variant_sizechart_edit_description)
+                cardSizechart.background = context?.let { it1 -> ContextCompat.getDrawable(it1, R.drawable.rect_grey_border) }
+                typographySizechartRequired.gone()
             }
-
+            viewModel.pictureSizeChart.value = it
             // display sizechart image (use server image if exist)
             ivSizechart.setImage(it.urlOriginal, 0F)
         }
@@ -1231,9 +1246,10 @@ class AddEditProductVariantFragment :
                     )
                 }
                 titleLayoutVariantType.setActionButtonOnClickListener { view ->
-                    DialogUtil.showDTStockDialog(view.context,
+                    DialogUtil.showDTStockDialog(
+                        view.context,
                         DialogUtil.UserAction.EDIT_VARIANT_TYPE
-                    )                
+                    )
                 }
             } else {
                 buttonAddVariantType.setOnDisabledClickListener {
@@ -1582,6 +1598,7 @@ class AddEditProductVariantFragment :
                 VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                     typographyVariantValueLevel1Title.text = variantDetail.name
                 }
+
                 VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                     typographyVariantValueLevel2Title.text = variantDetail.name
                 }

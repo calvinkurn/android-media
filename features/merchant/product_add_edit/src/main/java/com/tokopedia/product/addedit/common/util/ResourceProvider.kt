@@ -26,6 +26,13 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_empty_product_name)
     }
 
+    fun getProductNameMinimumCharErrorMessage(): String? {
+        return getString(R.string.error_product_name_minimum_length)
+    }
+
+    fun getProductNameEmojiMessage(): String? {
+        return getString(R.string.error_product_name_contains_emoji)
+    }
     // product price string properties
 
     fun getPriceTipsMessage(): String {
