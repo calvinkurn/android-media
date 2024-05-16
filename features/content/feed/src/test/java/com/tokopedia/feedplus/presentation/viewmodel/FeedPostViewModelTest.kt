@@ -11,8 +11,6 @@ import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
-import com.tokopedia.content.common.track.response.GetReportSummaryResponse
-import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -1207,6 +1205,7 @@ class FeedPostViewModelTest {
 
     @Test
     fun onTrackChannelProduct() {
+        coEvery { trackReportViewerUseCase.params } coAnswers { mapOf() }
         coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
         coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
 
@@ -1218,7 +1217,10 @@ class FeedPostViewModelTest {
 
     @Test
     fun onTrackVisitChannel() {
+        coEvery { trackReportViewerUseCase.params } coAnswers { mapOf() }
         coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
+
         viewModel.trackPerformance(playChannelId, emptyList(), BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
 
         coVerify { trackReportViewerUseCase.executeOnBackground() }
