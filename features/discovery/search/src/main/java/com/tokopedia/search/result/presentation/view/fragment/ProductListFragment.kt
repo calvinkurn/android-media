@@ -1682,7 +1682,7 @@ class ProductListFragment :
             it.startPageDuration + it.networkRequestDuration
         }
         val newSugSessionId = if(enterMethodShouldHaveSug(enterMethod))
-            AppLogAnalytics.getLastData(NEW_SUG_SESSION_ID)?.toString()?.ifBlank { null }
+            AppLogAnalytics.getLastData(NEW_SUG_SESSION_ID)?.toString()
         else null
 
         val sugType = if(enterMethodShouldHaveSug(enterMethod))
