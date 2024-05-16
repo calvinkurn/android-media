@@ -26,6 +26,7 @@ import com.ss.android.larksso.LarkSSO
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analyticsdebugger.cassava.ui.MainValidatorActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -67,6 +68,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -114,6 +116,7 @@ class DeveloperOptionActivity :
         const val LIVE = "live"
         const val CHANGEURL = "changeurl"
         const val URI_HOME_MACROBENCHMARK = "home-macrobenchmark"
+        const val URI_CASSAVA = "cassava"
         const val URI_COACHMARK = "coachmark"
         const val URI_COACHMARK_DISABLE = "disable"
         const val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
@@ -235,6 +238,7 @@ class DeveloperOptionActivity :
         var isChangeUrlApplink = false
         var isCoachmarkApplink = false
         var isHomeMacrobenchmarkApplink = false
+        var isCassava = false
         if (intent != null) {
             uri = intent.data
             if (uri != null) {
@@ -243,6 +247,8 @@ class DeveloperOptionActivity :
                     uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_COACHMARK
                 isHomeMacrobenchmarkApplink =
                     uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_HOME_MACROBENCHMARK
+                isCassava =
+                    uri.pathSegments.size == 2 && uri.pathSegments[1] == URI_CASSAVA
             }
         }
         when {
@@ -253,8 +259,16 @@ class DeveloperOptionActivity :
                 setContentView(R.layout.activity_developer_option)
                 setRecyclerView()
                 setSearchBar()
+                if (isCassava) processCassavaShortcut()
             }
         }
+    }
+
+    private fun processCassavaShortcut() {
+        val path = intent.data?.getQueryParameter("p")
+        if (path.isNullOrEmpty()) return
+        Timber.i("Processing cassava shortcut with path $path")
+        startActivity(MainValidatorActivity.newInstance(this, path))
     }
 
     private fun setSearchBar() {
