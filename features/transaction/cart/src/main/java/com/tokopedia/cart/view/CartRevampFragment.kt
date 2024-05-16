@@ -46,6 +46,8 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -494,6 +496,7 @@ class CartRevampFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        BtmApi.registerBtmPageOnCreate(this, Page.CART)
         super.onCreate(savedInstanceState)
 
         activity?.let {

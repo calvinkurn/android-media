@@ -13,7 +13,10 @@ enum class Page(val str: String) {
     OFFICIAL_STORE("a87943.b9256"),
     ORDER_LIST("a87943.b1605"),
     TRANSAKSI("a87943.b0775"),
-    PDP("a87943.b2815")
+    PDP("a87943.b2815"),
+    SKU("a87943.b8098"),
+    CART("a87943.b2906"),
+    CHECKOUT("a87943.b69823")
 }
 
 /**
