@@ -25,7 +25,7 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
     override fun productImpressed(data: ProductWidgetUiModel, position: Int) {
         listener.getTrackingQueueObj()?.putEETracking(
             Kd2SquareTracker.widgetImpressed(
-                data.channelModel,
+                data,
                 listener.userId,
                 position
             ) as HashMap<String, Any>
