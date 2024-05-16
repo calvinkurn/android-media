@@ -32,74 +32,22 @@ object PMRegistrationTermHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel
     ): RegistrationTermUiModel.ShopScore {
-        val isNewSeller = shopInfo.isNewSeller
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
-        val isEligibleShopScore = shopInfo.isEligibleShopScore()
-        val (shopScoreResIcon, isChecked) = getResDrawableIcon(shopInfo, isEligibleShopScore)
-
+        val (shopScoreResIcon, isChecked) = getResDrawableIcon(shopInfo, true)
         val title: String
         val description: String
         var ctaText: String? = null
         var ctaAppLink: String? = null
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(shopInfo.shopScore)
-
-        if (isNewSeller) {
-            if (isFirstMondayNewSeller) {
-                val textColor = if (isEligibleShopScore) {
-                    PMCommonUtils.getHexColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                    )
-                } else {
-                    PMCommonUtils.getHexColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                    )
-                }
-                title = context.getString(
-                    R.string.pm_title_shop_score_term_new_seller_after_30_days,
-                    textColor,
-                    shopScoreFmt
-                )
-                description =
-                    context.getString(R.string.pm_desc_shop_score_term_new_seller_after_30_days)
-            } else {
-                title =
-                    context.getString(R.string.pm_title_shop_score_term_new_seller_before_30_days)
-                description =
-                    context.getString(
-                        R.string.pm_desc_shop_score_term_new_seller_before_30_days,
-                        shopScoreFmt
-                    )
-            }
-            ctaText = context.getString(R.string.pm_learn_shop_performance)
-            ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
-        } else {
-            if (isEligibleShopScore) {
-                val textColor = PMCommonUtils.getHexColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                )
-                title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
-                description = context.getString(
-                    R.string.pm_shop_score_eligible_description,
-                    shopInfo.shopScorePmProThreshold
-                )
-            } else {
-                val textColor = PMCommonUtils.getHexColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                )
-                title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
-                description = context.getString(
-                    R.string.pm_shop_score_not_eligible_description,
-                    shopInfo.shopScoreThreshold
-                )
-                ctaText = context.getString(R.string.pm_learn_shop_performance)
-                ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
-            }
-        }
-
+        val textColor = PMCommonUtils.getHexColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        )
+        title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
+        description = context.getString(
+            R.string.pm_shop_score_eligible_description,
+            shopInfo.shopScorePmProThreshold
+        )
         return RegistrationTermUiModel.ShopScore(
             title = title,
             descriptionHtml = description,
