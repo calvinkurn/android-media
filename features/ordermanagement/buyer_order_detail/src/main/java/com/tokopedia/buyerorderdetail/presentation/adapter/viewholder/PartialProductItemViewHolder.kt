@@ -6,8 +6,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailShareConst
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailShareUtils
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.iconunify.IconUnify
@@ -17,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -79,7 +78,7 @@ class PartialProductItemViewHolder(
     }
 
     private fun setupShareButton(productUrl: String?) {
-        if (isUsingShareEx()) {
+        if (BuyerOrderDetailShareUtils.isUsingShareEx()) {
             return
         }
 
@@ -232,14 +231,6 @@ class PartialProductItemViewHolder(
             R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
             R.id.btnShareProduct -> openShareBottomSheet()
         }
-    }
-
-    private fun isUsingShareEx(): Boolean {
-        val rollenceKey = BuyerOrderDetailShareConst.SHARE_EX_ROLLENCE_KEY
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            rollenceKey,
-            ""
-        ) == rollenceKey
     }
 
     private fun openShareBottomSheet() {

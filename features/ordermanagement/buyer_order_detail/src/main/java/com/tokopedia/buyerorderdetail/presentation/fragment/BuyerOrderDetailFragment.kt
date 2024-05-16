@@ -38,9 +38,9 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SHOP_STATUS_AFFILIATE_LINK_ELIGIBILITY
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SITE_ID_AFFILIATE_LINK_ELIGIBILITY
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.VERTICAL_ID_AFFILIATE_LINK_ELIGIBILITY
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailShareConst
 import com.tokopedia.buyerorderdetail.common.extension.collectLatestWhenResumed
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailShareUtils
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderDetailBinding
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
@@ -103,7 +103,6 @@ import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHo
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
 import com.tokopedia.scp_rewards_touchpoints.common.BUYER_ORDER_DETAIL_PAGE
 import com.tokopedia.scp_rewards_touchpoints.common.Error
@@ -1140,7 +1139,7 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
-        if (isUsingShareEx()) {
+        if (BuyerOrderDetailShareUtils.isUsingShareEx()) {
             // Validate archived product
             if (element.productUrl.isBlank()) {
                 showCommonToaster(
@@ -1213,14 +1212,6 @@ open class BuyerOrderDetailFragment :
             this@BuyerOrderDetailFragment
         )
         BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
-    }
-
-    private fun isUsingShareEx(): Boolean {
-        val rollenceKey = BuyerOrderDetailShareConst.SHARE_EX_ROLLENCE_KEY
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            rollenceKey,
-            ""
-        ) == rollenceKey
     }
 
     private fun shareProduct(element: ProductListUiModel.ProductUiModel) {
