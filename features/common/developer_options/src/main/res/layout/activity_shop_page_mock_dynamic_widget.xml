@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/shop_id_text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:text_field_input_type="text"
+            app:text_field_label_static="true"
+            app:text_field_placeholder="ShopId (Eg. 1854168 for Unilever Official Store)" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/route_to_shop_page_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Route to Shop Page"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="List of mock shop widget"
+            app:typographyType="heading_3" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_mock_shop_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_empty_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Please add mock shop widget"
+            app:typographyType="body_2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/shop_widget_mock_button_template"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Template Shop Widget"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/shop_widget_mock_button_custom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Custom Shop Widget"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main" />
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/shop_widget_mock_button_clear"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Clear Mock Shop Widget"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main" />
+
+    </LinearLayout>
+</ScrollView>
