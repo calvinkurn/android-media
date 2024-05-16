@@ -36,6 +36,7 @@ class ChooseAddressWidget :
     ConstraintLayout,
     ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
+    constructor(context: Context?) : super(context)
     constructor(context: Context?, type: Int) : super(context) {
         this.type = type
     }
