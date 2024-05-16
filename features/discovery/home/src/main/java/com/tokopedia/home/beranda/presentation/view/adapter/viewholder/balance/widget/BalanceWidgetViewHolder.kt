@@ -24,23 +24,27 @@ class BalanceWidgetViewHolder(
     private var balanceAdapter: BalanceWidgetAdapter? = null
 
     companion object {
-
         @LayoutRes
         val LAYOUT = homeR.layout.layout_dynamic_balance_widget
     }
 
-    override fun bind(element: BalanceWidgetUiModel) {
-        if (binding?.rvBalanceWidget?.adapter == null) {
-            balanceAdapter = BalanceWidgetAdapter(BalanceTypeFactoryImpl(listener))
-            binding?.rvBalanceWidget?.adapter = balanceAdapter
-        }
+    init {
+        balanceAdapter = BalanceWidgetAdapter(BalanceTypeFactoryImpl(listener))
+        binding?.rvBalanceWidget?.adapter = balanceAdapter
         binding?.rvBalanceWidget?.layoutManager = NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL)
-
         if (binding?.rvBalanceWidget?.itemDecorationCount == 0) {
             binding?.rvBalanceWidget?.addItemDecoration(
                 BalanceSpacingItemDecoration()
             )
         }
-        balanceAdapter?.setItemList(element.balanceItems)
+        binding?.rvBalanceWidget?.itemAnimator = null
+    }
+
+    override fun bind(element: BalanceWidgetUiModel) {
+        balanceAdapter?.submitList(element.balanceItems)
+    }
+
+    override fun bind(element: BalanceWidgetUiModel, payloads: MutableList<Any>) {
+        bind(element)
     }
 }

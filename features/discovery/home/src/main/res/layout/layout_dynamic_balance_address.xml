@@ -8,10 +8,11 @@
     android:background="@drawable/home_bg_rounded_balance"
     android:padding="8dp">
 
-    <com.tokopedia.localizationchooseaddress.ui.widget.BigChooseAddressWidget
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
         android:id="@+id/chooseAddressWidget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:widgetType="simplified"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

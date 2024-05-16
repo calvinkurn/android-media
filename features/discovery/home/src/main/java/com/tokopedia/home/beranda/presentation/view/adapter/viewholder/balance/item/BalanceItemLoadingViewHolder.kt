@@ -10,14 +10,14 @@ import com.tokopedia.home.R as homeR
  */
 class BalanceItemLoadingViewHolder(
     v: View,
-): AbstractViewHolder<BalanceItemUiModel>(v) {
+): AbstractViewHolder<BalanceItemLoadingUiModel>(v) {
     companion object {
         @LayoutRes
-        val LAYOUT = homeR.layout.layout_dynamic_balance_item
+        val LAYOUT = homeR.layout.layout_dynamic_balance_item_loading
     }
 
     override fun bind(
-        model: BalanceItemUiModel,
+        model: BalanceItemLoadingUiModel,
     ) {
 
     }

@@ -16,7 +16,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.i
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetErrorUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetLoadingUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetUiModel
 import com.tokopedia.home_component.widget.common.DataStatus
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
@@ -27,55 +29,6 @@ import javax.inject.Inject
  * Created by Frenzel
  */
 class BalanceWidgetMapper @Inject constructor() {
-
-    fun asVisitable(
-        data: DynamicBalanceWidgetModel,
-        atfData: AtfData,
-    ): Visitable<*> {
-        return if (atfData.atfStatus == AtfKey.STATUS_ERROR) {
-            BalanceWidgetErrorUiModel()
-        } else {
-            val balanceItems = mutableListOf<BalanceItemVisitable>()
-            data.balanceItems.forEachIndexed { idx, it ->
-                balanceItems.addIfNotNull(it.mapToBalanceItemVisitable(idx))
-            }
-            BalanceWidgetUiModel(balanceItems)
-        }
-    }
-
-    @SuppressLint("PII Data Exposure")
-    private fun BalanceItemModel.mapToBalanceItemVisitable(position: Int): BalanceItemVisitable? {
-        val contentType = when(type) {
-            BalanceItemModel.GOPAY -> BalanceItemVisitable.ContentType.GoPay(isLinked)
-            BalanceItemModel.REWARDS -> BalanceItemVisitable.ContentType.Rewards
-            BalanceItemModel.ADDRESS -> BalanceItemVisitable.ContentType.Address
-            else -> return null
-        }
-        return when(state) {
-            DataStatus.LOADING -> BalanceItemLoadingUiModel(contentType, position)
-            DataStatus.ERROR -> BalanceItemErrorUiModel(contentType, position)
-            DataStatus.SUCCESS -> mapToBalanceItemUiModel(contentType, position)
-            else -> null
-        }
-    }
-
-    private fun BalanceItemModel.mapToBalanceItemUiModel(
-        contentType: BalanceItemVisitable.ContentType,
-        position: Int
-    ): BalanceItemVisitable {
-        return if(contentType is BalanceItemVisitable.ContentType.Address) {
-            AddressUiModel(position)
-        } else {
-            BalanceItemUiModel(
-                contentType = contentType,
-                applink = applink,
-                url = url,
-                imageUrl = imageUrl,
-                text = text,
-                position = position,
-            )
-        }
-    }
 
     fun mapToBalanceItemModel(
         data: Balances,
@@ -97,10 +50,10 @@ class BalanceWidgetMapper @Inject constructor() {
             }
         } else {
             val reserveBalance = data.reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
-            if (reserveBalance?.amount.isMoreThanZero()) {
-                balanceTitle = RESERVE_BALANCE_FORMAT.format(reserveBalance?.amountFmt)
+            balanceTitle = if (reserveBalance?.amount.isMoreThanZero()) {
+                RESERVE_BALANCE_FORMAT.format(reserveBalance?.amountFmt)
             } else {
-                balanceTitle = data.walletName
+                data.walletName
             }
         }
         return BalanceItemModel(
@@ -116,14 +69,72 @@ class BalanceWidgetMapper @Inject constructor() {
     fun mapToBalanceItemModel(
         data: TokopointsDrawer,
         type: String,
-    ): BalanceItemModel {
+    ): BalanceItemModel? {
+        val text = data.sectionContent.getOrNull(1)?.textAttributes?.text ?: return null
         return BalanceItemModel(
             type = type,
             applink = data.redirectAppLink,
             url = data.redirectURL,
-            imageUrl = data.iconImageURL,
-            text = data.label,
+            imageUrl = "https://images.tokopedia.net/img/tokopoints/benefit/kupon.png",
+            text = text,
             state = DataStatus.SUCCESS
+        )
+    }
+
+    fun asVisitable(
+        data: DynamicBalanceWidgetModel,
+        atfData: AtfData,
+    ): Visitable<*> {
+        return when(atfData.atfStatus) {
+            AtfKey.STATUS_ERROR -> BalanceWidgetErrorUiModel()
+            AtfKey.STATUS_LOADING -> BalanceWidgetLoadingUiModel()
+            else -> {
+                if(atfData.atfContent is NonLoggedInBalance) {
+                    LoginWidgetUiModel()
+                } else {
+                    val balanceItems = mutableListOf<BalanceItemVisitable>()
+                    data.balanceItems.forEachIndexed { idx, it ->
+                        balanceItems.addIfNotNull(it.mapToBalanceItemVisitable(idx))
+                    }
+                    BalanceWidgetUiModel(balanceItems)
+                }
+            }
+        }
+    }
+
+    @SuppressLint("PII Data Exposure")
+    private fun BalanceItemModel.mapToBalanceItemVisitable(position: Int): BalanceItemVisitable? {
+        val contentType = when(type) {
+            BalanceItemModel.GOPAY -> BalanceItemVisitable.ContentType.GoPay(isLinked)
+            BalanceItemModel.REWARDS -> BalanceItemVisitable.ContentType.Rewards
+            BalanceItemModel.ADDRESS -> return mapToAddressUiModel(position)
+            else -> return null
+        }
+        return when(state) {
+            DataStatus.LOADING -> BalanceItemLoadingUiModel(contentType, position)
+            DataStatus.ERROR -> BalanceItemErrorUiModel(contentType, position)
+            DataStatus.SUCCESS -> mapToBalanceItemUiModel(contentType, position)
+            else -> null
+        }
+    }
+
+    private fun mapToAddressUiModel(
+        position: Int
+    ): BalanceItemVisitable {
+        return AddressUiModel(position)
+    }
+
+    private fun BalanceItemModel.mapToBalanceItemUiModel(
+        contentType: BalanceItemVisitable.ContentType,
+        position: Int
+    ): BalanceItemVisitable {
+        return BalanceItemUiModel(
+            contentType = contentType,
+            applink = applink,
+            url = url,
+            imageUrl = imageUrl,
+            text = text,
+            position = position,
         )
     }
 

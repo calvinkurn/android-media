@@ -12,7 +12,6 @@ import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
@@ -35,8 +34,8 @@ class BalanceWidgetUseCase @Inject constructor(
     private val getHomeBalanceWidgetUseCase: GetHomeBalanceWidgetUseCase,
     private val homeWalletRepository: HomeWalletAppRepository,
     private val homeRewardsRepository: HomeTokopointsListRepository,
-    private val userSession: UserSessionInterface,
     private val balanceWidgetMapper: BalanceWidgetMapper,
+    private val userSession: UserSessionInterface,
 ): BaseAtfRepository(), CoroutineScope {
 
     companion object {
@@ -55,6 +54,10 @@ class BalanceWidgetUseCase @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {
+        if(!userSession.isLoggedIn) {
+            emitLoginWidget()
+            return
+        }
         initialLoading(atfMetadata)
 
         val param = Bundle().apply {
@@ -68,28 +71,13 @@ class BalanceWidgetUseCase @Inject constructor(
         if (balanceWidget.getHomeBalanceList.error.isNotBlank()) {
             throw MessageErrorException(balanceWidget.getHomeBalanceList.error)
         } else {
-            addPlaceholder(balanceWidget)
+            addPlaceholder(atfMetadata, balanceWidget)
             fetchFullData()
         }
     }
 
-    fun refresh(contentType: BalanceItemVisitable.ContentType) {
-        when(contentType) {
-            is BalanceItemVisitable.ContentType.GoPay -> getWalletData()
-            is BalanceItemVisitable.ContentType.Rewards -> getRewardsData()
-            else -> { }
-        }
-    }
-
-    private fun addPlaceholder(getHomeBalanceWidgetData: GetHomeBalanceWidgetData) {
-        balanceWidgetModel = DynamicBalanceWidgetModel(
-            getHomeBalanceWidgetData.getHomeBalanceList.balancesList.map {
-                it.loading()
-            }
-        )
-    }
-
     fun fetchFullData() {
+        if(!userSession.isLoggedIn) return
         balanceWidgetModel.balanceItems.forEachIndexed { idx, it ->
             when(it.type) {
                 BalanceItemModel.GOPAY -> getWalletData()
@@ -98,7 +86,39 @@ class BalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    fun getWalletData() {
+    fun refresh(contentType: BalanceItemVisitable.ContentType) {
+        if(!userSession.isLoggedIn) return
+        when(contentType) {
+            is BalanceItemVisitable.ContentType.GoPay -> getWalletData()
+            is BalanceItemVisitable.ContentType.Rewards -> getRewardsData()
+            else -> { }
+        }
+    }
+
+    private suspend fun emitLoginWidget() {
+        emitData(
+            AtfData(
+                atfMetadata = AtfMetadata(),
+                atfStatus = AtfKey.STATUS_SUCCESS,
+                isCache = false,
+                atfContent = NonLoggedInBalance
+            )
+        )
+    }
+
+    private suspend fun addPlaceholder(
+        atfMetadata: AtfMetadata,
+        getHomeBalanceWidgetData: GetHomeBalanceWidgetData
+    ) {
+        balanceWidgetModel = DynamicBalanceWidgetModel(
+            getHomeBalanceWidgetData.getHomeBalanceList.balancesList.map {
+                it.loading()
+            }
+        )
+        emitData(AtfData(atfMetadata = atfMetadata, isCache = false, atfContent = balanceWidgetModel))
+    }
+
+    private fun getWalletData() {
         launch {
             val type = BalanceItemModel.GOPAY
             try {
@@ -130,14 +150,14 @@ class BalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    fun getRewardsData() {
+    private fun getRewardsData() {
         launch {
             val type = BalanceItemModel.REWARDS
             try {
                 updateState(DataStatus.LOADING, type)
                 val rewardsData = homeRewardsRepository.getRemoteData()
                 rewardsData.tokopointsDrawerList.drawerList.firstOrNull()?.let {
-                    val balanceItemModel = balanceWidgetMapper.mapToBalanceItemModel(it, type)
+                    val balanceItemModel = balanceWidgetMapper.mapToBalanceItemModel(it, type) ?: return@let
                     updateBalanceItem(balanceItemModel, type)
                 } ?: updateState(state = DataStatus.ERROR, type = type)
             } catch (e: Exception) {

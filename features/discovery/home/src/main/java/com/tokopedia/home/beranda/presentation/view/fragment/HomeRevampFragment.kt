@@ -101,6 +101,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
@@ -188,7 +189,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.libra.LibraInstance
 import com.tokopedia.libra.LibraOwner
-import com.tokopedia.localizationchooseaddress.ui.widget.BaseChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -1324,7 +1324,6 @@ open class HomeRevampFragment :
             viewLifecycleOwner,
             Observer { dynamicChannel: HomeDynamicChannelModel? ->
                 dynamicChannel?.let {
-                    val data = dynamicChannel.list.filter { it is HomeRecommendationFeedDataModel }
                     if (dynamicChannel.list.isNotEmpty()) {
                         setData(dynamicChannel.list, dynamicChannel.isCache)
                     }
@@ -1961,7 +1960,7 @@ open class HomeRevampFragment :
     }
 
     override fun initializeChooseAddressWidget(
-        chooseAddressWidget: BaseChooseAddressWidget,
+        chooseAddressWidget: ChooseAddressWidget,
         needToShowChooseAddress: Boolean
     ) {
         chooseAddressWidgetCallback =

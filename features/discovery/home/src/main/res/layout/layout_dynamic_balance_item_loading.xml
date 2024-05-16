@@ -4,7 +4,7 @@
     android:id="@+id/loaderBalance"
     android:layout_width="120dp"
     android:layout_height="36dp"
-    android:background="@color/Unify_NN400"
+    android:background="@color/home_dms_balance_shimmering"
     app:loader_type="rect"
     app:loader_corner_radius="24dp"
     app:layout_constraintEnd_toEndOf="parent" />

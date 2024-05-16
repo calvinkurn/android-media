@@ -14,9 +14,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class AddressViewHolder(
     v: View,
     val listener: HomeCategoryListener,
-): AbstractViewHolder<BalanceItemUiModel>(v) {
+): AbstractViewHolder<AddressUiModel>(v) {
     companion object {
-        @SuppressLint("PII Data Exposure")
         val LAYOUT = homeR.layout.layout_dynamic_balance_address
     }
 
@@ -24,9 +23,10 @@ class AddressViewHolder(
 
     @SuppressLint("PII Data Exposure")
     override fun bind(
-        model: BalanceItemUiModel,
+        model: AddressUiModel,
     ) {
         val binding = binding ?: return
         listener.initializeChooseAddressWidget(binding.chooseAddressWidget, true)
+        binding.chooseAddressWidget.updateWidget()
     }
 }

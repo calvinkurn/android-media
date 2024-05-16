@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -27,12 +28,13 @@ class BalanceTypeFactoryImpl(
         return AddressViewHolder.LAYOUT
     }
 
-    override fun onCreateViewHolder(view: View, viewType: Int): AbstractViewHolder<BalanceItemVisitable> {
-        return when(viewType) {
-            BalanceItemViewHolder.LAYOUT -> BalanceItemViewHolder(view, listener)
-            BalanceItemErrorViewHolder.LAYOUT -> BalanceItemErrorViewHolder(view, listener)
-            BalanceItemLoadingViewHolder.LAYOUT -> BalanceItemLoadingViewHolder(view)
-            else -> super.createViewHolder(view, viewType)
-        } as AbstractViewHolder<BalanceItemVisitable>
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return when(type) {
+            BalanceItemViewHolder.LAYOUT -> BalanceItemViewHolder(parent, listener)
+            BalanceItemErrorViewHolder.LAYOUT -> BalanceItemErrorViewHolder(parent, listener)
+            BalanceItemLoadingViewHolder.LAYOUT -> BalanceItemLoadingViewHolder(parent)
+            AddressViewHolder.LAYOUT -> AddressViewHolder(parent, listener)
+            else -> super.createViewHolder(parent, type)
+        } as AbstractViewHolder<Visitable<*>>
     }
 }

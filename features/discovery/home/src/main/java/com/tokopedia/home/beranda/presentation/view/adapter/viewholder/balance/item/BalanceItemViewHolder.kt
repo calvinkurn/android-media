@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceViewHolder
 import com.tokopedia.home.databinding.LayoutDynamicBalanceItemBinding
 import com.tokopedia.home.R as homeR
 import com.tokopedia.media.loader.loadImage
