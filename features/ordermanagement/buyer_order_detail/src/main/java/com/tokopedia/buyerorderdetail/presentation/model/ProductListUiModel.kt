@@ -61,7 +61,7 @@ data class ProductListUiModel(
         val productId: String,
         val productName: String,
         val productNote: String,
-        var productUrl: String,
+        val productUrl: String,
         val productThumbnailUrl: String,
         val quantity: Int,
         val totalPrice: String,
