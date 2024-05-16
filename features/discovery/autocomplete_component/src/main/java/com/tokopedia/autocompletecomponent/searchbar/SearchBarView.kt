@@ -21,10 +21,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.AutocompleteSearchBarViewBinding
+import com.tokopedia.autocompletecomponent.util.SearchRollenceController
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.microinteraction.autocomplete.AutoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -40,8 +46,9 @@ import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class SearchBarView constructor(
+class SearchBarView(
     private val mContext: Context,
     attrs: AttributeSet,
 ) : ConstraintLayout(mContext, attrs) {
@@ -76,6 +83,7 @@ class SearchBarView constructor(
     private var isTyping = false
     private var binding: AutocompleteSearchBarViewBinding? = null
 
+    private val isSearchBtnEnabled by lazy { SearchRollenceController.isSearchBtnEnabled() }
     private var isMpsEnabled: Boolean = false
 
     private var viewListener: SearchBarViewListener? = null
@@ -142,6 +150,9 @@ class SearchBarView constructor(
         showVoiceButton(true)
 
         initSearchView()
+
+        configureSearchIcon()
+        configureSearchBarStyle()
     }
 
     private fun initAttribute(attrs: AttributeSet) {
@@ -174,7 +185,7 @@ class SearchBarView constructor(
 
     private fun showVoiceButton(show: Boolean) {
         val binding = binding ?: return
-        if (show && isVoiceAvailable)
+        if (show && isVoiceAvailable && !isSearchBtnEnabled)
             binding.autocompleteVoiceButton.visibility = View.VISIBLE
         else
             binding.autocompleteVoiceButton.visibility = View.GONE
@@ -227,6 +238,65 @@ class SearchBarView constructor(
             if (hasFocus) {
                 showKeyboard(searchTextView)
             }
+        }
+    }
+
+    private fun configureSearchIcon() {
+        val binding = binding ?: return
+        if (isSearchBtnEnabled) {
+            val iconSize = context.dpToPx(20).toInt()
+            binding.autocompleteSearchIcon.layoutParams.width = iconSize
+            binding.autocompleteSearchIcon.layoutParams.height = iconSize
+            binding.autocompleteSearchIcon.requestLayout()
+            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN950)
+            binding.autocompleteSearchIcon.setImage(
+                newIconId = IconUnify.SEARCH,
+                newLightEnable = iconColor,
+                newDarkEnable = iconColor
+            )
+            val searchView = binding.searchTextView
+            val leftPadding = context.dpToPx(32).toInt()
+            searchView.setPadding(
+                leftPadding,
+                searchView.paddingTop,
+                searchView.paddingRight,
+                searchView.paddingBottom
+            )
+        } else {
+            val iconSize = context.dpToPx(14).toInt()
+            binding.autocompleteSearchIcon.layoutParams.width = iconSize
+            binding.autocompleteSearchIcon.layoutParams.height = iconSize
+            binding.autocompleteSearchIcon.requestLayout()
+            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN950_68)
+            binding.autocompleteSearchIcon.setImage(
+                newIconId = IconUnify.SEARCH,
+                newLightEnable = iconColor,
+                newDarkEnable = iconColor
+            )
+            val searchView = binding.searchTextView
+            val leftPadding = context.dpToPx(28).toInt()
+            searchView.setPadding(
+                leftPadding,
+                searchView.paddingTop,
+                searchView.paddingRight,
+                searchView.paddingBottom
+            )
+        }
+    }
+
+    private fun configureSearchBarStyle() {
+        val binding = binding ?: return
+        val isSearchBtnEnabled = SearchRollenceController.isSearchBtnEnabled()
+        if (isSearchBtnEnabled) {
+            binding.autocompleteVoiceButton.gone()
+            binding.autocompleteButtonDivider.gone()
+            binding.tvSearchCta.visible()
+            binding.tvSearchCta.setOnClickListener {
+                onSubmitQuery()
+            }
+        } else {
+            binding.autocompleteButtonDivider.visible()
+            showVoiceButton(true)
         }
     }
 
@@ -292,12 +362,17 @@ class SearchBarView constructor(
         mUserQuery = text
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
-            binding.autocompleteClearButton.visible()
+            showClearButton(true)
             showVoiceButton(false)
         } else {
-            binding.autocompleteClearButton.hide()
+            showClearButton(false)
             showVoiceButton(true)
         }
+    }
+
+    private fun showClearButton(show: Boolean) {
+        binding?.autocompleteClearButton?.showWithCondition(show)
+        binding?.autocompleteButtonDivider?.showWithCondition(show && !isSearchBtnEnabled)
     }
 
     fun setMPSEnabled(isMPSEnabled: Boolean) {
@@ -310,7 +385,12 @@ class SearchBarView constructor(
 
     private fun showAddButtonGroup() {
         val binding = binding ?: return
-        binding.autocompleteAddButtonGroup.visibility = View.VISIBLE
+        binding.autocompleteAddButton.visibility = View.VISIBLE
+        if (isSearchBtnEnabled) {
+            binding.autocompleteButtonDivider.gone()
+        } else {
+            binding.autocompleteButtonDivider.visibility = View.VISIBLE
+        }
         with(binding.searchTextView) {
             setPadding(
                 paddingLeft,
@@ -323,7 +403,8 @@ class SearchBarView constructor(
 
     fun hideAddButton() {
         val binding = binding ?: return
-        binding.autocompleteAddButtonGroup.visibility = View.GONE
+        binding.autocompleteAddButton.visibility = View.GONE
+        binding.autocompleteButtonDivider.visibility = View.GONE
         with(binding.searchTextView) {
             setPadding(
                 paddingLeft,

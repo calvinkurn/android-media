@@ -67,6 +67,7 @@ import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.enterMethodMap
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.EXCLUDED_NAV_SOURCE
+import com.tokopedia.autocompletecomponent.util.SearchRollenceController
 import com.tokopedia.autocompletecomponent.util.getSearchQuery
 import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
 import com.tokopedia.autocompletecomponent.util.getWithDefault
@@ -163,6 +164,7 @@ open class BaseAutoCompleteActivity :
             supportFragmentManager.fragmentFactory = it
         }
         super.onCreate(savedInstanceState)
+        SearchRollenceController.fetchRollenceData()
         setContentView(R.layout.activity_auto_complete)
 
         init(savedInstanceState)
