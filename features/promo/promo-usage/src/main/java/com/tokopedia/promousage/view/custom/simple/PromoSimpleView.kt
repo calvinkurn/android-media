@@ -42,7 +42,17 @@ class PromoSimpleView @JvmOverloads constructor(
     }
 
     private fun bindCircleCut(promo: PromoSimpleItem) {
-        binding.promoMiniCard.changeCircleCutColor(promo.curveColor, promo.curveAlpha)
+        val finalColor = if (this.context.isDarkMode()) {
+            promo.curveColorDark
+        } else {
+            promo.curveColor
+        }
+        val finalAlpha = if (this.context.isDarkMode()) {
+            promo.curveAlphaDark
+        } else {
+            promo.curveAlpha
+        }
+        binding.promoMiniCard.changeCircleCutColor(finalColor, finalAlpha)
     }
 
     private fun bindCardBackground(promo: PromoSimpleItem) {

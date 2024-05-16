@@ -104,7 +104,9 @@ class TopChatRoomVoucherUiModel private constructor(
                 iconUrl = displayDto.voucherIconUrl,
                 iconUrlDark = displayDto.voucherIconUrl,
                 curveColor = unifyprinciplesR.color.Unify_NN50,
-                curveAlpha = 50
+                curveColorDark = unifyprinciplesR.color.Unify_NN0,
+                curveAlpha = 128,
+                curveAlphaDark = 200
             )
         }
 

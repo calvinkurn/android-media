@@ -16,5 +16,7 @@ data class PromoSimpleItem(
     val iconUrl: String,
     val iconUrlDark: String,
     @ColorRes val curveColor: Int,
-    val curveAlpha: Int = 256 // max 256
+    @ColorRes val curveColorDark: Int,
+    val curveAlpha: Int = 255, // max 255
+    val curveAlphaDark: Int = 255 // max 255
 ) : Parcelable
