@@ -8,6 +8,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 15/03/21
@@ -41,7 +42,7 @@ object PMRegistrationTermHelper {
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(shopInfo.shopScore)
         val textColor = PMCommonUtils.getHexColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_GN500
         )
         title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
         description = context.getString(
