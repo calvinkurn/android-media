@@ -3,8 +3,12 @@ package com.tokopedia.analytics.byteio.recommendation
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
@@ -69,7 +73,10 @@ object AppLogRecommendation {
         AppLogAnalytics.send(EventName.CONFIRM_CART, JSONObject().apply {
             addPage()
             addEnterFrom()
-            addEntranceInfo()
+            put(
+                AppLogParam.ENTRANCE_INFO,
+                generateEntranceInfoJson(model.sourceModule).toString()
+            )
 
             put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
             put(SOURCE_MODULE, model.sourceModule)
@@ -98,7 +105,10 @@ object AppLogRecommendation {
             addPage()
             addEnterFrom()
             addEnterFromInfo()
-            addEntranceInfo()
+            put(
+                AppLogParam.ENTRANCE_INFO,
+                generateEntranceInfoJson(model.sourceModule).toString()
+            )
 
             put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
             put(SOURCE_MODULE, model.sourceModule)
@@ -120,6 +130,19 @@ object AppLogRecommendation {
             put("is_success", product.isSuccess?.intValue.orZero())
             put("fail_reason", product.failReason)
         })
+    }
+
+    private fun generateEntranceInfoJson(sourceModule: String): JSONObject {
+        return JSONObject().also {
+            it.put(SOURCE_MODULE, sourceModule)
+            it.addEntranceForm()
+            it.put(AppLogParam.IS_AD, AppLogAnalytics.getLastData(AppLogParam.IS_AD))
+            it.addSourcePageType()
+            it.addRequestId()
+            it.addTrackId()
+            it.addEnterMethod()
+            it.addEnterFromInfo()
+        }
     }
 
     private fun AppLogRecommendationProductModel.setGlobalParams() {

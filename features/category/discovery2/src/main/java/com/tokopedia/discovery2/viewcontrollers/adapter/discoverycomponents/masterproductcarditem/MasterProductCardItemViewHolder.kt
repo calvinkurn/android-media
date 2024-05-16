@@ -8,7 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.PageName.EXTERNAL_PROMO
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
@@ -543,8 +546,18 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
          * like going to PDP and pressing the ATC button there.
          */
         AppLogRecommendation.sendProductClickAppLog(productTrackModel)
+        putAppLogEnterMethod()
 
         AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, asTrackConfirmCart())
+    }
+
+    private fun putAppLogEnterMethod() {
+        if (AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME) == EXTERNAL_PROMO) {
+            AppLogAnalytics.putPageData(
+                AppLogParam.ENTER_METHOD,
+                EnterMethod.CLICK_EXTERNAL_ADS.str
+            )
+        }
     }
 
     companion object {
