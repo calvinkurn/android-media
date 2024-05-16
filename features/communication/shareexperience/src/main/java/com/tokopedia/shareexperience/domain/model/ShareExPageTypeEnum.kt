@@ -13,12 +13,10 @@ enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     REVIEW("review", 2),
     SHOP("shop", 3),
     DISCOVERY("discovery", 4),
-    ORDER_DETAIL("Order", 6),
+    ORDER_DETAIL("pdp", 6),
     GOPAYLATER_REFERRAL("gopaylater referral", 7);
 
     companion object {
-
-        const val AFFILIATE_TYPE_PDP = "pdp"
 
         fun fromValue(value: String): ShareExPageTypeEnum {
             return values().find { it.value == value } ?: OTHERS // default

@@ -1,7 +1,6 @@
 package com.tokopedia.shareexperience.data.usecase.shortlink
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkFallbackPriorityEnum
 import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkAdditionalParamRequest
@@ -90,11 +89,7 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
                 channel = listOf(params.channelEnum.id),
                 link = listOf(
                     ShareExAffiliateLinkRequest(
-                        type = if (params.pageTypeEnum == ShareExPageTypeEnum.ORDER_DETAIL) {
-                            ShareExPageTypeEnum.AFFILIATE_TYPE_PDP
-                        } else {
-                            params.pageTypeEnum.value
-                        },
+                        type = params.pageTypeEnum.value,
                         url = params.linkerPropertiesRequest.originalUrl,
                         identifier = params.identifierId,
                         identifierType = 0, // Currently not used, same as IOS
