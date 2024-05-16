@@ -92,7 +92,9 @@ class TopAdsImageViewViewModelTest {
         val exception = Exception("my exception")
         coEvery { topAdsImageViewUseCase.getImageData(any()) } throws exception
         viewModel.getImageData(mutableMapOf())
-        Assert.assertEquals((viewModel.getResponse().value as Fail).throwable.message, exception.message)
+        val result = viewModel.getResponse().value
+        Assert.assertTrue(result is Fail)
+        Assert.assertEquals(exception, (result as Fail).throwable)
     }
 
     @After
