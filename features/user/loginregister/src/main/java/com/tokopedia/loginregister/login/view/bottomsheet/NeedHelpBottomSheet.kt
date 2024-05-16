@@ -17,12 +17,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
-import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -34,6 +34,8 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
     @Inject
     lateinit var needHelpAnalytics: NeedHelpAnalytics
     var viewBinding by autoClearedNullable<LayoutNeedHelpBottomsheetBinding>()
+
+    var shouldShowInactivePhone: Boolean = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -61,7 +63,6 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
     }
 
     private fun setListener() {
-
         viewBinding?.toNeedAnotherHelp?.let {
             initTokopediaCareText(it) }
 
@@ -71,7 +72,9 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
             dismiss()
         }
 
-        if(context?.isLoginSdkFlow() == true) {
+        if (shouldShowInactivePhone) {
+            viewBinding?.ubInactivePhoneNumber?.visible()
+        } else {
             viewBinding?.ubInactivePhoneNumber?.gone()
         }
 

@@ -222,7 +222,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private var sharedPrefs: SharedPreferences? = null
 
-    private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
+    protected var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
     private var isEnableSeamlessLogin = false
 
     override fun getScreenName(): String {
@@ -912,7 +912,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return rollence.isNotEmpty()
     }
 
-    private fun showNeedHelpBottomSheet() {
+    open fun showNeedHelpBottomSheet() {
         if (needHelpBottomSheetUnify == null) {
             needHelpBottomSheetUnify = NeedHelpBottomSheet()
         }
@@ -2061,7 +2061,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     companion object {
         const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_v2"
 
-        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
+        const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"

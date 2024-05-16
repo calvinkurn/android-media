@@ -373,7 +373,11 @@ class RegisterInitialFragment :
                         )
                     }
                     registerAnalytics.trackClickTopSignInButton()
-                    registerInitialRouter.goToLoginPage(activity, callbackRegister)
+                    if (requireContext().isLoginSdkFlow()) {
+                        activity.onBackPressed()
+                    } else {
+                        registerInitialRouter.goToLoginPage(activity, callbackRegister)
+                    }
                 }
             }
         }

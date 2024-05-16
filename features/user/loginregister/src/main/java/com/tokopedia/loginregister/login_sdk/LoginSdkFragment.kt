@@ -13,6 +13,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_API
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
@@ -49,6 +50,14 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
             registerButton.showWithCondition(false)
             btnLoginGoogle.showWithCondition(true)
         }
+    }
+
+    override fun showNeedHelpBottomSheet() {
+        if (needHelpBottomSheetUnify == null) {
+            needHelpBottomSheetUnify = NeedHelpBottomSheet()
+        }
+        needHelpBottomSheetUnify?.shouldShowInactivePhone = false
+        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }
 
     private fun initObserver() {

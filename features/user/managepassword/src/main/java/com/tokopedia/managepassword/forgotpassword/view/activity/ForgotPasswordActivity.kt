@@ -90,7 +90,11 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                 REQUEST_CODE_LOGIN -> gotoHome()
             }
         } else {
-            gotoHome()
+            if (isLoginSdkFlow()) {
+                backToLoginSdk()
+            } else {
+                gotoHome()
+            }
         }
     }
 
@@ -109,12 +113,16 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         startActivityForResult(intent, REQUEST_CODE_LOGOUT)
     }
 
+    private fun backToLoginSdk() {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGIN_SDK)
+        intent.putExtra("from_reset_password", true)
+        startActivity(intent)
+        finish()
+    }
+
     private fun gotoLogin(uri: Uri? = null) {
         if (isLoginSdkFlow()) {
-            val intent = RouteManager.getIntent(this, "tokopedia-android-internal://user/login-sdk")
-            intent.putExtra("from_reset_password", true)
-            startActivity(intent)
-            finish()
+            backToLoginSdk()
         } else {
             val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             if(uri != null) {
