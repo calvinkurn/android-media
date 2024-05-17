@@ -717,6 +717,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 }
               }
               cart_type
+              confirmation_footer {
+                type
+                text
+              }
             }
           }
         }"""

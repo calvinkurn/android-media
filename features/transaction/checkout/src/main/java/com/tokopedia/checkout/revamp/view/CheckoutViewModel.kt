@@ -210,6 +210,7 @@ class CheckoutViewModel @Inject constructor(
     var usePromoEntryPointNewInterface: Boolean = false
 
     private var cartType: String = ""
+    private var terms: String = ""
 
     private var debounceQtyJob: Job? = null
 
@@ -362,6 +363,7 @@ class CheckoutViewModel @Inject constructor(
                         )
 
                         cartType = saf.cartShipmentAddressFormData.cartType
+                        terms = saf.cartShipmentAddressFormData.terms
                         val cost = CheckoutCostModel(useNewWording = payment.enable)
 
                         val paymentLevelAddOnsMap = mutableMapOf<Long, CheckoutCrossSellItem>()
@@ -420,7 +422,8 @@ class CheckoutViewModel @Inject constructor(
 
                         val buttonPayment = CheckoutButtonPaymentModel(
                             "",
-                            useDirectPayment = payment.enable
+                            useDirectPayment = payment.enable,
+                            terms = saf.cartShipmentAddressFormData.terms
                         )
 
                         val itemsWithLoadingState = items.map {
