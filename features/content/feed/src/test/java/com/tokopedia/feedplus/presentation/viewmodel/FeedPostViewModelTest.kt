@@ -95,6 +95,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -128,7 +129,8 @@ class FeedPostViewModelTest {
     private val mvcSummaryUseCase: MVCSummaryUseCase = mockk()
     private val topAdsAddressHelper: TopAdsAddressHelper = mockk()
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
-    private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
+    private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase =
+        mockk(relaxed = true)
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
     private val postReportUseCase: PostUserReportUseCase = mockk()
     private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase = mockk()
@@ -1205,25 +1207,34 @@ class FeedPostViewModelTest {
 
     @Test
     fun onTrackChannelProduct() {
-        coEvery { trackReportViewerUseCase.params } coAnswers { mapOf() }
-        coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
+        runTest(testDispatcher.coroutineDispatcher) {
+            coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
+            // when
+            viewModel.trackPerformance(
+                playChannelId,
+                listOf("2", "4"),
+                BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges
+            )
 
-        // when
-        viewModel.trackPerformance(playChannelId, emptyList() ,BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
+            coVerify { trackReportViewerUseCase.executeOnBackground() }
+        }
 
-        coVerify { trackReportViewerUseCase.executeOnBackground() }
     }
 
     @Test
     fun onTrackVisitChannel() {
-        coEvery { trackReportViewerUseCase.params } coAnswers { mapOf() }
-        coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
+        runTest(testDispatcher.coroutineDispatcher) {
+            coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
 
-        viewModel.trackPerformance(playChannelId, emptyList(), BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
+            viewModel.trackPerformance(
+                playChannelId,
+                emptyList(),
+                BroadcasterReportTrackViewerUseCase.Companion.Event.Visit
+            )
 
-        coVerify { trackReportViewerUseCase.executeOnBackground() }
+            coVerify { trackReportViewerUseCase.executeOnBackground() }
+        }
+
     }
 
     @Test
