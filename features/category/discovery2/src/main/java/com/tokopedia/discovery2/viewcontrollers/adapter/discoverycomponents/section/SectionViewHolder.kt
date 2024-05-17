@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sec
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -129,22 +130,31 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         // the delay is needed so the children can layout first, and get its height,
         // before we render the background in wrap content
-        imageUrl.getBitmapImageUrl(itemView.context, properties = {
+        val itemViewLocal = itemView
+        imageUrl.getBitmapImageUrl(itemViewLocal.context, properties = {
             listener(onSuccess = { bitmap, _ ->
-                itemView.postDelayed({
-                    festiveForeground.setImageBitmap(bitmap)
-                    addHeightForeground(festiveForeground)
-                    festiveForeground.minimumHeight = 0
+                itemViewLocal.postDelayed({
+                    val ff: ImageView =
+                        itemViewLocal.findViewById(R.id.festiveForeground)
+                    ff.setImageBitmap(bitmap)
+                    addHeightForeground(ff)
+                    ff.minimumHeight = 0
                 }, 300)
 
                 // add set Bitmap, with more delay, to cater if there is change in itemview
-                itemView.postDelayed({
-                    festiveForeground.setImageBitmap(bitmap)
-                    addHeightForeground(festiveForeground)
-                    festiveForeground.minimumHeight = 0
+                itemViewLocal.postDelayed({
+                    val ff: ImageView =
+                        itemViewLocal.findViewById(R.id.festiveForeground)
+                    ff.setImageBitmap(bitmap)
+                    addHeightForeground(ff)
+                    ff.minimumHeight = 0
                 }, 800)
             },
-                onError = { festiveForeground.hide() })
+                onError = {
+                    val ff: ImageView =
+                        itemViewLocal.findViewById(R.id.festiveForeground)
+                    ff.hide()
+                })
         })
     }
 
@@ -153,21 +163,30 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         // the delay is needed so the children can layout first, and get its height,
         // before we render the background in wrap content
-        imageUrl.getBitmapImageUrl(itemView.context, properties = {
+        val itemViewLocal = itemView
+        imageUrl.getBitmapImageUrl(itemViewLocal.context, properties = {
             listener(onSuccess = { bitmap, _ ->
-                itemView.postDelayed({
-                    festiveBackground.setImageBitmap(bitmap)
-                    addHeightBgOnce(festiveBackground)
-                    festiveBackground.minimumHeight = 0
+                itemViewLocal.postDelayed({
+                    val fb: AppCompatImageView =
+                        itemViewLocal.findViewById(R.id.festiveBackground)
+                    fb.setImageBitmap(bitmap)
+                    addHeightBgOnce(fb)
+                    fb.minimumHeight = 0
                 }, 300)
                 // add set Bitmap, with more delay, to cater if there is change in itemview
-                itemView.postDelayed({
-                    festiveBackground.setImageBitmap(bitmap)
-                    addHeightBgOnce(festiveBackground)
-                    festiveBackground.minimumHeight = 0
+                itemViewLocal.postDelayed({
+                    val fb: AppCompatImageView =
+                        itemViewLocal.findViewById(R.id.festiveBackground)
+                    fb.setImageBitmap(bitmap)
+                    addHeightBgOnce(fb)
+                    fb.minimumHeight = 0
                 }, 800)
             },
-                onError = { festiveBackground.hide() })
+                onError = {
+                    val fb: AppCompatImageView =
+                        itemViewLocal.findViewById(R.id.festiveBackground)
+                    fb.hide()
+                })
         })
     }
 
