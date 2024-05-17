@@ -58,11 +58,7 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
             if (!bannerAttachment.isHideBanner) {
                 binding.topchatChatroomBroadcastIvBanner.show()
                 binding.topchatChatroomBroadcastIvBanner.loadImage(bannerAttachment.imageUrl)
-                binding.topchatChatroomBroadcastIvBanner.addOnImpressionListener(
-                    bannerAttachment.impressHolder
-                ) {
-                    impressBanner(bannerAttachment)
-                }
+                impressBannerAttachment(bannerAttachment)
             } else {
                 binding.topchatChatroomBroadcastIvBanner.hide()
             }
@@ -80,6 +76,16 @@ class TopChatRoomBroadcastBaseView @JvmOverloads constructor(
                 banner.syncError()
             } else {
                 banner.updateData(attachment.parsedAttributes)
+            }
+        }
+    }
+
+    private fun impressBannerAttachment(bannerAttachment: ImageAnnouncementUiModel) {
+        if (!bannerAttachment.isLoading) {
+            binding.topchatChatroomBroadcastIvBanner.addOnImpressionListener(
+                bannerAttachment.impressHolder
+            ) {
+                impressBanner(bannerAttachment)
             }
         }
     }
