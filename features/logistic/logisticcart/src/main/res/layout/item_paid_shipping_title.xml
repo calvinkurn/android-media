@@ -11,7 +11,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_paid_shipping_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
