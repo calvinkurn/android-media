@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.data.newatf.shorten
 
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
+import com.tokopedia.home.beranda.data.mapper.factory.toProductCardModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.visitable.shorten.ItemProductWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel

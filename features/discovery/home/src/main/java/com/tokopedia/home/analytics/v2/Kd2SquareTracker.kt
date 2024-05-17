@@ -12,7 +12,8 @@ object Kd2SquareTracker : BaseTrackerConst() {
     // TrackerID: 50030
     private const val IMPRESSION_TRACKER_ID = "50030"
     fun widgetImpressed(data: ProductWidgetUiModel, userId: String, position: Int): Map<String, Any> {
-        val shouldAtLeastContainSingleDataAsProduct = data.data.firstOrNull()?.tracker?.isProduct() ?: false
+        val shouldAtLeastContainSingleDataAsProduct = data.data.firstOrNull()?.tracker?.isProduct()
+            ?: false
 
         val type = if (shouldAtLeastContainSingleDataAsProduct) Const.PRODUCT else Const.BANNER
         val name = if (shouldAtLeastContainSingleDataAsProduct) Const.PRODUCT_NAME else Const.CARD_NAME
@@ -21,14 +22,30 @@ object Kd2SquareTracker : BaseTrackerConst() {
         val attribute = data.channelModel.trackingAttributionModel
 
         val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionView(
-            event = HomePageTracking.PROMO_VIEW,
+            event = if (shouldAtLeastContainSingleDataAsProduct) {
+                Event.PRODUCT_VIEW
+            } else {
+                HomePageTracking.PROMO_VIEW
+            },
             eventAction = action,
             eventCategory = Category.HOMEPAGE,
             eventLabel = "${attribute.channelId} - ${attribute.headerName}",
             promotions = data.channelModel.channelGrids.mapIndexed { index, channelGrid ->
+                val itemId = if (!shouldAtLeastContainSingleDataAsProduct) {
+                    "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}"
+                } else {
+                    channelGrid.id
+                }
+
+                val itemName = if (!shouldAtLeastContainSingleDataAsProduct) {
+                    "/ - p${position + 1} - ${Const.NAME} - $type - ${attribute.headerName}"
+                } else {
+                    channelGrid.name
+                }
+
                 Promotion(
-                    id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    name = "/ - p${position + 1} - ${Const.NAME} - $type - ${attribute.headerName}",
+                    id = itemId,
+                    name = itemName,
                     position = (index + 1).toString(),
                     creative = channelGrid.attribution
                 )
@@ -52,15 +69,31 @@ object Kd2SquareTracker : BaseTrackerConst() {
 
         val action = "click on $name"
 
+        val itemId = if (!attribute.isProduct()) {
+            "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}"
+        } else {
+            attribute.productId
+        }
+
+        val itemName = if (!attribute.isProduct()) {
+            "/ - p${position + 1} - ${Const.NAME} - $type - ${attribute.headerName}"
+        } else {
+            attribute.productName
+        }
+
         val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = HomePageTracking.PROMO_CLICK,
+            event = if (attribute.isProduct()) {
+                Event.PRODUCT_CLICK
+            } else {
+                HomePageTracking.PROMO_CLICK
+            },
             eventAction = action,
             eventCategory = Category.HOMEPAGE,
             eventLabel = "${attribute.channelId} - ${attribute.headerName}",
             promotions = listOf(
                 Promotion(
-                    id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    name = "/ - p${position + 1} - ${Const.NAME} - $type - ${attribute.headerName}",
+                    id = itemId,
+                    name = itemName,
                     position = (position + 1).toString(),
                     creative = attribute.attribution
                 )
