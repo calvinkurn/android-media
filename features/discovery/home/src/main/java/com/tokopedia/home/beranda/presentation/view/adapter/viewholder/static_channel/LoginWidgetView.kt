@@ -115,8 +115,8 @@ class LoginWidgetView : FrameLayout {
 
     private fun setupBackground() {
         when(type) {
-            TYPE_CLEAR -> container?.backgroundTintList = ContextCompat.getColorStateList(context, homeR.color.home_dms_login_widget_background)
-            TYPE_FILLED -> container?.backgroundTintList = ContextCompat.getColorStateList(context, android.R.color.transparent)
+            TYPE_CLEAR -> container?.backgroundTintList = ContextCompat.getColorStateList(context, android.R.color.transparent)
+            TYPE_FILLED -> container?.backgroundTintList = ContextCompat.getColorStateList(context, homeR.color.home_dms_login_widget_background)
         }
     }
 
