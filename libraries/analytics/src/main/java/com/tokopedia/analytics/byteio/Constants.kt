@@ -282,6 +282,7 @@ object AppLogParam {
     const val PARENT_REQUEST_ID = "parent_request_id"
     const val FIRST_TRACK_ID = "first_track_id"
     const val FIRST_SOURCE_PAGE = "first_source_page"
+    const val CLICK_AREA = "click_area"
     val ENTER_METHOD_SEE_MORE
         get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"
@@ -321,4 +322,10 @@ data class ButtonClickCompletedAnalyticData(
         UNFOLLOWED(0),
         FOLLOWED(3)
     }
+}
+
+enum class ClickAreaType(val value: String) {
+    PRODUCT ("product"),
+    ATC ("add_to_cart_button"),
+    UNDEFINED ("undefined")
 }

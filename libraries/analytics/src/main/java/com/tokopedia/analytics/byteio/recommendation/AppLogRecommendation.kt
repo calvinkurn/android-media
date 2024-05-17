@@ -11,9 +11,11 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.CLICK_AREA
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
+import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.SourcePageType
@@ -35,8 +37,16 @@ object AppLogRecommendation {
         }
     }
 
-    fun sendProductClickAppLog(model: AppLogRecommendationProductModel) {
-        AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
+    fun sendProductClickAppLog(
+        model: AppLogRecommendationProductModel,
+        areaType: ClickAreaType = ClickAreaType.UNDEFINED
+    ) {
+        val params = model.toShowClickJson()
+            .also {
+                it.appendDefineClickArea(areaType)
+            }
+
+        AppLogAnalytics.send(EventName.PRODUCT_CLICK, params)
         if (model.shouldSendCardEvent()) {
             AppLogAnalytics.send(EventName.CARD_CLICK, model.asCardModel().toShowClickJson())
         }
@@ -183,5 +193,11 @@ object AppLogRecommendation {
     private fun AppLogRecommendationProductModel.shouldSendCardEvent(): Boolean {
         return entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
             entranceForm == EntranceForm.PURE_GOODS_CARD.str
+    }
+
+    private fun JSONObject.appendDefineClickArea(areaType: ClickAreaType): JSONObject {
+        if (areaType == ClickAreaType.UNDEFINED) return this
+
+        return put(CLICK_AREA, areaType.value)
     }
 }

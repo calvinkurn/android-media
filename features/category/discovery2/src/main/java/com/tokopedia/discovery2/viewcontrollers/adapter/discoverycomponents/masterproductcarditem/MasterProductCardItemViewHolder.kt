@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.PageName.EXTERNAL_PROMO
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
@@ -422,7 +423,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem?.let {
             if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(productCardName)
+                    it.asProductTrackModel(productCardName),
+                    ClickAreaType.PRODUCT
                 )
             }
         }
@@ -545,7 +547,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
          * When pressing the ATC button on the Discovery page, the journey will be the same
          * like going to PDP and pressing the ATC button there.
          */
-        AppLogRecommendation.sendProductClickAppLog(productTrackModel)
+        AppLogRecommendation.sendProductClickAppLog(productTrackModel, ClickAreaType.ATC)
         putAppLogEnterMethod()
 
         AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, asTrackConfirmCart())
