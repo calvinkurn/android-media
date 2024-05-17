@@ -11,7 +11,7 @@
         android:layout_height="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/ic_ticker_action_close_12dp" />
+        tools:srcCompat="@drawable/iconunify_close" />
 
 
     <com.tokopedia.unifyprinciples.Typography
