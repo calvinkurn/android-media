@@ -53,9 +53,8 @@ class ProductWidgetViewHolder(
         handleCountdownTimer(header, ::shouldShowRetryWhenCampaignTimeout)
 
         binding?.txtHeader?.text = header.name
-        binding?.txtHeader?.setOnClickListener {
-            listener.productChannelHeaderClicked(model)
-        }
+        binding?.txtHeader?.setOnClickListener { listener.productChannelHeaderClicked(model) }
+        binding?.timerCountdown?.setOnClickListener { listener.productChannelHeaderClicked(model) }
     }
 
     private fun setupRecyclerView() {
