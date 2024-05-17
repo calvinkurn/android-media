@@ -42,6 +42,12 @@ public abstract class TkpdBaseV4Fragment extends Fragment {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        FragmentLifecycleObserver.INSTANCE.onHiddenChanged(TkpdBaseV4Fragment.this, hidden);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (getView() != null) {

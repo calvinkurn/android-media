@@ -6,23 +6,23 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import timber.log.Timber
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleCallback
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.registerCallback
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.unRegisterCallback
 import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
     ConstraintLayout,
-    OnAttachStateChangeListener,
     LifecycleEventObserver,
     OnScrollChangedListener {
 
@@ -43,9 +43,18 @@ open class ProductConstraintLayout :
     private val NOWHERE = 7
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
-    private val set: ConstraintSet by lazy { ConstraintSet() }
     private val rectf: Rect by lazy { Rect() }
     private val lifecycleOwner by lazy { findLifecycleOwner(context) }
+    private val fragmentCallback = FragmentCallback(this)
+
+    class FragmentCallback(val v: ProductConstraintLayout) : FragmentLifecycleCallback {
+        override fun onHiddenChanged(fragment: Fragment, hidden: Boolean) {
+            when (hidden) {
+                false -> v.postDelayed({ v.onShow() }, 200)
+                true -> v.onShowOver()
+            }
+        }
+    }
 
     constructor(context: Context) : super(context) {
         inflateView()
@@ -92,8 +101,8 @@ open class ProductConstraintLayout :
         }
 
         val isVisible = isVisible()
-        var heightPixels: Int = height + top - bottom
-        var widthPixels: Int = width + left - right
+        val heightPixels: Int = height + top - bottom
+        val widthPixels: Int = width + left - right
 
         heightPercentage = (100 - heightPixels.toDouble() / height * 100).toInt()
         widthPercentage = (100 - widthPixels.toDouble() / width * 100).toInt()
@@ -195,19 +204,19 @@ open class ProductConstraintLayout :
 
     private fun unsetListener() {
         removeVisibilityPercentageListener()
+        unRegisterCallback(fragmentCallback)
         lifecycleOwner?.lifecycle?.removeObserver(this)
         if (this.viewTreeObserver.isAlive) {
             this.viewTreeObserver.removeOnScrollChangedListener(this)
         }
-        this.removeOnAttachStateChangeListener(this)
     }
 
     private fun setListener(eventListener: OnVisibilityPercentChanged?) {
         mPercentageListener = eventListener
+        registerCallback(fragmentCallback)
         lifecycleOwner?.lifecycle?.addObserver(this)
-        this.addOnAttachStateChangeListener(this)
         this.viewTreeObserver.addOnScrollChangedListener(this)
-        this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        this.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     calculateVisibility()
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -251,14 +260,6 @@ open class ProductConstraintLayout :
         }
     }
 
-    override fun onViewAttachedToWindow(p0: View) {
-        onShow()
-    }
-
-    override fun onViewDetachedFromWindow(p0: View) {
-        onShowOver()
-    }
-
     override fun onScrollChanged() {
         calculateVisibility()
     }
@@ -275,7 +276,6 @@ open class ProductConstraintLayout :
         if (viewDetachedFromWindows && isVisible()) {
             mPercentageListener?.onShow()
             viewDetachedFromWindows = false
-            Timber.tag("ProductConstrainLayout").i("on show max:$maxAreaPercentage%")
         }
     }
 
@@ -283,12 +283,10 @@ open class ProductConstraintLayout :
         if (!viewDetachedFromWindows && maxAreaPercentage > 0) {
             mPercentageListener?.onShowOver(maxAreaPercentage)
             viewDetachedFromWindows = true
-            Timber.tag("ProductConstrainLayout").i("on show over max:$maxAreaPercentage%")
         }
     }
     private fun inflateView() {
         if (isPercentViewEnabled(context)) {
-            set.clone(this)
             val view = LayoutInflater.from(context).inflate(
                 productcardR.layout.product_card_percent_text_view,
                 this,
