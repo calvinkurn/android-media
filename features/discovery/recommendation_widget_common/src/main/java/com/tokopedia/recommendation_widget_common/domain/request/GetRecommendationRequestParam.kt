@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 
@@ -52,8 +53,8 @@ data class GetRecommendationRequestParam(
             requestMap[REFRESH_TYPE] = refreshType.value.toString()
         }
         requestMap[CURRENT_SESSION_ID] = bytedanceSessionId
-        requestMap[ENTER_FROM] = AppLogAnalytics.getEnterFrom()
-        requestMap[SOURCE_PAGE_TYPE] = AppLogAnalytics.getSourcePageType()
+        requestMap[ENTER_FROM] = AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)?.toString().orEmpty()
+        requestMap[SOURCE_PAGE_TYPE] = AppLogAnalytics.getLastData(AppLogParam.SOURCE_PAGE_TYPE)?.toString().orEmpty()
         return requestMap
     }
 

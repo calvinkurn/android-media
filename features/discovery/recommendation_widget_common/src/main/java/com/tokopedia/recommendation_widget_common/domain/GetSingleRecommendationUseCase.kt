@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.domain
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -77,8 +78,8 @@ constructor(
         params.putInt(PARAM_CARD_REIMAGINE, reimagineCardParam)
         params.putString(REFRESH_TYPE, byteIoParam.refreshType.value.toString())
         params.putString(CURRENT_SESSION_ID, byteIoParam.bytedanceSessionId)
-        params.putString(ENTER_FROM, AppLogAnalytics.getEnterFrom())
-        params.putString(SOURCE_PAGE_TYPE, AppLogAnalytics.getSourcePageType())
+        params.putString(ENTER_FROM, AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)?.toString().orEmpty())
+        params.putString(SOURCE_PAGE_TYPE, AppLogAnalytics.getLastData(AppLogParam.SOURCE_PAGE_TYPE)?.toString().orEmpty())
         return params
     }
 

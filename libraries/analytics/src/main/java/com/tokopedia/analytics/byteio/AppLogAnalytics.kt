@@ -176,11 +176,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterFrom() {
-        put(ENTER_FROM, getEnterFrom())
-    }
-
-    fun getEnterFrom(): String? {
-        return getLastData(ENTER_FROM)?.toString()
+        put(ENTER_FROM, getLastData(ENTER_FROM))
     }
 
     internal fun JSONObject.addEnterFromInfo() {
@@ -197,11 +193,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(SOURCE_PAGE_TYPE, getSourcePageType())
-    }
-
-    fun getSourcePageType(): String? {
-        return getLastData(SOURCE_PAGE_TYPE)?.toString()
+        put(SOURCE_PAGE_TYPE, getLastData(SOURCE_PAGE_TYPE))
     }
 
     internal fun JSONObject.addSourceModulePdp() {
