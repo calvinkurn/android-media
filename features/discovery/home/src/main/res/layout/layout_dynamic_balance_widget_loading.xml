@@ -4,6 +4,7 @@
     android:id="@+id/containerLoadingBalance"
     android:layout_width="match_parent"
     android:layout_height="36dp"
+    android:paddingVertical="8dp"
     android:paddingStart="12dp">
 
     <include
