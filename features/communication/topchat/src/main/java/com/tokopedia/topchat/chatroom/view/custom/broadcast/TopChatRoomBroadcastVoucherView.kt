@@ -67,9 +67,7 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
             binding.topchatBroadcastTvVoucherHeader.showWithCondition(uiModel.header.isNotBlank())
             binding.topchatBroadcastTvDesc.text = uiModel.description
             binding.topchatBroadcastTvDesc.showWithCondition(uiModel.description.isNotBlank())
-            binding.topchatBroadcastSingleVoucher.addOnImpressionListener(uiModel.impressHolder) {
-                impressSingleVoucher()
-            }
+            impressSingleVoucher()
         } else {
             binding.topchatBroadcastSingleVoucher.gone()
         }
@@ -101,10 +99,15 @@ class TopChatRoomBroadcastVoucherView @JvmOverloads constructor(
         val uiModel = this.uiModel
         val broadcastUiModel = this.broadcastUiModel
         if (uiModel != null && broadcastUiModel != null) {
-            listener?.onImpressionBroadcastVoucher(
-                broadcast = broadcastUiModel,
-                voucher = uiModel
-            )
+            val bannerUiModel = broadcastUiModel.banner
+            if (bannerUiModel != null && !bannerUiModel.isLoading) {
+                binding.topchatBroadcastSingleVoucher.addOnImpressionListener(uiModel.impressHolder) {
+                    listener?.onImpressionBroadcastVoucher(
+                        broadcast = broadcastUiModel,
+                        voucher = uiModel
+                    )
+                }
+            }
         }
     }
 

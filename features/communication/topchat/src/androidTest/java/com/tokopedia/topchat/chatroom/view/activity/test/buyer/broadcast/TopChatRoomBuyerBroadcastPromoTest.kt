@@ -79,44 +79,44 @@ class TopChatRoomBuyerBroadcastPromoTest : TopchatRoomTest() {
                 withText("PreOrder")
             )
 
-            // product oos
+            // product without rating
             broadcastRobot {
                 scrollBroadcastPromoProduct(2)
             }
             assertNewBroadcastPromoProductCarouselItem(
                 2,
                 productcardcompactR.id.product_name_typography,
-                withText("Product Attachment 3")
+                withText("Product Attachment 4")
             )
             assertNewBroadcastPromoProductCarouselItem(
                 2,
-                productcardcompactR.id.oos_label,
-                isDisplayed()
+                productcardcompactR.id.rating_icon,
+                not(isDisplayed())
             )
             assertNewBroadcastPromoProductCarouselItem(
                 2,
-                productcardcompactR.id.oos_label,
-                withText("Stok Habis")
+                productcardcompactR.id.rating_typography,
+                not(isDisplayed())
             )
 
-            // product without rating
+            // product oos
             broadcastRobot {
                 scrollBroadcastPromoProduct(3)
             }
             assertNewBroadcastPromoProductCarouselItem(
                 3,
                 productcardcompactR.id.product_name_typography,
-                withText("Product Attachment 4")
+                withText("Product Attachment 3")
             )
             assertNewBroadcastPromoProductCarouselItem(
                 3,
-                productcardcompactR.id.rating_icon,
-                not(isDisplayed())
+                productcardcompactR.id.oos_label,
+                isDisplayed()
             )
             assertNewBroadcastPromoProductCarouselItem(
                 3,
-                productcardcompactR.id.rating_typography,
-                not(isDisplayed())
+                productcardcompactR.id.oos_label,
+                withText("Stok Habis")
             )
 
             // see more
