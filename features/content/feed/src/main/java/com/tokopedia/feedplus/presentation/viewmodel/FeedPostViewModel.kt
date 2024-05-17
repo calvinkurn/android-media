@@ -1309,7 +1309,7 @@ class FeedPostViewModel @Inject constructor(
 
                 if (!isNextPage) _feedTagProductList.value = FeedProductPaging.Empty
                 else _feedTagProductList.update { state -> state.copy(state = ResultState.Loading) }
-                
+
                 val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     else -> emptyList()
