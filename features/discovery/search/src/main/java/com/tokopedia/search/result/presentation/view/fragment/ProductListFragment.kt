@@ -22,7 +22,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
@@ -332,7 +332,7 @@ class ProductListFragment :
     private lateinit var networkMonitor : DefaultNetworkMonitor
 
     init {
-        BtmApi.registerBtmPageOnCreate(this, Page.PRODUCT_SEARCH_RESULT)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.ProductSearchResult)
     }
 
     override fun getFragment(): Fragment = this
