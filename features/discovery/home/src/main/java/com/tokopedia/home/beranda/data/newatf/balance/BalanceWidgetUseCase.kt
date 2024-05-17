@@ -54,7 +54,7 @@ class BalanceWidgetUseCase @Inject constructor(
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {
         if(!userSession.isLoggedIn) {
-            emitLoginWidget()
+            emitLoginWidget(atfMetadata)
             return
         }
         initialLoading(atfMetadata)
@@ -94,13 +94,16 @@ class BalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    private suspend fun emitLoginWidget() {
+    private suspend fun emitLoginWidget(atfMetadata: AtfMetadata) {
+        balanceWidgetModel = DynamicBalanceWidgetModel(
+            isLoggedIn = false
+        )
         emitData(
             AtfData(
-                atfMetadata = AtfMetadata(),
+                atfMetadata = atfMetadata,
                 atfStatus = AtfKey.STATUS_SUCCESS,
                 isCache = false,
-                atfContent = NonLoggedInBalance
+                atfContent = balanceWidgetModel
             )
         )
     }

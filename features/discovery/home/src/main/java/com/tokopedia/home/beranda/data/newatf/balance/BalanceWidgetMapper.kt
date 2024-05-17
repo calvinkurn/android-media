@@ -83,13 +83,13 @@ class BalanceWidgetMapper @Inject constructor() {
 
     fun asVisitable(
         data: DynamicBalanceWidgetModel,
-        atfData: AtfData,
+        atfStatus: Int,
     ): Visitable<*> {
-        return when(atfData.atfStatus) {
+        return when(atfStatus) {
             AtfKey.STATUS_ERROR -> BalanceWidgetErrorUiModel()
             AtfKey.STATUS_LOADING -> BalanceWidgetLoadingUiModel()
             else -> {
-                if(atfData.atfContent is NonLoggedInBalance) {
+                if(!data.isLoggedIn) {
                     LoginWidgetUiModel()
                 } else {
                     val balanceItems = mutableListOf<BalanceItemVisitable>()

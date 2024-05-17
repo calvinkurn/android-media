@@ -37,6 +37,7 @@ class AtfMapper @Inject constructor(
     private val atfChannelMapper: AtfChannelMapper,
     private val missionWidgetMapper: MissionWidgetMapper,
     private val todoWidgetMapper: TodoWidgetMapper,
+    private val balanceWidgetMapper: BalanceWidgetMapper,
 ) {
     fun mapRemoteToDomainAtfData(
         position: Int,
@@ -150,7 +151,7 @@ class AtfMapper @Inject constructor(
                             AtfKey.TYPE_HORIZONTAL -> visitables.add(ShortenWidgetMapper.to2SquareUiModel(this, value, index))
                         }
                     }
-                    is DynamicBalanceWidgetModel -> visitables.add(balanceWidgetMapper.asVisitable(this, value))
+                    is DynamicBalanceWidgetModel -> visitables.add(balanceWidgetMapper.asVisitable(this, value.atfStatus))
                 }
             }
         }

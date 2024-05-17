@@ -80,7 +80,7 @@ class DynamicPositionRepository @Inject constructor(
 
     suspend fun getRemoteData(isRefresh: Boolean = false) {
         try {
-            val listAtf = atfDataRepository.getRemoteData().dataList
+            val listAtf = listOf(AtfData(component = AtfKey.TYPE_BALANCE))
             // IMPORTANT: needToFetchComponents value depends on isRefresh flag,
             // because when refresh data, we need to make sure all ATF components re-fetch data from remote
             val remoteData = AtfDataList(
