@@ -110,6 +110,7 @@ constructor(
     override fun updateData(attribute: Any?) {
         if (attribute is ImageAnnouncementPojo) {
             assignCampaignData(attribute)
+            this.isLoading = false
         }
     }
 

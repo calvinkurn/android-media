@@ -396,12 +396,18 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .build()
     }
 
-    override fun convertToImageAnnouncement(item: Reply): Visitable<*> {
+    override fun convertToImageAnnouncement(
+        item: Reply,
+        attachmentIds: List<String>
+    ): Visitable<*> {
         val pojoAttribute = gson.fromJson(
             item.attachment.attributes,
             ImageAnnouncementPojo::class.java
         )
-        return ImageAnnouncementUiModel(item, pojoAttribute)
+        val isNeedSync = attachmentIds.contains(item.attachment.id)
+        return ImageAnnouncementUiModel(item, pojoAttribute).apply {
+            this.isLoading = isNeedSync
+        }
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {

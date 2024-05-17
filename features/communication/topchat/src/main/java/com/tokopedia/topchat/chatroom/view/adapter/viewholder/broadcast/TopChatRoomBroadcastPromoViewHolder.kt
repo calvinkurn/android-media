@@ -48,6 +48,7 @@ class TopChatRoomBroadcastPromoViewHolder(
         if (payloads.first() == DeferredAttachment.PAYLOAD_DEFERRED) {
             bindBase(uiModel)
             bindPromoProduct(uiModel)
+            bindVoucher(uiModel)
         }
     }
 
