@@ -466,7 +466,7 @@ open class HomeRevampViewModel @Inject constructor(
             refreshHomeData(refreshType)
             _isNeedRefresh.value = Event(true)
         } else {
-            getBalanceWidgetData()
+            refreshBalanceWidget()
         }
         getSearchHint(isFirstInstall)
     }

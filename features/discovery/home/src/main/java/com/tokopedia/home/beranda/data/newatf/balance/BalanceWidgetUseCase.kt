@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.i
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.widget.common.DataStatus
+import com.tokopedia.home_component.widget.common.isError
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,10 +42,8 @@ class BalanceWidgetUseCase @Inject constructor(
     companion object {
         const val PARAM = "param"
         const val ERROR_UNABLE_TO_PARSE_WALLET = "Unable to parse wallet, wallet app list is empty"
-        const val ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET = "Unable to parse balance widget"
         const val ERROR_NO_SUPPORTED_WALLET =
             "Unable to find wallet balance, possibly empty wallet app balance list or no supported wallet partner found in response"
-        private const val ERROR_TITLE = "Gagal memuat"
     }
 
     override val coroutineContext: CoroutineContext
@@ -122,7 +121,7 @@ class BalanceWidgetUseCase @Inject constructor(
         launch {
             val type = BalanceItemModel.GOPAY
             try {
-                updateState(DataStatus.LOADING, type)
+                conditionalLoading(type)
                 val walletAppData = homeWalletRepository.getRemoteData()
                 if (walletAppData.walletappGetBalance.balances.isNotEmpty()) {
                     val balanceItemModel = walletAppData.walletappGetBalance.balances.firstOrNull()?.let {
@@ -154,7 +153,7 @@ class BalanceWidgetUseCase @Inject constructor(
         launch {
             val type = BalanceItemModel.REWARDS
             try {
-                updateState(DataStatus.LOADING, type)
+                conditionalLoading(type)
                 val rewardsData = homeRewardsRepository.getRemoteData()
                 rewardsData.tokopointsDrawerList.drawerList.firstOrNull()?.let {
                     val balanceItemModel = balanceWidgetMapper.mapToBalanceItemModel(it, type) ?: return@let
@@ -174,6 +173,17 @@ class BalanceWidgetUseCase @Inject constructor(
         )
     }
 
+    @SuppressLint("PII Data Exposure")
+    private suspend fun conditionalLoading(type: String) {
+        val currentData = getItem(type) ?: return
+        if(currentData.state.isError()) {
+            updateState(
+                state = DataStatus.LOADING,
+                type = type
+            )
+        }
+    }
+
     private suspend fun initialLoading(atfMetadata: AtfMetadata) {
         emitData(
             AtfData(
@@ -191,10 +201,9 @@ class BalanceWidgetUseCase @Inject constructor(
         val atfData = flow.value.firstOrNull() ?: return
 
         val balanceItems = balanceWidgetModel.balanceItems.toMutableList()
-        val index = balanceItems.indexOfFirst { it.type == type }
-        if(index == -1) return
+        val index = getIndexOfType(type) ?: return
         balanceItems[index] = model
-        balanceWidgetModel = balanceWidgetModel.copy(balanceItems)
+        balanceWidgetModel = balanceWidgetModel.copy(balanceItems = balanceItems)
 
         emitData(atfData.copy(atfContent = balanceWidgetModel))
     }
@@ -206,11 +215,18 @@ class BalanceWidgetUseCase @Inject constructor(
         val atfData = flow.value.firstOrNull() ?: return
 
         val balanceItems = balanceWidgetModel.balanceItems.toMutableList()
-        val index = balanceItems.indexOfFirst { it.type == type }
-        if(index == -1) return
+        val index = getIndexOfType(type) ?: return
         balanceItems[index] = balanceItems[index].copy(state = state)
         balanceWidgetModel = balanceWidgetModel.copy(balanceItems = balanceItems)
 
         emitData(atfData.copy(atfContent = balanceWidgetModel))
+    }
+
+    private fun getIndexOfType(type: String): Int? {
+        return balanceWidgetModel.balanceItems.indexOfFirst { it.type == type }.takeIf { it != -1 }
+    }
+
+    private fun getItem(type: String): BalanceItemModel? {
+        return balanceWidgetModel.balanceItems.firstOrNull { it.type == type }
     }
 }
