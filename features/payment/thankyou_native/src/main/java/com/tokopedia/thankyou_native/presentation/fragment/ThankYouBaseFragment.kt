@@ -28,6 +28,8 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Page
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.SubmitOrderResult
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
@@ -247,6 +249,8 @@ open class ThankYouBaseFragment :
                     this::hideTopAdsHeadlineView
                 )
             }
+
+            registerBtmPage()
         }
     }
 
@@ -1067,6 +1071,18 @@ open class ThankYouBaseFragment :
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun registerBtmPage() {
+        when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+            is MarketPlaceThankPage -> {
+                BtmApi.registerBtmPageOnCreate(this, Page.THANK_YOU_PG)
+            }
+
+            is DigitalThankPage -> {
+                BtmApi.registerBtmPageOnCreate(this, Page.THANK_YOU_DG)
             }
         }
     }

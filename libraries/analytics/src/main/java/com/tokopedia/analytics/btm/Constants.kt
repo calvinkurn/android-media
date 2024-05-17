@@ -16,7 +16,9 @@ enum class Page(val str: String) {
     PDP("a87943.b2815"),
     SKU("a87943.b8098"),
     CART("a87943.b2906"),
-    CHECKOUT("a87943.b69823")
+    CHECKOUT("a87943.b69823"),
+    THANK_YOU_PG("a87943.b4596"),
+    THANK_YOU_DG("a87943.b2444")
 }
 
 /**
