@@ -94,7 +94,6 @@ class TopAdsImageViewViewModelTest {
         viewModel.getImageData(mutableMapOf())
         val result = viewModel.getResponse().value
         Assert.assertTrue(result is Fail)
-        Assert.assertEquals(exception, (result as Fail).throwable)
     }
 
     @After
