@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import org.json.JSONObject
 
 data class HomeChannelProductModel(
@@ -55,14 +56,14 @@ data class HomeChannelProductModel(
         put(AppLogParam.ENTRANCE_FORM, entranceForm)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
         addEnterMethod()
-        put(AppLogParam.PRODUCT_ID, productId.ifEmpty { "0" })
+        put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.REQUEST_ID, requestId)
-        put(AppLogParam.SHOP_ID, shopId.ifEmpty { "0" })
-        put(AppLogParam.ITEM_ORDER, itemOrder.toInt())
+        put(AppLogParam.SHOP_ID, shopId)
+        put(AppLogParam.ITEM_ORDER, itemOrder.toIntOrZero())
     }
 }

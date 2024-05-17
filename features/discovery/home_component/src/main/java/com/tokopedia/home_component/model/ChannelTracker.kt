@@ -45,7 +45,7 @@ data class ChannelTracker(
 
     fun sourceModule() = "${sourceModuleType}_${PageName.HOME}_outer_${recomPageName}_module"
 
-    fun getProperShopId() = if (isProduct()) shopId else ""
+    fun getProperShopId() = if (isProduct()) shopId else "0"
 
     fun isAdsAsInt() = if (isTopAds) 1 else 0
 
