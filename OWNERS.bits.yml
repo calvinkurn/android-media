@@ -213,31 +213,31 @@ code_review_rule:
       required_approvals: 1
     - pattern: /features/user/fcm_common/.*
       reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
+        - zulfikar.rahman
+        - isfhani.ghiath
+        - frenzel.surya
+        - winston.pangestu
       required_approvals: 1
     - pattern: /libraries/cm_push_notifications/.*
       reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
+        - zulfikar.rahman
+        - isfhani.ghiath
+        - frenzel.surya
+        - winston.pangestu
       required_approvals: 1
     - pattern: /features/user/notif-troubleshooter/.*
       reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
+        - zulfikar.rahman
+        - isfhani.ghiath
+        - frenzel.surya
+        - winston.pangestu
       required_approvals: 1
     - pattern: /features/user/settingnotif/.*
       reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
+        - zulfikar.rahman
+        - isfhani.ghiath
+        - frenzel.surya
+        - winston.pangestu
       required_approvals: 1
     - pattern: /features/watch/.*
       reviewers:
@@ -1199,15 +1199,6 @@ code_review_rule:
         - asti.anzaria
         - fachrizal.mursalin
       required_approvals: 1
-    - pattern: /features/content/feed_common/.*
-      reviewers:
-        - furqan
-        - kenny.hadisaputra
-        - calvin.kurniawan
-        - jonathan.darwin
-        - asti.anzaria
-        - fachrizal.mursalin
-      required_approvals: 1
     - pattern: /features/content/feed_component/.*
       reviewers:
         - furqan
@@ -1615,16 +1606,6 @@ code_review_rule:
         - fakhira.devina
         - bobby.ingkirama
       required_approvals: 1
-    - pattern: /features/transaction/checkout_payment_common/.*
-      reviewers:
-        - angga.prasetiyo
-        - hansen.wijaya
-        - felicia.widjaja
-        - irpan
-        - victor0411
-        - fakhira.devina
-        - bobby.ingkirama
-      required_approvals: 1
     - pattern: /features/transaction/oneclickcheckout/.*
       reviewers:
         - angga.prasetiyo
@@ -1905,7 +1886,7 @@ code_review_rule:
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/user/verification/.*
+    - pattern: /features/user/otp/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
@@ -4597,26 +4578,6 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /.gitignore.*
-      reviewers:
-        - normansyah.putra
-        - hendry.setiadi
-        - devara.akmal
-        - yehezkiel
-        - fajar.nuha
-        - irfan.muhlishin
-        - nabilla.sabbaha
-        - yogie.putra
-        - erry.suprayogi
-        - zulfikar.rahman
-        - furqan
-        - angga.prasetiyo
-        - nathaniel.khuana
-        - nathania.sutedja
-        - ilham.jamaludin
-        - steven.fredian
-        - rico.harisin
-      required_approvals: 1
     - pattern: /gradle/.*
       reviewers:
         - normansyah.putra
@@ -4678,66 +4639,6 @@ code_review_rule:
         - rico.harisin
       required_approvals: 1
     - pattern: /jacoco_task.gradle.*
-      reviewers:
-        - normansyah.putra
-        - hendry.setiadi
-        - devara.akmal
-        - yehezkiel
-        - fajar.nuha
-        - irfan.muhlishin
-        - nabilla.sabbaha
-        - yogie.putra
-        - erry.suprayogi
-        - zulfikar.rahman
-        - furqan
-        - angga.prasetiyo
-        - nathaniel.khuana
-        - nathania.sutedja
-        - ilham.jamaludin
-        - steven.fredian
-        - rico.harisin
-      required_approvals: 1
-    - pattern: /tokoremotex/.*
-      reviewers:
-        - normansyah.putra
-        - hendry.setiadi
-        - devara.akmal
-        - yehezkiel
-        - fajar.nuha
-        - irfan.muhlishin
-        - nabilla.sabbaha
-        - yogie.putra
-        - erry.suprayogi
-        - zulfikar.rahman
-        - furqan
-        - angga.prasetiyo
-        - nathaniel.khuana
-        - nathania.sutedja
-        - ilham.jamaludin
-        - steven.fredian
-        - rico.harisin
-      required_approvals: 1
-    - pattern: /.run/.*
-      reviewers:
-        - normansyah.putra
-        - hendry.setiadi
-        - devara.akmal
-        - yehezkiel
-        - fajar.nuha
-        - irfan.muhlishin
-        - nabilla.sabbaha
-        - yogie.putra
-        - erry.suprayogi
-        - zulfikar.rahman
-        - furqan
-        - angga.prasetiyo
-        - nathaniel.khuana
-        - nathania.sutedja
-        - ilham.jamaludin
-        - steven.fredian
-        - rico.harisin
-      required_approvals: 1
-    - pattern: /remote.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
