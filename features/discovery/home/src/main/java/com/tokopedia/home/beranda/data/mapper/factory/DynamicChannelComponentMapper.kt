@@ -173,7 +173,9 @@ object DynamicChannelComponentMapper {
                             imageUrl = badge.imageUrl
                         )
                     },
-                    position = index
+                    position = index,
+                    logExtra = it.logExtra,
+                    creativeID = it.creativeID
                 )
             }
         )
