@@ -82,6 +82,7 @@ ext {
             irisSession             : ":libraries:iris_session",
             keys                    : ":libraries:keys",
             linker                  : ":libraries:linker",
+            libra                   : ":libraries:libra",
             sdui                    : ":libraries:sdui",
             universal_sharing       : ":libraries:universal_sharing",
             locationmanager         : ":libraries:locationmanager",
