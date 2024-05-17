@@ -26,7 +26,6 @@ internal object MediaLoaderFrescoApi {
             return
         }
 
-
         val roundingParams = RoundingParams.fromCornersRadius(properties.roundedRadius)
 
         val builder = GenericDraweeHierarchyBuilder(context.resources)
