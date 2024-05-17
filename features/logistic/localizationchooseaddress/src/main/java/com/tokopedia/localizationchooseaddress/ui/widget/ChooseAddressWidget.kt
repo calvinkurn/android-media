@@ -63,7 +63,6 @@ class ChooseAddressWidget :
     private var textChosenAddress: Typography? = null
     private var iconChooseAddress: IconUnify? = null
     private var iconChevronChooseAddress: IconUnify? = null
-    private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var hasClicked: Boolean? = false
     private var isSupportWarehouseLoc: Boolean = true
@@ -95,7 +94,6 @@ class ChooseAddressWidget :
         chooseAddressPref = ChooseAddressSharePref(context)
 
         textChosenAddress = findViewById(localizationchooseaddressR.id.text_chosen_address)
-        buttonChooseAddress = findViewById(localizationchooseaddressR.id.choose_address_widget)
         iconChooseAddress = findViewById(localizationchooseaddressR.id.icon_location)
 
         iconChevronChooseAddress = if(type == TYPE_NORMAL) {
@@ -280,7 +278,7 @@ class ChooseAddressWidget :
         isSupportWarehouseLoc = chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: true
         initChooseAddressFlow()
 
-        buttonChooseAddress?.setOnClickListener {
+        setOnClickListener {
             if (hasClicked == false) {
                 val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
                 val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
