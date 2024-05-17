@@ -12,4 +12,6 @@ interface TopChatRoomBroadcastTypeFactory {
         view: View,
         type: Int
     ): AbstractViewHolder<out Visitable<*>>
+
+    fun sortData(listVisitable: List<Visitable<*>>): List<Visitable<*>>
 }

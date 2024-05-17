@@ -514,6 +514,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         t
                         b
                       }
+                      imageSize{
+                        w
+                        h
+                      }
                     }
                     ... on pdpDataComponentDynamicOneLinerVariant {
                       name
@@ -526,6 +530,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       padding {
                         t
                         b
+                      }
+                      imageSize{
+                        w
+                        h
                       }
                     }
                     ... on pdpDataProductDetailMediaComponent {
