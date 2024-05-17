@@ -14,7 +14,7 @@ import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
 import com.tokopedia.purchase_platform.common.constant.ARGS_LIST_AUTO_APPLY_PROMO
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.telemetry.ITelemetryActivity
-import timber.log.Timber
+import java.util.ArrayList
 import javax.inject.Inject
 
 open class OrderSummaryPageActivity :
@@ -38,8 +38,6 @@ open class OrderSummaryPageActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("byteio entrance info: %s",
-            AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.OCC, listOf("123")))
         component.inject(this)
     }
 
