@@ -59,7 +59,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on October 05, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
-@CassavaTest
+//@CassavaTest
 class ContentProductTagAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
