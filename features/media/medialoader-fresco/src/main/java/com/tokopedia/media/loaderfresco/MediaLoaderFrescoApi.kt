@@ -1,48 +1,60 @@
 package com.tokopedia.media.loaderfresco
 
-import android.content.Context
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
-import com.facebook.drawee.generic.GenericDraweeHierarchy
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
-import com.facebook.drawee.generic.RoundingParams
 import com.facebook.drawee.view.SimpleDraweeView
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loaderfresco.data.Properties
 import com.tokopedia.media.loaderfresco.tracker.FrescoLogger
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.media.loaderfresco.utils.Hierarchy.generateHierarchy
+import com.tokopedia.media.loaderfresco.utils.generateFrescoUrl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 
 internal object MediaLoaderFrescoApi {
     fun loadImage(imageView: ImageView, properties: Properties) {
-        val source = properties.data
-        val context = imageView.context
+        if (enableFrescoLoader()) {
+            val source = properties.data
+            val context = imageView.context
 
-        if (properties.data is String && source.toString().isEmpty()) {
-            imageView.setImageDrawable(AppCompatResources.getDrawable(context, properties.error))
-            return
+            if (properties.data is String && source.toString().isEmpty()) {
+                imageView.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        context,
+                        properties.error
+                    )
+                )
+                return
+            }
+
+            if (properties.data == null) {
+                imageView.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        context,
+                        properties.error
+                    )
+                )
+                return
+            }
+
+            val draweeView = SimpleDraweeView(context, generateHierarchy(context, properties))
+            imageView.setImageDrawable(draweeView.drawable)
+            draweeView.setImageURI(properties.generateFrescoUrl())
+
+            FrescoLogger.loggerSlardarFresco()
+        } else {
+            imageView.loadImage(properties.generateFrescoUrl()){
+                setRoundedRadius(properties.roundedRadius)
+                setErrorDrawable(properties.error)
+                setPlaceHolder(properties.placeHolder)
+            }
         }
-
-        if (properties.data == null) {
-            imageView.setImageDrawable(AppCompatResources.getDrawable(context, properties.error))
-            return
-        }
-
-        val roundingParams = RoundingParams.fromCornersRadius(properties.roundedRadius)
-
-        val builder = GenericDraweeHierarchyBuilder(context.resources)
-        val hierarchy: GenericDraweeHierarchy = builder.setRoundingParams(roundingParams).build()
-
-        val draweeView = SimpleDraweeView(context, hierarchy)
-        imageView.setImageDrawable(draweeView.drawable)
-
-        draweeView.setImageURI(properties.data.toString())
-
-        FrescoLogger.loggerSlardarFresco()
     }
 
-    //TODO ADD Enabler Rollence
-    private fun enableFrescoLoader(context: Context): Boolean {
-        val key = "android_enable_image_fresco"
-        return FirebaseRemoteConfigImpl(context.applicationContext)
-            .getBoolean(key, false)
+    private fun enableFrescoLoader(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.FRESCO_IMAGE,
+            ""
+        ) == RollenceKey.FRESCO_IMAGE
     }
 }

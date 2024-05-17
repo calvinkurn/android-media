@@ -7,8 +7,6 @@ data class Properties(
     internal var placeHolder: Int = 0
 ) {
 
-    internal var imageViewSize: Pair<Int, Int> = Pair(0, 0)
-
     fun setSource(data: Any?) = apply {
         this.data = data
     }
