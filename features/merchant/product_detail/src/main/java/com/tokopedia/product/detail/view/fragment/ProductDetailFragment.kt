@@ -3203,7 +3203,8 @@ open class ProductDetailFragment :
                     concatAdapter?.addAdapter(it.adapter)
                     it.requestParam = GetRecommendationRequestParam(
                         pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
-                        productIds = listOf(productId.orEmpty())
+                        productIds = listOf(productId.orEmpty()),
+                        queryParam = viewModel.getP1()?.infiniteRecommendationQueryParam.orEmpty()
                     )
                 }
             }

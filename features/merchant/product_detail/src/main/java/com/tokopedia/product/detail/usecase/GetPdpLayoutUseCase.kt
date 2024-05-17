@@ -792,7 +792,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             layoutData = getDynamicProductInfoP1.copy(
                 hasInfiniteRecommendation = hasInfiniteRecommendation,
                 infiniteRecommendationPageName = infiniteRecommendationComponent?.componentName
-                    ?: ""
+                    ?: "",
+                infiniteRecommendationQueryParam = infiniteRecommendationComponent?.componentData?.firstOrNull()?.queryParam.orEmpty()
             ),
             listOfLayout = initialLayoutData,
             variantData = p1VariantData,
