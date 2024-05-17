@@ -9,6 +9,10 @@ import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataR
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Offer.TierProducts.ProductsBenefit
+import com.tokopedia.cartcommon.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
@@ -211,6 +215,65 @@ object DataProvider {
             quantity = quantity,
             shopId = shopId,
             userId = userId
+        )
+    }
+
+    fun provideGetMiniCartGwpSuccess(): MiniCartData {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_bmgm_gwp"), MiniCartGqlResponse::class.java).miniCart
+    }
+
+    fun provideUpdateGwpSuccess(): BmGmGetGroupProductTickerResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_group_product_ticker"), BmGmGetGroupProductTickerResponse::class.java)
+    }
+
+    fun provideExpectedGetProductTickerParam(): BmGmGetGroupProductTickerParams {
+        return BmGmGetGroupProductTickerParams(
+            lang = "id",
+            type = "bmgm",
+            source = "mini_cart_bottom_sheet_now",
+            carts = arrayListOf(
+                BmGmGetGroupProductTickerParams.BmGmCart(
+                    cartStringOrder = "11515028-0-11491038",
+                    cartDetails = arrayListOf(
+                        BmGmCartDetails(
+                            bundleDetail = BmGmCartDetails.BundleDetail(
+                                bundleId = 0,
+                                bundleGroupId = ""
+                            ),
+                            offer = BmGmCartDetails.Offer(
+                                offerId = 123,
+                                offerJsonData = "{key:value}",
+                                tierProducts = listOf(
+                                    BmGmCartDetails.Offer.TierProducts(
+                                        tierId = 5,
+                                        productsBenefit = listOf(
+                                            ProductsBenefit(
+                                                productId = 12345,
+                                                quantity = 2
+                                            ),
+                                            ProductsBenefit(
+                                                productId = 12345,
+                                                quantity = 5
+                                            )
+                                        )
+                                    )
+                                )
+                            ),
+                            products = listOf(
+                                BmGmCartDetails.Product(
+                                    cartId = "",
+                                    shopId = "11515028",
+                                    productId = "1920796612",
+                                    warehouseId = "11491038",
+                                    qty = 3,
+                                    finalPrice = 1000,
+                                    checkboxState = true
+                                )
+                            )
+                        )
+                    )
+                )
+            )
         )
     }
 }

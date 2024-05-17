@@ -551,9 +551,6 @@ class PlayViewModel @AssistedInject constructor(
     val selectedChips: String
         get() = _exploreWidget.value.chips.items.find { it.isSelected }?.text ?: ""
 
-    val exploreWidgetConfig: PlayWidgetConfigUiModel
-        get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
-
     val widgetInfo: PlayChannelRecommendationConfig
         get() = _channelDetail.value.channelRecomConfig
 
@@ -1090,7 +1087,7 @@ class PlayViewModel @AssistedInject constructor(
                 // Resetting
                 setExploreWidgetParam(_channelDetail.value.channelRecomConfig)
                 _categoryWidget.update { it.copy(data = emptyList()) }
-                _exploreWidget.update { it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty) }
+                _exploreWidget.update { it.copy(data = emptyList(), chips = TabMenuUiModel.Empty) }
                 _isBottomSheetsShown.update { false }
             }
             is EmptyPageWidget -> handleEmptyExplore(action.type)
@@ -1422,18 +1419,16 @@ class PlayViewModel @AssistedInject constructor(
     private fun startWebSocket(channelId: String) {
         socketJob?.cancel()
         socketJob = viewModelScope.launch {
-            val socketCredential = getSocketCredential()
-
             if (!isActive) return@launch
             connectWebSocket(
                 channelId = channelId,
-                socketCredential = socketCredential,
+                socketCredential = getSocketCredential(),
                 warehouseId = _warehouseInfo.value.warehouseId
             )
 
             playChannelWebSocket.listenAsFlow()
                 .collect {
-                    handleWebSocketResponse(it, channelId, socketCredential)
+                    handleWebSocketResponse(it, channelId)
                 }
         }
     }
@@ -1749,7 +1744,7 @@ class PlayViewModel @AssistedInject constructor(
     }
     //endregion
 
-    private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String, socketCredential: SocketCredential) {
+    private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String) {
         when (response) {
             is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message, channelId)
             is WebSocketAction.Closed -> {
@@ -1757,7 +1752,7 @@ class PlayViewModel @AssistedInject constructor(
                 if (reason is WebSocketClosedReason.Error) {
                     playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
 
-                    connectWebSocket(channelId, warehouseId = _warehouseInfo.value.warehouseId, socketCredential)
+                    connectWebSocket(channelId, warehouseId = _warehouseInfo.value.warehouseId, getSocketCredential())
                 }
             }
         }
@@ -2786,7 +2781,7 @@ class PlayViewModel @AssistedInject constructor(
                 param.group == _channelDetail.value.channelRecomConfig.exploreWidgetConfig.group -> {
                     _exploreWidget.update { widget -> widget.copy(chips = widget.chips.copy(state = ResultState.Loading)) }
                 }
-                _exploreWidget.value.widgets.isEmpty() -> {
+                _exploreWidget.value.data.isEmpty() -> {
                     _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
                 }
                 !_exploreWidget.value.state.hasNextPage -> return@launchCatchError
@@ -2800,7 +2795,7 @@ class PlayViewModel @AssistedInject constructor(
             )
 
             val chips = response.getChips
-            val widgets = response.getChannelBlocks
+            val widgets = response.getChannelBlocks.getChannelCards
 
             when {
                 chips.items.isNotEmpty() -> {
@@ -2811,7 +2806,7 @@ class PlayViewModel @AssistedInject constructor(
                     onChipAction(chips.items.first())
                 }
                 widgets.isNotEmpty() -> {
-                    _exploreWidget.update { widget -> widget.copy(widgets = widget.widgets + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
+                    _exploreWidget.update { widget -> widget.copy(data = widget.data + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
                     widgetQuery.update { query ->
                         query.mapValues {
                             if (it.key == ExploreWidgetType.Default) {
@@ -2823,7 +2818,7 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
                 else -> {
-                    if (_exploreWidget.value.widgets.isEmpty()) {
+                    if (_exploreWidget.value.data.isEmpty()) {
                         _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Empty) }
                     }
                 }
@@ -2913,7 +2908,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onChipAction(element: ChipWidgetUiModel) {
         _exploreWidget.update { widget ->
             widget.copy(
-                widgets = emptyList(),
+                data = emptyList(),
                 chips = widget.chips.copy(
                     items = widget.chips.items.map { chip ->
                         if (element.group == chip.group) {
@@ -2934,6 +2929,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
         }
+        _channelDetail.update { detail -> detail.copy(channelRecomConfig = detail.channelRecomConfig.copy(exploreWidgetConfig = detail.channelRecomConfig.exploreWidgetConfig.copy(categoryName = element.text))) }
     }
     private fun refreshWidget(widget: ExploreWidgetType) {
         widgetQuery.value = widgetQuery.value.mapValues {
@@ -2951,23 +2947,13 @@ class PlayViewModel @AssistedInject constructor(
                 val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
                 _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
-                    _exploreWidget.update {
-                        it.copy(
-                            widgets = it.widgets.map {
-                                it.copy(
-                                    item = it.item.copy(
-                                        items = it.item.items.map { widget ->
-                                            if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
-                                                widget.copy(reminderType = reminderType)
-                                            } else {
-                                                widget
-                                            }
-                                        }
-                                    )
-                                )
-                            }
-                        )
-                    }
+                    _exploreWidget.update { exploreWidget -> exploreWidget.copy(data = exploreWidget.data.map {
+                        widget -> if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
+                            widget.copy(reminderType = reminderType)
+                        } else {
+                            widget
+                        }
+                    }) }
                 } else {
                     throw MessageErrorException()
                 }

@@ -8,6 +8,7 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import java.io.File
 
@@ -129,5 +130,12 @@ object JvmMediaLoader {
         properties: Properties.() -> Unit
     ): Bitmap?{
         return url.getBitmapFromUrl(context, timeout, properties = properties)
+    }
+
+    @JvmStatic
+    fun clearImage(imageView: ImageView?) {
+        if (imageView != null && imageView.context.isValid()) {
+            GlideApp.with(imageView.context).clear(imageView)
+        }
     }
 }

@@ -23,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -172,24 +173,39 @@ internal fun ImageView.loadImageRounded(url: String?, radius: Float) {
     }
 }
 
-internal fun ImageView.imageRounded(url: String?, radius: Float, cornerType: CornerType?) {
+internal fun ImageView.imageRounded(
+    url: String?,
+    radius: Float,
+    cornerType: CornerType?,
+    @ColorInt
+    overlayColor: Int?,) {
     if(url == null) return
 
     if (cornerType == null || cornerType == CornerType.ALL) {
-        this.loadImageRounded(url, radius)
+        this.loadImageRounded(url, radius.roundToInt(), CornerType.ALL, overlayColor)
     } else {
-        this.loadImageRounded(url, radius.roundToInt(), cornerType)
+        this.loadImageRounded(url, radius.roundToInt(), cornerType, overlayColor)
     }
 }
 
 internal fun ImageView.loadImageRounded(
     url: String,
     roundingRadius: Int,
-    cornerType: CornerType
+    cornerType: CornerType,
+    @ColorInt
+    color: Int?
 ){
     val transformation = RoundedCornersTransformation(roundingRadius, cornerType)
+
+    val multiTransform = mutableListOf(CenterCrop(), transformation)
+
+    if (color != null){
+        val layerTransformation = LayerOverlayTransformation(color, roundingRadius.toFloat())
+        multiTransform.add(layerTransformation)
+    }
+
     this.loadImage(url) {
-        transforms(listOf(CenterCrop(), transformation))
+        transforms(multiTransform)
     }
 }
 

@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
+import com.tokopedia.discovery2.datamapper.setComponent
 import com.tokopedia.discovery2.repository.banner.BannerRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
@@ -32,6 +33,9 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
                 placeholderImageData.forEach { dataList ->
                     bannerListData.add(DataItem(imageUrlDynamicMobile = dataList.first, itemWeight = dataList.second))
                 }
+            }
+            bannerListData.forEach { bd ->
+                bd.tabName = it.tabName
             }
             it.data = bannerListData
             return true

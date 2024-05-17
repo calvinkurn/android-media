@@ -73,6 +73,7 @@ internal class SortFilterItemCommonViewHolder(
             chipText = sortFilterItem.title
             chipType = getChipType(sortFilterItem)
             chip_image_icon.shouldShowWithAction(sortFilterItem.iconUrl.isNotEmpty()) {
+                chip_image_icon.setImageUrl(sortFilterItem.iconUrl)
             }
 
             chipSize = ChipsUnify.SIZE_SMALL

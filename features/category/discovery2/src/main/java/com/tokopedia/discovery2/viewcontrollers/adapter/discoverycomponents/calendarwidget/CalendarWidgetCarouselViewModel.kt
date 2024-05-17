@@ -21,9 +21,9 @@ import kotlin.coroutines.CoroutineContext
 
 class CalendarWidgetCarouselViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     companion object {
         const val PRODUCT_PER_PAGE = 10

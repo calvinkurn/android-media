@@ -560,6 +560,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   t
                   b
                 }
+                imageSize {
+                  w
+                  h
+                }
             }
             bmgm {
               separator
@@ -594,6 +598,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   t
                   b
                 }
+                imageSize {
+                  w
+                  h
+                }
               }
             }
             gwp {
@@ -623,6 +631,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 loadMoreText
                 productIDs
                 offerID
+              }
+            }
+            sdui {
+              name
+              data {
+                template
               }
             }
           }

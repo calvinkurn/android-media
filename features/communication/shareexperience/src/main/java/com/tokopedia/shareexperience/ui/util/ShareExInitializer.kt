@@ -19,9 +19,11 @@ import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffil
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.ui.DismissListener
 import com.tokopedia.shareexperience.ui.ShareExBottomSheet
 import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExInitializerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExInitializationUiState
 import com.tokopedia.shareexperience.ui.view.ShareExLoadingDialog
@@ -45,6 +47,7 @@ class ShareExInitializer(
     private var dialog: ShareExLoadingDialog? = null
     private var bottomSheet: ShareExBottomSheet? = null
     private var bottomSheetArg: ShareExBottomSheetArg? = null
+    var dismissListener: DismissListener? = null
 
     init {
         addObserver(context)
@@ -159,8 +162,7 @@ class ShareExInitializer(
             bottomSheetArg?.let { arg ->
                 dialog = ShareExLoadingDialog(
                     context = context,
-                    id = arg.identifier,
-                    pageTypeEnum = arg.pageTypeEnum,
+                    arg = arg,
                     onResult = ::onResultShareBottomSheetModel
                 ).also { dialog ->
                     dialog.show()
@@ -174,43 +176,47 @@ class ShareExInitializer(
         weakContext.get()?.let { context ->
             val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
             fragmentManager?.let { fm ->
-                bottomSheetArg?.let { arg ->
-                    when (result) {
-                        is ShareExResult.Success -> {
-                            bottomSheetArg = arg.copy(
-                                bottomSheetModel = result.data
-                            )
-                            showShareBottomSheet(fm)
-                        }
-                        is ShareExResult.Error -> {
-                            bottomSheetArg = arg.copy(
-                                throwable = result.throwable
-                            )
-                            showShareBottomSheet(fm)
-                        }
-                        ShareExResult.Loading -> Unit
+                when (result) {
+                    is ShareExResult.Success -> {
+                        val resultArg = ShareExBottomSheetResultArg(
+                            bottomSheetModel = result.data
+                        )
+                        showShareBottomSheet(fm, resultArg)
                     }
+                    is ShareExResult.Error -> {
+                        val resultArg = ShareExBottomSheetResultArg(
+                            throwable = result.throwable
+                        )
+                        showShareBottomSheet(fm, resultArg)
+                    }
+                    ShareExResult.Loading -> Unit
                 }
             }
         }
     }
 
-    private fun showShareBottomSheet(fragmentManager: FragmentManager) {
+    private fun showShareBottomSheet(
+        fragmentManager: FragmentManager,
+        result: ShareExBottomSheetResultArg
+    ) {
         bottomSheetArg?.let {
             bottomSheet?.dismiss()
-            bottomSheet = ShareExBottomSheet.newInstance(it)
+            bottomSheet = ShareExBottomSheet.newInstance(it, result)
             bottomSheet?.setListener(this)
             bottomSheet?.show(fragmentManager, TAG)
-            trackClickIconShare()
+            bottomSheet?.setOnDismissListener {
+                dismissListener?.onDismiss()
+            }
+            trackClickIconShare(result)
         }
     }
 
-    private fun trackClickIconShare() {
+    private fun trackClickIconShare(result: ShareExBottomSheetResultArg) {
         bottomSheetArg?.let {
             analytics.trackActionClickIconShare(
-                identifier = it.identifier,
+                productId = it.productId,
                 pageTypeEnum = it.pageTypeEnum,
-                shareId = it.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
+                shareId = result.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
                 label = it.trackerArg.labelActionClickShareIcon
             )
         }
@@ -244,6 +250,7 @@ class ShareExInitializer(
     }
 
     override fun onSuccessCopyLink() {
+        dismissListener?.onDismissAfterCopyLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->

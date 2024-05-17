@@ -443,6 +443,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/order", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/$PATH_SELLER_PARTIAL_ORDER_FULFILLMENT", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH}", SELLER_ORDER),
+        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH}", SELLER_ORDER),
 
         // editshipping
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-settings-shipping"),

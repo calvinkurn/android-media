@@ -17,16 +17,17 @@ object UpdateCheckerHelper {
             override fun onNeedUpdate(detail: DetailUpdate?) {
                 val shouldNotShowPopUp = isRedirectedFromSellerMigration && !(detail?.isForceUpdate ?: false)
                 if (!shouldNotShowPopUp && detail != null && !activity.isFinishing && !isRedirectedFromSellerMigration) {
-                    AppUpdateDialogBuilder(activity, detail,
-                            object : AppUpdateDialogBuilder.Listener {
-                                override fun onPositiveButtonClicked(detail: DetailUpdate?) {
+                    AppUpdateDialogBuilder(
+                        activity,
+                        detail,
+                        object : AppUpdateDialogBuilder.Listener {
+                            override fun onPositiveButtonClicked(detail: DetailUpdate?) {
+                            }
 
-                                }
-
-                                override fun onNegativeButtonClicked(detail: DetailUpdate?) {
-
-                                }
-                            }).alertDialog.show()
+                            override fun onNegativeButtonClicked(detail: DetailUpdate?) {
+                            }
+                        }
+                    ).getAlertDialogAndShowPopUpUpdate()
                 }
             }
 
@@ -35,7 +36,6 @@ object UpdateCheckerHelper {
             }
 
             override fun onNotNeedUpdate() {
-
             }
         })
     }

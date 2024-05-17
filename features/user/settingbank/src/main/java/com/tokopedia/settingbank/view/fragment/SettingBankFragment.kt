@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.otp.common.di.OtpComponentBuilder.getComponent
+import com.tokopedia.verification.common.di.OtpComponentBuilder.getComponent
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.databinding.FragmentSettingBankNewBinding

@@ -284,7 +284,8 @@ internal class PromoRecommendationDelegateAdapter(
                     Matrix().apply {
                         postScale(wScale, hScale)
                     }
-                binding.lottieAnimationView.scale = wScale
+                binding.lottieAnimationView.scaleX = wScale
+                binding.lottieAnimationView.scaleY = wScale
             } catch (e: Exception) {
                 Timber.e(e)
                 setLottieScalingDefault()

@@ -30,6 +30,9 @@ data class ProductBenefit(
         @SerializedName(value = "product_name", alternate = ["name"])
         @Expose
         val productName: String = "",
+        @SerializedName(value = "product_url")
+        @Expose
+        val productUrl: String = "",
         @SerializedName("thumbnail")
         @Expose
         val thumbnail: String = "",

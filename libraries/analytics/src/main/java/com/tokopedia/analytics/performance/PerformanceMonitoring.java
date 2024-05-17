@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.performance;
 
+import com.bytedance.apm.trace.LaunchTrace;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -26,6 +27,7 @@ public class PerformanceMonitoring {
     public static PerformanceMonitoring start(String traceName) {
         PerformanceMonitoring performanceMonitoring = new PerformanceMonitoring();
         performanceMonitoring.startTrace(traceName);
+        LaunchTrace.startSpan("Tokopedia", traceName);
         return performanceMonitoring;
     }
 
@@ -49,6 +51,7 @@ public class PerformanceMonitoring {
             trace.stop();
             this.endTime = System.currentTimeMillis();
             if(FpmLogger.getInstance() != null) FpmLogger.getInstance().save(traceName, startTime, endTime, attributes, metrics);
+            LaunchTrace.endSpan("Tokopedia", traceName);
         }
     }
 

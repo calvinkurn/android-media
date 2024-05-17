@@ -8,9 +8,9 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class TabsItemIconViewModel(
     val application: Application,
-    var components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val onSelectedChangeLiveData: MutableLiveData<Boolean> = MutableLiveData()
 

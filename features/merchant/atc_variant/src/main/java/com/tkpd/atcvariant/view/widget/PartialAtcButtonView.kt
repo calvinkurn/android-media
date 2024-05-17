@@ -57,6 +57,8 @@ class PartialAtcButtonView private constructor(
         val onSuccessGetCartType =
             cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton(onSuccessGetCartType, isShopOwner, isProductBuyable, cartTypeData)
+        btnBuy.isParallelLoading = btnBuy.isVisible && btnAtc.isVisible
+        btnAtc.isParallelLoading = btnBuy.isVisible && btnAtc.isVisible
     }
 
     fun showLoading() {
@@ -107,6 +109,8 @@ class PartialAtcButtonView private constructor(
     private fun renderCartRedirectionButton(cartRedirectionData: CartTypeData?) {
         val availableButton = cartRedirectionData?.availableButtons ?: listOf()
         val unavailableButton = cartRedirectionData?.unavailableButtons ?: listOf()
+
+        buttonListener.onButtonShowed(availableButton.map { it.cartType }.take(2))
 
         btnChat?.run {
             shouldShowWithAction(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton) {
@@ -191,6 +195,7 @@ class PartialAtcButtonView private constructor(
 interface PartialAtcButtonListener {
     fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
     fun onChatButtonClick()
+    fun onButtonShowed(buttonCartTypes: List<String>)
 
     // Listener for fallback button
     fun addToCartClick(buttonText: String)

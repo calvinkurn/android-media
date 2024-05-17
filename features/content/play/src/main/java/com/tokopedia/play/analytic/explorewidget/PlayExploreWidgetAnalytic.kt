@@ -31,7 +31,6 @@ interface PlayExploreWidgetAnalytic {
         selectedChannel: PlayWidgetChannelUiModel,
         position: Int,
         widgetInfo: PlayChannelRecommendationConfig,
-        config: PlayWidgetConfigUiModel,
         type: ExploreWidgetType,
     )
 
@@ -43,7 +42,6 @@ interface PlayExploreWidgetAnalytic {
     fun clickRetryToaster()
     fun impressChannelCard(
         item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
         widgetInfo: PlayChannelRecommendationConfig,
         position: Int,
         type: ExploreWidgetType

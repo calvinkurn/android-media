@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.time.TimeHelper
 
 /**
@@ -30,15 +31,28 @@ class ImageAnnouncementUiModel
  * @see AttachmentType for attachment types.
  */
 constructor(
-    messageId: String, fromUid: String, from: String, fromRole: String,
-    attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
-    val redirectUrl: String, message: String, val broadcastBlastId: String, source: String,
-    val isHideBanner: Boolean, val broadcastCtaUrl: String?, val broadcastCtaText: String?,
+    messageId: String,
+    fromUid: String,
+    from: String,
+    fromRole: String,
+    attachmentId: String,
+    attachmentType: String,
+    replyTime: String,
+    val imageUrl: String,
+    val redirectUrl: String,
+    message: String,
+    val broadcastBlastId: String,
+    source: String,
+    var isHideBanner: Boolean,
+    val broadcastCtaUrl: String?,
+    val broadcastCtaText: String?,
     val broadcastCtaLabel: String?
 ) : BaseChatUiModel(
-        messageId, fromUid, from, fromRole, attachmentId,
-        attachmentType, replyTime, message, source
-), Visitable<BaseChatTypeFactory>, DeferredAttachment {
+    messageId, fromUid, from, fromRole, attachmentId,
+    attachmentType, replyTime, message, source
+),
+    Visitable<BaseChatTypeFactory>,
+    DeferredAttachment {
 
     var campaignLabel: String = ""
         private set
@@ -61,10 +75,13 @@ constructor(
             return TimeHelper.format(startDateMillis, startDateFormat, TimeHelper.localeID)
         }
 
+    val impressHolder = ImpressHolder()
+
     private var startDateFormat = "dd MMM yyyy"
 
     constructor(
-        item: Reply, attributes: ImageAnnouncementPojo
+        item: Reply,
+        attributes: ImageAnnouncementPojo
     ) : this(
         messageId = item.msgId,
         fromUid = item.senderId,
@@ -93,6 +110,7 @@ constructor(
     override fun updateData(attribute: Any?) {
         if (attribute is ImageAnnouncementPojo) {
             assignCampaignData(attribute)
+            this.isLoading = false
         }
     }
 
@@ -115,6 +133,7 @@ constructor(
         attributes.campaignLabel?.let {
             this.campaignLabel = it
         }
+        this.isHideBanner = attributes.isHideBanner
     }
 
     override fun syncError() {
@@ -156,6 +175,38 @@ constructor(
             STARTED, ON_GOING, ENDED -> true
             else -> false
         }
+    }
+
+    fun getCampaignStatusString(): String {
+        return when (statusCampaign) {
+            STARTED -> "upcoming"
+            ON_GOING -> "ongoing"
+            ENDED -> "ended"
+            else -> "none"
+        }
+    }
+
+    /**
+     * {campaign_countdown}: time millis until campaign start or end,
+     * if campaign has ended fill with time millis since campaign ended
+     */
+    fun getCampaignCountDownString(): String {
+        val countDown = when (statusCampaign) {
+            STARTED -> {
+                // time millis until start
+                System.currentTimeMillis() - startDateMillis
+            }
+            ON_GOING -> {
+                // time millis until end
+                System.currentTimeMillis() - endDateMillis
+            }
+            ENDED -> {
+                // time millis since end
+                endDateMillis - System.currentTimeMillis()
+            }
+            else -> 0
+        }
+        return countDown.toString()
     }
 
     object CampaignStatus {

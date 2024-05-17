@@ -58,7 +58,7 @@ class HomeBannerFeedViewHolder(
         imageUrl: String
     ) {
         binding.bannerImageView.loadImage(imageUrl) {
-            setPlaceHolder(topadssdkR.drawable.loading_page)
+            setPlaceHolder(R.drawable.loading_page)
             setErrorDrawable(R.drawable.error_drawable)
         }
     }

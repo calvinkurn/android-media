@@ -103,7 +103,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private val viewModel by lazy { viewModelProvider[ShopInfoReimagineViewModel::class.java] }
 
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID, "").orEmpty() }
-    private val localCacheModel by lazy { ShopUtil.getShopPageWidgetUserAddressLocalData(context) }
     private var review: ShopReview? = null
 
     override fun getScreenName(): String = ShopInfoReimagineFragment::class.java.canonicalName.orEmpty()
@@ -119,11 +118,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         component?.inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Typography.setUnifyTypographyOSO(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -136,18 +130,19 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
+
+        val localCacheModel = ShopUtil.getShopPageWidgetUserAddressLocalData(context ?: return)
         viewModel.processEvent(
-            ShopInfoUiEvent.Setup(
+            ShopInfoUiEvent.GetShopInfo(
                 shopId,
                 localCacheModel?.district_id.orEmpty(),
                 localCacheModel?.city_id.orEmpty()
             )
         )
+
         setupView()
         observeUiState()
         observeUiEffect()
-        
-        viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
     }
 
     private fun setupView() {

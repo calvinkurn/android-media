@@ -91,7 +91,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -198,7 +198,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.unifyorderhistory.util.UohDataHelper
-import com.tokopedia.unifyorderhistory.util.UohRollenceUtil
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
@@ -239,7 +238,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private var paramUohOrder = UohListParam()
     private var orderList: UohListOrder.UohOrders = UohListOrder.UohOrders()
     private var recommendationList: List<RecommendationWidget> = listOf()
-    private var tdnBanner: TopAdsImageViewModel = TopAdsImageViewModel()
+    private var tdnBanner: TopAdsImageUiModel = TopAdsImageUiModel()
     private var responseFinishOrder: UohFinishOrder.FinishOrderBuyer = UohFinishOrder.FinishOrderBuyer()
     private var responseLsPrintFinishOrder: LsPrintData.Oiaction = LsPrintData.Oiaction()
     private var currFilterDateKey: String = ""
@@ -649,12 +648,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.loadOrderList(paramUohOrder)
         if (!paramUohOrder.hasActiveFilter()) {
             userSession?.shopId?.let { uohListViewModel.loadPmsCounter(it) }
-        }
-    }
-
-    private fun loadBuyAgainWidget() {
-        if (UohRollenceUtil.isEnableBuyAgainWidget()) {
-            uohListViewModel.loadBuyAgain()
         }
     }
 
@@ -1928,7 +1921,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         uohItemAdapter?.removePmsButton()
                     }
                 }
-                loadBuyAgainWidget()
+                uohListViewModel.loadBuyAgain()
             } else {
                 uohItemAdapter?.removePmsButton()
             }

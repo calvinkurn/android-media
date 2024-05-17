@@ -104,7 +104,7 @@ class TopAdsShopAdapter(
             holder.shopCover.setImageResource(abstractionR.drawable.ic_loading_toped)
         } else {
             holder.shopCover.loadImage(shopItem.shopCoverEcs) {
-                setPlaceHolder(topadssdkR.drawable.loading_page)
+                setPlaceHolder(topadssdkR.drawable.loading_page_topads)
                 setErrorDrawable(topadssdkR.drawable.error_drawable)
                 useCache(false)
                 overrideSize(Resize(SHOP_COVER_WIDTH, SHOP_COVER_HEIGHT))
