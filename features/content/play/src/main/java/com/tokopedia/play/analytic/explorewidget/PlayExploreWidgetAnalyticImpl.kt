@@ -139,7 +139,6 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
         selectedChannel: PlayWidgetChannelUiModel,
         position: Int,
         widgetInfo: PlayChannelRecommendationConfig,
-        config: PlayWidgetConfigUiModel,
         type: ExploreWidgetType,
     ) {
         /**
@@ -151,7 +150,7 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             .setEvent(Event.clickContent)
             .setEventAction("click - channel card")
             .setEventCategory(EventCategory.groupChatRoom)
-            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - ${config.autoPlay} - ${label.first} - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType} - ${label.second} - ${label.third}")
+            .setEventLabel("$channelId - $channelType - ${selectedChannel.channelId} - ${selectedChannel.channelType.value} - ${position + 1} - false - ${label.first} - ${selectedChannel.hasPromo.promoToString} - ${selectedChannel.recommendationType} - ${label.second} - ${label.third}")
             .setCustomProperty(Key.trackerId, "39860")
             .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
@@ -257,7 +256,6 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
 
     override fun impressChannelCard(
         item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
         widgetInfo: PlayChannelRecommendationConfig,
         position: Int,
         type: ExploreWidgetType
@@ -267,12 +265,12 @@ class PlayExploreWidgetAnalyticImpl @AssistedInject constructor(
             event = Event.promoView,
             eventCategory = EventCategory.groupChatRoom,
             eventAction = "impression - channel card",
-            eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${label.first} - ${item.hasPromo.promoToString} - ${item.recommendationType} - ${label.second} - ${label.third}",
+            eventLabel = "$channelId - $channelType - ${item.channelType.value.lowercase()} - ${position + 1} - false - ${label.first} - ${item.hasPromo.promoToString} - ${item.recommendationType} - ${label.second} - ${label.third}",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
                     name = PLAY_EXPLORE_WIDGET_PATH,
-                    creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - ${config.autoPlay} - ${label.first} - ${item.hasPromo.promoToString} - ${item.recommendationType}",
+                    creative = "${item.channelId} - ${item.channelType.value.lowercase()} - ${position + 1} - false - ${label.first} - ${item.hasPromo.promoToString} - ${item.recommendationType}",
                     position = (position + 1).toString()
                 )
             )

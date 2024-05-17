@@ -39,14 +39,18 @@ class TopChatRoomVoucherItemViewHolder(
     }
 
     private fun impressTracker(uiModel: TopChatRoomVoucherUiModel) {
-        binding?.root?.addOnImpressionListener(uiModel.impressHolder) {
-            broadcastUiModel?.let {
-                listener.onImpressionBroadcastVoucher(
-                    it,
-                    uiModel,
-                    layoutPosition,
-                    getTotalItems()
-                )
+        val broadcastUiModel = this.broadcastUiModel
+        if (broadcastUiModel != null) {
+            val bannerUiModel = broadcastUiModel.banner
+            if (bannerUiModel != null && !bannerUiModel.isLoading) {
+                binding?.root?.addOnImpressionListener(uiModel.impressHolder) {
+                    listener.onImpressionBroadcastVoucher(
+                        broadcastUiModel,
+                        uiModel,
+                        layoutPosition,
+                        getTotalItems()
+                    )
+                }
             }
         }
     }
