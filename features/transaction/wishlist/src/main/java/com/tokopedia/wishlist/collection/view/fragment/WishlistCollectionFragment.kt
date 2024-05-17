@@ -218,7 +218,7 @@ class WishlistCollectionFragment :
 
     private fun checkLogin() {
         if (userSession.isLoggedIn) {
-            getWishlistCollections()
+            loadPage()
         } else {
             startActivityForResult(
                 RouteManager.getIntent(context, ApplinkConst.LOGIN),
@@ -389,11 +389,15 @@ class WishlistCollectionFragment :
     }
 
     private fun doRefresh() {
-        getWishlistCollections()
+        loadPage()
+    }
+
+    private fun loadPage() {
+        rvScrollListener?.resetState()
+        collectionViewModel.loadPage()
     }
 
     private fun getWishlistCollections() {
-        rvScrollListener?.resetState()
         collectionViewModel.getWishlistCollections()
     }
 
@@ -622,7 +626,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK && result.data.data.success) {
-                        getWishlistCollections()
+                        loadPage()
                         showToasterActionOke(result.data.data.message, Toaster.TYPE_NORMAL)
                     } else {
                         val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
@@ -717,7 +721,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     if (result.data.data.success && result.data.status == OK) {
                         collectionViewModel.getWishlistCollectionSharingData(_collectionIdShared.toLongOrZero())
-                        getWishlistCollections()
+                        loadPage()
                     } else if (result.data.errorMessage.isNotEmpty()) {
                         showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
                     } else {
@@ -1101,7 +1105,7 @@ class WishlistCollectionFragment :
 
     override fun onSuccessUpdateCollectionName(message: String) {
         showToasterActionOke(message, Toaster.TYPE_NORMAL)
-        getWishlistCollections()
+        loadPage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
