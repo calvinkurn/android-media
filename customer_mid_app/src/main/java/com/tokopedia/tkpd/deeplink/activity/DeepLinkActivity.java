@@ -14,7 +14,6 @@ import androidx.core.app.TaskStackBuilder;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.analytics.byteio.AppLogInterface;
-import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -35,7 +34,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.uri.DeeplinkUtils;
@@ -103,7 +101,6 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
             finish();
         } else {
             initDeepLink();
-            TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_DEEP_LINK);
         }
     }
 
@@ -124,7 +121,8 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
         return uriHaveCampaignData;
     }
 
-    private void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp) {
+    @Override
+    public void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp) {
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()), isOriginalUrlAmp);
         presenter.sendOpenScreen(uriData, campaign, AppScreen.SCREEN_DEEP_LINK, extraReferrer);
