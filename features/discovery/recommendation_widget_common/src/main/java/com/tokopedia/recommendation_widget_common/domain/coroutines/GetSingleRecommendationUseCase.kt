@@ -41,8 +41,10 @@ open class GetSingleRecommendationUseCase @Inject constructor(
 
         return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.toRecommendationWidget()
             .also {
+                // if the request does not have pageName, use productId as identifier
+                val requestIdentifier = inputParameter.pageName.ifEmpty { inputParameter.productIds.joinToString(",") }
                 byteIoUseCase.updateSessionId(
-                    inputParameter.pageName,
+                    requestIdentifier,
                     it.appLog.sessionId
                 )
             }
