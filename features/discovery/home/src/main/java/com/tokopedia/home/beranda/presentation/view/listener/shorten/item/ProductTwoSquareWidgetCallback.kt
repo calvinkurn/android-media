@@ -4,8 +4,10 @@
 package com.tokopedia.home.beranda.presentation.view.listener.shorten.item
 
 import android.annotation.SuppressLint
-import com.tokopedia.home.analytics.v2.Kd2SquareTracker
+import com.tokopedia.home.analytics.v2.Kd2BannerSquareTracker
+import com.tokopedia.home.analytics.v2.Kd2ProductSquareTracker
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.viewholders.shorten.viewholder.listener.ProductWidgetListener
 import com.tokopedia.home_component.visitable.shorten.ItemProductWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
@@ -13,34 +15,62 @@ import com.tokopedia.track.TrackApp
 
 class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : ProductWidgetListener {
 
+    private var channelModel: ChannelModel? = null
+
     override fun productChannelHeaderClicked(data: ProductWidgetUiModel) {
         listener.onDynamicChannelClicked(data.header.applink)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            Kd2SquareTracker.channelHeaderClicked(
+            Kd2BannerSquareTracker.channelHeaderClicked(
                 data.channelModel
             ) as HashMap<String, Any>
         )
     }
 
     override fun productImpressed(data: ProductWidgetUiModel, position: Int) {
-        listener.getTrackingQueueObj()?.putEETracking(
-            Kd2SquareTracker.widgetImpressed(
-                data,
-                listener.userId,
-                position
-            ) as HashMap<String, Any>
-        )
+        channelModel = data.channelModel
+
+        val isProduct = data.data.map { it.tracker }.all { it.isProduct() }
+
+        if (isProduct) {
+            listener.getTrackingQueueObj()?.putEETracking(
+                Kd2ProductSquareTracker.productView(
+                    data,
+                    listener.userId,
+                    position
+                ) as HashMap<String, Any>
+            )
+        } else {
+            listener.getTrackingQueueObj()?.putEETracking(
+                Kd2BannerSquareTracker.widgetImpressed(
+                    data.channelModel,
+                    listener.userId,
+                    position
+                ) as HashMap<String, Any>
+            )
+        }
     }
 
     override fun itemProductClicked(data: ItemProductWidgetUiModel, position: Int) {
         listener.onDynamicChannelClicked(data.appLink)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            Kd2SquareTracker.cardClicked(
-                data.tracker,
-                listener.userId,
-                position
-            ) as HashMap<String, Any>
-        )
+
+        if (data.tracker.isProduct() && channelModel != null) {
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                Kd2ProductSquareTracker.productClick(
+                    channelModel!!,
+                    data.tracker,
+                    listener.userId,
+                    position
+                )
+            )
+        } else {
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                Kd2BannerSquareTracker.cardClicked(
+                    data.tracker,
+                    listener.userId,
+                    position
+                ) as HashMap<String, Any>
+            )
+        }
     }
 
     override fun retryWidget() {
