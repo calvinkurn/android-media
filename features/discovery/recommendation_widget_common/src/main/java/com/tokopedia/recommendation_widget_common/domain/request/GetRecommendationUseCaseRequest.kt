@@ -199,6 +199,7 @@ internal class GetRecommendationUseCaseRequest {
                             key
                             value
                         }
+                        parentID
                         recParam
                         countSold
                        }
