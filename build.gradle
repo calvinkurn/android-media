@@ -172,3 +172,31 @@ subprojects {
         }
     }
 }
+
+def jobName = System.getenv('JOB_NAME')
+def isCiBuild = jobName ? "CI" : "LOCAL"
+println("Job Name: $jobName")
+println("Is CI Build: $isCiBuild")
+
+//def getTags() {
+//    println("------Set TAG for Hummer------")
+//
+//    if (jobName != null) {
+//        println("Job Name is Not Null")
+//        collectionTags = [isCiBuild, jobName]
+//    } else {
+//        println("Job Name is Null")
+//        collectionTags = [isCiBuild]
+//    }
+//}
+
+if(project.extensions.findByName("buildCollectConfig") != null) {
+    buildCollectConfig{
+        if (jobName != null) {
+            println("Job Name is Not Null")
+            tags = [isCiBuild, jobName]
+        } else {
+            tags = [isCiBuild]
+        }
+    }
+}

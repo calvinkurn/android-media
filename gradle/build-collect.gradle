@@ -15,7 +15,7 @@ println("This is init.gradle script")
 ext.startTime = System.currentTimeMillis()
 
 //项目是否已经接入了build collect
-System.setProperty("APPLIED_INIT_SCRIPT", "true")
+//System.setProperty("APPLIED_INIT_SCRIPT", "true")
 
 import com.bytedance.build_collect.BuildScanPlugin
 gradle.addListener(new BuildAdapter(){
