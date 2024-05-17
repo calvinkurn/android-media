@@ -82,10 +82,12 @@ class PartialContentView(
             componentTrackData = componentTrackData
         )
 
-        if (productName.lineCount == 2) {
-            pdpContentContainer.setPadding(0, 0, 0, 6.toPx())
-        } else {
-            pdpContentContainer.setPadding(0, 0, 0, 2.toPx())
+        pdpContentContainer.post {
+            if (productName.lineCount == 2) {
+                pdpContentContainer.setPadding(0, 0, 0, 6.toPx())
+            } else {
+                pdpContentContainer.setPadding(0, 0, 0, 2.toPx())
+            }
         }
     }
 

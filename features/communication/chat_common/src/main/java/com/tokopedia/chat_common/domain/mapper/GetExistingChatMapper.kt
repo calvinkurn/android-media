@@ -36,18 +36,22 @@ open class GetExistingChatMapper @Inject constructor() {
         val replyIDs = pojo.chatReplies.replyIDs
         listChat.reverse()
         return ChatroomViewModel(
-                listChat, headerModel,
-                canLoadMore, isReplyable,
-                blockedStatus, latestHeaderDate,
-                replyIDs
+            listChat,
+            headerModel,
+            canLoadMore,
+            isReplyable,
+            blockedStatus,
+            latestHeaderDate,
+            replyIDs
         )
-
     }
 
     private fun mapBlockedStatus(pojo: GetExistingChatPojo): BlockedStatus {
-        return BlockedStatus(pojo.chatReplies.block.isBlocked,
-                pojo.chatReplies.block.isPromoBlocked,
-                pojo.chatReplies.block.blockedUntil)
+        return BlockedStatus(
+            pojo.chatReplies.block.isBlocked,
+            pojo.chatReplies.block.isPromoBlocked,
+            pojo.chatReplies.block.blockedUntil
+        )
     }
 
     open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderUiModel {
@@ -61,20 +65,20 @@ open class GetExistingChatMapper @Inject constructor() {
         }
 
         return ChatRoomHeaderUiModel(
-                interlocutor.name,
-                interlocutor.tag,
-                interlocutor.userId,
-                interlocutor.role,
-                ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT,
-                "",
-                interlocutor.thumbnail,
-                interlocutor.status.timestampStr,
-                interlocutor.status.isOnline,
-                interlocutor.shopId,
-                interlocutor.isOfficial,
-                interlocutor.isGold,
-                interlocutor.shopType,
-                interlocutor.badge
+            interlocutor.name,
+            interlocutor.tag,
+            interlocutor.userId,
+            interlocutor.role,
+            ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT,
+            "",
+            interlocutor.thumbnail,
+            interlocutor.status.timestampStr,
+            interlocutor.status.isOnline,
+            interlocutor.shopId,
+            interlocutor.isOfficial,
+            interlocutor.isGold,
+            interlocutor.shopType,
+            interlocutor.badge
         )
     }
 
@@ -118,33 +122,41 @@ open class GetExistingChatMapper @Inject constructor() {
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime, TYPE_IMAGE_UPLOAD)
             TYPE_IMAGE_UPLOAD_SECURE ->
                 convertToImageUpload(chatItemPojoByDateByTime, TYPE_IMAGE_UPLOAD_SECURE)
-            TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
+            TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime, attachmentIds)
             TYPE_INVOICE_SEND -> convertToInvoiceSent(chatItemPojoByDateByTime, attachmentIds)
             else -> convertToFallBackModel(chatItemPojoByDateByTime)
         }
     }
 
-    protected open fun convertToImageAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = gson.fromJson(item.attachment.attributes,
-                ImageAnnouncementPojo::class.java)
-        return ImageAnnouncementUiModel(
-                messageId = item.msgId,
-                fromUid = item.senderId,
-                from = item.senderName,
-                fromRole = item.role,
-                attachmentId = item.attachment.id,
-                attachmentType = item.attachment.type.toString(),
-                replyTime = item.replyTime,
-                imageUrl = pojoAttribute.imageUrl,
-                redirectUrl = pojoAttribute.url,
-                isHideBanner = pojoAttribute.isHideBanner,
-                message = item.msg,
-                broadcastBlastId = item.blastId,
-                source = item.source,
-                broadcastCtaUrl = pojoAttribute.broadcastCtaUrl,
-                broadcastCtaText = pojoAttribute.broadcastCtaText,
-                broadcastCtaLabel = pojoAttribute.broadcastCtaLabel
+    protected open fun convertToImageAnnouncement(
+        item: Reply,
+        attachmentIds: List<String>
+    ): Visitable<*> {
+        val pojoAttribute = gson.fromJson(
+            item.attachment.attributes,
+            ImageAnnouncementPojo::class.java
         )
+        val isNeedSync = attachmentIds.contains(item.attachment.id)
+        return ImageAnnouncementUiModel(
+            messageId = item.msgId,
+            fromUid = item.senderId,
+            from = item.senderName,
+            fromRole = item.role,
+            attachmentId = item.attachment.id,
+            attachmentType = item.attachment.type.toString(),
+            replyTime = item.replyTime,
+            imageUrl = pojoAttribute.imageUrl,
+            redirectUrl = pojoAttribute.url,
+            isHideBanner = pojoAttribute.isHideBanner,
+            message = item.msg,
+            broadcastBlastId = item.blastId,
+            source = item.source,
+            broadcastCtaUrl = pojoAttribute.broadcastCtaUrl,
+            broadcastCtaText = pojoAttribute.broadcastCtaText,
+            broadcastCtaLabel = pojoAttribute.broadcastCtaLabel
+        ).apply {
+            this.isLoading = isNeedSync
+        }
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
@@ -181,7 +193,8 @@ open class GetExistingChatMapper @Inject constructor() {
             ProductAttachmentAttributes::class.java
         )
         val canShowFooter = canShowFooterProductAttachment(
-            chatItemPojoByDateByTime.isOpposite, chatItemPojoByDateByTime.role
+            chatItemPojoByDateByTime.isOpposite,
+            chatItemPojoByDateByTime.role
         )
         val needSync = attachmentIds.contains(chatItemPojoByDateByTime.attachment.id)
         if (pojoAttribute.isBannedProduct()) {
@@ -217,8 +230,8 @@ open class GetExistingChatMapper @Inject constructor() {
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
         val ROLE_USER = "User"
 
-        return (!isOpposite && role.lowercase(Locale.getDefault()) == ROLE_USER.lowercase(Locale.getDefault()))
-                || (isOpposite && role.lowercase(Locale.getDefault()) != ROLE_USER.lowercase(Locale.getDefault()))
+        return (!isOpposite && role.lowercase(Locale.getDefault()) == ROLE_USER.lowercase(Locale.getDefault())) ||
+            (isOpposite && role.lowercase(Locale.getDefault()) != ROLE_USER.lowercase(Locale.getDefault()))
     }
 
     open fun hasAttachment(pojo: Reply): Boolean {

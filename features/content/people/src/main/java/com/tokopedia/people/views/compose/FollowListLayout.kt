@@ -33,6 +33,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.noRippleClickable
 import com.tokopedia.people.utils.onLoadMore
+import com.tokopedia.people.utils.resId
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -118,6 +119,7 @@ private fun ShopFollowListItemRow(
             modifier = Modifier
                 .requiredSize(48.dp)
                 .clip(CircleShape)
+                .resId("img_profile_image")
         )
         if (item.badgeUrl.isNotBlank()) {
             NestImage(
@@ -127,6 +129,7 @@ private fun ShopFollowListItemRow(
                     .padding(start = 12.dp)
                     .requiredSize(18.dp)
                     .clip(CircleShape)
+                    .resId("img_badge")
             )
         }
         NestTypography(
@@ -138,12 +141,14 @@ private fun ShopFollowListItemRow(
             modifier = Modifier
                 .padding(start = if (item.badgeUrl.isNotBlank()) 4.dp else 12.dp, end = 12.dp)
                 .weight(1f)
+                .resId("text_display_name")
         )
         NestButton(
             text = if (item.isFollowed) "Following" else "Follow",
             variant = if (item.isFollowed) ButtonVariant.GHOST_ALTERNATE else ButtonVariant.FILLED,
             size = ButtonSize.MICRO,
-            onClick = { onFollowClicked(item) }
+            onClick = { onFollowClicked(item) },
+            modifier = Modifier.resId("btn_action_follow")
         )
     }
 }
@@ -168,6 +173,7 @@ private fun UserFollowListItemRow(
             modifier = Modifier
                 .requiredSize(48.dp)
                 .clip(CircleShape)
+                .resId("img_profile_image")
         )
         Column(
             verticalArrangement = Arrangement.Center,
@@ -180,26 +186,30 @@ private fun UserFollowListItemRow(
                 textStyle = NestTheme.typography.heading5.copy(
                     color = NestTheme.colors.NN._950
                 ),
-                maxLines = 1
+                maxLines = 1,
+                modifier = Modifier.resId("text_display_name")
             )
 
             if (item.username.isNotBlank()) {
                 NestTypography(
-                    text = item.username,
+                    text = "@${item.username}",
                     textStyle = NestTheme.typography.body3.copy(
                         color = NestTheme.colors.NN._600
-                    )
+                    ),
+                    modifier = Modifier.resId("text_user_name")
                 )
             }
         }
 
-        if (item.isMySelf) return
-        NestButton(
-            text = if (item.isFollowed) "Following" else "Follow",
-            variant = if (item.isFollowed) ButtonVariant.GHOST_ALTERNATE else ButtonVariant.FILLED,
-            size = ButtonSize.MICRO,
-            onClick = { onFollowClicked(item) }
-        )
+        if (!item.isMySelf) {
+            NestButton(
+                text = if (item.isFollowed) "Following" else "Follow",
+                variant = if (item.isFollowed) ButtonVariant.GHOST_ALTERNATE else ButtonVariant.FILLED,
+                size = ButtonSize.MICRO,
+                onClick = { onFollowClicked(item) },
+                modifier = Modifier.resId("btn_action_follow")
+            )
+        }
     }
 }
 
