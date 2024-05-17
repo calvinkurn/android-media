@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
@@ -62,9 +63,13 @@ class UpgradePmProWidget(
     private fun showTermTitle(element: WidgetUpgradePmProUiModel) {
         binding?.run {
             val isPm = element.shopGrade == PMConstant.ShopGrade.PM
-            icTargetHeader.isVisible = isPm
-            tvPmHeaderTermsStatus.isVisible = isPm
-            tvPmShopAchievement.isVisible = !isPm
+            val isEgiblePmPro = element.shopInfo.shopScore >= 80 &&
+                element.shopInfo.netItemValueOneMonth >= element.shopInfo.netItemValuePmProThreshold &&
+                element.shopInfo.itemSoldOneMonth >= element.shopInfo.itemSoldPmProThreshold &&
+                element.shopInfo.isKyc
+            tvPmShopAchievement.isVisible = isEgiblePmPro
+            icTargetHeader.isVisible = !isEgiblePmPro && isPm
+            tvPmHeaderTermsStatus.isVisible = !isEgiblePmPro && isPm
         }
     }
 
@@ -179,7 +184,14 @@ class UpgradePmProWidget(
         val isPM = element.shopGrade == PMConstant.ShopGrade.PM
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_SHOP_ICON)
-        if (isPM) tvPmUpgradePmProTitle.text = root.context.getString(R.string.pm_get_exclusive_benefit_of_being_pm_pro)
-        else tvPmUpgradePmProTitle.text = root.context.getString(R.string.pm_keep_being_of_pm_pro)
+        val isEgiblePmPro = element.shopInfo.shopScore >= 80 &&
+            element.shopInfo.netItemValueOneMonth >= element.shopInfo.netItemValuePmProThreshold &&
+            element.shopInfo.itemSoldOneMonth >= element.shopInfo.itemSoldPmProThreshold &&
+            element.shopInfo.isKyc
+        tvPmUpgradePmProTitle.text = if (isEgiblePmPro) {
+            root.context.getString(R.string.pm_keep_being_of_pm_pro)
+        } else {
+            root.context.getString(R.string.pm_get_exclusive_benefit_of_being_pm_pro)
+        }
     }
 }
