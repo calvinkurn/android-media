@@ -56,20 +56,18 @@ class UpgradePmProWidget(
             tvPmUpgradeBenefitDescription.text= if (isPm) {
                 root.context.getString(R.string.pm_pro_upgrade_description)
             } else root.context.getString(R.string.pm_pro_notupgrade_description)
-
         }
     }
 
     private fun showTermTitle(element: WidgetUpgradePmProUiModel) {
         binding?.run {
-            val isPm = element.shopGrade == PMConstant.ShopGrade.PM
             val isEgiblePmPro = element.shopInfo.shopScore >= 80 &&
                 element.shopInfo.netItemValueOneMonth >= element.shopInfo.netItemValuePmProThreshold &&
                 element.shopInfo.itemSoldOneMonth >= element.shopInfo.itemSoldPmProThreshold &&
                 element.shopInfo.isKyc
             tvPmShopAchievement.isVisible = isEgiblePmPro
-            icTargetHeader.isVisible = !isEgiblePmPro && isPm
-            tvPmHeaderTermsStatus.isVisible = !isEgiblePmPro && isPm
+            icTargetHeader.isVisible = !isEgiblePmPro
+            tvPmHeaderTermsStatus.isVisible = !isEgiblePmPro
         }
     }
 
@@ -181,7 +179,6 @@ class UpgradePmProWidget(
     }
 
     private fun setupView(element: WidgetUpgradePmProUiModel) = binding?.run {
-        val isPM = element.shopGrade == PMConstant.ShopGrade.PM
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_SHOP_ICON)
         val isEgiblePmPro = element.shopInfo.shopScore >= 80 &&
