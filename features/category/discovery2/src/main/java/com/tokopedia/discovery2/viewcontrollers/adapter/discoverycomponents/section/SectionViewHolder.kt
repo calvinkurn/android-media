@@ -135,7 +135,14 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveForeground.setImageBitmap(bitmap)
                     addHeightForeground(festiveForeground)
                     festiveForeground.minimumHeight = 0
-                }, 500)
+                }, 300)
+
+                // add set Bitmap, with more delay, to cater if there is change in itemview
+                itemView.postDelayed({
+                    festiveForeground.setImageBitmap(bitmap)
+                    addHeightForeground(festiveForeground)
+                    festiveForeground.minimumHeight = 0
+                }, 800)
             },
                 onError = { festiveForeground.hide() })
         })
@@ -152,7 +159,13 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveBackground.setImageBitmap(bitmap)
                     addHeightBgOnce(festiveBackground)
                     festiveBackground.minimumHeight = 0
-                }, 500)
+                }, 300)
+                // add set Bitmap, with more delay, to cater if there is change in itemview
+                itemView.postDelayed({
+                    festiveBackground.setImageBitmap(bitmap)
+                    addHeightBgOnce(festiveBackground)
+                    festiveBackground.minimumHeight = 0
+                }, 800)
             },
                 onError = { festiveBackground.hide() })
         })
