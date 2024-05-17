@@ -110,8 +110,8 @@ internal class GetRecommendationUseCaseRequest {
         """.trimIndent()
 
         val singleQuery = """
-            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!, ${'$'}productCardVersion: Int, ${'$'}enterFrom: String!, ${'$'}sourcePageType: String!) {
-                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam, productCardVersion : ${'$'}productCardVersion, enterFrom: ${'$'}enterFrom, sourcePageType: ${'$'}sourcePageType){
+            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!, ${'$'}productCardVersion: Int, ${'$'}currentSessionID: String!, ${'$'}refreshType: String!, ${'$'}enterFrom: String!, ${'$'}sourcePageType: String!) {
+                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam, productCardVersion : ${'$'}productCardVersion, currentSessionID: ${'$'}currentSessionID, refreshType: ${'$'}refreshType, enterFrom: ${'$'}enterFrom, sourcePageType: ${'$'}sourcePageType){
                    data {
                        tID
                        source
