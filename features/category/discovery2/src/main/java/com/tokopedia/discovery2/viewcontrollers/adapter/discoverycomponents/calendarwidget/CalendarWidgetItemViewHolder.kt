@@ -426,6 +426,15 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarDesc.show()
             }
 
+            when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
+                Calendar.TRIPLE -> {
+                    calendarDate.setType(Typography.SMALL)
+                }
+                else -> {
+                    calendarDate.setType(Typography.BODY_3)
+                }
+            }
+
             if (buttonApplink.isNullOrEmpty() && !Utils.isFutureSale(
                     startDate ?: "", TIMER_DATE_FORMAT
                 )

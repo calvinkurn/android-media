@@ -2,8 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sec
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -23,8 +21,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.home_component.util.ImageLoaderStateListener
-import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -139,7 +135,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveForeground.setImageBitmap(bitmap)
                     addHeightForeground(festiveForeground)
                     festiveForeground.minimumHeight = 0
-                }, 350)
+                }, 500)
             },
                 onError = { festiveForeground.hide() })
         })
@@ -156,7 +152,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     festiveBackground.setImageBitmap(bitmap)
                     addHeightBgOnce(festiveBackground)
                     festiveBackground.minimumHeight = 0
-                }, 350)
+                }, 500)
             },
                 onError = { festiveBackground.hide() })
         })
