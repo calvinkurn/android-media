@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_custom_shop_widget"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.TextAreaUnify2
+            android:id="@+id/text_area_dynamic_tab_widget_response"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/text_area_layout_v2_widget_response"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_text_field_label_static="true"
+            app:unify_text_field_placeholder="Paste dynamic response here" />
+
+        <com.tokopedia.unifycomponents.TextAreaUnify2
+            android:id="@+id/text_area_layout_v2_widget_response"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintLeft_toRightOf="@id/text_area_dynamic_tab_widget_response"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_text_field_label_static="true"
+            app:unify_text_field_placeholder="Paste layout v2 widget response here" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/toggle_is_generate_dynamic_data_widget_response"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Generate dynamic widget\n from v2 response" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_add_custom_shop_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:text="Add Custom Shop Widget"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
+
+</LinearLayout>

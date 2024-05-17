@@ -47,18 +47,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
         MatcherAssert.assertThat(cassavaTestRule.validate(fileName), hasAllSuccess())
     }
 
-    protected fun clickMerchantToolsRecommendation() {
-        activityRule.activity.scrollTo<SectionShopRecommendationUiModel>()
-        onIdView(R.id.rvShopScoreCreation).isViewDisplayed()
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<SectionShopFeatureRecommendationViewHolder>(
-                    0,
-                    CommonActions.clickChildViewWithId(R.id.cardPromoCreation)
-                )
-            )
-        validate(CLICK_MERCHANT_TOOLS_RECOMMENDATION_PATH)
-    }
-
     protected fun clickTickerPenalty() {
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         onIdVisibleView(unifycomponentsR.id.ticker_description).isViewDisplayed().onClick()
