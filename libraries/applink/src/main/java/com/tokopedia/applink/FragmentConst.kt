@@ -3,6 +3,8 @@ package com.tokopedia.applink
 /**
  * Author errysuprayogi on 19,January,2021
  * Central const for Fragment name in apps use for instantiate Fragment using Route Manager,
+ *
+ * DO NOT FORGET to update the proguard rules so that this class will not be obfuscated
  */
 object FragmentConst {
     const val FEED_PLUS_CONTAINER_FRAGMENT = "com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment"
