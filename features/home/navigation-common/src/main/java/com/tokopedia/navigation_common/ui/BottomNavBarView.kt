@@ -14,6 +14,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.LottieListener
 import com.airbnb.lottie.LottieTask
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
@@ -211,6 +212,7 @@ class BottomNavBarView : LinearLayout {
         playlist: AssetPlaylist
     ) {
         removeAllAnimatorListeners()
+        clearLottieTask()
         pauseAnimation()
         clearImage()
 
@@ -238,28 +240,26 @@ class BottomNavBarView : LinearLayout {
     }
 
     private fun LottieAnimationView.bindLottiePlaylist(playlist: LottiePlaylist) {
-        playlist.firstAsset.toLottieTask()
-            .addListener {
-                repeatCount = if (playlist.nextAsset == null && playlist.isInfinite) {
-                    LottieDrawable.INFINITE
-                } else {
-                    0
-                }
-                setComposition(it)
-                playAnimation()
+        setLottieTaskFromAsset(playlist.firstAsset) {
+            repeatCount = if (playlist.nextAsset == null && playlist.isInfinite) {
+                LottieDrawable.INFINITE
+            } else {
+                0
             }
+            setComposition(it)
+            playAnimation()
+        }
 
         addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animator: Animator) {}
 
             override fun onAnimationEnd(animator: Animator) {
                 if (playlist.nextAsset == null) return
-                playlist.nextAsset.toLottieTask()
-                    .addListener {
-                        repeatCount = if (playlist.isInfinite) LottieDrawable.INFINITE else 0
-                        setComposition(it)
-                        playAnimation()
-                    }
+                setLottieTaskFromAsset(playlist.nextAsset) {
+                    repeatCount = if (playlist.isInfinite) LottieDrawable.INFINITE else 0
+                    setComposition(it)
+                    playAnimation()
+                }
             }
 
             override fun onAnimationCancel(animator: Animator) {}
@@ -274,6 +274,38 @@ class BottomNavBarView : LinearLayout {
             is Type.LottieRes -> LottieCompositionFactory.fromRawRes(context, res)
         }
     }
+
+    private fun LottieAnimationView.setLottieTaskFromAsset(
+        asset: Type.Lottie,
+        listener: LottieListener<LottieComposition>
+    ) {
+        clearLottieTask()
+        lottieTaskListener = listener
+        lottieTask = asset.toLottieTask().addListener(listener)
+    }
+
+    private fun LottieAnimationView.clearLottieTask() {
+        lottieTask?.removeListener(lottieTaskListener)
+        lottieTaskListener = null
+        lottieTask = null
+    }
+
+    private var LottieAnimationView.lottieTask: LottieTask<LottieComposition>?
+        get() {
+            return getTag(navigation_commonR.id.bottom_nav_lottie_task) as? LottieTask<LottieComposition>
+        }
+        set(value) {
+            setTag(navigation_commonR.id.bottom_nav_lottie_task, value)
+        }
+
+    private var LottieAnimationView.lottieTaskListener: LottieListener<LottieComposition>?
+        get() {
+            return getTag(navigation_commonR.id.bottom_nav_lottie_listener) as? LottieListener<LottieComposition>
+        }
+        set(value) {
+            setTag(navigation_commonR.id.bottom_nav_lottie_listener, value)
+        }
+
 
     // TODO("Revisit this logic")
     private fun getNormalAssets(
