@@ -142,7 +142,8 @@ object TrackDiscoveryRecommendationMapper {
             ComponentNames.MasterProductCardItemList.componentName,
             ComponentNames.MasterProductCardItemListReimagine.componentName,
             ComponentNames.ProductCardSingleItem.componentName,
-            ComponentNames.ProductCardSingleItemReimagine.componentName -> EntranceForm.DETAIL_GOODS_CARD
+            ComponentNames.ProductCardSingleItemReimagine.componentName,
+            ComponentNames.ProductCardSingle.componentName -> EntranceForm.DETAIL_GOODS_CARD
             else -> EntranceForm.HORIZONTAL_GOODS_CARD
         }
     }
