@@ -419,7 +419,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun checkLoginOption() {
+    open fun checkLoginOption() {
         if (GlobalConfig.isSellerApp()) {
             viewModel.checkLoginOption(
                 isEnableSeamless = false,
@@ -438,7 +438,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         (activity as? LoginActivity)?.supportActionBar?.hide()
     }
 
-    private fun hideLoadingOverlay() {
+    fun hideLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.hide()
         (activity as? LoginActivity)?.supportActionBar?.show()
     }
@@ -2041,7 +2041,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return message
     }
 
-    private fun autoFillWithDataFromLatestLoggedIn() {
+    open fun autoFillWithDataFromLatestLoggedIn() {
         if (!userSession.autofillUserData.isNullOrEmpty() && viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isEmpty() == true) {
             viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.let {
                 it.setText(userSession.autofillUserData)

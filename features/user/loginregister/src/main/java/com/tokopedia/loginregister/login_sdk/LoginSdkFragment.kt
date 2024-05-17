@@ -78,6 +78,14 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         }
     }
 
+    override fun autoFillWithDataFromLatestLoggedIn() {
+        // no-op
+    }
+
+    override fun checkLoginOption() {
+        hideLoadingOverlay()
+    }
+
     override fun setupToolbar() {
         super.setupToolbar()
         activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
