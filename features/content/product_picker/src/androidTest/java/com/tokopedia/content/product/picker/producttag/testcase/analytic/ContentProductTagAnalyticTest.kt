@@ -42,6 +42,7 @@ import com.tokopedia.content.product.picker.producttag.helper.sortFilterSaveButt
 import com.tokopedia.content.product.picker.producttag.helper.sortFilterSaveButtonContainer
 import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.test.espresso.delay
@@ -67,6 +68,7 @@ class ContentProductTagAnalyticTest {
     private val mockRepo: ProductTagRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAnalytic: ContentProductTagAnalytic = mockk(relaxed = true)
+    private val mockProductTagPreference: ProductTagPreference = mockk(relaxed = true)
 
     /** Builder */
     private val productTagSourceBuilder = ProductTagSourceBuilder()
@@ -109,6 +111,8 @@ class ContentProductTagAnalyticTest {
     }
 
     init {
+        coEvery { mockProductTagPreference.isFirstGlobalTag() } returns false
+
         coEvery { mockUserSession.userId } returns "123"
         coEvery { mockUserSession.shopId } returns "456"
 
@@ -126,6 +130,7 @@ class ContentProductTagAnalyticTest {
             mockUserSession = mockUserSession,
             mockRepo = mockRepo,
             mockAnalytic = mockAnalytic,
+            mockProductTagPreference = mockProductTagPreference,
         )
     }
 
@@ -217,37 +222,40 @@ class ContentProductTagAnalyticTest {
     @Test
     fun contentProductTag_ugc_clickProductTagSource_tokopedia() {
         launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorId("123")
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setProductTagSource(completeSource)
         )
 
         openTokopediaSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch, "123", "3") }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch, "123", ContentCommonUserType.TYPE_USER) }
     }
 
     @Test
     fun contentProductTag_ugc_clickProductTagSource_lastPurchased() {
         launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorId("123")
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setProductTagSource(completeSource)
         )
 
         openLastPurchasedSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase, "123", "3") }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase, "123", ContentCommonUserType.TYPE_USER) }
     }
 
     @Test
     fun contentProductTag_ugc_clickProductTagSource_myShop() {
         launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorId("123")
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setProductTagSource(completeSource)
         )
 
         openMyShopSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop, "123", "2") }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop, "123", ContentCommonUserType.TYPE_USER) }
     }
 
     /** impressProductCardTest */
