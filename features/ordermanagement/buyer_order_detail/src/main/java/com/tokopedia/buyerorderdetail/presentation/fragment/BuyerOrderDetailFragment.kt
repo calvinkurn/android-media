@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalShare
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
@@ -39,6 +40,7 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConst
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.VERTICAL_ID_AFFILIATE_LINK_ELIGIBILITY
 import com.tokopedia.buyerorderdetail.common.extension.collectLatestWhenResumed
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailShareUtils
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderDetailBinding
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
@@ -355,6 +357,7 @@ open class BuyerOrderDetailFragment :
                 }
             }
             BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM -> handleBrcCsatFormResult(data)
+            BuyerOrderDetailIntentCode.REQUEST_CODE_SHARE -> handleShareResult(resultCode, data)
         }
     }
 
@@ -541,7 +544,7 @@ open class BuyerOrderDetailFragment :
                 }
 
                 else -> {
-                    //no op
+                    // no op
                 }
             }
         }
@@ -674,7 +677,7 @@ open class BuyerOrderDetailFragment :
                 stickyActionButton?.hideSavingWidget()
             }
             else -> {
-                //noop
+                // noop
             }
         }
     }
@@ -684,8 +687,10 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
-        val savingWidgetData = (uiState.savingsWidgetUiState as?
-                SavingsWidgetUiState.Success)?.data
+        val savingWidgetData = (
+            uiState.savingsWidgetUiState as?
+                SavingsWidgetUiState.Success
+            )?.data
 
         if (savingWidgetData == null) {
             stickyActionButton?.hideSavingWidget()
@@ -983,6 +988,29 @@ open class BuyerOrderDetailFragment :
         }
     }
 
+    private fun handleShareResult(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK -> {
+                val message: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK)
+                        .orEmpty()
+                showCommonToaster(message)
+            }
+            ApplinkConstInternalShare.ActivityResult.RESULT_CODE_FAIL_GENERATE_AFFILIATE_LINK -> {
+                val messageFailGenerateAffiliateLink: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK).orEmpty()
+                val messageCopyLink: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK).orEmpty()
+                val ctaCopyLink: String =
+                    data?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK).orEmpty()
+
+                showErrorToaster(messageFailGenerateAffiliateLink, ctaCopyLink) {
+                    showCommonToaster(messageCopyLink)
+                }
+            }
+        }
+    }
+
     private fun stopLoadTimeMonitoring() {
         rvBuyerOrderDetail?.post {
             buyerOrderDetailLoadMonitoring?.stopRenderPerformanceMonitoring()
@@ -1111,6 +1139,19 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
+        if (BuyerOrderDetailShareUtils.isUsingShareEx()) {
+            // Validate archived product
+            if (element.productUrl.isBlank()) {
+                showCommonToaster(
+                    getString(R.string.buyer_order_detail_share_product_archived),
+                    getString(R.string.buyer_order_detail_share_product_archived_cta)
+                )
+            } else {
+                shareProduct(element)
+            }
+            return
+        }
+
         BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId, userSession.userId)
         val universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(object : ShareBottomsheetListener {
@@ -1171,6 +1212,26 @@ open class BuyerOrderDetailFragment :
             this@BuyerOrderDetailFragment
         )
         BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
+    }
+
+    private fun shareProduct(element: ProductListUiModel.ProductUiModel) {
+        val label = "{share_id} - ${element.productId} - ${element.orderId} - ${element.orderStatusId}"
+        val affiliateLabel = "{share_id} - ${element.productId} - ${element.orderId}"
+        val shareApplink = "${ApplinkConstInternalShare.SHARE}?" +
+            "${ApplinkConstInternalShare.Param.PRODUCT_ID}=${element.productId}" +
+            "&${ApplinkConstInternalShare.Param.SHOP_ID}=${element.shopId}" +
+            "&${ApplinkConstInternalShare.Param.PAGE_TYPE}=${ApplinkConstInternalShare.PageType.ORDER_DETAIL}" +
+            "&${ApplinkConstInternalShare.Param.DEFAULT_URL}=${element.productUrl}" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_SHARE_ICON}=$label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CLOSE_ICON}=$label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CHANNEL}={channel} - $label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_IMPRESSION_BOTTOMSHEET}=$label" +
+            "&${ApplinkConstInternalShare.Param.LABEL_IMPRESSION_AFFILIATE_REGISTRATION}=$affiliateLabel" +
+            "&${ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_AFFILIATE_REGISTRATION}=$affiliateLabel" +
+            "&${ApplinkConstInternalShare.Param.UTM_CAMPAIGN}=Order-{share_id}-${element.productId}-${element.orderId}"
+
+        val intent = RouteManager.getIntent(context, shareApplink)
+        startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_SHARE)
     }
 
     override fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
@@ -1329,7 +1390,8 @@ open class BuyerOrderDetailFragment :
                 navigator.openProductUrl(addOn.addOnsUrl)
             } else {
                 showToaster(
-                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(), context?.getString(R.string.buyer_order_detail_oke).orEmpty()
+                    context?.getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice).orEmpty(),
+                    context?.getString(R.string.buyer_order_detail_oke).orEmpty()
                 )
             }
         }
