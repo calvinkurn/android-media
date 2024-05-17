@@ -3,7 +3,7 @@ package com.tokopedia.chat_common.domain.pojo.productattachment
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentVariant
 
-data class ProductProfile (
+data class ProductProfile(
     @SerializedName("min_order")
     val minOrder: Int = 1,
 
@@ -49,6 +49,9 @@ data class ProductProfile (
     @SerializedName("remaining_stock")
     var remainingStock: Int = 0,
 
+    @SerializedName("item_sold_format")
+    val sold: String? = "",
+
     @SerializedName("status")
     var status: Int = 1,
 
@@ -66,6 +69,9 @@ data class ProductProfile (
 
     @SerializedName("campaign_id")
     var campaignId: String = "0",
+
+    @SerializedName("campaign")
+    var campaign: TopChatCampaign? = TopChatCampaign(),
 
     @SerializedName("is_fulfillment")
     var isFulFillment: Boolean = false,

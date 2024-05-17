@@ -191,6 +191,7 @@ open class GetChatUseCase @Inject constructor(
                     isExpired
                     replyID
                   }
+                  messageType
                   attachment {
                     id
                     type

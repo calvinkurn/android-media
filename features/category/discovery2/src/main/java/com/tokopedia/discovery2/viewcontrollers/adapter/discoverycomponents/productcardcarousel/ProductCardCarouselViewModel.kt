@@ -8,6 +8,8 @@ import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
+import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.MixLeft
@@ -47,7 +49,7 @@ class ProductCardCarouselViewModel(
     private val saleEndDate: MutableLiveData<Date> = MutableLiveData()
     private val _atcFailed = SingleLiveEvent<Int>()
     private var isLoading = false
-    private var isReimagine = !components.properties?.cardType.equals("V1", true)
+    private var isReimagine = !components.properties.isOldProductCardType()
     private val mixLeftComponentsItem: ComponentsItem by lazy { ComponentsItem() }
 
     @JvmField
@@ -175,7 +177,7 @@ class ProductCardCarouselViewModel(
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         dataItem,
                         components.name,
-                        components.properties?.cardType
+                        components.properties.isReimagineProductCardInBackground()
                     )
                 )
             }

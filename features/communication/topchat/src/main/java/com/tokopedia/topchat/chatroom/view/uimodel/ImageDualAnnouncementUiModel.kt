@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 /**
  * Created by Hendri on 22/06/18.
@@ -41,9 +41,9 @@ constructor(
         source: String
 ) : BaseChatUiModel(
         messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
-), Visitable<TopChatTypeFactory> {
+), Visitable<TopChatRoomTypeFactory> {
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
