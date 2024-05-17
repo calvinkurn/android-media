@@ -49,6 +49,9 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
             socmedBtn.showWithCondition(false)
             registerButton.showWithCondition(false)
             btnLoginGoogle.showWithCondition(true)
+            btnLoginGoogle.setOnClickListener {
+                onLoginGoogleClick()
+            }
         }
     }
 

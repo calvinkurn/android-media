@@ -966,7 +966,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun onLoginGoogleClick() {
+    fun onLoginGoogleClick() {
         if (activity != null) {
             onDismissBottomSheet()
             activity?.applicationContext?.let { analytics.eventClickLoginGoogle(it) }
