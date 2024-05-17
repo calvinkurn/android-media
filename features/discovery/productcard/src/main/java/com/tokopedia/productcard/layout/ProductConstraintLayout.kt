@@ -219,7 +219,8 @@ open class ProductConstraintLayout :
         this.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     calculateVisibility()
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (viewTreeObserver.isAlive)
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
         )
