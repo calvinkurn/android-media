@@ -1,8 +1,10 @@
 package com.tokopedia.home.beranda.data.newatf
 
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
+import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
+import com.tokopedia.home.constant.AtfKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

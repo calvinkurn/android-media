@@ -109,6 +109,9 @@ class BalanceWidgetUseCase @Inject constructor(
         atfMetadata: AtfMetadata,
         getHomeBalanceWidgetData: GetHomeBalanceWidgetData
     ) {
+        val newTypeList = getHomeBalanceWidgetData.getHomeBalanceList.balancesList.map { it.type }
+        val currentTypeList = balanceWidgetModel.balanceItems.map { it.type }
+        if(newTypeList == currentTypeList) return
         balanceWidgetModel = DynamicBalanceWidgetModel(
             getHomeBalanceWidgetData.getHomeBalanceList.balancesList.map {
                 it.loading()
@@ -185,13 +188,15 @@ class BalanceWidgetUseCase @Inject constructor(
     }
 
     private suspend fun initialLoading(atfMetadata: AtfMetadata) {
-        emitData(
-            AtfData(
-                atfMetadata = atfMetadata,
-                isCache = false,
-                atfStatus = AtfKey.STATUS_LOADING
+        if(balanceWidgetModel.balanceItems.isEmpty()) {
+            emitData(
+                AtfData(
+                    atfMetadata = atfMetadata,
+                    isCache = false,
+                    atfStatus = AtfKey.STATUS_LOADING
+                )
             )
-        )
+        }
     }
 
     private suspend fun updateBalanceItem(
@@ -205,7 +210,12 @@ class BalanceWidgetUseCase @Inject constructor(
         balanceItems[index] = model
         balanceWidgetModel = balanceWidgetModel.copy(balanceItems = balanceItems)
 
-        emitData(atfData.copy(atfContent = balanceWidgetModel))
+        emitData(
+            atfData.copy(
+                atfContent = balanceWidgetModel,
+                atfStatus = AtfKey.STATUS_SUCCESS
+            )
+        )
     }
 
     private suspend fun updateState(

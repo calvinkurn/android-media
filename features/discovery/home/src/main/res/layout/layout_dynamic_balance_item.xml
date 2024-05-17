@@ -6,7 +6,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/home_bg_rounded_balance"
-    android:padding="8dp">
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="6dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iconBalance"

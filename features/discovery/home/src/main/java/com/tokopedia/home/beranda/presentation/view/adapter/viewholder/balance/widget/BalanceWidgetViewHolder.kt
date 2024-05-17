@@ -42,6 +42,7 @@ class BalanceWidgetViewHolder(
 
     override fun bind(element: BalanceWidgetUiModel) {
         balanceAdapter?.submitList(element.balanceItems)
+        binding?.rvBalanceWidget?.scrollToPosition(0)
     }
 
     override fun bind(element: BalanceWidgetUiModel, payloads: MutableList<Any>) {

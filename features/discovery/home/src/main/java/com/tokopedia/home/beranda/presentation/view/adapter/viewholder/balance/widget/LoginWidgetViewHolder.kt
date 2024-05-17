@@ -14,7 +14,7 @@ import com.tokopedia.home.R as homeR
 class LoginWidgetViewHolder (
     itemView: View,
     private val listener: HomeCategoryListener
-) : AbstractViewHolder<BalanceWidgetLoadingUiModel>(itemView) {
+) : AbstractViewHolder<LoginWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -23,7 +23,7 @@ class LoginWidgetViewHolder (
 
     private var binding: LayoutDynamicBalanceLoginWidgetBinding? by viewBinding()
 
-    override fun bind(element: BalanceWidgetLoadingUiModel) {
+    override fun bind(element: LoginWidgetUiModel) {
         binding?.loginWidget?.bind(listener)
     }
 }
