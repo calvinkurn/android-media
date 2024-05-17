@@ -570,6 +570,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
               }
             }
         """
+
         fun createParams(
             productId: String,
             shopDomain: String,
@@ -671,7 +672,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private fun processRequestCacheable(cacheState: CacheState) = flow {
         val pdpLayoutStateFromCache = processRequestCacheOnly(cacheState = cacheState)
         // if from cache is null cause throwable, so that get data from cloud
-        var pdpLayoutCache = pdpLayoutStateFromCache.getOrNull()?.layoutData?.cacheState ?: cacheState
+        var pdpLayoutCache =
+            pdpLayoutStateFromCache.getOrNull()?.layoutData?.cacheState ?: cacheState
 
         if (pdpLayoutCache.isFromCache) {
             // is from cache, emit for the first
@@ -780,6 +782,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val getDynamicProductInfoP1 = ProductDetailMapper
             .mapToDynamicProductDetailP1(this)
             .copy(cacheState = cacheState, isCampaign = isCampaign)
+        val infiniteRecommendationComponent =
+            components.firstOrNull { it.type == ProductDetailConstant.PRODUCT_LIST_VERTICAL }
+        val hasInfiniteRecommendation = infiniteRecommendationComponent != null
         val initialLayoutData =
             ProductDetailMapper.mapIntoVisitable(components, getDynamicProductInfoP1)
                 .filterNot {
@@ -792,9 +797,14 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val p1VariantData = ProductDetailMapper
             .mapVariantIntoOldDataClass(this)
         return ProductDetailDataModel(
-            layoutData = getDynamicProductInfoP1,
+            layoutData = getDynamicProductInfoP1.copy(
+                hasInfiniteRecommendation = hasInfiniteRecommendation,
+                infiniteRecommendationPageName = infiniteRecommendationComponent?.componentName
+                    ?: "",
+                infiniteRecommendationQueryParam = infiniteRecommendationComponent?.componentData?.firstOrNull()?.queryParam.orEmpty()
+            ),
             listOfLayout = initialLayoutData,
-            variantData = p1VariantData
+            variantData = p1VariantData,
         )
     }
 
