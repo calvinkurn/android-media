@@ -111,7 +111,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, getLastData(ENTRANCE_FORM))
+        put(ENTRANCE_FORM, getPreviousDataFrom(PageName.PDP, SOURCE_PAGE_TYPE, true))
     }
 
     private fun generateEntranceInfoJson(): JSONObject {
@@ -180,33 +180,23 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(SOURCE_PAGE_TYPE, getLastData(SOURCE_PAGE_TYPE))
+        put(SOURCE_PAGE_TYPE, getPreviousDataFrom(PageName.PDP, SOURCE_PAGE_TYPE, true))
     }
 
     internal fun JSONObject.addSourceModulePdp() {
-        val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataBeforeStep(SOURCE_MODULE, 2)
-        } else {
-            getDataBeforeStep(SOURCE_MODULE)
-        }
-        put(SOURCE_MODULE, sourceModule)
+        put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE, true))
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
-        val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataBeforeStep(ENTER_METHOD, 2)
-        } else {
-            getDataBeforeStep(ENTER_METHOD)
-        }
-        put(ENTER_METHOD, sourceModule)
+        put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD, true))
     }
 
     internal fun JSONObject.addRequestId() {
-        put(REQUEST_ID, getLastData(REQUEST_ID))
+        put(REQUEST_ID, getPreviousDataFrom(PageName.PDP, ENTER_METHOD, true))
     }
 
     internal fun JSONObject.addTrackId() {
-        put(TRACK_ID, getLastData(TRACK_ID))
+        put(TRACK_ID, getPreviousDataFrom(PageName.PDP, TRACK_ID, true))
     }
 
     internal fun JSONObject.addEnterMethod() {
@@ -549,7 +539,7 @@ object AppLogAnalytics {
             it.addEntranceForm()
             it.addSourcePageType()
             it.addTrackId()
-            it.put(IS_AD, getLastData(IS_AD))
+            it.put(IS_AD, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true))
             it.addRequestId()
             it.put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE))
             it.put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD))
