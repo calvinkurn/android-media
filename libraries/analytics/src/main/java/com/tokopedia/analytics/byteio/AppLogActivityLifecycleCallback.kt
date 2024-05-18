@@ -61,6 +61,9 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
                 activity.startTime = System.currentTimeMillis()
             }
         }
+        if (activity is AppLogInterface) {
+            AppLogAnalytics.clearGlobalParamsOnClick(activity)
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {

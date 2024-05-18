@@ -85,6 +85,10 @@ object AppLogAnalytics {
 
     private var remoteConfig: RemoteConfig? = null
 
+    fun clearGlobalParamsOnClick(activity: AppLogInterface) {
+        removePageData(activity, GLOBAL_PARAMS_ONCLICK)
+    }
+
     internal fun addPageName(activity: Activity) {
         val actName = activity.javaClass.simpleName
         if (activity is IAppLogActivity) {
