@@ -85,8 +85,8 @@ object AppLogAnalytics {
 
     private var remoteConfig: RemoteConfig? = null
 
-    fun clearGlobalParamsOnClick(activity: AppLogInterface) {
-        removePageData(activity, GLOBAL_PARAMS_ONCLICK)
+    fun clearGlobalParamsOnClick(hash: Int) {
+        removePageDataBeforeHash(hash, GLOBAL_PARAMS_ONCLICK)
     }
 
     internal fun addPageName(activity: Activity) {
@@ -289,6 +289,17 @@ object AppLogAnalytics {
             removeShadowStack(shadowPageIndex)
         }
         Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
+    }
+
+    fun removePageDataBeforeHash(hash: Int, listOfRemovedKey: List<String>) {
+        val pageDataIndex = _pageDataList
+            .withIndex()
+            .find { it.value[ACTIVITY_HASH_CODE] == hash }?.index?.minus(1)
+            ?: return
+
+        listOfRemovedKey.forEach {
+            _pageDataList[pageDataIndex].remove(it)
+        }
     }
 
     // remove list of page data by hashcode
