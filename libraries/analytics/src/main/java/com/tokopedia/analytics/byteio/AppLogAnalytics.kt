@@ -75,6 +75,12 @@ object AppLogAnalytics {
     @JvmField
     var activityCount: Int = 0
 
+    private val GLOBAL_PARAMS_ONCLICK = listOf(
+        ENTRANCE_FORM, ENTER_METHOD, SOURCE_MODULE,
+        IS_AD, TRACK_ID, SOURCE_PAGE_TYPE, REQUEST_ID,
+        PARENT_PRODUCT_ID, PARENT_TRACK_ID, PARENT_REQUEST_ID
+    )
+
     private val lock = Any()
 
     private var remoteConfig: RemoteConfig? = null
@@ -296,7 +302,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-            ?.get(IS_SHADOW) == true
+                ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -442,7 +448,7 @@ object AppLogAnalytics {
         }
     }
 
-    fun setGlobalParams(
+    fun setGlobalParamOnClick(
         entranceForm: String? = null,
         enterMethod: String? = null,
         sourceModule: String? = null,
@@ -487,6 +493,14 @@ object AppLogAnalytics {
     }
 
     private fun putPageDataAndFirstTrackId(key: String, value: Any) {
+        if (!GLOBAL_PARAMS_ONCLICK.contains(key)) {
+            val msg = "please add the key to global param on click list"
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                throw IllegalArgumentException(msg)
+            } else {
+                Timber.w(msg)
+            }
+        }
         _pageDataList.lastOrNull()?.put(key, value)
         AppLogFirstTrackId.putPageData(key, value)
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
