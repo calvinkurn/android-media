@@ -1,7 +1,9 @@
 package com.tokopedia.home.beranda.data.newatf.balance
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceItem
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
@@ -18,6 +20,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.widget.common.DataStatus
 import com.tokopedia.home_component.widget.common.isError
 import com.tokopedia.kotlin.extensions.view.ifNull
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +32,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by Frenzel
  */
+@SuppressLint("PII Data Exposure")
 @HomeScope
 class BalanceWidgetUseCase @Inject constructor(
     private val homeDispatcher: CoroutineDispatchers,
@@ -37,6 +41,7 @@ class BalanceWidgetUseCase @Inject constructor(
     private val homeRewardsRepository: HomeTokopointsListRepository,
     private val balanceWidgetMapper: BalanceWidgetMapper,
     private val userSession: UserSessionInterface,
+    @ApplicationContext private val context: Context
 ): BaseAtfRepository(), CoroutineScope {
 
     companion object {
@@ -51,7 +56,6 @@ class BalanceWidgetUseCase @Inject constructor(
 
     private var balanceWidgetModel = DynamicBalanceWidgetModel()
 
-    @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {
         if(!userSession.isLoggedIn) {
             emitLoginWidget(atfMetadata)
@@ -81,6 +85,7 @@ class BalanceWidgetUseCase @Inject constructor(
             when(it.type) {
                 BalanceItemModel.GOPAY -> getWalletData()
                 BalanceItemModel.REWARDS -> getRewardsData()
+                BalanceItemModel.ADDRESS -> getAddressData()
             }
         }
     }
@@ -90,6 +95,7 @@ class BalanceWidgetUseCase @Inject constructor(
         when(contentType) {
             is BalanceItemVisitable.ContentType.GoPay -> getWalletData()
             is BalanceItemVisitable.ContentType.Rewards -> getRewardsData()
+            is BalanceItemVisitable.ContentType.Address -> getAddressData()
             else -> { }
         }
     }
@@ -171,7 +177,15 @@ class BalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    @SuppressLint("PII Data Exposure")
+    private fun getAddressData() {
+        launch {
+            val type = BalanceItemModel.ADDRESS
+            val address = ChooseAddressUtils.getLocalizingAddressData(context)
+            val balanceItem = balanceWidgetMapper.mapToBalanceItemModel(address, type)
+            updateBalanceItem(balanceItem, type)
+        }
+    }
+
     private fun GetHomeBalanceItem.loading(): BalanceItemModel {
         return BalanceItemModel(
             state = DataStatus.LOADING,
@@ -179,7 +193,6 @@ class BalanceWidgetUseCase @Inject constructor(
         )
     }
 
-    @SuppressLint("PII Data Exposure")
     private suspend fun conditionalLoading(type: String) {
         val currentData = getItem(type) ?: return
         if(currentData.state.isError()) {

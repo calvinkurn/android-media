@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 
 
 data class AddressUiModel (
+    val localCache: String,
     override val position: Int,
 ): BalanceItemVisitable {
     @SuppressLint("PII Data Exposure")

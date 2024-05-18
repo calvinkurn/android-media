@@ -19,8 +19,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.w
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetLoadingUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetUiModel
+import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.widget.common.DataStatus
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
@@ -81,6 +83,17 @@ class BalanceWidgetMapper @Inject constructor() {
         )
     }
 
+    fun mapToBalanceItemModel(
+        data: LocalCacheModel,
+        type: String,
+    ): BalanceItemModel {
+        return BalanceItemModel(
+            type = type,
+            text = data.convertToLocationParams(),
+            state = DataStatus.SUCCESS
+        )
+    }
+
     fun asVisitable(
         data: DynamicBalanceWidgetModel,
         atfStatus: Int,
@@ -118,10 +131,10 @@ class BalanceWidgetMapper @Inject constructor() {
         }
     }
 
-    private fun mapToAddressUiModel(
+    private fun BalanceItemModel.mapToAddressUiModel(
         position: Int
     ): BalanceItemVisitable {
-        return AddressUiModel(position)
+        return AddressUiModel(text, position)
     }
 
     private fun BalanceItemModel.mapToBalanceItemUiModel(
