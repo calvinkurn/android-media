@@ -26,29 +26,31 @@ import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.broadcast.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomBroadcastUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 
 /**
  * @author : Steven 02/01/19
  */
 class TopChatRoomAdapter constructor(
     private val context: Context?,
-    private val adapterTypeFactory: TopChatTypeFactoryImpl
+    private val adapterTypeFactory: TopChatRoomTypeFactoryImpl
 ) : BaseChatAdapter(adapterTypeFactory),
     ProductCarouselListAttachmentViewHolder.Listener,
     ProductBundlingCarouselViewHolder.Listener,
@@ -95,7 +97,7 @@ class TopChatRoomAdapter constructor(
         val chatBubblePosition = getLocalIdMsgPosition(localId)
         if (chatBubblePosition == RecyclerView.NO_POSITION) return
         val chatBubble = visitables[chatBubblePosition]
-        if (chatBubble is ProductCarouselUiModel) {
+        if (chatBubble is TopChatRoomProductCarouselUiModel) {
             val productPosition = chatBubble.products.indexOfFirst {
                 (it as ProductAttachmentUiModel).localId == localId
             }
@@ -187,7 +189,7 @@ class TopChatRoomAdapter constructor(
     private fun getLocalIdMsgPosition(localId: String): Int {
         var index = -1
         visitables.forEachIndexed loop@{ i, value ->
-            if (value is ProductCarouselUiModel) { // Check if preview is inside carousel
+            if (value is TopChatRoomProductCarouselUiModel) { // Check if preview is inside carousel
                 value.products.find {
                     it is ProductAttachmentUiModel && it.localId == localId
                 }?.let {
@@ -206,7 +208,7 @@ class TopChatRoomAdapter constructor(
         val nextItem = visitables.getOrNull(adapterPosition + 1)
         val nextItemIsSender: Boolean = when (nextItem) {
             is SendableUiModel -> nextItem.isSender
-            is ProductCarouselUiModel -> nextItem.isSender
+            is TopChatRoomProductCarouselUiModel -> nextItem.isSender
             is ReviewUiModel -> nextItem.isSender
             else -> true
         }
@@ -270,7 +272,7 @@ class TopChatRoomAdapter constructor(
         }
     }
 
-    fun addWidgetHeader(widgets: List<Visitable<TopChatTypeFactory>>) {
+    fun addWidgetHeader(widgets: List<Visitable<TopChatRoomTypeFactory>>) {
         if (widgets.isEmpty()) return
         val currentLastPosition = visitables.lastIndex
         visitables.addAll(widgets)
@@ -341,7 +343,7 @@ class TopChatRoomAdapter constructor(
                     notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
                 }
             }
-            if (item is ProductCarouselUiModel || item is BroadCastUiModel) {
+            if (item is TopChatRoomProductCarouselUiModel || item is TopChatRoomBroadcastUiModel) {
                 notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
             }
         }
@@ -426,7 +428,7 @@ class TopChatRoomAdapter constructor(
         val latestMessage = visitables.first()
         return (latestMessage is MessageUiModel && latestMessage.isFromBroadCast()) ||
             latestMessage is BroadcastSpamHandlerUiModel ||
-            latestMessage is BroadCastUiModel
+            latestMessage is TopChatRoomBroadcastUiModel
     }
 
     fun addBroadcastSpamHandler(): Int {
@@ -443,7 +445,7 @@ class TopChatRoomAdapter constructor(
     }
 
     private fun isFromUnifiedBroadcast(latestMessage: Visitable<*>?): Boolean {
-        return latestMessage is BroadCastUiModel && latestMessage.isOpposite
+        return latestMessage is TopChatRoomBroadcastUiModel && latestMessage.isOpposite
     }
 
     private fun isFromBroadcast(latestMessage: Visitable<*>?): Boolean {

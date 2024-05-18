@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.byteio
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.CardName
@@ -22,6 +23,7 @@ object TrackRecommendationMapper {
         enterMethod: EnterMethod? = null,
         tabName: String = "",
         tabPosition: Int = -1,
+        additionalParam: AppLogAdditionalParam? = AppLogAdditionalParam.None,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.toString(),
@@ -42,6 +44,7 @@ object TrackRecommendationMapper {
             volume = countSold,
             originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
             salesPrice = priceInt.toFloat(),
+            additionalParam = additionalParam ?: AppLogAdditionalParam.None,
         )
     }
 

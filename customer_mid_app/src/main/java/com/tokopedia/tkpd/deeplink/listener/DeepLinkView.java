@@ -11,4 +11,6 @@ public interface DeepLinkView {
     void initDeepLink();
 
     void goToPage(Intent destination);
+
+    void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp);
 }

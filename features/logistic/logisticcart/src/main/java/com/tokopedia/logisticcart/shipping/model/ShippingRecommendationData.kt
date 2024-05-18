@@ -15,5 +15,6 @@ class ShippingRecommendationData(
     var errorMessage: String? = null,
     var errorId: String? = null,
     var scheduleDeliveryData: ScheduleDeliveryData? = null,
-    var productShipmentDetailModel: ProductShipmentDetailModel? = null
+    var productShipmentDetailModel: ProductShipmentDetailModel? = null,
+    var paidSectionInfoUiModel: PaidSectionInfoUiModel = PaidSectionInfoUiModel()
 ) : Parcelable

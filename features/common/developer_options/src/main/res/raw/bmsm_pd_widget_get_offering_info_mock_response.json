@@ -1,0 +1,89 @@
+[
+  {
+      "GetOfferingInfoForBuyer": {
+        "response_header": {
+          "status": "200",
+          "errorMessage": [],
+          "errorCode": 0,
+          "success": true,
+          "processTime": 328258
+        },
+        "offering_json_data": "",
+        "nearest_warehouse_id": [
+          13056835
+        ],
+        "offering": [
+          {
+            "offer_id": 111092,
+            "offer_type_id": 1,
+            "shop_data": {
+              "shop_id": 1854168,
+              "shop_name": "",
+              "badge": ""
+            },
+            "offer_name": "March Gladness",
+            "start_date": "2024-03-05 00:00:00",
+            "end_date": "2024-03-31 00:00:00",
+            "tier_list": [
+              {
+                "tier_id": 363243,
+                "level": 1,
+                "tier_wording": "Beli 5 \u003cb\u003eDiskon 5%\u003c/b\u003e",
+                "rule": [
+                  {
+                    "type_id": 1,
+                    "operation": "\u003d",
+                    "value": 2
+                  }
+                ],
+                "benefit": [
+                  {
+                    "type_id": 1,
+                    "value": 5,
+                    "product_info": []
+                  }
+                ],
+                "is_oos": false
+              },
+              {
+                "tier_id": 363275,
+                "level": 2,
+                "tier_wording": "Beli 3 \u003cb\u003eDiskon 7%\u003c/b\u003e",
+                "rule": [
+                  {
+                    "type_id": 1,
+                    "operation": "\u003d",
+                    "value": 3
+                  }
+                ],
+                "benefit": [
+                  {
+                    "type_id": 1,
+                    "value": 7,
+                    "product_info": []
+                  }
+                ],
+                "is_oos": false
+              }
+            ],
+            "term_and_condition": [
+              "March Gladness merupakan promosi yang ditawarkan oleh Penjual, berupa diskon yang akan bertambah pada tiap tingkatan dengan menambah pembelian Barang (selanjutnya disebut “\u003cb\u003ePromosi\u003c/b\u003e”).",
+              "Besaran diskon yang bisa didapatkan dari Promosi adalah sebesar 5% dengan membeli 2 Barang, diskon sebesar 7% pada pembelian 3 Barang.",
+              "Promosi ini hanya berlaku untuk pembelanjaan Barang tertentu yang terdapat pada halaman Buy More Save More di Toko .",
+              "Promosi March Gladness hanya berlaku apabila pembelian Pengguna sudah memenuhi syarat dan ketentuan yang tertera pada halaman Buy More Save More",
+              "Promosi hanya berlaku di Toko  mulai tanggal 5 Maret 2024 pukul 00.00 WIB hingga 31 Maret 2024 pukul 00.00 WIB.",
+              "Batas kelipatan diskon Promosi March Gladness terbatas hingga maksimum 2 kali.",
+              "Pembeli tidak dapat menggunakan metode COD (cash on delivery) untuk mengikuti Promosi.",
+              "Apabila terjadi pengembalian dana sebagian, maka total dana yang dikembalikan kepada Pembeli yaitu sebesar total harga yang telah di prorata dari nilai diskon.",
+              "Jika transaksi dibatalkan atau masuk ke Pusat Resolusi, dana yang kembali ke Pembeli akan sesuai dengan nominal pembayaran yang dilakukan.",
+              "Tokopedia berhak, tanpa pemberitahuan sebelumnya, melakukan tindakan-tindakan yang diperlukan termasuk namun tidak terbatas pada (i) pembatalan transaksi, (ii) moderasi akun Pembeli , dan/atau (iii) hal-hal lainnya jika ditemukan adanya manipulasi, pelanggaran maupun pemanfaatan Promosi untuk keuntungan pribadi Pembeli , maupun indikasi kecurangan atau pelanggaran-pelanggaran Syarat dan Ketentuan Tokopedia dan ketentuan hukum yang berlaku di wilayah negara Indonesia.",
+              "Dengan mengikuti Promosi ini, Pembeli dianggap mengerti dan menyetujui semua Syarat dan Ketentuan yang berlaku, yang merupakan bagian yang tidak terpisahkan dan satu kesatuan dengan Syarat dan Ketentuan Buy More Save More dan \u003ca href\u003d\"https://www.tokopedia.com/help/seller/article/syarat-dan-ketentuan-buy-more-save-more\"\u003eKetentuan Situs Tokopedia\u003c/a\u003e, serta dapat diubah untuk disesuaikan dengan kebijaksanaan sehubungan dengan pelaksanaan Promosi ini."
+            ],
+            "offer_landing_page_link": "https://tokopedia.com/buymoresavemore/111092?warehouse_ids\u003d13056835\u0026shop_ids\u003d1854168",
+            "offer_landing_page_app_link": "tokopedia://buymoresavemore/111092?warehouse_ids\u003d13056835\u0026shop_ids\u003d1854168",
+            "upsell_wording": "Beli 2 \u003cb\u003eDiskon 5%\u003c/b\u003e"
+          }
+        ]
+      }
+    }
+]
