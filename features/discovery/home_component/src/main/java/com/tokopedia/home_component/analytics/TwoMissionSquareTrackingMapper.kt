@@ -22,7 +22,7 @@ object TwoMissionSquareTrackingMapper {
             recSessionId = tracker.recSessionId,
             recParams = tracker.recParams,
             requestId = tracker.requestId,
-            shopId = shopId.ifEmpty { "0" },
+            shopId = tracker.getProperShopId(),
             itemOrder = tracker.itemOrder,
             cardName = tracker.cardName,
         )
@@ -43,7 +43,7 @@ object TwoMissionSquareTrackingMapper {
             requestId = tracker.requestId,
             recSessionId = tracker.recSessionId,
             recParams = tracker.recParams,
-            shopId = tracker.shopId.ifEmpty { "0" },
+            shopId = tracker.getProperShopId(),
             itemOrder = tracker.itemOrder,
             entranceForm = tracker.entranceForm,
             enterMethod = enterMethod,
