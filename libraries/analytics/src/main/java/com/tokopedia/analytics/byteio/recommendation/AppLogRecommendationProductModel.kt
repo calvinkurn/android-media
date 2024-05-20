@@ -181,11 +181,11 @@ data class AppLogRecommendationProductModel(
     private fun generateEntranceInfoJson(sourceModule: String): JSONObject {
         return JSONObject().also {
             it.put(AppLogParam.SOURCE_MODULE, sourceModule)
-            it.addEntranceForm()
+            it.put(AppLogParam.ENTRANCE_FORM, entranceForm)
             it.put(AppLogParam.IS_AD, AppLogAnalytics.getLastData(AppLogParam.IS_AD))
-            it.addSourcePageType()
-            it.addRequestId()
-            it.addTrackId()
+            it.put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+            it.put(AppLogParam.REQUEST_ID, requestId)
+            it.put(AppLogParam.TRACK_ID, trackId)
             it.addEnterMethod()
             it.addEnterFromInfo()
         }
