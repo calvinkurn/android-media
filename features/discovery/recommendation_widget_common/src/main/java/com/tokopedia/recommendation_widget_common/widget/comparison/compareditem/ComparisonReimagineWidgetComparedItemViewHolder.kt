@@ -1,20 +1,14 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison.compareditem
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.listener.IAdsViewHolderTrackListener
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
-import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
-import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonReimagineComparedWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonModel
