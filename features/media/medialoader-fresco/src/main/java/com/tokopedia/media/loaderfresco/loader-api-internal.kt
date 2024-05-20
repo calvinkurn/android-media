@@ -15,8 +15,6 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
             )
         } catch (e: Exception) {
             e.printStackTrace()
-
-            //still render image if there is error happen
             setImageResource(ERROR_RES_UNIFY)
         }
     }
