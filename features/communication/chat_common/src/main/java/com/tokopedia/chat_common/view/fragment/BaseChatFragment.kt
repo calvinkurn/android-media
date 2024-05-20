@@ -191,21 +191,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
-        val ROLE_SHOP = "shop"
-
-        if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
-            context?.let {
-                if (element.androidUrl.isNotEmpty()) {
-                    val intent = RouteManager.getIntent(it, element.androidUrl)
-                    startActivity(intent)
-                }
-            }
-        } else {
-            // Necessary to do it this way to prevent PDP opened in seller app
-            // otherwise someone other than the owner can access PDP with topads promote page
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(element.productUrl))
-            startActivity(browserIntent)
-        }
     }
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {

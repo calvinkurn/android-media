@@ -48,20 +48,12 @@ class GradeBenefitPagerAdapter(
         }
 
         private fun setupTickerAndTermsView(page: PMGradeWithBenefitsUiModel) {
-            if (page.isTabActive) {
-                if (page is PMGradeWithBenefitsUiModel.PM) { //PM
-                    binding.viewPmTargetAchievement.gone()
-                    binding.tickerPmAchievementInfo.gone()
-                    binding.dividerPmGradeBenefit.gone()
-                } else { //PM Pro
-                    showTargetAchievement()
-                }
-            } else {
-                if (page is PMGradeWithBenefitsUiModel.PMProAdvance && data.currentShopLevel <= PMConstant.ShopLevel.TWO) {
-                    showTargetAchievement()
-                } else {
-                    showTickerBasedOnLevel(page)
-                }
+            if (page is PMGradeWithBenefitsUiModel.PM) { //PM
+                binding.viewPmTargetAchievement.gone()
+                binding.tickerPmAchievementInfo.gone()
+                binding.dividerPmGradeBenefit.gone()
+            } else { //PM Pro
+                showTargetAchievement()
             }
         }
 
@@ -140,10 +132,6 @@ class GradeBenefitPagerAdapter(
                 viewPmTargetAchievement.showInfo(
                     completedOrder = data.currentCompletedOrder,
                     netIncome = data.currentIncome,
-                    shopLevel = data.currentShopLevel,
-                    shopLevelInfoClicked = {
-                        this@GradeBenefitPagerAdapter.shopLevelInfoClicked()
-                    }
                 )
             }
         }

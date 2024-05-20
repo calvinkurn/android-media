@@ -130,6 +130,12 @@ class ShareExLoadingDialog(
                     attachmentId = arg.attachmentId
                 )
             }
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                ShareExProductBottomSheetRequest(
+                    pageType = arg.pageTypeEnum.valueInt,
+                    productId = arg.productId
+                )
+            }
             ShareExPageTypeEnum.PLAY -> {
                 ShareExLiveBottomSheetRequest(
                     pageType = arg.pageTypeEnum.valueInt,

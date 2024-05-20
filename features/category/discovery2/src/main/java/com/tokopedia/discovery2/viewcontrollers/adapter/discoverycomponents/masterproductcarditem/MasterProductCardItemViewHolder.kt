@@ -15,6 +15,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
@@ -242,33 +243,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun populateData(productCardModel: ProductCardModel) {
-        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
-            productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
-            productCardName == ComponentNames.ProductCardCarouselItemList.componentName ||
-            productCardName == ComponentNames.ProductCardCarouselItemReimagine.componentName ||
-            productCardName == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName ||
-            productCardName == ComponentNames.ProductCardCarouselItemListReimagine.componentName ||
-            productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
-        ) {
-            masterProductCardGridView?.let {
-                it.applyCarousel()
-                productCardView?.layoutParams?.width =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            }
-            masterProductCardListView?.let {
-                it.applyCarousel()
-                productCardView?.layoutParams?.width =
-                    Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                        R.dimen.dp_70
-                    )
-                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            }
-        } else {
-            setProductViewDimens()
-        }
+        adjustLayoutDimens()
         masterProductCardGridView?.setProductModel(productCardModel)
         masterProductCardListView?.setProductModel(productCardModel)
         updateNotifyMeState(dataItem?.notifyMe)
@@ -279,6 +254,36 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         setSimilarProductWishlist(dataItem)
         checkProductIsFulfillment(productCardModel)
         setButtonATCOnClickListener()
+    }
+
+    private fun adjustLayoutDimens() {
+        val oldVersionCard = masterProductCardItemViewModel?.components?.properties.isOldProductCardType()
+        if (!oldVersionCard) return
+
+        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
+                productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
+                productCardName == ComponentNames.ProductCardCarouselItemList.componentName ||
+                productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
+        ) {
+            masterProductCardGridView?.let {
+                it.applyCarousel()
+                productCardView?.layoutParams?.width =
+                        itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            masterProductCardListView?.let {
+                it.applyCarousel()
+                productCardView?.layoutParams?.width =
+                        Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
+                            R.dimen.dp_70
+                        )
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+        } else {
+            setProductViewDimens()
+        }
     }
 
     private fun setButtonATCOnClickListener() {

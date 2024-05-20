@@ -30,6 +30,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ALADDIN_BUTTO
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BUTTON_TYPE_CLICK
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.DEFAULT_SEARCH_KEYWORD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.DURATION
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ECOM_FILTER_CHOSEN
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ECOM_FILTER_NAME
@@ -70,14 +71,25 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_RESULT
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_SUG
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG_RECOM
 import org.json.JSONObject
 
 object AppLogSearch {
 
     private val whitelistedEnterFrom = listOf(GOODS_SEARCH, STORE_SEARCH, PageName.HOME)
     private const val TRENDING_WORDS_CLICK_DATA_KEY = "trending_words_click_data"
+
+    /**
+     * Enter method where we should get and track new_sug_session and sug_type
+     */
+    val sugEnterMethod = listOf(
+        DEFAULT_SEARCH_KEYWORD,
+        SUG_RECOM,
+        SEARCH_SUG,
+    )
 
     object Event {
         const val SHOW_SEARCH = "show_search"

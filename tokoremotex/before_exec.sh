@@ -19,8 +19,8 @@ if [ -f "settings.gradle" ]; then
     if ! grep "//apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"" settings.gradle; then
       sed -i 's|apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"|//apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"|g' settings.gradle
     fi
-    if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"" settings.gradle; then
-      sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"|g' settings.gradle
+    if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"" settings.gradle; then
+      sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"|g' settings.gradle
     fi
     if ! grep "//apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"" settings.gradle; then
       sed -i 's|apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"|//apply from: \"buildconfig/appcompile/compile-sellerapp.gradle\"|g' settings.gradle
@@ -43,8 +43,8 @@ if [ -f "settings.gradle" ]; then
     if ! grep "//apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"" settings.gradle; then
       sed -i 's|apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"|//apply from: \"buildconfig/appcompile/compile-testapp-plugin.gradle\"|g' settings.gradle
     fi
-    if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"" settings.gradle; then
-      sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"|g' settings.gradle
+    if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"" settings.gradle; then
+      sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"|g' settings.gradle
     fi
     if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp.gradle\"" settings.gradle; then
       sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp.gradle\"|g' settings.gradle
@@ -66,8 +66,8 @@ if [ -f "settings.gradle" ]; then
       if ! grep "//apply from: \"buildconfig/appcompile/compile-libraries.gradle\"" settings.gradle; then
         sed -i 's|apply from: \"buildconfig/appcompile/compile-libraries.gradle\"|//apply from: \"buildconfig/appcompile/compile-libraries.gradle\"|g' settings.gradle
       fi
-      if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"" settings.gradle; then
-        sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp-pro.gradle\"|g' settings.gradle
+      if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"" settings.gradle; then
+        sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp_pro.gradle\"|g' settings.gradle
       fi
       if ! grep "//apply from: \"buildconfig/appcompile/compile-customerapp.gradle\"" settings.gradle; then
         sed -i 's|apply from: \"buildconfig/appcompile/compile-customerapp.gradle\"|//apply from: \"buildconfig/appcompile/compile-customerapp.gradle\"|g' settings.gradle

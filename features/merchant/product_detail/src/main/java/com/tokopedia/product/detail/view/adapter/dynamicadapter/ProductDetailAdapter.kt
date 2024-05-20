@@ -18,15 +18,12 @@ import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewholder.TabletLeftSectionViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
@@ -127,20 +124,6 @@ class ProductDetailAdapter(
         ) {
             listener?.loadPlayWidget()
         }
-
-        if (holder is ProductRecommendationVerticalPlaceholderViewHolder) {
-            if (currentPosition < currentList.size &&
-                (dataModel as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null
-            ) {
-                val recommData = dataModel as? ProductRecommendationVerticalPlaceholderDataModel
-                listener?.startVerticalRecommendation(
-                    pageName = recommData?.name().orEmpty(),
-                    queryParam = recommData?.queryParam.orEmpty(),
-                    thematicId = recommData?.thematicId.orEmpty()
-                )
-            }
-            shouldRedrawLayout = true
-        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
@@ -148,7 +131,6 @@ class ProductDetailAdapter(
         when (holder) {
             is ProductMediaViewHolder -> holder.detachView()
             is TabletLeftSectionViewHolder -> holder.detachView()
-            is ProductRecommendationVerticalPlaceholderViewHolder -> shouldRedrawLayout = false
         }
     }
 
@@ -201,9 +183,8 @@ class ProductDetailAdapter(
     }
 
     private fun determineFullSpan(holder: AbstractViewHolder<*>) {
-        val isFullSpan = holder !is ProductRecommendationVerticalViewHolder
         (holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams)
-            ?.isFullSpan = isFullSpan
+            ?.isFullSpan = true
     }
 
     override fun onCurrentListChanged(

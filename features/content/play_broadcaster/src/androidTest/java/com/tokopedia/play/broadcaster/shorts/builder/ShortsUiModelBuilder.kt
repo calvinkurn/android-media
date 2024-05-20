@@ -3,16 +3,16 @@ package com.tokopedia.play.broadcaster.shorts.builder
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
-import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
-import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -32,7 +32,7 @@ class ShortsUiModelBuilder {
         maxTitleCharacter: Int = 24,
         shortsVideoSourceId: String = "asdf",
         eligibleInterspersing: Boolean = false,
-        productCountForInterspersing: Int = 0,
+        productCountForInterspersing: Int = 0
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
@@ -43,7 +43,7 @@ class ShortsUiModelBuilder {
         shortsVideoSourceId = shortsVideoSourceId,
         hasContent = hasContent,
         eligibleInterspersing = eligibleInterspersing,
-        productCountForInterspersing = productCountForInterspersing,
+        productCountForInterspersing = productCountForInterspersing
     )
 
     fun buildAccountListModel(
@@ -69,6 +69,7 @@ class ShortsUiModelBuilder {
                     enable = tncShop
                 )
             )
+
             onlyBuyer -> listOf(
                 ContentAccountUiModel(
                     id = idBuyer,
@@ -81,6 +82,7 @@ class ShortsUiModelBuilder {
                     enable = tncBuyer
                 )
             )
+
             else -> listOf(
                 ContentAccountUiModel(
                     id = idShop,
@@ -101,7 +103,7 @@ class ShortsUiModelBuilder {
                     hasUsername = usernameBuyer,
                     hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
-                ),
+                )
             )
         }
     }
@@ -114,13 +116,13 @@ class ShortsUiModelBuilder {
                 id = it.toString(),
                 imageUrl = "",
                 title = "Etalase $it",
-                totalProduct = it,
+                totalProduct = it
             )
         }
     }
 
     fun buildCampaignList(
-        size: Int = 1,
+        size: Int = 1
     ): List<CampaignUiModel> {
         return List(size) {
             CampaignUiModel(
@@ -139,29 +141,48 @@ class ShortsUiModelBuilder {
     }
 
     fun buildProductTagSectionList(
-        size: Int = 2,
+        size: Int = 2
     ): List<ProductTagSectionUiModel> {
         return List(1) {
-            ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(size) { productCounter ->
-                ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "")
-            })
+            ProductTagSectionUiModel(
+                "", CampaignStatus.Ongoing,
+                List(size) { productCounter ->
+                    ProductUiModel(
+                        productCounter.toString(),
+                        "Product $it",
+                        false,
+                        "",
+                        0,
+                        false,
+                        "",
+                        1,
+                        OriginalPrice("Rp1000.00", 1000.0),
+                        PinProductUiModel.Empty,
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                }
+            )
         }
     }
 
     fun buildEtalaseProducts(
         size: Int = 2,
-        hasNextPage: Boolean = false,
+        hasNextPage: Boolean = false
     ): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
             dataList = buildProductTagSectionList(size).flatMap { it.products },
-            hasNextPage = hasNextPage,
+            hasNextPage = hasNextPage
         )
     }
 
     fun buildTags(
         size: Int = 3,
         minTags: Int = 1,
-        maxTags: Int = 2,
+        maxTags: Int = 2
     ): PlayTagUiModel {
         return PlayTagUiModel(
             tags = mutableSetOf<PlayTagItem>().apply {
@@ -170,20 +191,20 @@ class ShortsUiModelBuilder {
                         PlayTagItem(
                             tag = "Tag $it",
                             isChosen = false,
-                            isActive = true,
+                            isActive = true
                         )
                     )
                 }
             },
             minTags = minTags,
-            maxTags = maxTags,
+            maxTags = maxTags
         )
     }
 
     fun buildHasPdpVideo() = ProductVideoUiModel(
         hasVideo = true,
         videoUrl = "videoUrl",
-        coverUrl = "coverUrl",
+        coverUrl = "coverUrl"
     )
 
     fun buildHasNoPdpVideo() = ProductVideoUiModel.Empty
