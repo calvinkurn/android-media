@@ -1,7 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.vertical
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
@@ -29,10 +29,17 @@ data class RecommendationVerticalModel(
             trackingModel: RecommendationWidgetTrackingModel,
             recommendationWidget: RecommendationWidget,
             source: RecommendationWidgetSource?,
+            appLogAdditionalParam: AppLogAdditionalParam,
             listener: RecommendationWidgetListener?,
             userId: String
         ): RecommendationVerticalModel = RecommendationVerticalModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel, userId, recommendationWidget.appLog),
+            visitable = RecommendationVisitable.create(
+                metadata,
+                trackingModel,
+                userId,
+                recommendationWidget.appLog,
+                appLogAdditionalParam
+            ),
             widget = recommendationWidget,
             source = source,
             listener = listener,

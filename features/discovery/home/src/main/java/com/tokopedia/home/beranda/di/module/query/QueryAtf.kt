@@ -15,6 +15,12 @@ internal object QueryAtf {
         "    param\n" +
         "    isOptional\n" +
         "    isShimmer\n" +
+        "    style {\n" +
+        "     gradientColor\n" +
+        "     isBleeding\n" +
+        "     heightRatio\n" +
+        "     widthRatio\n" +
         "    }\n" +
+        "  }\n" +
         "}"
 }
