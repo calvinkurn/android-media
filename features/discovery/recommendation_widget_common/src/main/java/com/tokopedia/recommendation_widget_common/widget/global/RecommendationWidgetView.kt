@@ -78,7 +78,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
                         ?.stateFlow
                         ?.map { it.widgetMap[model.id] }
                         ?.distinctUntilChanged()
-                        ?.collectLatest { visitableList -> bind(visitableList, callback) }
+                        ?.collectLatest { visitableList -> bind(visitableList, model.source, callback) }
                 }
             )
 
@@ -104,8 +104,12 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
         }
     }
 
-    private fun bind(visitableList: List<RecommendationVisitable>?, callback: Callback?) {
-        setRecTriggerObject(visitableList)
+    private fun bind(
+        visitableList: List<RecommendationVisitable>?,
+        source: RecommendationWidgetSource?,
+        callback: Callback?
+    ) {
+        setRecTriggerObject(visitableList, source)
         val diffUtilCallback = RecommendationWidgetViewDiffUtilCallback(
             parentView = this,
             visitableList = visitableList,
@@ -166,7 +170,10 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
         recommendationWidgetViewModel?.dismissMessage()
     }
 
-    private fun setRecTriggerObject(list: List<RecommendationVisitable>?) {
+    private fun setRecTriggerObject(
+        list: List<RecommendationVisitable>?,
+        source: RecommendationWidgetSource?,
+    ) {
         val model = list?.find { it is RecommendationVerticalModel && it.widget.recommendationItemList.isNotEmpty() }
         if(model != null) {
             eligibleToTrack = true
@@ -174,6 +181,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
                 sessionId = model.appLog.sessionId,
                 requestId = model.appLog.requestId,
                 moduleName = model.metadata.pageName,
+                additionalParam = model.appLogAdditionalParam
             )
         }
     }
