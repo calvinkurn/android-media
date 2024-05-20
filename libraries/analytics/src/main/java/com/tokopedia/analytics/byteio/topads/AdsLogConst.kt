@@ -6,11 +6,8 @@ package com.tokopedia.analytics.byteio.topads
 object AdsLogConst {
 
     const val EVENT = "event"
-    const val RIT = "rit"
     const val TAG = "tag"
     const val REFER = "refer"
-
-    const val PARAMS = "params"
 
     const val EVENT_V3 = "event_v3"
     object Event {
@@ -36,7 +33,6 @@ object AdsLogConst {
         const val CHANNEL = "channel"
         const val PRODUCT_NAME = "product_name"
         const val ENTER_FROM = "enter_from"
-        const val TIME_INTERVAL_BETWEEN_CURRENT_N_CLICK = "time_interval_between_current_and_click"
 
         const val VALUE = "value"
         const val AD_EXTRA_DATA = "ad_extra_data"
@@ -59,16 +55,5 @@ object AdsLogConst {
     object EnterFrom {
         const val MALL = "mall"
         const val OTHER = "others"
-    }
-
-    object Rit {
-        const val SEARCH_IN_PDP = "583733534"
-        const val RECOM_HOMEPAGE_BEST_SELLER_PRODUCT = "583733151"
-        const val RECOM_HOMEPAGE_TARGETING_CONTEXT = "583733152"
-        const val RECOM_HOMEPAGE_FOR_YOU = "583733153"
-        const val MISSION_WIDGET_ALL_ADS = "583733154"
-        const val MISSION_WIDGET_BEST_SELLER = "583733155"
-        const val MISSION_WIDGET_SIMILIAR_PRODUCT = "583733156"
-        const val MISSION_WIDGET_RETARGETING_CONTEXT = "583733157"
     }
 }
