@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -57,7 +58,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private val viewBinding: ItemShopHomeProductRecommendationCarouselBinding? by viewBinding()
     private var tvCarouselTitle: TextView? = null
     private var tvCarouselSubTitle: TextView? = null
-    private var recyclerView: CarouselProductCardView? = null
+    private var carouselProductCardView: CarouselProductCardView? = null
     private var recyclerViewCarouselSingleOrDoubleProduct: RecyclerView? = null
     private var productCarouselSingleOrDoubleAdapter: ShopHomeCarouselProductAdapter? = null
     private var hasApplogScrollListener = false
@@ -75,7 +76,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     }
 
     private fun bindProductCardData(element: ShopHomeCarousellProductUiModel) {
-        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
+        carouselProductCardView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerViewCarouselSingleOrDoubleProduct?.isNestedScrollingEnabled = false
         val carouselProductList = element.productList.map {
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
@@ -92,7 +93,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 patternColorType = shopHomeListener.getPatternColorType(),
                 backgroundColor = shopHomeListener.getBackgroundColor(),
                 isFestivity = element.isFestivity,
-                atcButtonText = recyclerView?.context?.getString(R.string.shop_atc).orEmpty()
+                atcButtonText = carouselProductCardView?.context?.getString(R.string.shop_atc).orEmpty()
             )
         }
 
@@ -273,7 +274,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 return element.productList.getOrNull(carouselProductCardPosition)
             }
         }
-        recyclerView?.isNestedScrollingEnabled = false
+        carouselProductCardView?.isNestedScrollingEnabled = false
         when (element.name) {
             WidgetNameEnum.ADD_ONS.value -> {
                 when (carouselProductList.size) {
@@ -284,14 +285,15 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             listProductCardModel = carouselProductList,
                             carouselProductCardOnItemAddToCartListener = productAddToCartListener,
                             carouselProductCardOnItemClickListener = productClickListener,
-                            carouselProductCardOnItemImpressedListener = productImpressionListener
+                            carouselProductCardOnItemImpressedListener = productImpressionListener,
+                            productCardType = ShopHomeCarouselProductAdapterTypeFactory.ProductCardType.GRID
                         )
                         recyclerViewCarouselSingleOrDoubleProduct?.trackHorizontalScroll(element)
                     }
                     else -> {
-                        recyclerView?.show()
+                        carouselProductCardView?.show()
                         recyclerViewCarouselSingleOrDoubleProduct?.hide()
-                        recyclerView?.bindCarouselProductCardViewGrid(
+                        carouselProductCardView?.bindCarouselProductCardViewGrid(
                             scrollToPosition = getScrollPosition(),
                             productCardModelList = carouselProductList,
                             carouselProductCardOnItemAddToCartListener = productAddToCartListener,
@@ -299,7 +301,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemImpressedListener = productImpressionListener,
                             customItemDecoration = itemSpacingDecorator
                         )
-                        recyclerView?.trackHorizontalScroll(element)
+                        carouselProductCardView?.trackHorizontalScroll(element)
                     }
                 }
             }
@@ -316,12 +318,13 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemImpressedListener = productImpressionListener,
                             carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
                             carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
+                            productCardType = ShopHomeCarouselProductAdapterTypeFactory.ProductCardType.GRID
                         )
                     }
                     else -> {
-                        recyclerView?.show()
+                        carouselProductCardView?.show()
                         recyclerViewCarouselSingleOrDoubleProduct?.hide()
-                        recyclerView?.bindCarouselProductCardViewGrid(
+                        carouselProductCardView?.bindCarouselProductCardViewGrid(
                             scrollToPosition = getScrollPosition(),
                             productCardModelList = carouselProductList,
                             carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
@@ -331,65 +334,26 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
                             customItemDecoration = itemSpacingDecorator
                         )
-                        recyclerView?.trackHorizontalScroll(element)
+                        carouselProductCardView?.trackHorizontalScroll(element)
                     }
                 }
             }
-
-            WidgetNameEnum.BUY_AGAIN.value -> {
-                if (carouselProductList.size == Int.ONE) {
-                    bindSingleOrDoubleProductCard(
-                        element = element,
-                        listShopHomeProductUiModel = element.productList,
-                        listProductCardModel = carouselProductList,
-                        carouselProductCardOnItemAddToCartListener = productAddToCartListener,
-                        carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener
-                    )
-                } else {
-                    recyclerView?.show()
-                    recyclerViewCarouselSingleOrDoubleProduct?.hide()
-                    recyclerView?.bindCarouselProductCardViewList(
-                        productCardModelList = carouselProductList,
-                        carouselProductCardOnItemAddToCartListener = productAddToCartListener,
-                        carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener,
-                        customItemDecoration = itemSpacingDecorator
-                    )
-                    recyclerView?.trackHorizontalScroll(element)
-                }
-            }
-
-            WidgetNameEnum.REMINDER.value -> {
-                if (carouselProductList.size == Int.ONE) {
-                    bindSingleOrDoubleProductCard(
-                        element = element,
-                        listShopHomeProductUiModel = element.productList,
-                        listProductCardModel = carouselProductList,
-                        carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
-                        carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener,
-                        carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
-                        carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
-                    )
-                } else {
-                    recyclerView?.show()
-                    recyclerViewCarouselSingleOrDoubleProduct?.hide()
-                    recyclerView?.bindCarouselProductCardViewList(
-                        productCardModelList = carouselProductList,
-                        carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
-                        carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener,
-                        carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
-                        carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
-                        customItemDecoration = itemSpacingDecorator
-                    )
-                    recyclerView?.trackHorizontalScroll(element)
-                }
+            WidgetNameEnum.BUY_AGAIN.value, WidgetNameEnum.REMINDER.value -> {
+                bindSingleOrDoubleProductCard(
+                    element = element,
+                    listShopHomeProductUiModel = element.productList,
+                    listProductCardModel = carouselProductList,
+                    carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                    carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
+                    productCardType = ShopHomeCarouselProductAdapterTypeFactory.ProductCardType.LIST
+                )
+                recyclerViewCarouselSingleOrDoubleProduct?.trackHorizontalScroll(element)
             }
         }
     }
-
     private fun bindSingleOrDoubleProductCard(
         element: ShopHomeCarousellProductUiModel,
         listShopHomeProductUiModel: List<ShopHomeProductUiModel>,
@@ -398,9 +362,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
         carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
         carouselProductCardOnItemATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener? = null,
-        carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener? = null
+        carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener? = null,
+        productCardType: ShopHomeCarouselProductAdapterTypeFactory.ProductCardType
     ) {
-        recyclerView?.hide()
+        carouselProductCardView?.hide()
         recyclerViewCarouselSingleOrDoubleProduct?.show()
         productCarouselSingleOrDoubleAdapter = ShopHomeCarouselProductAdapter(
             ShopHomeCarouselProductAdapterTypeFactory(
@@ -411,11 +376,21 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
                 carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
-                isOverrideWidgetTheme = element.header.isOverrideTheme
+                isOverrideWidgetTheme = element.header.isOverrideTheme,
+                productCardType = productCardType
             )
         )
         val totalProductSize = listShopHomeProductUiModel.size
-        val layoutManager = GridLayoutManager(itemView.context, totalProductSize)
+        val layoutManager =
+            if (productCardType == ShopHomeCarouselProductAdapterTypeFactory.ProductCardType.GRID) {
+                GridLayoutManager(itemView.context, totalProductSize)
+            } else {
+                LinearLayoutManager(
+                    recyclerViewCarouselSingleOrDoubleProduct?.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+            }
         productCarouselSingleOrDoubleAdapter?.clearAllElements()
         productCarouselSingleOrDoubleAdapter?.addElement(listShopHomeProductUiModel)
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
@@ -509,7 +484,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private fun initView() {
         tvCarouselTitle = viewBinding?.etalaseHeaderContainer?.tvTitle
         tvCarouselSubTitle = viewBinding?.etalaseHeaderContainer?.textSubTitle
-        recyclerView = viewBinding?.rvCarouselRecommendation
+        carouselProductCardView = viewBinding?.rvCarouselRecommendation
         recyclerViewCarouselSingleOrDoubleProduct = viewBinding?.rvCarouselSingleOrDoubleProduct
     }
 
@@ -524,7 +499,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     fun saveScrollPosition() {
         shopHomeListener.getWidgetCarouselPositionSavedState().put(
             bindingAdapterPosition,
-            recyclerView?.getCurrentPosition().orZero()
+            carouselProductCardView?.getCurrentPosition().orZero()
         )
     }
 
