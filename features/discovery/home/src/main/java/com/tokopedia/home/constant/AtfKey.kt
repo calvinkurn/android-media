@@ -11,6 +11,7 @@ object AtfKey {
     const val TYPE_MISSION = "mission_widget"
     const val TYPE_MISSION_V2 = "mission_widget_v2"
     const val TYPE_MISSION_V3 = "mission_widget_v3"
+    const val TYPE_BALANCE = "balance"
 
     // mission and deals widget
     const val TYPE_HORIZONTAL = "channel_horizontal"

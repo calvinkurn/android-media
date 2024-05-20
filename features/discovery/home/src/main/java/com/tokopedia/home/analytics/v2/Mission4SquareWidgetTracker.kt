@@ -17,7 +17,7 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
 
 
     fun sendMissionWidgetClicked(element: ItemMissionWidgetUiModel, horizontalPosition: Int, userId: String) {
-        sendMissionWidgetClicked(element.tracker.channelId, userId, horizontalPosition, element.tracker.channelId, element.tracker.headerName, element.tracker.campaignCode, element.tracker.gridId, element.shopId, horizontalPosition, element.categoryId, element.recommendationType, element.card.title.first)
+        sendMissionWidgetClicked(element.tracker.channelId, userId, horizontalPosition, element.tracker.channelId, element.tracker.headerName, element.tracker.campaignCode, element.tracker.gridId, element.shopId, horizontalPosition, element.categoryId, element.recommendationType, element.card.title().first)
     }
 
     fun sendMissionWidgetClicked(
@@ -84,7 +84,7 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
     ): Map<String, Any> {
         return getMissionWidgetView(horizontalPosition, userId, element.tracker.channelName, element.tracker.gridId,
             element.shopId, element.verticalPosition, element.categoryId, element.recommendationType,
-            element.card.title.first, element.tracker.channelId, element.tracker.headerName)
+            element.card.title().first, element.tracker.channelId, element.tracker.headerName)
     }
 
     fun getMissionWidgetView(
@@ -154,7 +154,7 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
         sendMissionWidgetClickedToPdp(userId, horizontalPosition, element.tracker.channelId, element.tracker.headerName,
             element.categoryId, element.tracker.productId, element.productName, element.verticalPosition,
             element.isTopAds, element.isCarousel, element.recommendationType,element.pageName,
-            element.buType, element.card.title.first, element.tracker.gridId)
+            element.buType, element.card.title().first, element.tracker.gridId)
     }
 
     fun sendMissionWidgetClickedToPdp(
@@ -221,7 +221,7 @@ object Mission4SquareWidgetTracker : BaseTrackerConst() {
         return getMissionWidgetProductView(horizontalPosition, userId, element.categoryId, element.tracker.gridId,
             element.tracker.productId, element.productName, element.verticalPosition, element.isTopAds,
             element.isCarousel, element.recommendationType, element.pageName, element.buType,
-            element.card.title.first, element.tracker.channelId, element.tracker.headerName)
+            element.card.title().first, element.tracker.channelId, element.tracker.headerName)
     }
 
     fun getMissionWidgetProductView(

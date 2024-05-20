@@ -8,6 +8,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.widget.card.SmallProductModel
 import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 
 abstract class BaseShortenWidgetMapper<T> {
 
@@ -23,7 +24,7 @@ abstract class BaseShortenWidgetMapper<T> {
      * You could override this variable and define by your own to make shorten widget dynamically.
      * E.g. differentiate between phone mode (2 products) nor tablet mode (4 products).
      */
-    protected var maxToRender = 2
+    private var maxToRender = 2
 
     /**
      * As we want to optimize the ui-model mapper, we introduced a new [ShortenVisitable],
@@ -58,45 +59,33 @@ abstract class BaseShortenWidgetMapper<T> {
     protected fun createSmallProductCardModel(
         grid: DynamicHomeChannel.Grid,
         groups: List<LabelGroup>
-    ): SmallProductModel {
-        val labelGroup = groups.associateBy { it.position }
-
-        val title = labelGroup[Keys.TITLE]
-        val titleStyle = title?.styles.orEmpty().associate { it.key to it.value }
-
-        val subtitle = labelGroup[Keys.SUBTITLE]
-        val subtitleStyle = subtitle?.styles.orEmpty().associate { it.key to it.value }
-
-        return SmallProductModel(
-            bannerImageUrl = grid.imageUrl,
-            title = Pair(
-                title?.title.orEmpty(),
-                SmallProductModel.TextStyle(
-                    isBold = titleStyle[Keys.TEXT_FORMAT] == Default.TEXT_BOLD,
-                    textColor = titleStyle[Keys.TEXT_COLOR].orEmpty(),
-                    shouldRenderHtmlFormat = titleStyle[Keys.TEXT_FORMAT] == null
-                )
-            ),
-            subtitle = Pair(
-                subtitle?.title.orEmpty(),
-                SmallProductModel.TextStyle(
-                    isBold = subtitleStyle[Keys.TEXT_FORMAT] == Default.TEXT_BOLD,
-                    textColor = subtitleStyle[Keys.TEXT_COLOR].orEmpty(),
-                    shouldRenderHtmlFormat = subtitleStyle[Keys.TEXT_FORMAT] == null
-                )
+    ) = SmallProductModel(
+        bannerImageUrl = grid.imageUrl,
+        labelGroupList = groups.map {
+            SmallProductModel.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                url = it.imageUrl,
+                styles = it.styles.map { style ->
+                    SmallProductModel.LabelGroup.Styles(style.key, style.value)
+                }
             )
-        )
-    }
+        }
+    )
 
     /**
      * [mapChannelToPartialWidget] simplifies the marshalling process of raw dynamic channel model,
      * hence we can get model-ready such as [ChannelModel], index-position, as well as [ChannelHeader].
      */
-    protected fun mapChannelToPartialWidget(
+    private fun mapChannelToPartialWidget(
         data: DynamicHomeChannel,
         channel: DynamicHomeChannel.Channels
     ): Triple<Int, ChannelModel, ChannelHeader> {
-        val widgetPosition = data.channels.indexOf(channel)
+        val widgetPosition = with(data.channels.indexOf(channel)) {
+            if (this.isLessThanZero()) 0 else this
+        }
+
         val channelModel = DynamicChannelComponentMapper
             .mapHomeChannelToComponent(channel, widgetPosition)
 
@@ -115,11 +104,6 @@ abstract class BaseShortenWidgetMapper<T> {
     )
 
     protected object Keys {
-        const val TITLE = "home-title"
-        const val SUBTITLE = "home-subtitle"
-        const val RIBBON = "ri_ribbon"
-        const val TEXT_FORMAT = "text-format"
-        const val TEXT_COLOR = "text-color"
         const val PAGE_NAME = "home-pagename"
         const val GRID_ID = "home-grid-id"
         const val CAMPAIGN_CODE = "home-campaign-code"
@@ -131,10 +115,5 @@ abstract class BaseShortenWidgetMapper<T> {
         const val SHOP_ID = "home-shop-id"
         const val IS_TOPADS = "home-is-topads"
         const val IS_CAROUSEL = "home-is-carousel"
-    }
-
-    protected object Default {
-        const val TEXT_BOLD = "bold"
-        const val RIBBON_RED = "red"
     }
 }

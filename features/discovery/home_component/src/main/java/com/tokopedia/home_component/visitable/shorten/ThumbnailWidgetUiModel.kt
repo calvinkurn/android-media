@@ -20,13 +20,15 @@ data class ThumbnailWidgetUiModel(
     override fun type(typeFactory: ShortenViewFactory) = typeFactory.type(this)
     override fun visitableId() = this.hashCode()
     override fun equalsWith(o: Any?) = o == this
+
+    override fun itemCount() = data.size
 }
 
 data class ItemThumbnailWidgetUiModel(
     val card: SmallProductModel,
     val verticalPosition: Int,
     val cardPosition: Int,
-    val tracker: ChannelTracker,
+    val tracker: ChannelTracker = ChannelTracker(),
     val pageName: String,
     val gridId: String,
     val url: String,

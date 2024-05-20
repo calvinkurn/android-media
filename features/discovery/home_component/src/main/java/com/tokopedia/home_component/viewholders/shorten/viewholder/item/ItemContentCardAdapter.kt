@@ -9,6 +9,7 @@ import com.tokopedia.home_component.viewholders.shorten.internal.ShortenStaticSq
 import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel.Type as ItemTwoSquareType
 import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.ItemMissionWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.ItemProductWidgetUiModel
 
 class ItemContentCardAdapter(
     private val type: ItemTwoSquareType,
@@ -21,16 +22,19 @@ class ItemContentCardAdapter(
         return when(viewType) {
             ItemTwoSquareType.Mission.value -> ItemMissionWidgetViewHolder.create(parent, listener)
             ItemTwoSquareType.Thumbnail.value -> ItemThumbnailWidgetViewHolder.create(parent, listener)
+            ItemTwoSquareType.Product.value -> ItemProductWidgetViewHolder.create(parent, listener)
             else -> super.createViewHolder(parent, viewType)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position)
+
         try {
-            if (holder is ItemMissionWidgetViewHolder) {
-                holder.bind(getItem(position) as ItemMissionWidgetUiModel)
-            } else if (holder is ItemThumbnailWidgetViewHolder) {
-                holder.bind(getItem(position) as ItemThumbnailWidgetUiModel)
+            when (holder) {
+                is ItemMissionWidgetViewHolder -> holder.bind(item as ItemMissionWidgetUiModel)
+                is ItemThumbnailWidgetViewHolder -> holder.bind(item as ItemThumbnailWidgetUiModel)
+                is ItemProductWidgetViewHolder -> holder.bind(item as ItemProductWidgetUiModel)
             }
         } catch (_: Throwable) {}
     }
