@@ -13,13 +13,15 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
     ConstraintLayout,
     OnAttachStateChangeListener,
-    OnScrollChangedListener {
+    OnScrollChangedListener,
+    ViewTreeObserver.OnGlobalLayoutListener {
 
     private var mPercentageListener: OnVisibilityPercentChanged? = null
     private var lastPercentageWidht = 0
@@ -137,11 +139,17 @@ open class ProductConstraintLayout :
     }
 
     private fun setScrollChangedEvents(areaPercentage: Int, isVisible: Boolean) {
+        val isShown = areaPercentage > 0 && isVisible
         if (useScrollChangedEventAdsByteIo) {
-            if (areaPercentage > 0 && isVisible) {
+            if (isShown) {
                 onShow()
             } else {
                 onShowOver()
+                maxAreaPercentage = 0
+            }
+        } else {
+            if (!isShown) {
+                maxAreaPercentage = 0
             }
         }
     }
@@ -196,7 +204,7 @@ open class ProductConstraintLayout :
         fun onShowOver(maxPercentage: Int)
     }
 
-    fun removeVisibilityPercentageListener() {
+    private fun removeVisibilityPercentageListener() {
         mPercentageListener = null
     }
 
@@ -212,23 +220,18 @@ open class ProductConstraintLayout :
 
     private fun unsetListener() {
         removeVisibilityPercentageListener()
-        if (this.viewTreeObserver.isAlive) {
-            this.viewTreeObserver.removeOnScrollChangedListener(this)
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+            viewTreeObserver.removeOnScrollChangedListener(this)
         }
-        this.removeOnAttachStateChangeListener(this)
+        removeOnAttachStateChangeListener(this)
     }
 
     private fun setListener(eventListener: OnVisibilityPercentChanged?) {
         mPercentageListener = eventListener
-        this.addOnAttachStateChangeListener(this)
-        this.viewTreeObserver.addOnScrollChangedListener(this)
-        this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    calculateVisibility()
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            }
-        )
+        addOnAttachStateChangeListener(this)
+        viewTreeObserver.addOnScrollChangedListener(this)
+        viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     private fun View?.removeSelf() {
@@ -257,6 +260,17 @@ open class ProductConstraintLayout :
         calculateVisibility()
     }
 
+    override fun onGlobalLayout() {
+        calculateVisibility()
+        removeOnGlobalLayoutListener()
+    }
+
+    private fun removeOnGlobalLayoutListener() {
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    }
+
     fun isVisible(): Boolean {
         return if (isShown) {
             getGlobalVisibleRect(rectf)
@@ -275,7 +289,6 @@ open class ProductConstraintLayout :
     private fun onShowOver() {
         if (!viewDetachedFromWindows && maxAreaPercentage > 0) {
             mPercentageListener?.onShowOver(maxAreaPercentage)
-            maxAreaPercentage = 0
             viewDetachedFromWindows = true
         }
     }
