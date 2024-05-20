@@ -4,12 +4,12 @@ import android.nfc.tech.IsoDep
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.usecase.GetBCAGenCheckerUseCase
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.util.ElectronicMoneyEncryption
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.domain.EmoneyParamMapper.mapParamLogErrorNetworkFlazz
-import com.tokopedia.emoney.domain.request.BCAFlazzAction
 import com.tokopedia.emoney.domain.request.BCAFlazzRequestMapper
 import com.tokopedia.emoney.domain.request.BCAFlazzStatus
 import com.tokopedia.emoney.domain.request.CommonBodyEnc
@@ -31,7 +31,8 @@ class BCABalanceViewModel @Inject constructor(
     private val bcaLibrary: BCALibraryIntegration,
     private val gson: Gson,
     private val electronicMoneyEncryption: ElectronicMoneyEncryption,
-    private val bcaFlazzUseCase: GetBCAFlazzUseCase
+    private val bcaFlazzUseCase: GetBCAFlazzUseCase,
+    private val getBCAGenCheckerUseCase: GetBCAGenCheckerUseCase
 ) : BaseViewModel(dispatcher) {
 
     private var bcaInquiryMutable = SingleLiveEvent<EmoneyInquiry>()
@@ -52,6 +53,7 @@ class BCABalanceViewModel @Inject constructor(
         rawPrivateKeyString: String,
         strCurrDateTime: String,
         ATD: String,
+        messageBCATopUp2: String
     ) {
         val bcaMTId = BCAFlazzResponseMapper.bcaMTId(merchantId, terminalId)
         val setConfigResult = bcaLibrary.bcaSetConfig(bcaMTId)
@@ -63,7 +65,8 @@ class BCABalanceViewModel @Inject constructor(
                         if (dataBalance.isSuccess == SUCCESS_JNI) {
                             getPendingBalanceProcess(
                                 isoDep, dataBalance.cardNo, dataBalance.balance,
-                                rawPublicKeyString, rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD
+                                rawPublicKeyString, rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD,
+                                messageBCATopUp2 = messageBCATopUp2
                             )
                         } else {
                             isoDep.close()
@@ -132,16 +135,32 @@ class BCABalanceViewModel @Inject constructor(
     fun processBCACheckBalanceGen1(
         isoDep: IsoDep,
         rawPublicKeyString: String,
-        rawPrivateKeyString: String
+        rawPrivateKeyString: String,
+        messageGen1: String,
     ) {
         if (isoDep != null) {
             run {
                 try {
                     val dataBalance = checkLatestBalance()
-                    getPendingBalanceProcess(
-                        isoDep, dataBalance.cardNo, dataBalance.balance,
-                        rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", ""
-                    )
+                    launchCatchError(block = {
+                        val data = getBCAGenCheckerUseCase.execute(listOf(dataBalance.cardNo))
+                        val message = if (data.persoFavoriteNumber.items.first().label2.isNotEmpty()) {
+                            data.persoFavoriteNumber.items.first().label2
+                        } else {
+                            messageGen1
+                        }
+                        getPendingBalanceProcess(
+                            isoDep, dataBalance.cardNo, dataBalance.balance,
+                            rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", "",
+                            message, ""
+                        )
+                    }) {
+                        getPendingBalanceProcess(
+                            isoDep, dataBalance.cardNo, dataBalance.balance,
+                            rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", "",
+                            messageGen1, ""
+                        )
+                    }
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
@@ -181,7 +200,9 @@ class BCABalanceViewModel @Inject constructor(
         rawPrivateKeyString: String,
         cardType: String,
         strCurrDateTime: String,
-        ATD: String
+        ATD: String,
+        messageBCAGen1: String = "",
+        messageBCATopUp2: String
     ) {
         launchCatchError(block = {
             val payloadGetPendingBalanceQuery = BCAFlazzRequestMapper.createGetPendingBalanceParam(
@@ -203,7 +224,8 @@ class BCABalanceViewModel @Inject constructor(
             if (result.status == BCAFlazzStatus.WRITE.status) {
                 getGenerateTrxIdProcess(
                     isoDep, cardNumber, lastBalance, rawPublicKeyString,
-                    rawPrivateKeyString, cardType, strCurrDateTime, ATD
+                    rawPrivateKeyString, cardType, strCurrDateTime, ATD,
+                    messageBCATopUp2
                 )
             } else if(result.status == BCAFlazzStatus.REVERSAL.status && result.attributes.transactionID.isNotEmpty()) {
                 processSDKReversal(
@@ -215,7 +237,8 @@ class BCABalanceViewModel @Inject constructor(
                     rawPublicKeyString,
                     rawPrivateKeyString,
                     cardType,
-                    result
+                    result,
+                    messageBCATopUp2
                 )
             } else {
                 bcaInquiryMutable.postValue(
@@ -223,7 +246,8 @@ class BCABalanceViewModel @Inject constructor(
                         cardNumber,
                         lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
                         result.attributes.amount, result.status, result.attributes.message,
-                        result.attributes.hasMorePendingBalance
+                        result.attributes.hasMorePendingBalance,
+                        messageBCAGen1 = messageBCAGen1
                     )
                 )
             }
@@ -251,6 +275,7 @@ class BCABalanceViewModel @Inject constructor(
         cardType: String,
         strCurrDateTime: String,
         ATD: String,
+        messageBCATopUp2: String
     ) {
         launchCatchError(block = {
             val payloadGetGenerateTrxIdQuery = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
@@ -279,7 +304,8 @@ class BCABalanceViewModel @Inject constructor(
                     cardType,
                     strCurrDateTime,
                     ATD,
-                    result.attributes.transactionID
+                    result.attributes.transactionID,
+                    messageBCATopUp2
                 )
             } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isEmpty()) {
                 errorCardMessageMutable.postValue(Pair(
@@ -330,7 +356,8 @@ class BCABalanceViewModel @Inject constructor(
         cardType: String,
         strCurrDateTime: String,
         ATD: String,
-        strTransactionId: String
+        strTransactionId: String,
+        messageBCATopUp2: String
     ) {
         if (isoDep != null) {
             run {
@@ -343,7 +370,8 @@ class BCABalanceViewModel @Inject constructor(
                         getSessionKeyProcess(
                             isoDep, cardNumber, lastBalance, rawPublicKeyString,
                             rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId,
-                            bcaSession1.strLogRsp
+                            bcaSession1.strLogRsp,
+                            messageBCATopUp2
                         )
                     } else {
                         // set error if BCAdataSession_1 process error
@@ -404,13 +432,14 @@ class BCABalanceViewModel @Inject constructor(
         strCurrDateTime: String,
         ATD: String,
         strTransactionId: String,
-        cardDataSession1Key: String
+        cardDataSession1Key: String,
+        messageBCATopUp2: String
     ) {
         launchCatchError(block = {
             val payloadGetSessionKeyQuery = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataSession1Key), lastBalance,
                 strTransactionId, cardType,
-                separateResponseFromCardData(cardDataSession1Key)
+                separateResponseCodeFromCardData(cardDataSession1Key)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -428,7 +457,8 @@ class BCABalanceViewModel @Inject constructor(
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
                 processSDKBCADataSession2(
                     isoDep, cardNumber, lastBalance, rawPublicKeyString,
-                    rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result
+                    rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result,
+                    messageBCATopUp2
                 )
             } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
                 errorCardMessageMutable.postValue(Pair(
@@ -483,7 +513,8 @@ class BCABalanceViewModel @Inject constructor(
         strCurrDateTime: String,
         ATD: String,
         strTransactionId: String,
-        bcaFlazzData: BCAFlazzData
+        bcaFlazzData: BCAFlazzData,
+        messageBCATopUp2: String
     ) {
         if (isoDep != null) {
             run {
@@ -494,7 +525,8 @@ class BCABalanceViewModel @Inject constructor(
                         processSDKBCATopUp1(
                             isoDep, cardNumber, lastBalance, rawPublicKeyString,
                             rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId,
-                            bcaFlazzData
+                            bcaFlazzData,
+                            messageBCATopUp2
                         )
                     } else {
                         isoDep.close()
@@ -557,7 +589,8 @@ class BCABalanceViewModel @Inject constructor(
         strCurrDateTime: String,
         ATD: String,
         strTransactionId: String,
-        bcaFlazzData: BCAFlazzData
+        bcaFlazzData: BCAFlazzData,
+        messageBCATopUp2: String
     ) {
         if (isoDep != null) {
             run {
@@ -581,7 +614,8 @@ class BCABalanceViewModel @Inject constructor(
                             strTransactionId,
                             bcaFlazzData,
                             topUp1.strLogRsp,
-                            ATD
+                            ATD,
+                            messageBCATopUp2
                         )
                     } else {
                         isoDep.close()
@@ -645,13 +679,14 @@ class BCABalanceViewModel @Inject constructor(
         strTransactionId: String,
         bcaFlazzData: BCAFlazzData,
         cardDataTopUp1: String,
-        ATD: String
+        ATD: String,
+        messageBCATopUp2: String
     ) {
         launchCatchError(block = {
             val payloadGetBetweenTopUpQuery = BCAFlazzRequestMapper.createGetBCADataBetweenTopUp(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataTopUp1), bcaFlazzData.attributes.amount,
                 lastBalance, strTransactionId, cardType,
-                separateResponseFromCardData(cardDataTopUp1)
+                separateResponseCodeFromCardData(cardDataTopUp1)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -669,7 +704,7 @@ class BCABalanceViewModel @Inject constructor(
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
                 processSDKBCATopUp2(
                     isoDep, cardNumber, rawPublicKeyString, rawPrivateKeyString,
-                    cardType, strTransactionId, result, lastBalance
+                    cardType, strTransactionId, result, lastBalance, messageBCATopUp2
                 )
             } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
                 // Panggil function library BCAdataReversal dan kirimkan output library ke BCA
@@ -683,7 +718,8 @@ class BCABalanceViewModel @Inject constructor(
                     rawPublicKeyString,
                     rawPrivateKeyString,
                     cardType,
-                    bcaFlazzData
+                    bcaFlazzData,
+                    messageBCATopUp2
                 )
             } else if (result.status == BCAFlazzStatus.ERROR.status) {
                 // Panggil function library BCAdataReversal dan kirimkan output library ke BCA
@@ -697,7 +733,8 @@ class BCABalanceViewModel @Inject constructor(
                     rawPublicKeyString,
                     rawPrivateKeyString,
                     cardType,
-                    bcaFlazzData
+                    bcaFlazzData,
+                    messageBCATopUp2
                 )
             } else if(result.status == BCAFlazzStatus.DONE.status){
                 errorCardMessageMutable.postValue(Pair(
@@ -734,7 +771,8 @@ class BCABalanceViewModel @Inject constructor(
                 rawPublicKeyString,
                 rawPrivateKeyString,
                 cardType,
-                bcaFlazzData
+                bcaFlazzData,
+                messageBCATopUp2
             )
         }
     }
@@ -747,7 +785,8 @@ class BCABalanceViewModel @Inject constructor(
         cardType: String,
         strTransactionId: String,
         bcaFlazzData: BCAFlazzData,
-        lastBalance: Int
+        lastBalance: Int,
+        messageBCATopUp2: String
     ) {
         if (isoDep != null) {
             run {
@@ -763,7 +802,9 @@ class BCABalanceViewModel @Inject constructor(
                             cardType,
                             strTransactionId,
                             topUp2.strLogRsp,
-                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance
+                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance,
+                            messageBCATopUp2,
+                            isErrorTopUp2 = false
                         )
                     } else if (topUp2.strLogRsp.isNotEmpty()) {
                         // Ada kemungkinan saldo Flazz sudah bertambah walaupun output BCATopUp2 bukan SUCCESS.
@@ -788,7 +829,9 @@ class BCABalanceViewModel @Inject constructor(
                             cardType,
                             strTransactionId,
                             topUp2.strLogRsp,
-                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance
+                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance,
+                            messageBCATopUp2,
+                            isErrorTopUp2 = true
                         )
                     } else if (topUp2.strLogRsp.isEmpty()) {
                         // Output BCATopUp_2 tidak ada / hilang
@@ -801,7 +844,9 @@ class BCABalanceViewModel @Inject constructor(
                             rawPublicKeyString,
                             rawPrivateKeyString,
                             cardType,
-                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance
+                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance,
+                            messageBCATopUp2,
+                            isErrorTopUp2 = true
                         )
                     }
 
@@ -845,13 +890,15 @@ class BCABalanceViewModel @Inject constructor(
         cardType: String,
         strTransactionId: String,
         cardDataTopUp2: String,
-        updatedBalance: Int
+        updatedBalance: Int,
+        messageBCATopUp2: String,
+        isErrorTopUp2: Boolean
     ) {
         launchCatchError(block = {
             val payloadGetACKQuery = BCAFlazzRequestMapper.createGetBCADataACKTopUp(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataTopUp2),
                 updatedBalance, strTransactionId, cardType,
-                separateResponseFromCardData(cardDataTopUp2)
+                separateResponseCodeFromCardData(cardDataTopUp2)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -874,7 +921,9 @@ class BCABalanceViewModel @Inject constructor(
                     result.status,
                     result.attributes.message,
                     result.attributes.hasMorePendingBalance,
-                    ackStatusOverride = true
+                    ackStatusOverride = true,
+                    messageTopUp2 = messageBCATopUp2,
+                    isErrorTopUp2 = isErrorTopUp2
                 )
             )
         }) {
@@ -902,7 +951,8 @@ class BCABalanceViewModel @Inject constructor(
         rawPublicKeyString: String,
         rawPrivateKeyString: String,
         cardType: String,
-        bcaFlazzData: BCAFlazzData
+        bcaFlazzData: BCAFlazzData,
+        messageBCATopUp2: String
     ) {
         if (isoDep != null) {
             run {
@@ -927,7 +977,9 @@ class BCABalanceViewModel @Inject constructor(
                             rawPublicKeyString,
                             rawPrivateKeyString,
                             cardType,
-                            lastBalance
+                            lastBalance,
+                            messageBCATopUp2,
+                            isErrorTopUp2 = false
                         )
                     } else {
                         errorCardMessageMutable.postValue(Pair(
@@ -989,7 +1041,7 @@ class BCABalanceViewModel @Inject constructor(
                 gson, cardNumber, separateCardDataFromResponseCode(cardDataReversal),
                 bcaFlazzData.attributes.amount, lastBalance,
                 strTransactionId, cardType,
-                separateResponseFromCardData(cardDataReversal)
+                separateResponseCodeFromCardData(cardDataReversal)
             )
             val encParam = electronicMoneyEncryption.createEncryptedPayload(
                 rawPublicKeyString,
@@ -1052,7 +1104,9 @@ class BCABalanceViewModel @Inject constructor(
         rawPublicKeyString: String,
         rawPrivateKeyString: String,
         cardType: String,
-        lastBalance: Int
+        lastBalance: Int,
+        messageBCATopUp2: String,
+        isErrorTopUp2: Boolean
     ) {
         if (isoDep != null) {
             run {
@@ -1067,7 +1121,9 @@ class BCABalanceViewModel @Inject constructor(
                             cardType,
                             strTransactionId,
                             lastTopUp.strLogRsp,
-                            updatedBalance.balance
+                            updatedBalance.balance,
+                            messageBCATopUp2,
+                            isErrorTopUp2 = isErrorTopUp2
                         )
                     }
                 } catch (e: Throwable) {
@@ -1136,14 +1192,6 @@ class BCABalanceViewModel @Inject constructor(
     private fun separateCardDataFromResponseCode(strLogResp: String): String {
         return if (strLogResp.length > PREFIX_SIZE) {
             strLogResp.substring(PREFIX_SIZE, strLogResp.length)
-        } else {
-            strLogResp
-        }
-    }
-
-    private fun separateResponseFromCardData(strLogResp: String): String {
-        return if (strLogResp.length > PREFIX_SIZE) {
-            strLogResp.substring(Int.ZERO, PREFIX_SIZE)
         } else {
             strLogResp
         }

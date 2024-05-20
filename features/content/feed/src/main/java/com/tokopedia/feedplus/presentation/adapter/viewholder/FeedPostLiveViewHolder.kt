@@ -219,7 +219,7 @@ class FeedPostLiveViewHolder(
         authorView.bindData(
             data.author,
             data.isLive,
-            !data.followers.isFollowed,
+            false,
             trackerDataModel,
             null
         )

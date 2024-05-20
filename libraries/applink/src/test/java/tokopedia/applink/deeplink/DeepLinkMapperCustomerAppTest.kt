@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 164
-        const val SIZE_PATH = 278
+        const val SIZE_PATH = 281
     }
 
     override fun setup() {
@@ -1781,6 +1781,27 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting"
         assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIFICATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting notif push notification appLink then should return tokopedia internal setting push notification in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=push_notification"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_PUSH_NOTIFICATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting notif email appLink then should return tokopedia internal setting notif email in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=email"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_EMAIL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting notif sms appLink then should return tokopedia internal setting notif sms in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/user-notification-setting?type=sms"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_NOTIF_SMS, expectedDeepLink)
     }
 
     @Test

@@ -126,6 +126,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sect
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -354,6 +356,10 @@ open class DiscoveryFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // WORKAROUND for gtm tab name
+        CURRENT_TAB_NAME = ""
+        CURRENT_TAB_INDEX = 0
+
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
@@ -1732,8 +1738,18 @@ open class DiscoveryFragment :
         refreshPage()
     }
 
+    // workaround to store singleton value into fragment
+    // to retain the value when the fragment is paused/resumed
+    private var currentTabName = ""
+    private var currentTabIndex = 0
+
     override fun onPause() {
         super.onPause()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        currentTabName = CURRENT_TAB_NAME
+        currentTabIndex = CURRENT_TAB_INDEX
+
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
@@ -2031,6 +2047,11 @@ open class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        CURRENT_TAB_NAME = currentTabName
+        CURRENT_TAB_INDEX = currentTabIndex
+
         discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner) {
             if (!openScreenStatus) {
                 when (it) {

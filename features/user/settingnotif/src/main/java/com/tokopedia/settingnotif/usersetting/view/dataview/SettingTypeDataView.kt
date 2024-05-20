@@ -34,18 +34,26 @@ data class SettingTypeDataView(
             } else {
                 arrayListOf(
                         createPushNotificationType(false),
-                        SettingTypeDataView(
-                                icon = R.drawable.ic_notifsetting_email,
-                                name = R.string.settingnotif_email,
-                                fragment = EmailFieldFragment::class.java
-                        ),
-                        SettingTypeDataView(
-                                icon = R.drawable.ic_notifsetting_sms,
-                                name = R.string.settingnotif_sms,
-                                fragment = SmsFieldFragment::class.java
-                        )
+                        createEmailType(),
+                        createSmsType()
                 )
             }
+        }
+
+        fun createSmsType(): SettingTypeDataView {
+            return SettingTypeDataView(
+                icon = R.drawable.ic_notifsetting_sms,
+                name = R.string.settingnotif_sms,
+                fragment = SmsFieldFragment::class.java
+            )
+        }
+
+        fun createEmailType(): SettingTypeDataView {
+            return SettingTypeDataView(
+                icon = R.drawable.ic_notifsetting_email,
+                name = R.string.settingnotif_email,
+                fragment = EmailFieldFragment::class.java
+            )
         }
 
         fun createPushNotificationType(isSeller: Boolean = false): SettingTypeDataView {

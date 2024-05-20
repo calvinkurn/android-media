@@ -5,6 +5,7 @@ import android.app.Application
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
+import com.tokopedia.analytics.byteio.AppLogParam.AUTHOR_ID
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
@@ -14,6 +15,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_CONTENT_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
@@ -68,22 +70,6 @@ object AppLogAnalytics {
     @JvmField
     var activityCount: Int = 0
 
-    // TODO check how to make this null again
-    @JvmField
-    var sourcePageType: SourcePageType? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var globalTrackId: String? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var globalRequestId: String? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var entranceForm: EntranceForm? = null
-
     private val lock = Any()
 
     private var remoteConfig: RemoteConfig? = null
@@ -134,6 +120,7 @@ object AppLogAnalytics {
             it.addSourceModulePdp()
 //            it.addEnterMethod()
             it.addEnterMethodPdp()
+            it.addSourceContentId()
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
@@ -143,6 +130,10 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addEntranceInfo() {
         put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
+    }
+
+    internal fun JSONObject.addAuthorId() {
+        put(AUTHOR_ID, getLastData(AUTHOR_ID))
     }
 
     private fun generateEntranceInfoCartJson(): JSONObject {
@@ -162,8 +153,11 @@ object AppLogAnalytics {
         put(ENTER_FROM, getLastData(ENTER_FROM))
     }
 
+    /**
+     *  In the case of stay PDP (next), when in cart the enter_from will be changed, thus we need to take
+     *  enter_from starting from N-1
+     * */
     internal fun JSONObject.addEnterFromInfo() {
-        // todo: explain
         put(ENTER_FROM_INFO, getLastDataBeforeCurrent(ENTER_FROM))
     }
 
@@ -181,18 +175,18 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addSourceModulePdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataLast(SOURCE_MODULE, 2)
+            getDataBeforeStep(SOURCE_MODULE, 2)
         } else {
-            getDataLast(SOURCE_MODULE)
+            getDataBeforeStep(SOURCE_MODULE)
         }
         put(SOURCE_MODULE, sourceModule)
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataLast(ENTER_METHOD, 2)
+            getDataBeforeStep(ENTER_METHOD, 2)
         } else {
-            getDataLast(ENTER_METHOD)
+            getDataBeforeStep(ENTER_METHOD)
         }
         put(ENTER_METHOD, sourceModule)
     }
@@ -206,10 +200,16 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        val enterMethod = if(pageDataList.size > 1)
+        val enterMethod = if (pageDataList.size > 1) {
             getLastDataBeforeCurrent(ENTER_METHOD)
-        else getLastData(ENTER_METHOD)
+        } else {
+            getLastData(ENTER_METHOD)
+        }
         put(ENTER_METHOD, enterMethod)
+    }
+
+    internal fun JSONObject.addSourceContentId() {
+        put(SOURCE_CONTENT_ID, getLastData(SOURCE_CONTENT_ID))
     }
 
     fun lastTwoIsHavingHash(hash: Int): Boolean {
@@ -293,7 +293,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-                ?.get(IS_SHADOW) == true
+            ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -345,7 +345,7 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getDataLast(key: String, step: Int = 1): Any? {
+    fun getDataBeforeStep(key: String, step: Int = 1): Any? {
         val idx = _pageDataList.lastIndex - step
         val map = _pageDataList.getOrNull(idx)
         return map?.get(key)
@@ -470,20 +470,6 @@ object AppLogAnalytics {
         }
     }
 
-    fun removeGlobalParam() {
-        listOf(
-            ENTRANCE_FORM,
-            ENTER_METHOD,
-            SOURCE_MODULE,
-            IS_AD,
-            TRACK_ID,
-            SOURCE_PAGE_TYPE,
-            REQUEST_ID
-        ).forEach {
-            _pageDataList.lastOrNull()?.remove(it)
-        }
-    }
-
     private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
         return takeLast(5).joinToString("\n")
     }
@@ -498,22 +484,26 @@ object AppLogAnalytics {
 
     fun getEntranceInfoForCheckout(buyType: AtcBuyType, cartIds: List<String>): String {
         return JSONObject().also {
-            it.put("funnel", if (buyType == AtcBuyType.ATC) "regular" else "occ")
+            it.put("funnel", buyType.funnel)
             it.put("buy_type", buyType.code.toString())
             it.put("os_name", "android")
-            it.put("cart_item", JSONArray().also { item ->
-                cartIds.forEach { id ->
-                    item.put(JSONObject().also { j ->
-                        j.put("cart_id", id)
-                        if (buyType == AtcBuyType.ATC) {
-                            j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
-                        } else {
-                            j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutOcc())
-                        }
-
-                    })
+            it.put(
+                "cart_item",
+                JSONArray().also { item ->
+                    cartIds.forEach { id ->
+                        item.put(
+                            JSONObject().also { j ->
+                                j.put("cart_id", id)
+                                if (buyType == AtcBuyType.ATC) {
+                                    j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
+                                } else { // occ & ocs
+                                    j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutInstant())
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }.toString()
     }
 
@@ -521,7 +511,7 @@ object AppLogAnalytics {
      * This method should be refactored to the normal getEntranceInfoJson, this is separated
      * to minimize changes and avoid regression during hotfix
      * */
-    internal fun getEntranceInfoJsonForCheckoutOcc(): JSONObject {
+    internal fun getEntranceInfoJsonForCheckoutInstant(): JSONObject {
         return JSONObject().also {
             it.addEnterFromInfo()
             it.addEntranceForm()
@@ -538,7 +528,7 @@ object AppLogAnalytics {
         }
     }
 
-    private fun getPreviousDataFrom(name: String, key: String): Any? {
+    fun getPreviousDataFrom(name: String, key: String): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
@@ -555,10 +545,4 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getSourcePreviousPage(): String? {
-        getLastDataBeforeCurrent(PAGE_NAME)?.let {
-            return it.toString()
-        }
-        return null
-    }
 }
