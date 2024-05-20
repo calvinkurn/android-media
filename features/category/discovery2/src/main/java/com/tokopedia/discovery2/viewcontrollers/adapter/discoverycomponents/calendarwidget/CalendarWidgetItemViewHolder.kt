@@ -512,6 +512,15 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
                             val layoutParams = calendarCardUnify.layoutParams
                             layoutParams.height = maxHeight
+
+                            when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
+                                Calendar.DOUBLE, Calendar.CAROUSEL -> {
+                                    calendarFullImage.scaleType = ImageView.ScaleType.FIT_CENTER
+                                }
+                                else -> {
+                                    calendarFullImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                                }
+                            }
                             /*
                             * in case we want to adjust width
                             val bitmapWidth = bitmap.width
