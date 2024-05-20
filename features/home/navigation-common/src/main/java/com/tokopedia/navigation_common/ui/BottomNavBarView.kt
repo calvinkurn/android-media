@@ -75,12 +75,26 @@ class BottomNavBarView : LinearLayout {
         error("Orientation is not allowed to be changed")
     }
 
+    /**
+     * Set jumper's state for given [BottomNavItemId].
+     * Once the state really changes, the bottom nav ui will immediately be refreshed
+     * to reflect the newest jumper state
+     *
+     * @param id the id of the bottom nav item to which jumper state wanted to be set on
+     * @param shouldChangeToJumper whether the corresponding bottom nav item should use jumper asset
+     */
     fun setJumperForId(id: BottomNavItemId, shouldChangeToJumper: Boolean) {
         val oldState = jumperStateMap[id]
         jumperStateMap[id] = shouldChangeToJumper
         if (oldState != shouldChangeToJumper) refresh()
     }
 
+    /**
+     * Set models for the bottom nav. By default if no previous bottom nav item was selected,
+     * the first item in the models will automatically be selected.
+     *
+     * @param modelList the models of the bottom nav to be applied on the [BottomNavBarView]
+     */
     fun setModelList(modelList: List<BottomNavBarUiModel>) {
         modelMap.clear()
         modelMap.putAll(modelList.associateBy { it.uniqueId })
@@ -97,6 +111,23 @@ class BottomNavBarView : LinearLayout {
         select(mSelectedItemId ?: firstModel.uniqueId)
     }
 
+    /**
+     * Select the specified [BottomNavItemId] to be active.
+     *
+     * Selection can be forced which means even though the current models do not contain the specified [BottomNavItemId],
+     * it will still be forcefully selected internally. This might be useful if
+     * you need to select a [BottomNavItemId] while still waiting for the models.
+     * After the models have been set, it will automatically select the id specified in this function.
+     *
+     * A non-forced selection will ignore the selection process if the model
+     * with the specified id does not exist.
+     *
+     * Note that the [BottomNavBarView.Listener.onItemSelected] will always be called if the model existed
+     * regardless the selection is forced or not.
+     *
+     * @param itemId the id to be selected
+     * @param forceSelect whether the selection should be forced
+     */
     fun select(itemId: BottomNavItemId, forceSelect: Boolean = false) {
         val model = modelMap[itemId]
 
@@ -111,15 +142,29 @@ class BottomNavBarView : LinearLayout {
         rebindAllItems(itemId)
     }
 
+    /**
+     * Allows the view to forcefully use dark mode
+     * @param shouldDarkMode whether it should forcefully use dark mode, otherwise it will follow device ui mode
+     */
     fun forceDarkMode(shouldDarkMode: Boolean) {
+        if (shouldDarkMode == mIsForceDarkMode) return
         mIsForceDarkMode = shouldDarkMode
         refresh()
     }
 
+    /**
+     * Set the listener to this [BottomNavBarView]
+     */
     fun setListener(listener: Listener?) {
         mListener = listener
     }
 
+    /**
+     * Find the corresponding [View] for the given [BottomNavItemId]
+     *
+     * @param id the inputted id
+     * @return the corresponding [View] if found, null otherwise.
+     */
     fun findBottomNavItemViewById(id: BottomNavItemId): View? {
         return children.firstOrNull { it.stateHolder?.model?.uniqueId == id }
     }
@@ -305,7 +350,6 @@ class BottomNavBarView : LinearLayout {
         set(value) {
             setTag(navigation_commonR.id.bottom_nav_lottie_listener, value)
         }
-
 
     // TODO("Revisit this logic")
     private fun getNormalAssets(
