@@ -84,6 +84,10 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
+        put(
+            AppLogParam.ENTRANCE_INFO,
+            generateEntranceInfoJson(sourceModule).toString()
+        )
         put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
         put(AppLogParam.ENTRANCE_FORM, entranceForm)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
