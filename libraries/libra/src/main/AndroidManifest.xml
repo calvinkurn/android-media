@@ -1,17 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.tokopedia.libra"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <application>
-        <activity
-            android:name="com.tokopedia.libra.DebugLibraActivity"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
-    </application>
-</manifest>
+<manifest package="com.tokopedia.libra" />
