@@ -1,8 +1,10 @@
 package com.tokopedia.recommendation_widget_common.widget.vertical
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.recommendation_widget_common.widget.vertical.tracking.RecommendationVerticalTracking
@@ -14,6 +16,8 @@ data class RecommendationVerticalProductCardModel(
     val trackingModel: RecommendationWidgetTrackingModel,
     val componentName: String = "",
     val widgetTracking: RecommendationVerticalTracking?,
+    val source: RecommendationWidgetSource?,
+    val appLogAdditionalParam: AppLogAdditionalParam,
     val listener: RecommendationWidgetListener?
 ) : RecommendationVerticalVisitable {
     override fun type(typeFactory: RecommendationVerticalTypeFactory): Int {

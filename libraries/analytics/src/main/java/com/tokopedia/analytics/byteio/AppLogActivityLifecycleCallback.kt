@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.currentActivityName
+import com.tokopedia.analytics.byteio.AppLogAnalytics.pageDataList
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
@@ -43,6 +44,11 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             }
         }
 
+        AppLogFirstTrackId.appendDataFromMainList(
+            activity,
+            pageDataList.lastOrNull() as? HashMap<String, Any>
+        )
+        AppLogFirstTrackId.updateFirstTrackId()
         setCurrent(activity)
 
         //for ads log approach
@@ -92,7 +98,8 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         }
         delay(300)
         val quitType = if (AppLogAnalytics.lastTwoIsHavingHash(hash)
-            && currentActivityName != "AtcVariantActivity") {
+            && currentActivityName != "AtcVariantActivity"
+        ) {
             QuitType.NEXT
         } else {
             QuitType.CLOSE
@@ -127,7 +134,12 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         removePageName(activity)
         if (activity is AppLogInterface) {
             removePageData(activity)
+            AppLogFirstTrackId.removePageData(activity)
+        } else {
+            AppLogFirstTrackId.removeCurrentActivityByHashCode(activity)
         }
+
+        AppLogFirstTrackId.updateFirstTrackId()
 
         if (activity is IAdsLog) {
             AppLogAnalytics.removeLastAdsPageData(activity)

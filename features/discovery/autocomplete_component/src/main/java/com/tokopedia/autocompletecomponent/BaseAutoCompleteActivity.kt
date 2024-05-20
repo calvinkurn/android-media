@@ -151,8 +151,6 @@ open class BaseAutoCompleteActivity :
 
     private var coachMark: CoachMark2? = null
 
-    private var rollenceShouldShowV2 = SearchRolloutUniverse.shouldShowRolloutUniverse()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(0, 0)
 
@@ -606,7 +604,7 @@ open class BaseAutoCompleteActivity :
         val navSource = searchParameter.get(SearchApiConst.NAVSOURCE)
         val isNotEligibleNavSource = EXCLUDED_NAV_SOURCE.contains(navSource)
         val isLocalSearch = searchParameter.contains(SearchApiConst.SRP_PAGE_ID)
-        return rollenceShouldShowV2 && !isNotEligibleNavSource && !isLocalSearch
+        return !isNotEligibleNavSource && !isLocalSearch
     }
 
     private fun executeParameterChangeOnRollenceTrue(searchParameterMap: Map<String, String>) {

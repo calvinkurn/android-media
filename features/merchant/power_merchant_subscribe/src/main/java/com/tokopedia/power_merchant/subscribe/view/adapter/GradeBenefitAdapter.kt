@@ -37,7 +37,11 @@ class GradeBenefitAdapter(
 
         fun bind(benefit: PMBenefitItemUiModel) = with(binding) {
             tvPmBenefitItem.text = benefit.benefitDescription.parseAsHtml()
-            icPmBenefitItem.loadImage(benefit.iconUrl)
+            if (benefit.iconUrl.isBlank()) {
+                icPmBenefitItem.setImage(benefit.icon)
+            } else {
+                icPmBenefitItem.loadImage(benefit.iconUrl)
+            }
         }
     }
 }
