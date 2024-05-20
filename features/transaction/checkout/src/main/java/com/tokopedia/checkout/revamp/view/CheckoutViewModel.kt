@@ -225,9 +225,7 @@ class CheckoutViewModel @Inject constructor(
         isReloadAfterPriceChangeHigher: Boolean,
         gatewayCode: String = "",
         tenor: Int = 0,
-        checkoutItems: MutableList<CheckoutItem>? = null,
-        itemIndex: Int? = null,
-        usePreviousGateway: Boolean = false
+        modifiedCheckoutItems: ((List<CheckoutItem>) -> List<CheckoutItem>)? = null
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         viewModelScope.launch(dispatchers.io) {
@@ -288,16 +286,10 @@ class CheckoutViewModel @Inject constructor(
                         summariesAddOnUiModel =
                             ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)
 
-                        var currProduct: CheckoutProductModel? = null
-                        if (checkoutItems != null && itemIndex != null) {
-                            currProduct = checkoutItems[itemIndex] as CheckoutProductModel
-                        }
-
                         val items = dataConverter.getCheckoutItems(
                             saf.cartShipmentAddressFormData,
                             address.recipientAddressModel.locationDataModel != null,
-                            userSessionInterface.name,
-                            currProduct
+                            userSessionInterface.name
                         )
 
                         var uploadPrescriptionUiModel = UploadPrescriptionUiModel()
@@ -343,23 +335,13 @@ class CheckoutViewModel @Inject constructor(
                             metadata = saf.cartShipmentAddressFormData.paymentWidget.metadata,
                             enable = saf.cartShipmentAddressFormData.paymentWidget.enable,
                             defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage,
-                            originalData = if (usePreviousGateway) {
-                                val currPaymentData = listData.value.payment()
-                                val selectedTenure = currPaymentData?.data?.paymentWidgetData?.firstOrNull()?.installmentPaymentData?.selectedTenure
-                                OriginalCheckoutPaymentData(
-                                    gatewayCode = currPaymentData?.data?.paymentWidgetData?.firstOrNull()?.gatewayCode ?: "",
-                                    tenureType = selectedTenure ?: 0,
-                                    optionId = currPaymentData?.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.optionId ?: "",
-                                    metadata = currPaymentData?.data?.paymentWidgetData?.firstOrNull()?.metadata ?: ""
-                                )
-                            } else {
-                                OriginalCheckoutPaymentData(
-                                    gatewayCode = gatewayCode.ifBlank { saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode },
-                                    tenureType = if (gatewayCode.isNotBlank()) tenor else saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
-                                    optionId = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.optionId,
-                                    metadata = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.metadata
-                                )
-                            }
+                            originalData =
+                            OriginalCheckoutPaymentData(
+                                gatewayCode = gatewayCode.ifBlank { saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode },
+                                tenureType = if (gatewayCode.isNotBlank()) tenor else saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
+                                optionId = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.optionId,
+                                metadata = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.metadata
+                            )
                         )
 
                         cartType = saf.cartShipmentAddressFormData.cartType
@@ -439,20 +421,26 @@ class CheckoutViewModel @Inject constructor(
                             }
                         }
 
+                        var finalItems = listOf(
+                            tickerError,
+                            ticker,
+                            address,
+                            upsell
+                        ) + itemsWithLoadingState + listOf(
+                            epharmacy,
+                            promo,
+                            payment,
+                            cost,
+                            crossSellGroup,
+                            buttonPayment
+                        )
+
+                        if (modifiedCheckoutItems != null) {
+                            finalItems = modifiedCheckoutItems(finalItems)
+                        }
+
                         withContext(dispatchers.main) {
-                            listData.value = listOf(
-                                tickerError,
-                                ticker,
-                                address,
-                                upsell
-                            ) + itemsWithLoadingState + listOf(
-                                epharmacy,
-                                promo,
-                                payment,
-                                cost,
-                                crossSellGroup,
-                                buttonPayment
-                            )
+                            listData.value = finalItems
                             pageState.value = saf
                             calculateTotal()
                         }
@@ -3657,14 +3645,14 @@ class CheckoutViewModel @Inject constructor(
             checkoutItems[itemIndex] = newProduct
             listData.value = checkoutItems
             viewModelScope.launch(dispatchers.io) {
-                doUpdateCartAndReload(checkoutItems, itemIndex)
+                doUpdateCartAndReload(checkoutItems, cartId)
             }
         }
     }
 
     private suspend fun doUpdateCartAndReload(
         checkoutItems: MutableList<CheckoutItem>,
-        itemIndex: Int
+        cartId: Long
     ) {
         debounceQtyJob?.cancel()
         debounceQtyJob = viewModelScope.launch(dispatchers.immediate) {
@@ -3681,16 +3669,28 @@ class CheckoutViewModel @Inject constructor(
                             source = "update_quantity"
                         )
                     )
+
                     pageState.value = CheckoutPageState.Normal
+                    val checkoutItemList = listData.value.toMutableList()
+                    val itemIndex =
+                        checkoutItemList.indexOfFirst { it is CheckoutProductModel && it.cartId == cartId }
+                    if (itemIndex > 0) {
+                        val product = checkoutItemList[itemIndex] as CheckoutProductModel
+
+                        val newProduct = product.copy(
+                            quantity = product.prevQuantity
+                        )
+                        checkoutItemList[itemIndex] = newProduct
+                        listData.value = checkoutItemList
+                    }
                 } else {
                     loadSAF(
                         isReloadData = true,
                         skipUpdateOnboardingState = true,
-                        isReloadAfterPriceChangeHigher = false,
-                        checkoutItems = checkoutItems,
-                        itemIndex = itemIndex,
-                        usePreviousGateway = true
-                    )
+                        isReloadAfterPriceChangeHigher = false
+                    ) {
+                        cartProcessor.generateModifiedCheckoutItems(it, listData.value)
+                    }
                 }
             }
         }
