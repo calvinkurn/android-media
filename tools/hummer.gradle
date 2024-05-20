@@ -43,7 +43,7 @@ String getBuildType() {
 def env = getEnvironment()
 def buildType = getBuildType()
 def tier = getTier()
-def jobName = System.getenv('JOB_NAME')
+def jobName = System.getenv('WORKFLOW_JOB_NAME')
 def isCiBuild = jobName ? "CI" : "LOCAL"
 def appName = gradle.startParameter.projectDir.name
 def gradleVersion = project.getGradle().getGradleVersion()
