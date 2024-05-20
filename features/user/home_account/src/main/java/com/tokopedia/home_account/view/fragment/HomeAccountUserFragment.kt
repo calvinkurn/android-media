@@ -163,8 +163,7 @@ open class HomeAccountUserFragment :
     BaseDaggerFragment(),
     HomeAccountUserListener,
     BalanceAndPointListener,
-    TokopediaPlusListener,
-    AppLogInterface {
+    TokopediaPlusListener {
 
     @Inject
     lateinit var mapper: DataViewMapper
@@ -1901,13 +1900,5 @@ open class HomeAccountUserFragment :
                 arguments = bundle
             }
         }
-    }
-
-    override fun getPageName(): String {
-        return PageName.ACCOUNT
-    }
-
-    override fun shouldTrackEnterPage(): Boolean {
-        return true
     }
 }
