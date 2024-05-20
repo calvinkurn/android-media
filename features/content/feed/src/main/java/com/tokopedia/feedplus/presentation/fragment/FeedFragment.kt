@@ -1937,6 +1937,7 @@ class FeedFragment :
             activityId = activityId,
             sourceType = sourceType,
             isNextPage = true,
+            mediaType = currentTrackerData?.mediaType.orEmpty(),
         )
     }
 
