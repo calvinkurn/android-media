@@ -29,6 +29,10 @@ open class ProductConstraintLayout :
     private var minVerticalPercentage = 0
     private var maxVerticalPercentage = 100
     private var maxAreaPercentage = 0
+    private var viewDetachedFromWindows = true
+    private var debugTextView: TextView? = null
+    private var useScrollChangedEventAdsByteIo = false
+
     private val TOP = 1
     private val BOTTOM = 3
     private val RIGHT = 2
@@ -36,11 +40,6 @@ open class ProductConstraintLayout :
     private val LEFT_AND_RIGHT = 5
     private val TOP_AND_BOTTOM = 6
     private val NOWHERE = 7
-    private var viewDetachedFromWindows = true
-    private var debugTextView: TextView? = null
-
-    private var useScrollChangedEventAdsByteIo = false
-
     private val set: ConstraintSet by lazy { ConstraintSet() }
     private val rectf: Rect by lazy { Rect() }
 
