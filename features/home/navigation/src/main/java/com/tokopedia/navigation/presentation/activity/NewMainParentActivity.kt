@@ -511,8 +511,6 @@ class NewMainParentActivity :
 
     override fun onHomeCoachMarkFinished() {
         // Feed Coachmark has been deprecated, so this is expected to be empty as of now
-//        val feedIconView = binding.dynamicNavbar.findBottomNavItemViewById(BottomNavFeedId) ?: return
-//        FeedCoachMark(this).show(feedIconView)
         val mePageView = binding.dynamicNavbar.findBottomNavItemViewById(BottomNavMePageId) ?: return
         mePageCoachMark.get().show(mePageView)
     }
