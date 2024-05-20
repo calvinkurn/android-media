@@ -1,11 +1,68 @@
-ext.appProjectName = 'customerapp'
-ext.appAid = 573733
-//ext.hookDebug=true
-apply from: '../gradle/build-collect.gradle'
-
-gradle.startParameter.getTaskNames().each {
-    taskName ->
-        if(taskName.contains("package")){
-            ext.Scan = true
+String getEnvironment() {
+    def env = ""
+    gradle.startParameter.getTaskNames().forEach {
+        taskName -> {
+            if (taskName.containsIgnoreCase("prod")) {
+                env = "Production"
+            } else if (taskName.containsIgnoreCase("dev")) {
+                env = "Development"
+            }
         }
+    }
+    return env
+}
+
+String getTier() {
+    def tier = ""
+    gradle.startParameter.getTaskNames().forEach {
+        taskName -> {
+            if (taskName.containsIgnoreCase("live")) {
+                tier = "Live"
+            } else if (taskName.containsIgnoreCase("staging")) {
+                tier = "Staging"
+            }
+        }
+    }
+    return tier
+}
+
+String getBuildType() {
+    def buildType = ""
+    gradle.startParameter.getTaskNames().forEach {
+        taskName -> {
+            if (taskName.containsIgnoreCase("debug")) {
+                buildType = "debug"
+            } else if (taskName.containsIgnoreCase("release")) {
+                buildType = "signed"
+            }
+        }
+    }
+    return buildType
+}
+
+def env = getEnvironment()
+def buildType = getBuildType()
+def tier = getTier()
+def jobName = System.getenv('JOB_NAME')
+def isCiBuild = jobName ? "CI" : "LOCAL"
+def appName = gradle.startParameter.projectDir.name
+def gradleVersion = project.getGradle().getGradleVersion()
+println("Job Name: $jobName")
+println("Is CI Build: $isCiBuild")
+println("Current Env: $env")
+println("Build Type: $buildType")
+println("Tier: $tier")
+println("Gradle Version: $gradleVersion")
+
+if (project.extensions.findByName("buildCollectConfig") != null) {
+    def projectName = project.projectDir
+    println("-----Project Name: $projectName -----")
+    buildCollectConfig{
+        if (jobName != null) {
+            println("Job Name is Not Null")
+            tags = [appName, isCiBuild, jobName, env, buildType, tier, gradleVersion]
+        } else {
+            tags = [appName, isCiBuild, env, buildType, tier, gradleVersion]
+        }
+    }
 }

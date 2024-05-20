@@ -76,6 +76,7 @@ if (hasProperty('buildScan')) {
 apply from: 'buildproj.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
 apply from: 'buildconfig/kotlin/repository.gradle'
+apply from: 'tools/hummer.gradle'
 
 //Installing Git Hooks
 task installGitHooks {
@@ -169,34 +170,6 @@ subprojects {
                 url.set(new URL("https://developer.android.com/reference/kotlin/"))
                 packageListUrl.set(new URL("https://developer.android.com/reference/kotlin/androidx/package-list"))
             }
-        }
-    }
-}
-
-def jobName = System.getenv('JOB_NAME')
-def isCiBuild = jobName ? "CI" : "LOCAL"
-println("Job Name: $jobName")
-println("Is CI Build: $isCiBuild")
-
-//def getTags() {
-//    println("------Set TAG for Hummer------")
-//
-//    if (jobName != null) {
-//        println("Job Name is Not Null")
-//        collectionTags = [isCiBuild, jobName]
-//    } else {
-//        println("Job Name is Null")
-//        collectionTags = [isCiBuild]
-//    }
-//}
-
-if(project.extensions.findByName("buildCollectConfig") != null) {
-    buildCollectConfig{
-        if (jobName != null) {
-            println("Job Name is Not Null")
-            tags = [isCiBuild, jobName]
-        } else {
-            tags = [isCiBuild]
         }
     }
 }
