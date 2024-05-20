@@ -12,10 +12,12 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
     ConstraintLayout,
+    View.OnAttachStateChangeListener,
     OnScrollChangedListener,
     ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -27,6 +29,10 @@ open class ProductConstraintLayout :
     private var minVerticalPercentage = 0
     private var maxVerticalPercentage = 100
     private var maxAreaPercentage = 0
+    private var viewDetachedFromWindows = true
+    private var debugTextView: TextView? = null
+    private var useScrollChangedEventAdsByteIo = false
+
     private val TOP = 1
     private val BOTTOM = 3
     private val RIGHT = 2
@@ -34,18 +40,15 @@ open class ProductConstraintLayout :
     private val LEFT_AND_RIGHT = 5
     private val TOP_AND_BOTTOM = 6
     private val NOWHERE = 7
-    private var viewDetachedFromWindows = true
-    private var debugTextView: TextView? = null
-
     private val set: ConstraintSet by lazy { ConstraintSet() }
     private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context) {
-        inflateView()
+        inflateView(null)
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        inflateView()
+        inflateView(attrs)
     }
 
     constructor(
@@ -53,7 +56,22 @@ open class ProductConstraintLayout :
         attrs: AttributeSet?,
         defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
-        inflateView()
+        inflateView(attrs)
+    }
+
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context
+            ?.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+            ?: return
+
+        return try {
+            useScrollChangedEventAdsByteIo = typedArray.getBoolean(R.styleable.ProductCardView_useScrollChangedEventAdsByteIo, false)
+        } catch(_: Throwable) {
+        } finally {
+            typedArray.recycle()
+        }
     }
 
     private fun calculateVisibility() {
@@ -118,11 +136,18 @@ open class ProductConstraintLayout :
     }
 
     private fun setScrollChangedEvents(areaPercentage: Int, isVisible: Boolean) {
-        if (areaPercentage > 0 && isVisible) {
-            onShow()
+        val isShown = areaPercentage > 0 && isVisible
+        if (useScrollChangedEventAdsByteIo) {
+            if (isShown) {
+                onShow()
+            } else {
+                onShowOver()
+                maxAreaPercentage = 0
+            }
         } else {
-            onShowOver()
-            maxAreaPercentage = 0
+            if (!isShown) {
+                maxAreaPercentage = 0
+            }
         }
     }
 
@@ -176,7 +201,7 @@ open class ProductConstraintLayout :
         fun onShowOver(maxPercentage: Int)
     }
 
-    fun removeVisibilityPercentageListener() {
+    private fun removeVisibilityPercentageListener() {
         mPercentageListener = null
     }
 
@@ -192,16 +217,18 @@ open class ProductConstraintLayout :
 
     private fun unsetListener() {
         removeVisibilityPercentageListener()
-        if (this.viewTreeObserver.isAlive) {
-            this.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            this.viewTreeObserver.removeOnScrollChangedListener(this)
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+            viewTreeObserver.removeOnScrollChangedListener(this)
         }
+        removeOnAttachStateChangeListener(this)
     }
 
     private fun setListener(eventListener: OnVisibilityPercentChanged?) {
         mPercentageListener = eventListener
-        this.viewTreeObserver.addOnGlobalLayoutListener(this)
-        this.viewTreeObserver.addOnScrollChangedListener(this)
+        addOnAttachStateChangeListener(this)
+        viewTreeObserver.addOnScrollChangedListener(this)
+        viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     private fun View?.removeSelf() {
@@ -218,16 +245,6 @@ open class ProductConstraintLayout :
         }
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        onShow()
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        onShowOver()
-    }
-
     override fun onScrollChanged() {
         calculateVisibility()
     }
@@ -237,8 +254,16 @@ open class ProductConstraintLayout :
         removeOnGlobalLayoutListener()
     }
 
+    override fun onViewAttachedToWindow(p0: View) {
+        onShow()
+    }
+
+    override fun onViewDetachedFromWindow(p0: View) {
+        onShowOver()
+    }
+
     private fun removeOnGlobalLayoutListener() {
-        if (this.viewTreeObserver.isAlive) {
+        if (viewTreeObserver.isAlive) {
             viewTreeObserver.removeOnGlobalLayoutListener(this)
         }
     }
@@ -265,7 +290,7 @@ open class ProductConstraintLayout :
         }
     }
 
-    private fun inflateView() {
+    private fun inflateView(attrs: AttributeSet?) {
         if (isPercentViewEnabled(context)) {
             set.clone(this)
             val view = LayoutInflater.from(context).inflate(
@@ -275,6 +300,7 @@ open class ProductConstraintLayout :
             )
             debugTextView = view.findViewById(productcardR.id.productCardPercentText)
         }
+        initAttributes(attrs)
     }
 
     private fun isBetweenHorizontalPercentageLimits(a: Int): Boolean {
