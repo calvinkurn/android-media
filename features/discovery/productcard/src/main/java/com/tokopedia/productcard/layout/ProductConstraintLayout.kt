@@ -292,6 +292,7 @@ open class ProductConstraintLayout :
             viewDetachedFromWindows = true
         }
     }
+
     private fun inflateView(attrs: AttributeSet?) {
         if (isPercentViewEnabled(context)) {
             set.clone(this)
