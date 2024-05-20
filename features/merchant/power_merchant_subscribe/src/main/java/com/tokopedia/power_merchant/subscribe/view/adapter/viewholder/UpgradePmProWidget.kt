@@ -61,7 +61,7 @@ class UpgradePmProWidget(
 
     private fun showTermTitle(element: WidgetUpgradePmProUiModel) {
         binding?.run {
-            val isEgiblePmPro = element.shopInfo.shopScore >= 80 &&
+            val isEgiblePmPro = element.shopInfo.shopScore >= element.shopInfo.shopScorePmProTresholdNew &&
                 element.shopInfo.netItemValueOneMonth >= element.shopInfo.netItemValuePmProThreshold &&
                 element.shopInfo.itemSoldOneMonth >= element.shopInfo.itemSoldPmProThreshold &&
                 element.shopInfo.isKyc
