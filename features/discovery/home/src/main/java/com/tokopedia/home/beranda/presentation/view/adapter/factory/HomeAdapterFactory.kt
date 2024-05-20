@@ -168,6 +168,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.w
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.listener.shorten.TwoSquareWidgetListenerCallback
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
