@@ -48,10 +48,10 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun addDecorator() {
         calendarWidgetCarouselViewModel?.components?.properties?.let {
+            if (calendarCarouselRecyclerView.itemDecorationCount > 0) {
+                calendarCarouselRecyclerView.removeItemDecorationAt(0)
+            }
             if (it.calendarType == Constant.Calendar.DYNAMIC || it.calendarLayout == CAROUSEL) {
-                if (calendarCarouselRecyclerView.itemDecorationCount > 0) {
-                    calendarCarouselRecyclerView.removeItemDecorationAt(0)
-                }
                 calendarCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
             } else {
                 calendarCarouselRecyclerView.setMargin(

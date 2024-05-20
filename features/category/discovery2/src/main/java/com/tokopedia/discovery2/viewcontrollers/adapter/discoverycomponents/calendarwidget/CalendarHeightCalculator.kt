@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget
 
 import android.content.Context
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.CAROUSEL
 import com.tokopedia.discovery2.Constant.Calendar.DOUBLE
 import com.tokopedia.discovery2.Constant.Calendar.TRIPLE
@@ -21,6 +20,9 @@ suspend fun List<DataItem>?.getMaxHeightForCarouselView(context: Context?, corou
             if (calendarLayout == DOUBLE) {
                 // somehow double is strict to 280 in code CalendarWidgetItemViewHolder
                 calendarCardHeightList.add(context.resources.getDimensionPixelSize(R.dimen.dp_280))
+            } else if (calendarLayout == TRIPLE) {
+                // strict to 250
+                calendarCardHeightList.add(context.resources.getDimensionPixelSize(R.dimen.dp_250))
             } else {
                 val calendarDate = getCalendarDateHeight(context)
                 val calendarTitleImage =
