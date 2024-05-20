@@ -19,6 +19,8 @@ import org.json.JSONObject
  */
 object AppLogTopAds {
 
+    var isSearchPageNonEmptyState = true
+
     /**
      * @param context Context
      * @param currentPageName String
@@ -198,7 +200,7 @@ object AppLogTopAds {
     }
 
     private fun isSearchPage(currentPageName: Any?): Boolean {
-        return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH)
+        return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH) && isSearchPageNonEmptyState
     }
 
     private fun JSONObject.putNetworkType(context: Context) {
