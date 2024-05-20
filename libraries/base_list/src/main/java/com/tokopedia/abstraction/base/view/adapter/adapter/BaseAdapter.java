@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
@@ -231,7 +230,6 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
             notifyItemRangeInserted(positionStart, data.size());
         }
     }
-
 
     public void removeElement(Visitable visitable) {
         visitables.remove(visitable);
