@@ -6,6 +6,8 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.merchantvoucher.MerchantVoucherTrackingMapper.dataToMvcTrackingProperties
+import com.tokopedia.discovery2.analytics.merchantvoucher.MvcTrackingProperties
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -15,7 +17,6 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponGridView
 import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.user.session.UserSession
 
 class MerchantVoucherGridItemViewHolder(
     itemView: View,
@@ -62,6 +63,7 @@ class MerchantVoucherGridItemViewHolder(
                 )
             )
             setState(handler)
+
         }
     }
 
@@ -87,26 +89,38 @@ class MerchantVoucherGridItemViewHolder(
     }
 
     private fun trackClickCTAEvent(ctaText: String) {
-        viewModel?.components?.data?.firstOrNull().let { data ->
-            val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-            val properties = data?.dataToMvcTrackingProperties(
-                ctaText = ctaText,
-                creativeName = viewModel?.components?.creativeName.orEmpty(),
-                compId = viewModel?.components?.parentComponentId.orEmpty(),
-                position = viewModel?.components?.position.orZero()
-            )
-            properties?.let { analytics?.trackMvcClickEvent(it, true) }
+        val trackingProperties = viewModel?.components?.asClickCTAProperties(ctaText)
+
+        trackingProperties?.run {
+            getAnalytics()?.trackMvcClickEvent(this, true)
         }
     }
 
     private fun trackImpression() {
-        viewModel?.run {
-            getAnalytics()?.trackMerchantVoucherMultipleImpression(
-                component,
-                UserSession(fragment.context).userId,
-                position
-            )
+        val trackingProperties = viewModel?.components?.asImpressionProperties()
+
+        trackingProperties?.run {
+            getAnalytics()?.trackMvcImpression(listOf(this))
         }
+    }
+
+    private fun ComponentsItem?.asClickCTAProperties(ctaText: String): MvcTrackingProperties? {
+        return this?.data?.firstOrNull()
+            ?.dataToMvcTrackingProperties(
+                ctaText = ctaText,
+                creativeName = creativeName.orEmpty(),
+                compId = parentComponentId,
+                position = position.orZero()
+            )
+    }
+
+    private fun ComponentsItem?.asImpressionProperties(): MvcTrackingProperties? {
+        return this?.data?.firstOrNull()
+            ?.dataToMvcTrackingProperties(
+                creativeName = creativeName.orEmpty(),
+                compId = parentComponentId,
+                position = position.orZero()
+            )
     }
 
     private fun getAnalytics() = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
