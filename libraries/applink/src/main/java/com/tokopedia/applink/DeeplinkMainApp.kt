@@ -488,8 +488,8 @@ object DeeplinkMainApp {
             DLP.startsWith("buyer-order-extension") { _: String ->
                 ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION
             },
-            DLP.startsWith("buyer-partial-order-fulfillment") { _: String ->
-                ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT
+            DLP.startsWith("buyer-partial-order-fulfillment") { uri: Uri ->
+                DeeplinkMapperOrder.Pof.Buyer.getRegisteredNavigation(uri)
             },
             DLP.startsWith("onboarding") { _: String ->
                 ApplinkConstInternalMarketplace.ONBOARDING
@@ -997,7 +997,7 @@ object DeeplinkMainApp {
                 DeeplinkMapperMerchant.getRegisteredSellerCenter()
             },
             DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
-                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+                DeeplinkMapperOrder.Pof.Seller.getRegisteredNavigation(uri)
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)

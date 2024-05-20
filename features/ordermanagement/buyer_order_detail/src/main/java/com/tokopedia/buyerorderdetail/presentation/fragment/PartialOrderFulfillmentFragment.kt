@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.buyerorderdetail.databinding.FragmentPartialOrderFulfillmentBinding
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillmentActivity
@@ -16,7 +16,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class PartialOrderFulfillmentFragment : BaseDaggerFragment() {
 
     private val orderId by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getString(ApplinkConstInternalOrder.PARAM_ORDER_ID)
+        arguments?.getString(DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID)
     }
 
     private var binding by autoClearedNullable<FragmentPartialOrderFulfillmentBinding>()
