@@ -1,29 +1,24 @@
 package com.tokopedia.productcard.layout
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleCallback
-import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.registerCallback
-import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.unRegisterCallback
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
     ConstraintLayout,
-    LifecycleEventObserver,
+    OnAttachStateChangeListener,
     OnScrollChangedListener {
 
     private var mPercentageListener: OnVisibilityPercentChanged? = null
@@ -43,25 +38,18 @@ open class ProductConstraintLayout :
     private val NOWHERE = 7
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
-    private val rectf: Rect by lazy { Rect() }
-    private val lifecycleOwner by lazy { findLifecycleOwner(context) }
-    private val fragmentCallback = FragmentCallback(this)
 
-    class FragmentCallback(val v: ProductConstraintLayout) : FragmentLifecycleCallback {
-        override fun onHiddenChanged(fragment: Fragment, hidden: Boolean) {
-            when (hidden) {
-                false -> v.postDelayed({ v.onShow() }, 200)
-                true -> v.onShowOver()
-            }
-        }
-    }
+    private var useScrollChangedEventAdsByteIo = false
+
+    private val set: ConstraintSet by lazy { ConstraintSet() }
+    private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context) {
-        inflateView()
+        inflateView(null)
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        inflateView()
+        inflateView(attrs)
     }
 
     constructor(
@@ -69,7 +57,22 @@ open class ProductConstraintLayout :
         attrs: AttributeSet?,
         defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
-        inflateView()
+        inflateView(attrs)
+    }
+
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context
+            ?.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+            ?: return
+
+        return try {
+            useScrollChangedEventAdsByteIo = typedArray.getBoolean(R.styleable.ProductCardView_useScrollChangedEventAdsByteIo, false)
+        } catch(_: Throwable) {
+        } finally {
+            typedArray.recycle()
+        }
     }
 
     private fun calculateVisibility() {
@@ -120,12 +123,7 @@ open class ProductConstraintLayout :
                 if (maxAreaPercentage < areaPercentage) {
                     maxAreaPercentage = areaPercentage
                 }
-                if (areaPercentage > 0 && isVisible) {
-                    onShow()
-                } else {
-                    onShowOver()
-                    maxAreaPercentage = 0
-                }
+                setScrollChangedEvents(areaPercentage, isVisible)
                 when (alignment) {
                     TOP -> toBottom()
                     BOTTOM -> toTop()
@@ -134,6 +132,16 @@ open class ProductConstraintLayout :
                     else -> toCenter()
                 }
                 debugTextView?.text = "$maxAreaPercentage%"
+            }
+        }
+    }
+
+    private fun setScrollChangedEvents(areaPercentage: Int, isVisible: Boolean) {
+        if (useScrollChangedEventAdsByteIo) {
+            if (areaPercentage > 0 && isVisible) {
+                onShow()
+            } else {
+                onShowOver()
             }
         }
     }
@@ -204,23 +212,20 @@ open class ProductConstraintLayout :
 
     private fun unsetListener() {
         removeVisibilityPercentageListener()
-        unRegisterCallback(fragmentCallback)
-        lifecycleOwner?.lifecycle?.removeObserver(this)
         if (this.viewTreeObserver.isAlive) {
             this.viewTreeObserver.removeOnScrollChangedListener(this)
         }
+        this.removeOnAttachStateChangeListener(this)
     }
 
     private fun setListener(eventListener: OnVisibilityPercentChanged?) {
         mPercentageListener = eventListener
-        registerCallback(fragmentCallback)
-        lifecycleOwner?.lifecycle?.addObserver(this)
+        this.addOnAttachStateChangeListener(this)
         this.viewTreeObserver.addOnScrollChangedListener(this)
-        this.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+        this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     calculateVisibility()
-                    if (viewTreeObserver.isAlive)
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
         )
@@ -240,25 +245,12 @@ open class ProductConstraintLayout :
         }
     }
 
-    private fun findLifecycleOwner(context: Context): LifecycleOwner? {
-        var currentContext = context
-        while (currentContext is ContextWrapper) {
-            if (currentContext is LifecycleOwner) {
-                return currentContext
-            }
-            currentContext = currentContext.baseContext
-        }
-        return null
+    override fun onViewAttachedToWindow(p0: View) {
+        onShow()
     }
 
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        when (event) {
-            Lifecycle.Event.ON_RESUME -> {
-                if (maxAreaPercentage > 0) onShow()
-            }
-            Lifecycle.Event.ON_PAUSE -> onShowOver()
-            else -> {}
-        }
+    override fun onViewDetachedFromWindow(p0: View) {
+        onShowOver()
     }
 
     override fun onScrollChanged() {
@@ -283,11 +275,13 @@ open class ProductConstraintLayout :
     private fun onShowOver() {
         if (!viewDetachedFromWindows && maxAreaPercentage > 0) {
             mPercentageListener?.onShowOver(maxAreaPercentage)
+            maxAreaPercentage = 0
             viewDetachedFromWindows = true
         }
     }
-    private fun inflateView() {
+    private fun inflateView(attrs: AttributeSet?) {
         if (isPercentViewEnabled(context)) {
+            set.clone(this)
             val view = LayoutInflater.from(context).inflate(
                 productcardR.layout.product_card_percent_text_view,
                 this,
@@ -295,6 +289,7 @@ open class ProductConstraintLayout :
             )
             debugTextView = view.findViewById(productcardR.id.productCardPercentText)
         }
+        initAttributes(attrs)
     }
 
     private fun isBetweenHorizontalPercentageLimits(a: Int): Boolean {
