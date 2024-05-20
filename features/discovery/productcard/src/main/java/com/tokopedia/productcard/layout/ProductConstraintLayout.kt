@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.layout
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
 import com.tokopedia.productcard.R
-import timber.log.Timber
 import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
@@ -271,7 +269,6 @@ open class ProductConstraintLayout :
         if (viewDetachedFromWindows && isVisible()) {
             mPercentageListener?.onShow()
             viewDetachedFromWindows = false
-            Timber.tag("ProductConstrainLayout").i("on show max:$maxAreaPercentage%")
         }
     }
 
@@ -280,7 +277,6 @@ open class ProductConstraintLayout :
             mPercentageListener?.onShowOver(maxAreaPercentage)
             maxAreaPercentage = 0
             viewDetachedFromWindows = true
-            Timber.tag("ProductConstrainLayout").i("on show over max:$maxAreaPercentage%")
         }
     }
     private fun inflateView(attrs: AttributeSet?) {
