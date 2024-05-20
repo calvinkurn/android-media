@@ -61,6 +61,10 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
         return null
     }
 
+    open fun onViewAttachedToWindow() {
+
+    }
+
     open fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         discoveryBaseViewModel?.let { lifecycleOwner?.lifecycle?.addObserver(it) }
     }
