@@ -27,6 +27,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -468,7 +469,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem: DataItem?
     ) {
         // we use getBitmap to get width/height in case calendar single to allow adjustViewBound
-        calendarCardUnify.post {
+        calendarCardUnify.addOneTimeGlobalLayoutListener {
             setImageAdjustViewBound(
                 calendarFullImage,
                 calendarImageUrl,
