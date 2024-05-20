@@ -37,7 +37,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
@@ -457,7 +457,7 @@ open class HomeRevampFragment :
     private var hasApplogScrollListener = false
 
     init {
-        BtmApi.registerBtmPageOnCreate(this, Page.HOMEPAGE)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.HomePage)
     }
 
     override fun onAttach(context: Context) {
@@ -2283,7 +2283,7 @@ open class HomeRevampFragment :
     private fun openApplink(applink: String, trackingAttribution: String) {
         if (!TextUtils.isEmpty(applink)) {
             val btmModel = BtmModel().apply {
-                this.btm = Page.HOMEPAGE.str
+                this.btm = Tokopedia.HomePage.str
                 this.pageFinder = PageFinder.via(this@HomeRevampFragment)
             }
             RouteManager.routeWithBtmModel(activity, btmModel, appendTrackerAttributionIfNeeded(applink, trackingAttribution))

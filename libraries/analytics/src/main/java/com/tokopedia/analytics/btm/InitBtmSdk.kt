@@ -2,7 +2,6 @@ package com.tokopedia.analytics.btm
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import com.bytedance.android.btm.api.BtmSDK
 import com.bytedance.android.btm.api.depend.IALogDepend
 import com.bytedance.android.btm.api.depend.IAppLogDepend
@@ -14,6 +13,7 @@ import com.bytedance.android.btm.api.model.EventModelV1
 import com.bytedance.android.btm.api.model.EventModelV3
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.IEventObserver
+import com.bytedance.dataplatform.remote_config.Experiments
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -37,9 +37,6 @@ object InitBtmSdk {
                         if (model.event == null) {
                             return
                         }
-                        var modelV3 = EventModelV3(model.event, model.params)
-                        modelV3 = BtmSDK.addBtmEventParam(modelV3)
-                        Log.d(TAG, modelV3.event + " -> " + modelV3.params)
                         model.event?.let {
                             AppLog.onEventV3(it, model.params)
                         }
@@ -90,7 +87,7 @@ object InitBtmSdk {
 
                 settingDepend = object : ISettingDepend {
                     override fun getSetting(): String? {
-                        return Settings
+                        return Experiments.getBtmSettingString(false)
                     }
 
                     override fun registerUpdateCallback(callback: OnSettingUpdateCallback) {
@@ -158,28 +155,28 @@ object InitBtmSdk {
     }
 }
 
-const val Settings = """
-    {
-    "bugfix": {
-        "fix_bcm_description_big_size": 0,
-        "fix_fe_register_resume": 2,
-        "fix_register_page_when_no_resume": 0
-    },
-    "feature": {
-        "aLog": 1,
-        "add_token_in_chain": 1,
-        "bcm_check_switch": True,
-        "check_event_switch": 1,
-        "enable_bcm_report": 1,
-        "fe_switch": True,
-        "remove_enter_page": 1,
-        "show_id_chain_switch": 2,
-        "unknown_dialog_frag_switch": 0
-    },
-    "optimize": {
-        "enable_btm_page_show_opt": 1,
-        "enable_event_btm_map": 1
-    },
-    "sdk_switch": 1
-}
-"""
+// const val Settings = """
+//    {
+//    "bugfix": {
+//        "fix_bcm_description_big_size": 0,
+//        "fix_fe_register_resume": 2,
+//        "fix_register_page_when_no_resume": 0
+//    },
+//    "feature": {
+//        "aLog": 1,
+//        "add_token_in_chain": 1,
+//        "bcm_check_switch": True,
+//        "check_event_switch": 1,
+//        "enable_bcm_report": 1,
+//        "fe_switch": True,
+//        "remove_enter_page": 1,
+//        "show_id_chain_switch": 2,
+//        "unknown_dialog_frag_switch": 0
+//    },
+//    "optimize": {
+//        "enable_btm_page_show_opt": 1,
+//        "enable_event_btm_map": 1
+//    },
+//    "sdk_switch": 1
+// }
+// """
