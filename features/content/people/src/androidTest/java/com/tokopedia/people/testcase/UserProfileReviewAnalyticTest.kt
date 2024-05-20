@@ -2,9 +2,7 @@ package com.tokopedia.people.testcase
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.people.robot.UserProfileRobot
-import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
-import io.mockk.coEvery
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,21 +30,17 @@ class UserProfileReviewAnalyticTest {
         userProfileRobot
             .launch()
             .clickReviewTab()
+            .performDelay(300)
             .verifyEventAction("click - review tab")
             .verifyEventAction("impression - review")
-
             .clickProfileOptionButton()
             .verifyEventAction("click - gear icon")
-
             .clickReviewMedia(0, 0)
             .verifyEventAction("click - review media")
-
             .clickLikeReview(0)
             .verifyEventAction("click - like review")
-
             .clickReviewSeeMore()
             .verifyEventAction("click - review selengkapnya")
-
             .clickProductInfo()
             .verifyEventAction("click - product on review")
     }

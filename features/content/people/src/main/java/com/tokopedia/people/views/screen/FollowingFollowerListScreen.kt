@@ -20,10 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -40,6 +43,7 @@ import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.utils.LoginListener
 import com.tokopedia.people.utils.rememberLoginToFollowHelper
+import com.tokopedia.people.utils.resId
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.views.compose.FollowListErrorLayout
 import com.tokopedia.people.views.compose.FollowListLayout
@@ -58,7 +62,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
 @Composable
 internal fun FollowingFollowerListScreen(
     profileName: String,
@@ -91,16 +95,19 @@ internal fun FollowingFollowerListScreen(
     }
 
     Column(
-        modifier.background(NestTheme.colors.NN._0)
+        modifier.semantics {
+            testTagsAsResourceId = true
+        }.background(NestTheme.colors.NN._0)
     ) {
         NestHeader(
             type = NestHeaderType.SingleLine(title = profileName, onBackClicked = onBackClicked),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().resId("header_follower")
         )
         Box(
             Modifier
                 .zIndex(2f)
                 .background(NestTheme.colors.NN._0)
+                .resId("tp_follow")
         ) {
             NestTabs(
                 config = NestTabsConfig(
@@ -142,7 +149,8 @@ internal fun FollowingFollowerListScreen(
                     1 -> FollowListType.Following
                     else -> Unit
                 }
-            }
+            },
+            modifier = Modifier.resId("view_pager")
         ) { page ->
             when (page) {
                 0 -> {
@@ -303,13 +311,14 @@ private fun FollowListScreen(
         ) {
             FollowListErrorLayout(
                 isLoading = state.isLoading,
-                onRefreshButtonClicked = onRefresh
+                onRefreshButtonClicked = onRefresh,
+                modifier = Modifier.resId("ge_followers")
             )
 
             PullRefreshIndicator(
                 refreshing = state.isRefreshing,
                 state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier.align(Alignment.TopCenter).resId("swipe_refresh_layout")
             )
         }
     } else {
@@ -324,13 +333,13 @@ private fun FollowListScreen(
                 onLoadMore = onLoadMore,
                 onPeopleClicked = onPeopleClicked,
                 onFollowClicked = onFollowClicked,
-                Modifier.fillMaxSize()
+                Modifier.fillMaxSize().resId("rv_followers")
             )
 
             PullRefreshIndicator(
                 refreshing = state.isRefreshing,
                 state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier.align(Alignment.TopCenter).resId("swipe_refresh_layout")
             )
         }
     }

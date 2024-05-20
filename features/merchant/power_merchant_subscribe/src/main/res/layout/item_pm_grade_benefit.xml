@@ -9,7 +9,7 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmBenefitItem"
         android:layout_width="30dp"
         android:layout_height="30dp"

@@ -215,6 +215,7 @@ class ShareExInitializer(
         bottomSheetArg?.let {
             analytics.trackActionClickIconShare(
                 productId = it.productId,
+                shopId = it.shopId,
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = result.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
                 label = it.trackerArg.labelActionClickShareIcon
@@ -250,7 +251,7 @@ class ShareExInitializer(
     }
 
     override fun onSuccessCopyLink() {
-        dismissListener?.onDismissAfterCopyLink()
+        dismissListener?.onSuccessCopyLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->
@@ -270,6 +271,7 @@ class ShareExInitializer(
     }
 
     override fun onFailGenerateAffiliateLink(shortLink: String) {
+        dismissListener?.onFailGenerateAffiliateLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->
