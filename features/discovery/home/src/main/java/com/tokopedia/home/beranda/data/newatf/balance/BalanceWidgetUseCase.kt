@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepo
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.widget.common.DataStatus
 import com.tokopedia.home_component.widget.common.isError
 import com.tokopedia.kotlin.extensions.view.ifNull
@@ -157,6 +158,7 @@ class BalanceWidgetUseCase @Inject constructor(
                 }
             } catch (e: Exception) {
                 updateState(state = DataStatus.ERROR, type = type)
+                e.recordCrashlytics()
             }
         }
     }
@@ -173,6 +175,7 @@ class BalanceWidgetUseCase @Inject constructor(
                 } ?: updateState(state = DataStatus.ERROR, type = type)
             } catch (e: Exception) {
                 updateState(state = DataStatus.ERROR, type = type)
+                e.recordCrashlytics()
             }
         }
     }
