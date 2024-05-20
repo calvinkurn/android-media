@@ -4,35 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="12dp"
     android:orientation="vertical">
 
-    <com.tokopedia.play_common.view.BottomSheetHeader
-        android:id="@+id/header"
+    <com.tokopedia.mvcwidget.views.MvcView
+        android:id="@+id/mvc_tagged_product"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="16dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header">
-
-        <com.tokopedia.mvcwidget.views.MvcView
-            android:id="@+id/mvc_tagged_product"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginHorizontal="16dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/feed_product_load_more"
@@ -71,7 +57,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mvc_tagged_product"
         tools:listitem="@layout/item_feed_tagged_product" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

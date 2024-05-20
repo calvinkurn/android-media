@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
@@ -181,9 +183,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = BottomSheetFeedTaggedProductBinding.inflate(inflater, container, false)
-        showHeader = false
         clearContentPadding = true
-        setupHeader()
         setChild(binding.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -191,6 +191,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupHeader()
         showLoading(true)
         renderError()
 
@@ -210,14 +211,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 }
                 listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
             }
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    listener?.cartCount?.collectLatest {
-                        binding.header.setIconNotificationText(getCartCountText(it))
-                    }
-                }
-            }
         }
     }
 
@@ -235,7 +228,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     }
 
     private fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary) {
-        binding.header.setTitle(getString(contentcommonR.string.content_product_bs_title_with_promo))
+        setTitle(getString(contentcommonR.string.content_product_bs_title_with_promo))
         val info = data.animatedInfoList
         if (info?.isNotEmpty() == true) {
             binding.mvcTaggedProduct.setData(
@@ -303,22 +296,38 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupHeader() {
-        binding.header.setTitle(getString(contentcommonR.string.content_product_bs_title))
-        binding.header.setIconNotification(IconUnify.CART)
-        binding.header.setIconNotificationText("")
-        binding.header.setListener(object : BottomSheetHeader.Listener {
-            override fun onCloseClicked(view: BottomSheetHeader) {
-                dismiss()
-            }
+        val header = BottomSheetHeader(requireContext()).apply {
+            layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
 
-            override fun onIconClicked(view: BottomSheetHeader) {
-                listener?.onCartClicked()
-            }
+            setTitle(getString(contentcommonR.string.content_product_bs_title))
+            setIconNotification(IconUnify.CART)
+            setIconNotificationText("")
+            setListener(object : BottomSheetHeader.Listener {
+                override fun onCloseClicked(view: BottomSheetHeader) {
+                    dismiss()
+                }
 
-            override fun impressIcon(view: BottomSheetHeader) {
-                /** No implementation */
+                override fun onIconClicked(view: BottomSheetHeader) {
+                    listener?.onCartClicked()
+                }
+
+                override fun impressIcon(view: BottomSheetHeader) {
+                    /** No implementation */
+                }
+            })
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    listener?.cartCount?.collectLatest {
+                        setIconNotificationText(getCartCountText(it))
+                    }
+                }
             }
-        })
+        }
+
+        bottomSheetHeader.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        bottomSheetHeader.removeAllViews()
+        bottomSheetHeader.addView(header)
     }
 
     private fun getCartCountText(cartCount: Int): String {
