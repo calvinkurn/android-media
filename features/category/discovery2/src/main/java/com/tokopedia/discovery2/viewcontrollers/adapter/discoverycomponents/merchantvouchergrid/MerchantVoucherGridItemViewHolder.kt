@@ -63,7 +63,15 @@ class MerchantVoucherGridItemViewHolder(
                 )
             )
             setState(handler)
+            setClickAction(model.appLink)
+        }
+    }
 
+    private fun AutomateCouponGridView.setClickAction(redirectAppLink: String) {
+        if (redirectAppLink.isEmpty()) return
+        onClick {
+            trackClickEvent()
+            RouteManager.route(itemView.context, redirectAppLink)
         }
     }
 
@@ -88,6 +96,14 @@ class MerchantVoucherGridItemViewHolder(
         return handler
     }
 
+    private fun trackClickEvent() {
+        val trackingProperties = viewModel?.components?.asImpressionClickProperties()
+
+        trackingProperties?.run {
+            getAnalytics()?.trackMvcClickEvent(this, false)
+        }
+    }
+
     private fun trackClickCTAEvent(ctaText: String) {
         val trackingProperties = viewModel?.components?.asClickCTAProperties(ctaText)
 
@@ -97,7 +113,7 @@ class MerchantVoucherGridItemViewHolder(
     }
 
     private fun trackImpression() {
-        val trackingProperties = viewModel?.components?.asImpressionProperties()
+        val trackingProperties = viewModel?.components?.asImpressionClickProperties()
 
         trackingProperties?.run {
             getAnalytics()?.trackMvcImpression(listOf(this))
@@ -114,7 +130,7 @@ class MerchantVoucherGridItemViewHolder(
             )
     }
 
-    private fun ComponentsItem?.asImpressionProperties(): MvcTrackingProperties? {
+    private fun ComponentsItem?.asImpressionClickProperties(): MvcTrackingProperties? {
         return this?.data?.firstOrNull()
             ?.dataToMvcTrackingProperties(
                 creativeName = creativeName.orEmpty(),
