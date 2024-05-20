@@ -53,7 +53,7 @@
     <dimen name="home_mission_widget_card_margin_horizontal_subtitle">8dp</dimen>
     <dimen name="home_mission_widget_clear_small_image_size">100dp</dimen>
     <dimen name="home_mission_widget_clear_big_image_size">116dp</dimen>
-    <dimen name="home_mission_widget_clear_image_corner_radius">8dp</dimen>
+    <dimen name="home_mission_widget_clear_image_corner_radius">4dp</dimen>
     <dimen name="home_mission_widget_clear_horizontal_padding">12dp</dimen>
     <dimen name="home_mission_widget_clear_bottom_padding">8dp</dimen>
 
@@ -92,4 +92,13 @@
     <dimen name="home_lego_3_auto_product_image_radius">8dp</dimen>
 
     <dimen name="home_special_release_revamp_product_padding">4dp</dimen>
+
+    <!--Timer-->
+    <dimen name="count_down_timer_highlight_text_margin_top">4dp</dimen>
+    <dimen name="count_down_timer_timertextview_text_size">12sp</dimen>
+    <dimen name="count_down_timer_timertextview_highlight_text_size">24sp</dimen>
+
+    <dimen name="balance_outer_margin">4dp</dimen>
+    <dimen name="balance_widget_inner_margin">4dp</dimen>
+    <dimen name="balance_widget_outer_margin">16dp</dimen>
 </resources>

@@ -2,8 +2,8 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
-import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 
 object TopChatVoucherViewHolderBinder {
 
@@ -11,7 +11,7 @@ object TopChatVoucherViewHolderBinder {
     const val SOURCE_BROADCAST = "broadcast"
 
     fun bindVoucherView(
-        element: TopChatVoucherUiModel,
+        element: TopChatRoomVoucherUiModel,
         merchantVoucherView: MerchantVoucherView?
     ) {
         merchantVoucherView?.onMerchantVoucherViewListener = object : MerchantVoucherView
@@ -29,13 +29,13 @@ object TopChatVoucherViewHolderBinder {
     }
 
     fun bindClick(
-        element: TopChatVoucherUiModel,
+        element: TopChatRoomVoucherUiModel,
         merchantVoucherView: MerchantVoucherView?,
-        voucherListener: TopChatVoucherListener,
+        voucherListener: TopChatRoomVoucherListener,
         source: String
     ) {
         merchantVoucherView?.setOnClickListener {
-            voucherListener.onVoucherClicked(element, source)
+            voucherListener.onClickVoucher(element, source)
         }
     }
 

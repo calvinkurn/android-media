@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerBalance"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/home_bg_rounded_balance"
+    android:padding="8dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iconErrorBalance"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/Unify_NN400"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textErrorBalance"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:lines="1"
+        android:text="@string/retry"
+        android:singleLine="true"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/iconErrorBalance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iconErrorBalance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/reloadErrorBalance"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/textErrorBalance"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:icon_name="RELOAD" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

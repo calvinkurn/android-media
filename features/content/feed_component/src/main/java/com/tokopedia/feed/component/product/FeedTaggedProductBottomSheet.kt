@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
@@ -12,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
@@ -19,7 +20,10 @@ import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBindi
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
@@ -31,10 +35,11 @@ import com.tokopedia.mvcwidget.views.bottomsheets.MvcDetailBottomSheet
 import com.tokopedia.play_common.view.BottomSheetHeader
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,13 +53,11 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     private var activityId: String = ""
     private var shopId: String = ""
+    private var sourceType: ContentTaggedProductUiModel.SourceType =
+        ContentTaggedProductUiModel.SourceType.Unknown
 
     private val maxHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
-    }
-
-    private val minHeight by lazyThreadSafetyNone {
-        (getScreenHeight() * MIN_HEIGHT_PERCENT).roundToInt()
     }
 
     private val mAdapterListener = object : ContentTaggedProductBottomSheetViewHolder.Listener {
@@ -84,42 +87,34 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     var listener: Listener? = null
     var tracker: MvcTrackerImpl = DefaultMvcTrackerImpl()
 
-    private val productListObserver = Observer<Result<List<ContentTaggedProductUiModel>>?> {
-        when (it) {
-            is Success -> {
-                hideLoading()
-
+    private val productListObserver = FlowCollector<FeedProductPaging> { data ->
+        when (data.state) {
+            is ResultState.Success -> {
+                showLoading(false)
+                showError(false)
                 val productShopId =
-                    it.data.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
+                    data.products.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
                 if (productShopId.isNotEmpty()) {
                     shopId = productShopId
                 }
 
-                mAdapter.setItemsAndAnimateChanges(it.data)
+                mAdapter.setItemsAndAnimateChanges(data.products)
+            }
 
-                binding.root.let { view ->
-                    view.viewTreeObserver.addOnGlobalLayoutListener(object :
-                        OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                            view.layoutParams = view.layoutParams.apply {
-                                if (view.measuredHeight > maxHeight) {
-                                    height = maxHeight
-                                } else if (view.measuredHeight < minHeight) {
-                                    height = minHeight
-                                } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
-                                    height = ViewGroup.LayoutParams.WRAP_CONTENT
-                                }
-                            }
-                        }
-                    })
-                }
+            is ResultState.Fail -> {
+                showLoading(false)
+                showError(true)
             }
-            is Fail -> {
-                hideLoading()
+
+            ResultState.Loading -> {
+                showLoading(true)
+                showError(false)
             }
+
+            else -> {}
         }
     }
+
     private val mvcObserver = Observer<Result<TokopointsCatalogMVCSummary>?> { result ->
         when (result) {
             is Success -> {
@@ -128,9 +123,57 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 }
                 showMerchantVoucherWidget(result.data)
             }
+
             else -> hideMerchantVoucherWidget()
         }
     }
+
+    private val scrollListener
+        get() = object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && isLastItem) {
+                    listener?.onFeedProductNextPage(activityId, sourceType)
+                }
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        }
+
+    private val isLastItem: Boolean
+        get() {
+            val layoutManager = binding.rvTaggedProduct.layoutManager as? LinearLayoutManager
+            val position = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
+            val numItems: Int = binding.rvTaggedProduct.adapter?.itemCount.orZero()
+            return position >= numItems - 5 //threshold
+        }
+
+    private val rvLayoutChangeListener = object : View.OnLayoutChangeListener {
+        override fun onLayoutChange(
+            view: View,
+            left: Int,
+            top: Int,
+            right: Int,
+            bottom: Int,
+            oldLeft: Int,
+            oldTop: Int,
+            oldRight: Int,
+            oldBottom: Int
+        ) {
+            if (binding.feedProductLoadMore.isVisible) {
+                val btnHeight = binding.feedProductLoadMore.height
+                binding.rvTaggedProduct.setPadding(
+                    binding.rvTaggedProduct.paddingLeft,
+                    binding.rvTaggedProduct.paddingTop,
+                    binding.rvTaggedProduct.paddingRight,
+                    btnHeight
+                )
+            }
+            if (!isListHeightTaller) return
+            binding.root.layoutParams = binding.root.layoutParams.apply { height = maxHeight }
+        }
+    }
+
+    private val isListHeightTaller: Boolean
+        get() = binding.rvTaggedProduct.height > binding.root.height
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -148,14 +191,13 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showLoading()
+        showLoading(true)
+        renderError()
 
-        binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
+        binding.root.maxHeight = maxHeight
         binding.rvTaggedProduct.apply {
-            setHasFixedSize(true)
-            isNestedScrollingEnabled = false
+            addOnScrollListener(scrollListener)
+            addOnLayoutChangeListener(rvLayoutChangeListener)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = mAdapter
         }
@@ -163,7 +205,9 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         setShowListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(BOTTOM_SHEET_SHOW_DELAY)
-                listener?.productListLiveData?.observe(viewLifecycleOwner, productListObserver)
+                repeatOnLifecycle(Lifecycle.State.RESUMED){
+                    listener?.productListLiveData?.collect(productListObserver)
+                }
                 listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
             }
 
@@ -181,10 +225,12 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         activityId: String,
         shopId: String,
         manager: FragmentManager,
-        tag: String
+        tag: String,
+        sourceType: ContentTaggedProductUiModel.SourceType
     ) {
         this.activityId = activityId
         this.shopId = shopId
+        this.sourceType = sourceType
         show(manager, tag)
     }
 
@@ -236,17 +282,24 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvTaggedProduct.removeOnScrollListener(scrollListener)
+        binding.rvTaggedProduct.removeOnLayoutChangeListener(rvLayoutChangeListener)
+        _binding = null
         listener = null
     }
 
-    private fun showLoading() {
-        _binding?.feedProductLoadMore?.show()
-        _binding?.rvTaggedProduct?.hide()
+    private fun showLoading(isVisible: Boolean) {
+        binding.feedProductLoadMore.showWithCondition(isVisible)
     }
 
-    private fun hideLoading() {
-        _binding?.feedProductLoadMore?.hide()
-        _binding?.rvTaggedProduct?.show()
+    private fun showError(isVisible: Boolean) {
+        binding.layoutErrorLoadMore.root.showWithCondition(isVisible)
+    }
+
+    private fun renderError() {
+        binding.layoutErrorLoadMore.tvErrorRetry.setOnClickListener {
+            listener?.onFeedProductNextPage(activityId, sourceType)
+        }
     }
 
     private fun setupHeader() {
@@ -296,14 +349,18 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
         val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
 
-        val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
+        val productListLiveData: Flow<FeedProductPaging>
 
         val cartCount: StateFlow<Int>
+
+        fun onFeedProductNextPage(
+            activityId: String,
+            sourceType: ContentTaggedProductUiModel.SourceType
+        )
     }
 
     companion object {
         private const val HEIGHT_PERCENT = 0.8
-        private const val MIN_HEIGHT_PERCENT = 0.2
         private const val BOTTOM_SHEET_SHOW_DELAY = 500L
     }
 }

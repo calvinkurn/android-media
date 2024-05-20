@@ -13,6 +13,7 @@ import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
@@ -23,6 +24,7 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.feed.common.comment.model.CountComment
 import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
@@ -89,18 +91,20 @@ import com.tokopedia.topads.sdk.domain.model.CpmShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
-import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -117,7 +121,7 @@ class FeedPostViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @get:Rule
-    val coroutineTestRule = UnconfinedTestRule()
+    val coroutineTestRule = CoroutineTestRule()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = coroutineTestRule.dispatchers
@@ -1308,19 +1312,21 @@ class FeedPostViewModelTest {
                 ""
             )
         } returns mapOf()
-        coEvery { feedXGetActivityProductsUseCase(any()) } throws Throwable("Failed")
 
-        // when
-        viewModel.fetchFeedProduct(
-            activityId,
-            emptyList(),
-            ContentTaggedProductUiModel.SourceType.Organic
-        )
+        val throwable = Throwable("Failed")
+        coEvery { feedXGetActivityProductsUseCase(any()) } throws throwable
+        val expected = FeedProductPaging(state = ResultState.Fail(throwable), products = emptyList(), cursor = "")
 
         // then
-        assert(viewModel.feedTagProductList.value is Fail)
-        val response = viewModel.feedTagProductList.value as Fail
-        assert(response.throwable.message == "Failed")
+        val result = recordProduct {
+            // when
+            viewModel.fetchFeedProduct(
+                activityId,
+                emptyList(),
+                ContentTaggedProductUiModel.SourceType.Organic
+            )
+        }
+        assert(result.state == expected.state)
     }
 
     @Test
@@ -1344,16 +1350,17 @@ class FeedPostViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
 
         // when
-        viewModel.fetchFeedProduct(
-            activityId,
-            productList,
-            ContentTaggedProductUiModel.SourceType.Organic
-        )
+        val result = recordProduct {
+            viewModel.fetchFeedProduct(
+                activityId,
+                productList,
+                ContentTaggedProductUiModel.SourceType.Organic
+            )
+        }
 
         // then
-        assert(viewModel.feedTagProductList.value is Success)
-        val response = viewModel.feedTagProductList.value as Success
-        assert(response.data.size == getDummyData().data.products.size)
+        assert(result.state is ResultState.Success)
+        assert(result.products.size == getDummyData().data.products.size)
     }
 
     @Test
@@ -1369,16 +1376,105 @@ class FeedPostViewModelTest {
         coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData()
 
         // when
-        viewModel.fetchFeedProduct(
-            activityId,
-            emptyList(),
-            ContentTaggedProductUiModel.SourceType.Organic
-        )
+        val result = recordProduct {
+            viewModel.fetchFeedProduct(
+                activityId,
+                emptyList(),
+                ContentTaggedProductUiModel.SourceType.Organic
+            )
+        }
 
         // then
-        assert(viewModel.feedTagProductList.value is Success)
-        val response = viewModel.feedTagProductList.value as Success
-        assert(response.data.size == getDummyData().data.products.size)
+        assert(result.state is ResultState.Success)
+        assert(result.products.size == getDummyData().data.products.size)
+    }
+
+    @Test
+    fun fetchFeedProduct_hasNextPage() {
+        // given
+        val activityId = "123456"
+        val cursor = "abKG"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData(cursor = cursor)
+
+        // when
+        val result = recordProduct {
+            viewModel.fetchFeedProduct(
+                activityId,
+                emptyList(),
+                ContentTaggedProductUiModel.SourceType.Organic
+            )
+        }
+
+        // then
+        println("hello $result")
+        assert(result.state is ResultState.Success)
+        assert(result.products.size == getDummyData().data.products.size)
+        assert(result.hasNextPage)
+        assert(result.cursor == cursor)
+    }
+
+    @Test
+    fun fetchFeedProduct_nextPage() {
+        // given
+        val activityId = "123456"
+        val cursor = "kOjn"
+        coEvery {
+            feedXGetActivityProductsUseCase.getFeedDetailParam(
+                activityId,
+                ""
+            )
+        } returns mapOf()
+        coEvery { feedXGetActivityProductsUseCase(any()) } returns getDummyData(cursor = cursor)
+
+        val expected = buildList {
+            add(ContentTaggedProductUiModel(
+                id = "99129",
+                parentID = "123",
+                showGlobalVariant = false,
+                shop = ContentTaggedProductUiModel.Shop(
+                    "dummy-shop-id",
+                    "dummy Name"
+                ),
+                title = "dummy title",
+                imageUrl = "dummy image url",
+                price = ContentTaggedProductUiModel.NormalPrice(
+                    "Rp1.000.000",
+                    1000000.0
+                ),
+                appLink = "dummy applink",
+                campaign = ContentTaggedProductUiModel.Campaign(
+                    ContentTaggedProductUiModel.CampaignType.NoCampaign,
+                    ContentTaggedProductUiModel.CampaignStatus.Unknown,
+                    false
+                ),
+                affiliate = ContentTaggedProductUiModel.Affiliate(
+                    "xxx",
+                    "play"
+                ),
+                ContentTaggedProductUiModel.Stock.Available
+            ))
+        }
+
+        // when
+        val result = recordProduct {
+            viewModel.fetchFeedProduct(
+                activityId,
+                expected,
+                ContentTaggedProductUiModel.SourceType.Organic
+            )
+        }
+
+        println("hello 2 $result")
+
+        // then
+        assert(result.state is ResultState.Success)
+        assert(result.products.size == getDummyData().data.products.size + expected.size)
     }
 
     /**
@@ -1495,7 +1591,7 @@ class FeedPostViewModelTest {
         assert(viewModel.userReportList is Fail)
     }
 
-    private fun getDummyData(): FeedXGQLResponse = FeedXGQLResponse(
+    private fun getDummyData(cursor: String = ""): FeedXGQLResponse = FeedXGQLResponse(
         data = FeedXGetActivityProductsResponse(
             products = listOf(
                 FeedXProduct(shopID = "09876", id = "1"),
@@ -1507,7 +1603,7 @@ class FeedPostViewModelTest {
             isFollowed = true,
             contentType = "content type",
             campaign = FeedXCampaign(),
-            nextCursor = "",
+            nextCursor = cursor,
             hasVoucher = false
         )
     )
@@ -2548,4 +2644,18 @@ class FeedPostViewModelTest {
             )
         )
     )
+
+    private fun recordProduct(fn: suspend () -> Unit): FeedProductPaging {
+        val scope = CoroutineScope(testDispatcher.coroutineDispatcher)
+        lateinit var products: FeedProductPaging
+        scope.launch {
+            viewModel.feedTagProductList.collect {
+                products = it
+            }
+        }
+        testDispatcher.coroutineDispatcher.runBlockingTest { fn() }
+        testDispatcher.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return products
+    }
 }

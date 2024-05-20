@@ -45,4 +45,5 @@ data class LogisticPromoUiModel(
     val imageChosenFreeShipping: String = "",
     // OFOC
     val orderMessage: String = ""
+    // bo more service
 ) : RatesViewModelType, Parcelable

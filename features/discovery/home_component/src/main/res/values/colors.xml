@@ -5,4 +5,31 @@
     <color name="dms_flash_sale_default_container_end">#1DCC67</color>
     <color name="dms_header_cta_inverted_border">#F0F3F7</color>
     <color name="dms_header_cta_inverted_icon">#2E3137</color>
+
+    <color name="dms_countdown_timer_main_state_1_background">@color/Unify_RN600</color>
+    <color name="dms_countdown_timer_main_state_2_background">@color/Unify_YN500</color>
+    <color name="dms_countdown_timer_main_state_text_color">@color/Unify_Static_White</color>
+    <color name="dms_countdown_timer_main_text_wrap_color">@color/Unify_Static_White</color>
+    <color name="dms_countdown_timer_main_text_full_color">@color/Unify_Static_White</color>
+
+    <color name="dms_countdown_timer_alternate_state_background">@color/Unify_Static_White</color>
+    <color name="dms_countdown_timer_alternate_state_1_text_color">@color/Unify_RN600</color>
+    <color name="dms_countdown_timer_alternate_state_2_text_color">@color/Unify_YN600</color>
+    <color name="dms_countdown_timer_alternate_text_wrap_color">@color/Unify_NN0</color>
+    <color name="dms_countdown_timer_alternate_text_full_color">@color/Unify_Static_White</color>
+
+    <color name="dms_countdown_timer_informative_state_background">@color/Unify_TN50</color>
+    <color name="dms_countdown_timer_informative_state_text_color">@color/Unify_TN600</color>
+    <color name="dms_countdown_timer_informative_text_wrap_full_color">@color/Unify_Static_White</color>
+
+    <color name="dms_countdown_timer_informative_alternate_state_background">#7A000000</color>
+
+    <color name="dms_countdown_timer_general_state_background">@color/Unify_RN50</color>
+    <color name="dms_countdown_timer_general_state_text_color">@color/Unify_RN600</color>
+    <color name="dms_countdown_timer_general_text_wrap_color">@color/Unify_N700_96</color>
+    <color name="dms_countdown_timer_general_text_full_color">@color/Unify_Static_White</color>
+
+    <color name="dms_countdown_timer_idle_background">@color/Unify_NN100</color>
+    <color name="dms_countdown_timer_idle_clock_color">@color/Unify_NN300</color>
+    <color name="dms_countdown_timer_idle_text_color">@color/Unify_Static_White</color>
 </resources>
