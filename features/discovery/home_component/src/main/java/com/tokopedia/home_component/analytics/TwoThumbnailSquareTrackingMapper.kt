@@ -15,7 +15,7 @@ object TwoThumbnailSquareTrackingMapper {
             entranceForm = tracker.entranceForm,
             sourceModule = tracker.sourceModule(),
             enterMethod = enterMethod,
-            productId = tracker.productId,
+            productId = tracker.productId.ifEmpty { "0" },
             isAd = tracker.isAdsAsInt(),
             isUseCache = tracker.alwaysOnRemote(),
             trackId = tracker.trackId,
@@ -32,9 +32,11 @@ object TwoThumbnailSquareTrackingMapper {
         enterMethod: String = "",
     ): HomeChannelCardModel {
         return HomeChannelCardModel(
+            listName = "",
+            listNum = "",
             cardName = tracker.cardName,
             sourceModule = tracker.sourceModule(),
-            productId = tracker.productId,
+            productId = tracker.productId.ifEmpty { "0" },
             isAd = tracker.isAdsAsInt(),
             isUseCache = tracker.alwaysOnRemote(),
             trackId = tracker.trackId,

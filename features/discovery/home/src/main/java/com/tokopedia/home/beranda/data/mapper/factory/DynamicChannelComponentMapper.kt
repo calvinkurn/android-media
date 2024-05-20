@@ -53,7 +53,7 @@ object DynamicChannelComponentMapper {
         channel: DynamicHomeChannel.Channels?,
         grid: DynamicHomeChannel.Grid
     ): ChannelTracker {
-        val json = Gson().fromJson(grid.trackerJson, DynamicChannelTracker::class.java)
+        val json = Gson().fromJson(grid.trackerJson, DynamicChannelTracker::class.java) ?: return ChannelTracker()
 
         return ChannelTracker(
             entranceForm = json.entranceForm,
@@ -82,6 +82,9 @@ object DynamicChannelComponentMapper {
             channelName = channel?.name.orEmpty(),
             gridId = grid.id,
             headerName = channel?.header?.name.orEmpty(),
+            bannerId = channel?.brandId.orEmpty(),
+            attribution = channel?.homeAttribution.orEmpty(),
+            persoType = channel?.persoType.orEmpty(),
         )
     }
 

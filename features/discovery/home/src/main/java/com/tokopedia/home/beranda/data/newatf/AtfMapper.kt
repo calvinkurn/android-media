@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.model.GetTargetedTicker
+import com.tokopedia.home.beranda.data.newatf.balance.BalanceWidgetMapper
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelMapper
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper
@@ -20,6 +21,7 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
+import com.tokopedia.home.beranda.data.newatf.balance.DynamicBalanceWidgetModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.home.beranda.data.model.AtfData as OldAtfData
@@ -35,6 +37,7 @@ class AtfMapper @Inject constructor(
     private val atfChannelMapper: AtfChannelMapper,
     private val missionWidgetMapper: MissionWidgetMapper,
     private val todoWidgetMapper: TodoWidgetMapper,
+    private val balanceWidgetMapper: BalanceWidgetMapper,
 ) {
     fun mapRemoteToDomainAtfData(
         position: Int,
@@ -121,6 +124,7 @@ class AtfMapper @Inject constructor(
             AtfKey.TYPE_MISSION_V2,
             AtfKey.TYPE_MISSION_V3 -> content?.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>()
             AtfKey.TYPE_TODO -> content?.getAtfContent<HomeTodoWidgetData.GetHomeTodoWidget>()
+            AtfKey.TYPE_BALANCE -> content?.getAtfContent<DynamicBalanceWidgetModel>()
             else -> null
         }
     }
@@ -147,6 +151,7 @@ class AtfMapper @Inject constructor(
                             AtfKey.TYPE_HORIZONTAL -> visitables.add(ShortenWidgetMapper.to2SquareUiModel(this, value, index))
                         }
                     }
+                    is DynamicBalanceWidgetModel -> visitables.add(balanceWidgetMapper.asVisitable(this, value.atfStatus))
                 }
             }
         }

@@ -6,11 +6,7 @@ import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiMode
 
 object ShortenWidgetMapper {
 
-    fun to2SquareUiModel(
-        data: DynamicHomeChannel,
-        atfData: AtfData,
-        verticalPosition: Int
-    ): MultiTwoSquareWidgetUiModel {
+    fun to2SquareUiModel(data: DynamicHomeChannel, atfData: AtfData, verticalPosition: Int): MultiTwoSquareWidgetUiModel {
         if (data.channels.isEmpty()) return MultiTwoSquareWidgetUiModel()
 
         val channel = data.channels
@@ -19,6 +15,7 @@ object ShortenWidgetMapper {
 
         val mission = channel[TwoSquareMissionWidgetMapper.layout()]
         val thumbnail = channel[TwoSquareThumbnailWidgetMapper.layout()]
+        val product = channel[TwoSquareProductWidgetMapper.layout()]
 
         return MultiTwoSquareWidgetUiModel(
             id = atfData.atfMetadata.id.toString(),
@@ -26,6 +23,7 @@ object ShortenWidgetMapper {
             backgroundGradientColor = ArrayList(atfData.style.gradientColor),
             mission = TwoSquareMissionWidgetMapper.map(data, mission, verticalPosition),
             thumbnail = TwoSquareThumbnailWidgetMapper.map(data, thumbnail, verticalPosition),
+            product = TwoSquareProductWidgetMapper.map(data, product, verticalPosition),
             status = MultiTwoSquareWidgetUiModel.Status.Success
         )
     }

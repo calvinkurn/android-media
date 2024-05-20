@@ -4,6 +4,7 @@ import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 
 interface ThumbnailWidgetListener {
     // container
+    fun thumbnailChannelHeaderClicked(appLink: String)
     // fun thumbnailContainerImpressed(data: ThumbnailWidgetUiModel)
 
     // items
