@@ -29,10 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Page
-import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.SubmitOrderResult
-import com.tokopedia.analytics.byteio.pdp.AppLogPdp
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -85,10 +82,10 @@ import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListen
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
 import com.tokopedia.thankyou_native.presentation.views.listener.FlashSaleWidgetListener
+import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListenerImpl
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MixTopComponentListenerCallback
 import com.tokopedia.thankyou_native.presentation.views.listener.ThankYouBaseInterface
-import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListenerImpl
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -104,14 +101,12 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_base_layout.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import org.json.JSONArray
 import javax.inject.Inject
 
 open class ThankYouBaseFragment :
@@ -1078,11 +1073,11 @@ open class ThankYouBaseFragment :
     private fun registerBtmPage() {
         when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             is MarketPlaceThankPage -> {
-                BtmApi.registerBtmPageOnCreate(this, Page.THANK_YOU_PG)
+                BtmApi.registerBtmPageOnCreate(this, Tokopedia.PgThankYou)
             }
 
             is DigitalThankPage -> {
-                BtmApi.registerBtmPageOnCreate(this, Page.THANK_YOU_DG)
+                BtmApi.registerBtmPageOnCreate(this, Tokopedia.DgThankYou)
             }
         }
     }

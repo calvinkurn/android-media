@@ -26,7 +26,7 @@ import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -325,7 +325,7 @@ class CheckoutFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Page.CHECKOUT)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.PgCheckout)
         super.onCreate(savedInstanceState)
         if (viewModel.pageState.value == CheckoutPageState.Loading) {
             shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE)

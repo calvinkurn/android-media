@@ -17,7 +17,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Page
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -141,7 +141,7 @@ class DigitalCartFragment :
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Page.DG_CHECKOUT)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.DgCheckout)
         super.onCreate(savedInstanceState)
 
         cartPassData = arguments?.getParcelable(ARG_PASS_DATA)
