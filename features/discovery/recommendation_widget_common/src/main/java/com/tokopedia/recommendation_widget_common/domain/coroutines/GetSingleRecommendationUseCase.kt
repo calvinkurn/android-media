@@ -39,11 +39,13 @@ open class GetSingleRecommendationUseCase @Inject constructor(
         graphqlUseCase.setRequestParams(parameter)
         graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQuery())
 
-        return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.toRecommendationWidget()
-            .also {
-                byteIoUseCase.updateSessionId(
+        return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.toRecommendationWidget(
+            byteIoUseCase.getTotalData(inputParameter.pageName)
+        ).also {
+                byteIoUseCase.updateMap(
                     inputParameter.pageName,
-                    it.appLog.sessionId
+                    sessionId = it.appLog.sessionId,
+                    totalData = it.recommendationItemList.size
                 )
             }
     }
