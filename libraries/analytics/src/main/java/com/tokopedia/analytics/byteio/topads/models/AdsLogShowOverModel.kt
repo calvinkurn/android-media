@@ -11,7 +11,6 @@ data class AdsLogShowOverModel(
         val mallCardType: String = AdsLogConst.AdCardStyle.PRODUCT_CARD,
         val productId: String,
         val productName: String,
-        // todo need to confirm
         val sizePercent: String
     )
 }

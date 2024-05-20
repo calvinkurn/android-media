@@ -10,7 +10,6 @@ object AdsLogConst {
     const val TAG = "tag"
     const val REFER = "refer"
 
-    // todo need to confirm, we use params or not
     const val PARAMS = "params"
 
     const val EVENT_V3 = "event_v3"
@@ -33,7 +32,6 @@ object AdsLogConst {
         const val PRODUCT_ID = "product_id"
         const val MALL_CARD_TYPE = "mall_card_type"
 
-        // todo need to confirm, how to get the value of size_percent
         const val SIZE_PERCENT = "size_percent"
         const val CHANNEL = "channel"
         const val PRODUCT_NAME = "product_name"
