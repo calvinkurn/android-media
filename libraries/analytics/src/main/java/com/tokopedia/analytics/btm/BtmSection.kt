@@ -27,7 +27,17 @@ object Tokopedia : Site("a87943") {
 
     object Pdp : Page("b2815")
 
+    object Sku : Page("b8098")
 
+    object Cart : Page("b2906")
+
+    object PgCheckout : Page("b69823")
+
+    object PgThankYou : Page("b4596")
+
+    object DgThankYou : Page("b2444")
+
+    object DgCheckout : Page("b1181")
 }
 
 open class Site(val code: String) {
