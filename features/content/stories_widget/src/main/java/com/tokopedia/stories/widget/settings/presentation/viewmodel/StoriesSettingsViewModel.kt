@@ -2,6 +2,7 @@ package com.tokopedia.stories.widget.settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
@@ -21,7 +22,7 @@ import javax.inject.Inject
  */
 class StoriesSettingsViewModel @Inject constructor(
     private val repository: StoriesSettingsRepository,
-    private val storiesChecker: StoriesSettingsChecker,
+    private val storiesChecker: StoriesSettingsChecker
 ) : ViewModel() {
 
     private val _pageInfo = MutableStateFlow(StoriesSettingsPageUiModel.Empty)
@@ -40,9 +41,11 @@ class StoriesSettingsViewModel @Inject constructor(
             is StoriesSettingsAction.Navigate -> viewModelScope.launch {
                 _event.emit(StoriesSettingEvent.Navigate(action.appLink))
             }
+
             is StoriesSettingsAction.ShowCoolingDown -> viewModelScope.launch {
                 _event.emit(StoriesSettingEvent.ShowErrorToaster(action.throwable, {}))
             }
+
             else -> {}
         }
     }
@@ -77,7 +80,7 @@ class StoriesSettingsViewModel @Inject constructor(
                             articleWebLink = data.config.articleWebLink,
                             articleAppLink = data.config.articleAppLink,
                             articleCopy = data.config.articleCopy
-                        ),
+                        )
                     )
                 }
             }) {
@@ -86,25 +89,83 @@ class StoriesSettingsViewModel @Inject constructor(
         }) {}
     }
 
+    private var lastRequestTime: Long = 0L
+    private val isAvailableForClick: Boolean
+        get() {
+            val diff = System.currentTimeMillis() - lastRequestTime
+            return diff >= 5000L
+        }
+
     private fun updateOption(option: StoriesSettingOpt) {
+        if (!isAvailableForClick) {
+            updatePageOption(option.copy(isSelected = !option.isSelected), false)
+            onEvent(
+                StoriesSettingsAction.ShowCoolingDown(
+                    MessageErrorException("Tunggu 5 detik dulu ya")
+                )
+            )
+            return
+        }
+
         viewModelScope.launchCatchError(block = {
             val response = repository.updateOption(option)
             if (response) {
-                updatePageOption(option)
-                _event.emit(StoriesSettingEvent.ClickTrack(option.copy(isSelected = !option.isSelected)))
-            } else throw Exception()
+                updatePageOption(option, true)
+                lastRequestTime = System.currentTimeMillis()
+                _event.emit(StoriesSettingEvent.ClickTrack(option))
+            } else {
+                throw Exception()
+            }
         }) {
-            _event.emit(StoriesSettingEvent.ShowErrorToaster(it) {
-                updateOption(option)
-            })
+            updatePageOption(option.copy(isSelected = !option.isSelected), false)
+            _event.emit(
+                StoriesSettingEvent.ShowErrorToaster(it) {
+                    updateOption(option)
+                }
+            )
         }
     }
 
-    private fun updatePageOption(option: StoriesSettingOpt) {
-        _pageInfo.update { page ->
-            page.copy(options = page.options.map { opt ->
-                if (option.optionType == opt.optionType) opt.copy(isSelected = !opt.isSelected) else opt
-            })
+    private fun updatePageOption(option: StoriesSettingOpt, isSuccess: Boolean) {
+        fun updateSwitch(isSwitchOn: Boolean) {
+            _pageInfo.update { pageInfo ->
+                pageInfo.copy(
+                    options = pageInfo.options.map {
+                        it.copy(
+                            isSelected = isSwitchOn,
+                            isUpdateSuccess = isSuccess
+                        )
+                    }
+                )
+            }
+        }
+
+        fun updateCheckbox(option: StoriesSettingOpt) {
+            _pageInfo.update { pageInfo ->
+                pageInfo.copy(
+                    options = pageInfo.options.map { opt ->
+                        when (opt.optionType) {
+                            option.optionType -> opt.copy(
+                                isSelected = option.isSelected,
+                                isUpdateSuccess = isSuccess
+                            )
+
+                            "all" -> opt.copy(
+                                isSelected = _pageInfo.value.options.any { it.isSelected },
+                                isUpdateSuccess = isSuccess
+                            )
+
+                            else -> opt.copy(isUpdateSuccess = isSuccess)
+                        }
+                    }
+                )
+            }
+        }
+
+        if (option.optionType == "all") {
+            updateSwitch(option.isSelected)
+        } else {
+            updateCheckbox(option)
         }
     }
 }
