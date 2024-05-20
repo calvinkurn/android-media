@@ -64,8 +64,9 @@ object AppLogRecommendation {
             isAd = isAd,
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
-            requestId = requestId,
+            requestId = requestId
         )
+        additionalParam.setAdditionalToGlobalParam()
     }
 
     private fun AppLogRecommendationCardModel.setGlobalParams() {

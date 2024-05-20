@@ -56,10 +56,6 @@ class ProductRecommSubViewModel @Inject constructor(
 ) : SubViewModel(), IProductRecommSubViewModel {
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
 
-    private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
-    override val verticalRecommendation: LiveData<Result<RecommendationWidget>>
-        get() = _verticalRecommendation
-
     private val _statusFilterTopAdsProduct = MutableLiveData<Result<Boolean>>()
     override val statusFilterTopAdsProduct: LiveData<Result<Boolean>>
         get() = _statusFilterTopAdsProduct
@@ -143,39 +139,6 @@ class ProductRecommSubViewModel @Inject constructor(
                         thematicId = event.thematicId
                     )
                 }
-            }
-        }
-    }
-
-    override fun getVerticalRecommendationData(
-        pageName: String,
-        page: Int?,
-        productId: String?,
-        queryParam: String,
-        thematicId: String
-    ) {
-        val nonNullPage = page ?: ProductDetailConstant.DEFAULT_PAGE_NUMBER
-        val nonNullProductId = productId.orEmpty()
-
-        launch {
-            runCatching {
-                val requestParams = GetRecommendationRequestParam(
-                    pageNumber = nonNullPage,
-                    pageName = pageName,
-                    productIds = arrayListOf(nonNullProductId),
-                    queryParam = queryParam,
-                    criteriaThematicIDs = listOf(thematicId),
-                    hasNewProductCardEnabled = true
-                )
-                val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
-                val dataResponse = recommendationResponse.firstOrNull()
-                if (dataResponse == null) {
-                    _verticalRecommendation.value = Fail(Throwable())
-                } else {
-                    _verticalRecommendation.value = dataResponse.asSuccess()
-                }
-            }.onFailure {
-                _verticalRecommendation.value = Fail(it)
             }
         }
     }

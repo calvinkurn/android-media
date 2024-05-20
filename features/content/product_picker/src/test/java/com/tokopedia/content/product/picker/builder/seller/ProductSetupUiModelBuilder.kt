@@ -22,14 +22,14 @@ class ProductSetupUiModelBuilder {
         startDateFmt: String = "",
         endDateFmt: String = "",
         campaignStatusModel: CampaignStatusUiModel = buildCampaignStatus(),
-        totalProduct: Int = 1,
+        totalProduct: Int = 1
     ) = CampaignUiModel(id, name, imageUrl, startDateFmt, endDateFmt, campaignStatusModel, totalProduct)
 
     fun buildEtalaseModel(
         id: String = "1",
         imageUrl: String = "",
         title: String = "",
-        totalProduct: Int = 1,
+        totalProduct: Int = 1
     ) = EtalaseUiModel(id, imageUrl, title, totalProduct)
 
     fun buildCampaignList(size: Int = 5) = List(size) {
@@ -45,17 +45,20 @@ class ProductSetupUiModelBuilder {
         name: String = "Product 1",
         imageUrl: String = "",
         stock: Long = 10,
-        price: ProductPrice = OriginalPrice("Rp 12.000", 12000.0),
-    ) = ProductUiModel(id, name, false, "", 0, false, imageUrl, stock, price, PinProductUiModel.Empty, "")
+        price: ProductPrice = OriginalPrice("Rp 12.000", 12000.0)
+    ) = ProductUiModel(id, name, false, "", 0, false, imageUrl, stock, price, PinProductUiModel.Empty, "", "", "", "", "")
 
     fun buildProductTagSectionList(
         sectionSize: Int = 5,
-        productSizePerSection: Int = 3,
+        productSizePerSection: Int = 3
     ) = List(sectionSize) { sectionIdx ->
-        ProductTagSectionUiModel("Test $sectionIdx", CampaignStatus.Ongoing, List(productSizePerSection) { productIdx ->
-            val idx = productSizePerSection * sectionIdx + productIdx
-            buildProductUiModel(id = idx.toString())
-        })
+        ProductTagSectionUiModel(
+            "Test $sectionIdx", CampaignStatus.Ongoing,
+            List(productSizePerSection) { productIdx ->
+                val idx = productSizePerSection * sectionIdx + productIdx
+                buildProductUiModel(id = idx.toString())
+            }
+        )
     }
 
     fun buildCampaignStatus(

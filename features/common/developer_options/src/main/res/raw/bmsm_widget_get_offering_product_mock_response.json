@@ -1,0 +1,562 @@
+[
+  {
+      "GetOfferingProductList": {
+        "response_header": {
+          "status": "200",
+          "errorMessage": [],
+          "errorCode": 0,
+          "success": true,
+          "processTime": 51966861
+        },
+        "products": [
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 8576090303,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/8576090303",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/20/28d6b417-9b25-4cb7-bdbe-93f2e578416e.jpg",
+            "name": "Molto Pewangi Pakaian Soft \u0026 Fresh 7x Kesegaran \u0026 Anti Bau 1.7 L x4",
+            "price": "Rp94.800",
+            "rating": "5.0",
+            "sold_count": 502,
+            "stock": 72,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp167.600",
+              "discounted_price": "Rp94.800",
+              "discounted_percentage": 43,
+              "custom_stock": 72
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 4,7rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "500+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 5539504785,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/5539504785",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/19/777fd1c8-9d46-442f-9ffa-127a7510487e.jpg",
+            "name": "Molto Pelembut \u0026 Pewangi All-in-1 Blue 1.6L isi 2 Free Superpell Apel",
+            "price": "Rp136.500",
+            "rating": "5.0",
+            "sold_count": 531,
+            "stock": 47,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp190.700",
+              "discounted_price": "Rp136.500",
+              "discounted_percentage": 28,
+              "custom_stock": 47
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 30rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "500+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 3733638921,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/3733638921",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/3/861fd0ee-89ee-45e0-86ec-fd3f4d7ebb9c.jpg",
+            "name": "Paket Rinso \u0026 Molto Perfume Boost Korean Strawberry",
+            "price": "Rp31.300",
+            "rating": "4.9",
+            "sold_count": 2195,
+            "stock": 19,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp55.800",
+              "discounted_price": "Rp31.300",
+              "discounted_percentage": 44,
+              "custom_stock": 19
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 1,5rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "2rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 1122208205,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/1122208205",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/12/8/095e5a80-bfce-4301-aaec-4faa2a8d18b0.png",
+            "name": "Molto Pewangi Pakaian Soft \u0026 Fresh 7x Kesegaran \u0026 Anti Bau 780 mL x3",
+            "price": "Rp36.600",
+            "rating": "4.9",
+            "sold_count": 3129,
+            "stock": 10,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp65.700",
+              "discounted_price": "Rp36.600",
+              "discounted_percentage": 44,
+              "custom_stock": 10
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 1,8rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "3rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 11856135497,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/11856135497",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/17/1b45f28f-4f39-4649-b3d1-ac77a44138df.png",
+            "name": "Molto Pelembut \u0026 Pewangi All-in-1 Blue 1600Ml Free Daster Jessica Mila",
+            "price": "Rp162.400",
+            "rating": "4.9",
+            "sold_count": 106,
+            "stock": 28,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp295.700",
+              "discounted_price": "Rp162.400",
+              "discounted_percentage": 45,
+              "custom_stock": 28
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 30rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "100+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 8576095600,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/8576095600",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2024/3/14/7818824f-23c2-4af5-8100-c3631e64d68a.png",
+            "name": "Molto Perfume Beads Luxury Perfume Purple - Perfume Booster 200g Isi 3",
+            "price": "Rp99.800",
+            "rating": "5.0",
+            "sold_count": 606,
+            "stock": 11,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp209.700",
+              "discounted_price": "Rp99.800",
+              "discounted_percentage": 52,
+              "custom_stock": 11
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 4,9rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "500+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 8576088209,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/8576088209",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/4/11/8e1956bd-3fae-455f-ac1b-602d0e300ff5.jpg",
+            "name": "Molto Pewangi Pakaian Sport Fresh 7x Kesegaran \u0026 Anti Bau 780 mL x4",
+            "price": "Rp52.600",
+            "rating": "5.0",
+            "sold_count": 412,
+            "stock": 43,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp83.600",
+              "discounted_price": "Rp52.600",
+              "discounted_percentage": 37,
+              "custom_stock": 43
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 2,6rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "250+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 8576087406,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/8576087406",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/12/8/b124a5ea-f21b-4544-8fa5-e85219b01836.png",
+            "name": "Molto Perfume Boost Pelembut \u0026 Pewangi Korean Strawberry 680ml Isi 3",
+            "price": "Rp55.800",
+            "rating": "5.0",
+            "sold_count": 301,
+            "stock": 19,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp104.700",
+              "discounted_price": "Rp55.800",
+              "discounted_percentage": 47,
+              "custom_stock": 19
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 2,7rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "250+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 9818509006,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/9818509006",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/3/5/8d0a7c44-f64e-4f98-a674-f186349dec67.png",
+            "name": "Rinso Kapsul 3 in 1 Sakura Blossom 16 Kapsul Isi 3",
+            "price": "Rp98.500",
+            "rating": "5.0",
+            "sold_count": 4345,
+            "stock": 142,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp203.700",
+              "discounted_price": "Rp98.500",
+              "discounted_percentage": 52,
+              "custom_stock": 142
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 4,9rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "4rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "offer_id": 0,
+            "parent_id": 0,
+            "product_id": 8576090461,
+            "warehouse_id": 13056835,
+            "product_url": "tokopedia://product/8576090461",
+            "image_url": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2024/3/14/93124b78-b00d-4c17-93f9-b13e9bb29fd8.png",
+            "name": "Molto Pewangi Pakaian Pink 1700Ml Isi 3",
+            "price": "Rp71.700",
+            "rating": "4.9",
+            "sold_count": 483,
+            "stock": 89,
+            "is_vbs": false,
+            "min_order": 1,
+            "campaign": {
+              "name": "",
+              "original_price": "Rp125.700",
+              "discounted_price": "Rp71.700",
+              "discounted_percentage": 43,
+              "custom_stock": 89
+            },
+            "label_group": [
+              {
+                "position": "price",
+                "title": "Cashback 3,5rb",
+                "type": "lightRed",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "fulfillment",
+                "title": "Dilayani Tokopedia",
+                "type": "textDarkGrey",
+                "url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+              },
+              {
+                "position": "integrity",
+                "title": "250+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ]
+          }
+        ],
+        "total_product": 16,
+        "pagination": {
+          "current_page": 1,
+          "next_page": 2,
+          "prev_page": -1,
+          "has_next": true
+        }
+      }
+    }
+]
