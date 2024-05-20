@@ -25,13 +25,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -471,6 +468,11 @@ open class HomeAccountUserFragment :
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
+        AppLogRecommendation.sendProductClickAppLog(
+            model = item.asProductTrackModel(
+                entranceForm = EntranceForm.PURE_GOODS_CARD,
+            ),
+        )
         homeAccountAnalytic.eventAccountProductClick(item, adapterPosition, widgetTitle)
         activity?.let {
             if (item.isTopAds) {
