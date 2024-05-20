@@ -14,6 +14,7 @@ import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.navigation.DeeplinkNavigationUtil;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
@@ -50,6 +51,8 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private SharedPreferences preferences;
     private SharedPreferences.OnSharedPreferenceChangeListener deepLinkListener;
+
+    private DeeplinkNavigationUtil deeplinkNavigationUtil = new DeeplinkNavigationUtil();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,7 +148,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         // if this is not root, this SplashScreen might be triggered from opening branch link.
         if (isTaskRoot()) {
             Intent homeIntent;
-            if (newHomeNavEnabled()) {
+            if (deeplinkNavigationUtil.newHomeNavEnabled()) {
                 homeIntent = new Intent(this, NewMainParentActivity.class);
             } else {
                 homeIntent = new Intent(this, MainParentActivity.class);
@@ -153,16 +156,5 @@ public class ConsumerSplashScreen extends SplashScreen {
             startActivity(homeIntent);
         }
         finish();
-    }
-
-    /**
-     * Determines whether the new home nav is enabled,
-     * which will be used to route the applink to the new home nav.
-     * This is mainly used for hansel purpose.
-     *
-     * @return whether new home nav is enabled or not.
-     */
-    private boolean newHomeNavEnabled() {
-        return true;
     }
 }

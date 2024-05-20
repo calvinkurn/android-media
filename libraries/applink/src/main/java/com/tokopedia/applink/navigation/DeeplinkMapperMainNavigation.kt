@@ -58,3 +58,17 @@ object DeeplinkMapperMainNavigation {
         )
     }
 }
+
+class DeeplinkNavigationUtil {
+
+    /**
+     * Determines whether the new home nav is enabled,
+     * which will be used to route the applink to the new home nav.
+     * This is mainly used for hansel purpose.
+     *
+     * @return whether new home nav is enabled or not.
+     */
+    fun newHomeNavEnabled(): Boolean {
+        return true
+    }
+}

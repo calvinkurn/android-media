@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME
 import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE
 import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.TAB_TYPE_FEED
+import com.tokopedia.applink.navigation.DeeplinkNavigationUtil
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 
@@ -31,6 +32,8 @@ object DeeplinkMapperContent {
     private const val EXTRA_SOURCE_NAME = "source"
     private const val EXTRA_WIDGET_ID = "widget_id"
     private const val EXTRA_ENTRY_POINT = "entrypoint"
+
+    private val deeplinkNavigationUtil by lazy { DeeplinkNavigationUtil() }
 
     /**
      * https://www.tokopedia.com/
@@ -101,13 +104,13 @@ object DeeplinkMapperContent {
      */
     private fun goToAppLinkFeedHomeInternal(uri: Uri, isOldNav: Boolean = false): String {
         return UriUtil.buildUriAppendParams(
-            uri = if (!isOldNav && newHomeNavEnabled()) {
+            uri = if (!isOldNav && deeplinkNavigationUtil.newHomeNavEnabled()) {
                 ApplinkConsInternalHome.HOME_NAVIGATION
             } else {
                 ApplinkConsInternalHome.HOME_NAVIGATION_OLD
             },
             queryParameters = buildMap {
-                if (!isOldNav && newHomeNavEnabled()) {
+                if (!isOldNav && deeplinkNavigationUtil.newHomeNavEnabled()) {
                     put(EXTRA_TAB_TYPE, TAB_TYPE_FEED)
                 } else {
                     put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
@@ -229,16 +232,5 @@ object DeeplinkMapperContent {
      */
     private fun getProfileSellerAppDeepLink(): String {
         return ApplinkConstInternalContent.INTERNAL_FEATURE_PREVENTION
-    }
-
-    /**
-     * Determines whether the new home nav is enabled,
-     * which will be used to route the applink to the new home nav.
-     * This is mainly used for hansel purpose.
-     *
-     * @return whether new home nav is enabled or not.
-     */
-    private fun newHomeNavEnabled(): Boolean {
-        return true
     }
 }

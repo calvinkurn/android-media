@@ -7,6 +7,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE
 import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.TAB_TYPE_HOME
+import com.tokopedia.applink.navigation.DeeplinkNavigationUtil
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
@@ -22,6 +23,8 @@ object DeeplinkMapperHome {
     const val TAB_POSITION_ACCOUNT = 4
     const val TAB_POSITION_OS = 2
     const val TAB_POSITION_RECOM = 5
+
+    private val deeplinkNavigationUtil by lazy { DeeplinkNavigationUtil() }
 
     fun isLoginAndHasShop(context: Context): Boolean {
         val userSession = UserSession(context)
@@ -40,7 +43,7 @@ object DeeplinkMapperHome {
 
         // tokopedia://home
         if (uri.host == Uri.parse(ApplinkConst.HOME).host && uri.pathSegments.isEmpty()) {
-            return if (newHomeNavEnabled()) {
+            return if (deeplinkNavigationUtil.newHomeNavEnabled()) {
                 UriUtil.buildUriAppendParams(
                     ApplinkConsInternalHome.HOME_NAVIGATION,
                     mapOf(EXTRA_TAB_TYPE to TAB_TYPE_HOME)
@@ -103,16 +106,5 @@ object DeeplinkMapperHome {
 
     fun getRegisteredInboxNavigation(deeplink: String): String {
         return ApplinkConsInternalHome.HOME_INBOX
-    }
-
-    /**
-     * Determines whether the new home nav is enabled,
-     * which will be used to route the applink to the new home nav.
-     * This is mainly used for hansel purpose.
-     *
-     * @return whether new home nav is enabled or not.
-     */
-    private fun newHomeNavEnabled(): Boolean {
-        return true
     }
 }
