@@ -1,15 +1,24 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.util.spacelessParam
 import com.tokopedia.analytics.byteio.util.underscoredParam
+import com.tokopedia.kotlin.extensions.view.orZero
 import org.json.JSONObject
 
 /**
@@ -107,6 +116,75 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.GLIDE_DISTANCE, 0)
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REQUEST_ID, requestId)
+    }
+
+    fun toConfirmCartJson(product: TrackConfirmCart) = JSONObject().apply {
+        addPage()
+        addEnterFrom()
+        put(
+            AppLogParam.ENTRANCE_INFO,
+            generateEntranceInfoJson(sourceModule).toString()
+        )
+
+        put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
+
+        put(AppLogParam.PRODUCT_ID, product.productId)
+        put("product_category", product.productCategory)
+        put("product_type", product.productType.type)
+        put("original_price_value", product.originalPrice)
+        put("sale_price_value", product.salePrice)
+        put("button_type", "able_to_cart")
+        put("sku_id", product.skuId)
+        put("currency", "IDR")
+        put("add_sku_num", product.addSkuNum)
+        put("buy_type", 1) // ATC will use code 1, otherwise Buy Now use 0
+    }
+
+    fun toConfirmCartResultJson(product: TrackConfirmCartResult) = JSONObject().apply {
+        addPage()
+        addEnterFrom()
+        addEnterFromInfo()
+        put(
+            AppLogParam.ENTRANCE_INFO,
+            generateEntranceInfoJson(sourceModule).toString()
+        )
+
+        put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
+
+        put(AppLogParam.PRODUCT_ID, product.productId)
+        put("product_category", product.productCategory)
+        put("product_type", product.productType.type)
+        put("original_price_value", product.originalPrice)
+        put("sale_price_value", product.salePrice)
+        put("button_type", "able_to_cart")
+        put("sku_id", product.skuId)
+        put("currency", "IDR")
+        put("add_sku_num", product.addSkuNum)
+        put("buy_type", 1) // ATC will use code 1, otherwise Buy Now use 0
+        put("cart_item_id", product.cartItemId)
+        put("is_success", product.isSuccess?.intValue.orZero())
+        put("fail_reason", product.failReason)
+    }
+
+    private fun generateEntranceInfoJson(sourceModule: String): JSONObject {
+        return JSONObject().also {
+            it.put(AppLogParam.SOURCE_MODULE, sourceModule)
+            it.addEntranceForm()
+            it.put(AppLogParam.IS_AD, AppLogAnalytics.getLastData(AppLogParam.IS_AD))
+            it.addSourcePageType()
+            it.addRequestId()
+            it.addTrackId()
+            it.addEnterMethod()
+            it.addEnterFromInfo()
+        }
     }
 
     companion object {
