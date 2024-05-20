@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnScrollChangedListener
@@ -13,13 +12,12 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
     ConstraintLayout,
-    OnAttachStateChangeListener,
+    View.OnAttachStateChangeListener,
     OnScrollChangedListener,
     ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -248,14 +246,6 @@ open class ProductConstraintLayout :
         }
     }
 
-    override fun onViewAttachedToWindow(p0: View) {
-        onShow()
-    }
-
-    override fun onViewDetachedFromWindow(p0: View) {
-        onShowOver()
-    }
-
     override fun onScrollChanged() {
         calculateVisibility()
     }
@@ -263,6 +253,14 @@ open class ProductConstraintLayout :
     override fun onGlobalLayout() {
         calculateVisibility()
         removeOnGlobalLayoutListener()
+    }
+
+    override fun onViewAttachedToWindow(p0: View) {
+        onShow()
+    }
+
+    override fun onViewDetachedFromWindow(p0: View) {
+        onShowOver()
     }
 
     private fun removeOnGlobalLayoutListener() {

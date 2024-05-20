@@ -111,7 +111,10 @@ class RecommendationVerticalProductCardViewHolder(
 
     private fun onProductCardImpressed1px(element: RecommendationVerticalProductCardModel) {
         AppLogRecommendation.sendProductShowAppLog(
-            element.recomItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
+            element.recomItem.asProductTrackModel(
+                entranceForm = EntranceForm.PURE_GOODS_CARD,
+                additionalParam = element.appLogAdditionalParam
+            )
         )
 
     }
@@ -137,7 +140,10 @@ class RecommendationVerticalProductCardViewHolder(
         )
 
         AppLogRecommendation.sendProductClickAppLog(
-            element.recomItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
+            element.recomItem.asProductTrackModel(
+                entranceForm = EntranceForm.PURE_GOODS_CARD,
+                additionalParam = element.appLogAdditionalParam
+            )
         )
 
         RouteManager.route(binding.productCardView.context, productRecommendation.appUrl)

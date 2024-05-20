@@ -18,6 +18,9 @@ import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.orFalse
@@ -164,7 +167,10 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color", "text_color_mode"])
+    @SerializedName(
+        "font_color",
+        alternate = ["text_color", "benefit_text_color", "text_color_mode"]
+    )
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -561,7 +567,7 @@ data class DataItem(
     val widgetHomeBanner: String? = "",
 
     @SerializedName("gtm_item_name")
-    var gtmItemName: String? = "",
+    private var _gtmItemName: String? = "",
 
     @SerializedName("department_id")
     var categoryDeptId: String? = "",
@@ -680,6 +686,10 @@ data class DataItem(
 
     var topLevelTab: TopLevelTab = UnknownTab
 ) {
+
+    var gtmItemName: String = ""
+        get() = getGtmItemNameReplaceTab()
+
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0
@@ -753,5 +763,19 @@ data class DataItem(
 
     private fun findLabelGroup(position: String): LabelsGroup? {
         return labelsGroupList?.find { it.position == position }
+    }
+
+    private fun getGtmItemNameReplaceTab(): String {
+        val tabReplaceWith = if (topLevelTab.name.isNotEmpty()) {
+            topLevelTab.name
+        } else if (CURRENT_TAB_NAME.isNotEmpty()) {
+            CURRENT_TAB_NAME
+        } else {
+            tabName ?: ""
+        }
+        return _gtmItemName?.replace(
+            "#MEGA_TAB_VALUE",
+            tabReplaceWith
+        ) ?: ""
     }
 }

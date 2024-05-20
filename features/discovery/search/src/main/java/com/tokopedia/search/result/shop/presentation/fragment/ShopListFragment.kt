@@ -546,7 +546,7 @@ internal class ShopListFragment @Inject constructor(
 
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        AppLogSearch.updateSearchPageData(this)
+        if(isVisibleToUser) AppLogSearch.updateSearchPageData(this)
     }
 
     private fun trackScreen() {

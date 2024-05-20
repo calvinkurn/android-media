@@ -2,9 +2,12 @@ package com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
 import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.databinding.ItemViewToViewBinding
@@ -25,9 +28,23 @@ class ViewToViewProductViewHolder(
         this.recommendationItem = data.recommendationItem
         with(binding.root) {
             setProductModel(data.productModel)
-            setOnClickListener {
-                listener.onProductClicked(data, data.recommendationItem.position, className)
-            }
+            setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    listener.onProductClicked(data, data.recommendationItem.position, className)
+                }
+
+                override fun onAreaClicked(v: View) {
+                    data.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    data.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    data.recommendationItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                }
+            })
             setAddToCartOnClickListener {
                 listener.onAddToCartClicked(data, data.recommendationItem.position)
             }

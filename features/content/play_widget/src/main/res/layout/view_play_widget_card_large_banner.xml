@@ -13,7 +13,7 @@
     app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardElevation="@dimen/spacing_lvl1"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
+    app:cardUseCompatPadding="false"
     >
 
     <com.tokopedia.unifycomponents.ImageUnify

@@ -23,11 +23,20 @@ class PromoMiniCardView @JvmOverloads constructor(
     }
 
     private val cardViewCorners = floatArrayOf(
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS,   // Top left radius in px
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS,   // Top right radius in px
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS,   // Bottom right radius in px CARD_VIEW_CORNER_RADIUS,
-        CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS    // Bottom left radius in px
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS, // Top left radius in px
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS, // Top right radius in px
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS, // Bottom right radius in px CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS,
+        CARD_VIEW_CORNER_RADIUS // Bottom left radius in px
     )
+
+    private val circleFillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200) // default color
+        style = Paint.Style.FILL
+    }
 
     private val circleCutStrokeColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN200)
@@ -65,47 +74,91 @@ class PromoMiniCardView @JvmOverloads constructor(
     }
 
     private fun drawLeftCircleCut(canvas: Canvas?) {
-        // Left cut stroke color
-        canvas?.drawPath(Path().also {
-            it.addCircle(
-                0f,
-                (height / 2).toFloat(),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, circleCutStrokeColor)
+        // Left cut fill color
+        canvas?.drawPath(
+            Path().also {
+                it.addCircle(
+                    0f,
+                    (height / 2).toFloat(),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            circleFillPaint
+        )
 
         // Left cut circle
-        canvas?.clipPath(Path().also {
-            it.addCircle(
-                0f,
-                (height / 2).toFloat(),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, Region.Op.DIFFERENCE)
+        canvas?.clipPath(
+            Path().also {
+                it.addCircle(
+                    0f,
+                    (height / 2).toFloat(),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            Region.Op.DIFFERENCE
+        )
+
+        // Left cut stroke color
+        canvas?.drawPath(
+            Path().also {
+                it.addCircle(
+                    0f,
+                    (height / 2).toFloat(),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            circleCutStrokeColor
+        )
     }
 
     private fun drawRightCircleCut(canvas: Canvas?) {
-        // Right cut stroke color
-        canvas?.drawPath(Path().also {
-            it.addCircle(
-                width.toFloat(),
-                (height / 2).toFloat(),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, circleCutStrokeColor)
+        // Right cut fill color
+        canvas?.drawPath(
+            Path().also {
+                it.addCircle(
+                    width.toFloat(),
+                    (height / 2).toFloat(),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            circleFillPaint
+        )
 
         // Right cut circle
-        canvas?.clipPath(Path().also {
-            it.addCircle(
-                width.toFloat(),
-                (height / 2).toFloat(),
-                CIRCLE_RADIUS,
-                Path.Direction.CW
-            )
-        }, Region.Op.DIFFERENCE)
+        canvas?.clipPath(
+            Path().also {
+                it.addCircle(
+                    width.toFloat(),
+                    (height / 2).toFloat(),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            Region.Op.DIFFERENCE
+        )
+
+        // Right cut stroke color
+        canvas?.drawPath(
+            Path().also {
+                it.addCircle(
+                    width.toFloat(),
+                    (height / 2).toFloat(),
+                    CIRCLE_RADIUS,
+                    Path.Direction.CW
+                )
+            },
+            circleCutStrokeColor
+        )
+    }
+
+    fun changeCircleCutColor(color: Int, alpha: Int) {
+        this.circleFillPaint.color = ContextCompat.getColor(context, color)
+        this.circleFillPaint.alpha = alpha
+        invalidate() // Invalidate to request a redraw with the new color
     }
 
     companion object {

@@ -1,6 +1,10 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogFirstTrackId
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
@@ -49,8 +53,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
@@ -192,9 +194,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productArData: ArButtonDataModel?
         get() = mapOfData[ProductDetailConstant.AR_BUTTON] as? ArButtonDataModel
 
-    private val verticalRecommendationItems =
-        mutableListOf<ProductRecommendationVerticalDataModel>()
-
     val otherOffers: ProductCustomInfoTitleDataModel?
         get() = mapOfData[ProductDetailConstant.OTHER_OFFERS] as? ProductCustomInfoTitleDataModel
 
@@ -306,8 +305,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
 
         if (loadInitialData) {
-            updateVerticalRecommendationWidget(productId)
-            verticalRecommendationItems.clear()
+            updateVerticalRecommendationWidget(dataP1, productId)
         }
     }
 
@@ -874,25 +872,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVerticalRecommendationData(data: RecommendationWidget) {
-        updateData(data.pageName) {
-            (mapOfData[data.pageName] as? ProductRecommendationVerticalPlaceholderDataModel)?.apply {
-                if (recomWidgetData?.currentPage != data.currentPage) {
-                    verticalRecommendationItems.addAll(getItemDataModels())
-                }
-                recomWidgetData = data
-            }
-        }
-    }
-
-    fun getVerticalRecommendationPlaceholder(pageName: String) =
-        mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel
-
-    fun getVerticalRecommendationNextPage(pageName: String): Int? {
-        val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
-        return dataModel?.recomWidgetData?.nextPage
-    }
-
     fun removeComponentP2Data(it: ProductInfoP2UiData) {
         if (it.ratesEstimate.isEmpty()) {
             removeComponent(ProductDetailConstant.SHIPMENT_V2)
@@ -1303,22 +1282,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             .values
             .toMutableList()
             .adjustAPlusMedia(aPlusContentExpanded)
-            .addVerticalRecommendation()
             .toList()
-    }
-
-    private fun MutableList<DynamicPdpDataModel>.addVerticalRecommendation(): MutableList<DynamicPdpDataModel> {
-        val indexVerticalRecommendation = indexOfLast {
-            it is ProductRecommendationVerticalPlaceholderDataModel
-        }
-
-        if (indexVerticalRecommendation != -1) {
-            verticalRecommendationItems.forEachIndexed { index, item ->
-                item.position = index + 1
-            }
-            addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
-        }
-        return this
     }
 
     private fun MutableList<DynamicPdpDataModel>.adjustAPlusMedia(
@@ -1343,12 +1307,24 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateVerticalRecommendationWidget(productId: String) {
+    fun getAppLogAdditionalParam(p1: ProductInfoP1?): AppLogAdditionalParam.PDP {
+        p1 ?: return AppLogAdditionalParam.PDP()
+
+        return AppLogAdditionalParam.PDP(
+            parentProductId = p1.parentProductId,
+            parentTrackId = AppLogAnalytics.getLastData(AppLogParam.TRACK_ID) as? String ?: "",
+            parentRequestId = AppLogAnalytics.getLastData(AppLogParam.REQUEST_ID) as? String ?: "",
+            firstTrackId = AppLogFirstTrackId.firstTrackId,
+            firstSourcePage = AppLogFirstTrackId.firstSourcePage
+        )
+    }
+
+    private fun updateVerticalRecommendationWidget(p1: ProductInfoP1, productId: String) {
         mapOfData.forEach { (key, data) ->
             if (key.startsWith(RECOM_VERTICAL)) {
                 updateData(key, true) {
                     mapOfData[key] = (data as? PdpRecommendationWidgetDataModel)?.run {
-                        updateVerticalRecommendationWidgetProductId(productId)
+                        updateVerticalRecommendationWidgetProductId(p1, productId)
                     } ?: data
                 }
             }
@@ -1356,6 +1332,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun PdpRecommendationWidgetDataModel.updateVerticalRecommendationWidgetProductId(
+        p1: ProductInfoP1,
         productId: String
     ): PdpRecommendationWidgetDataModel {
         return copy(
@@ -1365,7 +1342,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 ),
                 metadata = recommendationWidgetModel.metadata.copy(
                     productIds = if (productId.isBlank()) listOf() else listOf(productId)
-                )
+                ),
+                appLogAdditionalParam = getAppLogAdditionalParam(p1)
             )
         )
     }
@@ -1408,11 +1386,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 text = item.text,
                 applink = item.applink,
                 separator = item.separator,
-                icon = item.icon,
+                icon     = item.icon,
                 status = item.status,
                 chevronPos = item.chevronPos,
                 paddingTop = item.padding.top,
-                paddingBottom = item.padding.bottom
+                paddingBottom = item.padding.bottom,
+                imageHeight = item.imageSize.height,
+                imageWidth = item.imageSize.width
             )
         }
     }

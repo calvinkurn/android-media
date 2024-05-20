@@ -23,13 +23,13 @@ class ProductPickerModelBuilder {
                 id = it.toString(),
                 imageUrl = "",
                 title = "Etalase $it",
-                totalProduct = it,
+                totalProduct = it
             )
         }
     }
 
     fun buildCampaignList(
-        size: Int = 1,
+        size: Int = 1
     ): List<CampaignUiModel> {
         return List(size) {
             CampaignUiModel(
@@ -48,22 +48,25 @@ class ProductPickerModelBuilder {
     }
 
     fun buildProductTagSectionList(
-        size: Int = 2,
+        size: Int = 2
     ): List<ProductTagSectionUiModel> {
         return List(1) {
-            ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(size) { productCounter ->
-                ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "")
-            })
+            ProductTagSectionUiModel(
+                "", CampaignStatus.Ongoing,
+                List(size) { productCounter ->
+                    ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false, "", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "", "", "", "", "")
+                }
+            )
         }
     }
 
     fun buildEtalaseProducts(
         size: Int = 2,
-        hasNextPage: Boolean = false,
+        hasNextPage: Boolean = false
     ): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
             dataList = buildProductTagSectionList(size).flatMap { it.products },
-            hasNextPage = hasNextPage,
+            hasNextPage = hasNextPage
         )
     }
 }
