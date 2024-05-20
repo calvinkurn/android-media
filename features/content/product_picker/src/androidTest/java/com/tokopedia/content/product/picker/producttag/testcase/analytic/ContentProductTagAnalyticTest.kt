@@ -47,7 +47,6 @@ import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagAr
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.*
-import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -59,7 +58,6 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on October 05, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
-//@CassavaTest
 class ContentProductTagAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
