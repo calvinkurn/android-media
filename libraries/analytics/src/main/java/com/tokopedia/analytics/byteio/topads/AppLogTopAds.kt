@@ -30,13 +30,14 @@ object AppLogTopAds {
         context: Context,
         adsLogShowOverModel: AdsLogShowOverModel
     ) {
+        val tagValue = getTagValue(getPageName())
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW_OVER,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(getTagValue(getPageName()) == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
+                        if(tagValue == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -59,7 +60,7 @@ object AppLogTopAds {
 
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, getSystemBootTime())
 
-                putTag(getPageName())
+                putTag(tagValue)
             }
         )
     }
@@ -72,14 +73,14 @@ object AppLogTopAds {
         context: Context,
         adsLogShowModel: AdsLogShowModel
     ) {
-        val pageName = getPageName()
+        val tagValue = getTagValue(getPageName())
         AppLogAnalytics.send(
             AdsLogConst.Event.SHOW,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(getTagValue(pageName) == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
+                        if(tagValue == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -100,7 +101,7 @@ object AppLogTopAds {
                 put(AdsLogConst.Param.GROUP_ID, "0")
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, getSystemBootTime())
 
-                putTag(pageName)
+                putTag(tagValue)
             }
         )
     }
@@ -113,14 +114,15 @@ object AppLogTopAds {
         context: Context,
         adsLogRealtimeClickModel: AdsLogRealtimeClickModel
     ) {
-        val pageName = getPageName()
+        val tagValue = getTagValue(getPageName())
+
         AppLogAnalytics.send(
             AdsLogConst.Event.REALTIME_CLICK,
             JSONObject().apply {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(getTagValue(pageName) == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
+                        if(tagValue == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -142,7 +144,7 @@ object AppLogTopAds {
                 put(AdsLogConst.REFER, adsLogRealtimeClickModel.refer)
                 put(AdsLogConst.Param.SYSTEM_START_TIMESTAMP, getSystemBootTime())
 
-                putTag(pageName)
+                putTag(tagValue)
             }
         )
     }
@@ -195,8 +197,8 @@ object AppLogTopAds {
         }
     }
 
-    private fun JSONObject.putTag(currentPageName: Any?) {
-        put(AdsLogConst.TAG, getTagValue(currentPageName))
+    private fun JSONObject.putTag(tagValue: String) {
+        put(AdsLogConst.TAG, tagValue)
     }
 
     private fun getTagValue(currentPageName: Any?): String {
