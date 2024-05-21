@@ -8,13 +8,13 @@ import com.tokopedia.accountprofile.settingprofile.addbod.viewmodel.AddBodViewMo
 import com.tokopedia.accountprofile.settingprofile.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.accountprofile.settingprofile.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.accountprofile.settingprofile.addphone.viewmodel.NewAddPhoneViewModel
-import com.tokopedia.accountprofile.settingprofile.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.accountprofile.settingprofile.changebiousername.viewmodel.ChangeBioUsernameViewModel
 import com.tokopedia.accountprofile.settingprofile.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.accountprofile.settingprofile.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.accountprofile.settingprofile.changepin.view.viewmodel.ChangePinViewModel
 import com.tokopedia.accountprofile.profilecompletion.viewmodel.ProfileInfoViewModel
 import com.tokopedia.accountprofile.profilecompletion.viewmodel.ProfileRoleViewModel
+import com.tokopedia.accountprofile.settingprofile.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.accountprofile.settingprofile.profileinfo.viewmodel.ProfileViewModel
 import dagger.Binds
 import dagger.Module

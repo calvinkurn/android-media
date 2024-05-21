@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.settingprofile.addpin.viewmodel
+package com.tokopedia.accountprofile.settingprofile.addpin.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
