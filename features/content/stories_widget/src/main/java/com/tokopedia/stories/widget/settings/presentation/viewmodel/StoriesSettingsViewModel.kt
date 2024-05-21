@@ -88,7 +88,9 @@ class StoriesSettingsViewModel @Inject constructor(
             }) {
                 _pageInfo.update { data -> data.copy(state = ResultState.Fail(it)) }
             }
-        }) {}
+        }) {
+            _pageInfo.update { data -> data.copy(state = ResultState.Fail(it)) }
+        }
     }
 
     private var lastRequestTime: Long = 0L

@@ -1,6 +1,8 @@
 package com.tokopedia.stories.widget.settings.presentation.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,7 +81,14 @@ class StoriesSettingsFragment @Inject constructor(
                         }
                     }
 
-                    is StoriesSettingEvent.Navigate -> router.route(requireContext(), event.appLink)
+                    is StoriesSettingEvent.Navigate -> {
+                        if (event.appLink == REDIRECT_SETTINGS) {
+                            val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                            router.route(requireActivity(), intent)
+                        } else {
+                            router.route(requireContext(), event.appLink)
+                        }
+                    }
                     else -> {}
                 }
             }

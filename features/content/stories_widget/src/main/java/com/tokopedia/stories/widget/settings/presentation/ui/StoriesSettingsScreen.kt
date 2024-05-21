@@ -43,6 +43,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.net.UnknownHostException
+import com.tokopedia.globalerror.R as globalerrorR
 
 /**
  * @author by astidhiyaa on 3/22/24
@@ -64,6 +65,7 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
 
 val finalText = "Selengkapnya"
 val tagLink = "{{Selengkapnya}}"
+val REDIRECT_SETTINGS = "settings"
 
 @Composable
 private fun StoriesSettingsSuccess(
@@ -230,19 +232,26 @@ private fun StoriesSettingsSuccess(
 
 @Composable
 private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsViewModel) {
-    val (text, type, action) = when (error) {
-        is UnknownHostException -> Triple(
-            stringResource(id = R.string.stories_settings_try_again),
+    val (text, type) = when (error) {
+        is UnknownHostException -> Pair(
+            stringResource(id = globalerrorR.string.noConnectionSecondaryAction),
             NestGlobalErrorType.NoConnection
-        ) {}
-
-        else -> Triple("", NestGlobalErrorType.PageNotFound) {
+        )
+        else -> Pair("", NestGlobalErrorType.PageNotFound)
+    }
+    NestGlobalError(
+        type = type,
+        secondaryActionText = text,
+        onClickSecondaryAction = {
+           viewModel.onEvent(
+               StoriesSettingsAction.Navigate(REDIRECT_SETTINGS)
+           )
+        },
+        onClickAction = {
             viewModel.onEvent(
                 StoriesSettingsAction.FetchPageInfo
             )
-        }
-    }
-    NestGlobalError(type = type, secondaryActionText = text) { action() }
+        })
 }
 
 @Composable
