@@ -2,8 +2,6 @@ package com.tokopedia.people.testcase
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -14,7 +12,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
@@ -32,7 +29,6 @@ import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.people.R
 import com.tokopedia.people.views.uimodel.getReviewSettings
-import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 
 /**
