@@ -36,7 +36,7 @@ object AppLogHomeChannel {
     private fun HomeChannelProductModel.setGlobalParams() {
         AppLogAnalytics.setGlobalParams(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataLast(ENTER_METHOD)?.toString(),
+            enterMethod = enterMethod ?: AppLogAnalytics.getDataBeforeStep(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,
@@ -48,7 +48,7 @@ object AppLogHomeChannel {
     private fun HomeChannelCardModel.setGlobalParams() {
         AppLogAnalytics.setGlobalParams(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataLast(ENTER_METHOD)?.toString(),
+            enterMethod = enterMethod ?: AppLogAnalytics.getDataBeforeStep(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,
