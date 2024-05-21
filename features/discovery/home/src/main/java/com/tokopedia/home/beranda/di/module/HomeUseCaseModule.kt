@@ -44,13 +44,10 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitD
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitTabRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeCloseChannelRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeDataRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeHeadlineAdsRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeKeywordSearchRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomePageBannerRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePopularKeywordRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeRechargeRecommendationRepository
@@ -59,7 +56,6 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendatio
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggestedRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeUserStatusRepository
@@ -113,12 +109,7 @@ class HomeUseCaseModule {
         homeDataMapper: HomeDataMapper,
         bestSellerRevampMapper: BestSellerRevampMapper,
         homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
-        homeDataRepository: HomeDataRepository,
-        homeAtfRepository: HomeAtfRepository,
         homeUserStatusRepository: HomeUserStatusRepository,
-        homePageBannerRepository: HomePageBannerRepository,
-        homeIconRepository: HomeIconRepository,
-        homeTickerRepository: HomeTickerRepository,
         homeRoomDataSource: HomeRoomDataSource,
         homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
         @ApplicationContext context: Context,
@@ -146,11 +137,7 @@ class HomeUseCaseModule {
         homeDataMapper = homeDataMapper,
         bestSellerRevampMapper = bestSellerRevampMapper,
         homeDynamicChannelsRepository = homeDynamicChannelsRepository,
-        atfDataRepository = homeAtfRepository,
         homeUserStatusRepository = homeUserStatusRepository,
-        homePageBannerRepository = homePageBannerRepository,
-        homeIconRepository = homeIconRepository,
-        homeTickerRepository = homeTickerRepository,
         getHomeRoomDataSource = homeRoomDataSource,
         homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
         applicationContext = context,
