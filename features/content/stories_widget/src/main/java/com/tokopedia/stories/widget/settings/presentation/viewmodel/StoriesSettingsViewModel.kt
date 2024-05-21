@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -90,15 +92,18 @@ class StoriesSettingsViewModel @Inject constructor(
     }
 
     private var lastRequestTime: Long = 0L
-    private val isAvailableForClick: Boolean
-        get() {
-            val diff = System.currentTimeMillis() - lastRequestTime
-            return diff >= 5000L
-        }
+    private val isAvailableForClick: (Long) -> Boolean = { currentTime ->
+        val diff = currentTime - lastRequestTime
+        diff >= 5000L
+    }
 
     private fun updateOption(option: StoriesSettingOpt) {
-        if (!isAvailableForClick) {
-            updatePageOption(option, false)
+        val lastClicked = _pageInfo.updateAndGet { pageInfo ->
+            pageInfo.copy(options = pageInfo.options.map { option ->
+                option.copy(lastClicked = System.currentTimeMillis())
+            })
+        }.options.firstOrNull()?.lastClicked.orZero()
+        if (!isAvailableForClick(lastClicked)) {
             onEvent(
                 StoriesSettingsAction.ShowCoolingDown(
                     MessageErrorException("Tunggu 5 detik dulu ya")
@@ -110,14 +115,13 @@ class StoriesSettingsViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val response = repository.updateOption(option)
             if (response) {
-                updatePageOption(option.copy(isSelected = !option.isSelected), true)
+                updatePageOption(option.copy(isSelected = !option.isSelected))
                 lastRequestTime = System.currentTimeMillis()
                 _event.emit(StoriesSettingEvent.ClickTrack(option.copy(isSelected = !option.isSelected)))
             } else {
                 throw Exception()
             }
         }) {
-            updatePageOption(option, false)
             _event.emit(
                 StoriesSettingEvent.ShowErrorToaster(it) {
                     updateOption(option)
@@ -126,14 +130,13 @@ class StoriesSettingsViewModel @Inject constructor(
         }
     }
 
-    private fun updatePageOption(option: StoriesSettingOpt, isSuccess: Boolean) {
+    private fun updatePageOption(option: StoriesSettingOpt) {
         fun updateSwitch(isSwitchOn: Boolean) {
             _pageInfo.update { pageInfo ->
                 pageInfo.copy(
                     options = pageInfo.options.map {
                         it.copy(
                             isSelected = isSwitchOn,
-                            isUpdateSuccess = isSuccess
                         )
                     }
                 )
@@ -147,15 +150,13 @@ class StoriesSettingsViewModel @Inject constructor(
                         when (opt.optionType) {
                             option.optionType -> opt.copy(
                                 isSelected = option.isSelected,
-                                isUpdateSuccess = isSuccess
                             )
 
                             "all" -> opt.copy(
                                 isSelected = _pageInfo.value.options.any { it.isSelected },
-                                isUpdateSuccess = isSuccess
                             )
 
-                            else -> opt.copy(isUpdateSuccess = isSuccess)
+                            else -> opt
                         }
                     }
                 )

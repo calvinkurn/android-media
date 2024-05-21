@@ -52,8 +52,7 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
         val pageInfo by viewModel.pageInfo.collectAsState(initial = StoriesSettingsPageUiModel.Empty)
         when (val state = pageInfo.state) {
             ResultState.Success -> StoriesSettingsSuccess(
-                viewModel = viewModel,
-                pageInfo = pageInfo
+                viewModel = viewModel, pageInfo = pageInfo
             )
 
             is ResultState.Fail -> StoriesSettingsError(error = state.error, viewModel = viewModel)
@@ -67,8 +66,7 @@ val tagLink = "{{Selengkapnya}}"
 
 @Composable
 private fun StoriesSettingsSuccess(
-    pageInfo: StoriesSettingsPageUiModel,
-    viewModel: StoriesSettingsViewModel
+    pageInfo: StoriesSettingsPageUiModel, viewModel: StoriesSettingsViewModel
 ) {
     val isEligible = pageInfo.config.isEligible
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("", "", false)
@@ -83,30 +81,27 @@ private fun StoriesSettingsSuccess(
     ) {
         val (tickerEligible, tvHeader, ivIconHeader, switchHeader, tvDescription, tvAll, tvCategory, rvOptions) = createRefs()
         if (isEligible.not() && dismissed.not()) {
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .constrainAs(tickerEligible) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                    },
-                factory = {
-                    Ticker(it).apply {
-                        tickerType = Ticker.TYPE_ANNOUNCEMENT
-                        tickerShape = Ticker.SHAPE_LOOSE
-                        tickerTitle = ""
-                        setTextDescription(ctx.getString(R.string.stories_ticker_title))
-                        setDescriptionClickEvent(object : TickerCallback {
-                            override fun onDismiss() {
-                                dismissed = true
-                            }
+            AndroidView(modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .constrainAs(tickerEligible) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                }, factory = {
+                Ticker(it).apply {
+                    tickerType = Ticker.TYPE_ANNOUNCEMENT
+                    tickerShape = Ticker.SHAPE_LOOSE
+                    tickerTitle = ""
+                    setTextDescription(ctx.getString(R.string.stories_ticker_title))
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDismiss() {
+                            dismissed = true
+                        }
 
-                            override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-                        })
-                    }
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+                    })
                 }
-            )
+            })
         }
 
         // Header - Story
@@ -119,21 +114,18 @@ private fun StoriesSettingsSuccess(
                 },
             text = stringResource(id = R.string.stories_settings_header),
             textStyle = NestTheme.typography.display1.copy(
-                fontWeight = FontWeight.Bold,
-                color = textColor
+                fontWeight = FontWeight.Bold, color = textColor
             )
         )
 
         // Icon - Mobile
-        NestIcon(
-            iconId = IconUnify.SOCIAL_STORY,
+        NestIcon(iconId = IconUnify.SOCIAL_STORY,
             colorNightDisable = textColor,
             colorLightEnable = textColor,
             modifier = Modifier.constrainAs(ivIconHeader) {
                 top.linkTo(tvHeader.bottom)
                 start.linkTo(tvHeader.start)
-            }
-        )
+            })
 
         // Text - Buat Stories Otomatis
         NestTypography(
@@ -143,11 +135,8 @@ private fun StoriesSettingsSuccess(
                     start.linkTo(ivIconHeader.end)
                     top.linkTo(ivIconHeader.top)
                     bottom.linkTo(ivIconHeader.bottom)
-                },
-            text = itemFirst.text,
-            textStyle = NestTheme.typography.display2.copy(
-                fontWeight = FontWeight.Bold,
-                color = textColor
+                }, text = itemFirst.text, textStyle = NestTheme.typography.display2.copy(
+                fontWeight = FontWeight.Bold, color = textColor
             )
         )
 
@@ -163,8 +152,9 @@ private fun StoriesSettingsSuccess(
                     this.isChecked = itemFirst.isSelected
                     this.isEnabled = isEligible
                     this.setOnCheckedChangeListener { view, isActive ->
-                        if (!view.isPressed) return@setOnCheckedChangeListener
-                        viewModel.onEvent(StoriesSettingsAction.SelectOption(itemFirst.copy(isSelected = !isActive)))
+                        if (view.isPressed) {
+                            viewModel.onEvent(StoriesSettingsAction.SelectOption(itemFirst.copy(isSelected = !isActive)))
+                        }
                     }
                 }
             },
@@ -173,34 +163,32 @@ private fun StoriesSettingsSuccess(
                 switchUnify.isEnabled = isEligible
             }
         )
+
         // Text - Selengkapnya
         val text = buildAnnotatedString {
             append(pageInfo.config.articleCopy.replace(tagLink, ""))
             withStyle(
                 style = SpanStyle(
-                    color = NestTheme.colors.GN._500,
-                    fontWeight = FontWeight.Bold
+                    color = NestTheme.colors.GN._500, fontWeight = FontWeight.Bold
                 )
             ) {
                 pushStringAnnotation(tagLink, tagLink)
                 append(finalText)
             }
         }
-        NestTypography(
-            modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 12.dp)
-                .constrainAs(tvAll) {
-                    top.linkTo(tvDescription.bottom)
-                    start.linkTo(tvDescription.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                },
+        NestTypography(modifier = Modifier
+            .padding(vertical = 16.dp, horizontal = 12.dp)
+            .constrainAs(tvAll) {
+                top.linkTo(tvDescription.bottom)
+                start.linkTo(tvDescription.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
             text = text,
             textStyle = NestTheme.typography.display3.copy(color = textColor),
             onClickText = {
                 viewModel.onEvent(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
-            }
-        )
+            })
         // Text - Kategori update produk
         NestTypography(
             modifier = Modifier
@@ -214,24 +202,17 @@ private fun StoriesSettingsSuccess(
         )
 
         // List of Options
-        LazyColumn(
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .constrainAs(rvOptions) {
-                    top.linkTo(tvCategory.bottom)
-                    start.linkTo(tvCategory.start)
-                    end.linkTo(parent.end)
-                }
-        ) {
+        LazyColumn(modifier = Modifier
+            .padding(start = 16.dp)
+            .constrainAs(rvOptions) {
+                top.linkTo(tvCategory.bottom)
+                start.linkTo(tvCategory.start)
+                end.linkTo(parent.end)
+            }) {
             items(pageInfo.options.drop(1)) { item ->
-                SettingOptItem(
-                    item,
-                    isEligible,
-                    textColor,
-                    onOptionClicked = {
-                        viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
-                    }
-                )
+                SettingOptItem(item, isEligible, textColor, onOptionClicked = {
+                    viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                })
             }
         }
     }
@@ -269,25 +250,21 @@ private fun SettingOptItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         NestTypography(
-            text = item.text,
-            textStyle = NestTheme.typography.paragraph2.copy(color = textColor)
+            text = item.text, textStyle = NestTheme.typography.paragraph2.copy(color = textColor)
         )
-        AndroidView(
-            factory = { context ->
-                CheckboxUnify(context).apply {
-                    this.isChecked = item.isSelected
-                    this.isEnabled = isEligible
-                    this.setOnCheckedChangeListener { view, isActive ->
-                        if (!view.isPressed) return@setOnCheckedChangeListener
-                        onOptionClicked(item.copy(isSelected = !isActive))
-                    }
+        AndroidView(factory = { context ->
+            CheckboxUnify(context).apply {
+                this.isChecked = item.isSelected
+                this.isEnabled = isEligible
+                this.setOnCheckedChangeListener { view, isActive ->
+                    if (!view.isPressed) return@setOnCheckedChangeListener
+                    onOptionClicked(item.copy(isSelected = !isActive))
                 }
-            },
-            update = { v ->
-                v.isChecked = item.isSelected
-                v.isEnabled = isEligible
             }
-        )
+        }, update = { v ->
+            v.isChecked = item.isSelected
+            v.isEnabled = isEligible
+        })
     }
 }
 
@@ -295,7 +272,7 @@ data class StoriesSettingOpt(
     val text: String,
     val optionType: String,
     val isSelected: Boolean,
-    val isUpdateSuccess: Boolean = false
+    val lastClicked: Long = 0,
 )
 
 data class StoriesSettingConfig(
@@ -306,9 +283,7 @@ data class StoriesSettingConfig(
 )
 
 data class StoriesSettingsPageUiModel(
-    val options: List<StoriesSettingOpt>,
-    val config: StoriesSettingConfig,
-    val state: ResultState
+    val options: List<StoriesSettingOpt>, val config: StoriesSettingConfig, val state: ResultState
 ) {
     companion object {
         val Empty
