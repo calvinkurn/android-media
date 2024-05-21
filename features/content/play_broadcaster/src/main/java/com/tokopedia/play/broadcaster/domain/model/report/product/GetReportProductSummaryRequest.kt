@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.domain.model.report.product
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
-import com.tokopedia.play.broadcaster.domain.model.ContentType
+import com.tokopedia.content.common.track.usecase.ContentType
 
 /**
  * Created by Jonathan Darwin on 06 March 2024

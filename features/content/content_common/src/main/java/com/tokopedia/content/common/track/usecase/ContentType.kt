@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain.model
+package com.tokopedia.content.common.track.usecase
 
 /**
  * Created by Jonathan Darwin on 08 March 2024

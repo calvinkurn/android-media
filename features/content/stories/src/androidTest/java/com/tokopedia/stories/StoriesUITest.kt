@@ -5,6 +5,7 @@ import com.tokopedia.stories.data.mock.mockInitialDataModel
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.robot.StoriesRobotUITest
 import com.tokopedia.stories.utils.StoriesPreference
+import com.tokopedia.stories.utils.containsEventAction
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.annotations.UiTest
