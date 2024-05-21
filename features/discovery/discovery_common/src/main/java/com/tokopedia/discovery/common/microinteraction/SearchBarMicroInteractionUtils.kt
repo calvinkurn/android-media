@@ -13,22 +13,17 @@ private const val DEFAULT_ANIMATED_VALUE = 0f
 
 internal fun ValueAnimator.animatedValue() = (animatedValue as? Float) ?: DEFAULT_ANIMATED_VALUE
 
-internal fun onAnimationEndListener(
-    onStarted: (() -> Unit)? = null,
-    onAnimationEnd: (Animator) -> Unit
-) =
+internal fun onAnimationEndListener(onAnimationEnd: (Animator) -> Unit) =
     object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator) {
-            onStarted?.invoke()
-        }
+        override fun onAnimationStart(animation: Animator) {}
 
         override fun onAnimationEnd(animation: Animator) {
             onAnimationEnd(animation)
         }
 
-        override fun onAnimationCancel(animation: Animator) { }
+        override fun onAnimationCancel(animation: Animator) {}
 
-        override fun onAnimationRepeat(animation: Animator) { }
+        override fun onAnimationRepeat(animation: Animator) {}
     }
 
 internal fun searchBarMicroInteractionAnimator(

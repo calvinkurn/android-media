@@ -171,7 +171,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private val iconSearchMagnify: IconUnify by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.search_magnify_icon)
     }
-    private val searchCta: Typography by lazy(LazyThreadSafetyMode.NONE) {
+    private val btnSearch: Typography by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.tv_search_cta)
     }
 
@@ -409,7 +409,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setupMicroInteraction(navToolbarMicroInteraction: NavToolbarMicroInteraction?) {
-        navToolbarMicroInteraction?.setNavToolbarComponents(layoutSearch)
+        navToolbarMicroInteraction?.setNavToolbarComponents(layoutSearch, btnSearch)
     }
 
     /**
@@ -1023,9 +1023,9 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun configureSearchCta() {
         if (searchStyle == SearchStyle.SEARCH_REDESIGN) {
-            searchCta.visible()
+            btnSearch.visible()
         } else {
-            searchCta.gone()
+            btnSearch.gone()
         }
     }
 

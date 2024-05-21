@@ -37,11 +37,14 @@ class AutoCompleteMicroInteraction internal constructor(
     private val sideIconView: View?
         get() = sideIconViewRef?.get()
 
+    private var searchBtnRef: WeakReference<View?>? = null
+    private val searchBtn: View?
+        get() = searchBtnRef?.get()
+
     private var searchBarMicroInteractionAttributes = SearchBarMicroInteractionAttributes()
     private var searchBarConstraintSet = ConstraintSet()
     private var homeIconList: List<IconUnify> = listOf()
     private var animateContentDone = false
-    private var onAnimationStartedCallback: (() -> Unit)? = null
 
     fun setSearchBarMicroInteractionAttributes(
         searchBarMicroInteractionAttributes: SearchBarMicroInteractionAttributes
@@ -54,17 +57,17 @@ class AutoCompleteMicroInteraction internal constructor(
         backButtonView: View?,
         searchBarView: View?,
         sideIconView: View?,
-        onAnimationStartedCallback: (() -> Unit)? = null
+        searchBtn: View?
     ) {
         this.containerViewGroupRef = WeakReference(containerViewGroup)
         this.backButtonViewRef = WeakReference(backButtonView)
         this.searchBarViewRef = WeakReference(searchBarView)
         this.sideIconViewRef = WeakReference(sideIconView)
-        this.onAnimationStartedCallback = onAnimationStartedCallback
+        this.searchBtnRef = WeakReference(searchBtn)
     }
 
     fun animateSearchBar(useSearchBtn: Boolean = false) {
-        preAnimate()
+        preAnimate(useSearchBtn)
 
         val searchBarAnimator = createSearchBarAnimator(useSearchBtn)
         val iconListAnimator = createHomeIconAnimator()
@@ -85,14 +88,14 @@ class AutoCompleteMicroInteraction internal constructor(
             play(backButtonAnimator).before(bouncingBackButtonAnimator)
 
             addListener(
-                onAnimationEndListener(onStarted = onAnimationStartedCallback) {
+                onAnimationEndListener {
                     postAnimate()
                 }
             )
         }
     }
 
-    private fun preAnimate() {
+    private fun preAnimate(useSearchBtn: Boolean) {
         saveConstraintSet()
 
         hideNonSearchBarView()
@@ -100,7 +103,7 @@ class AutoCompleteMicroInteraction internal constructor(
         createHomeIconList()
         addHomeIconToContainer()
 
-        configurePreAnimateConstraint()
+        configurePreAnimateConstraint(useSearchBtn)
     }
 
     private fun saveConstraintSet() {
@@ -145,9 +148,10 @@ class AutoCompleteMicroInteraction internal constructor(
             )
         }
 
-    private fun configurePreAnimateConstraint() {
+    private fun configurePreAnimateConstraint(useSearchBtn: Boolean) {
         val searchBarView = searchBarView ?: return
         val searchBarViewId = searchBarView.id
+        val searchBtnId = searchBtn?.id
 
         containerViewGroup?.applyConstraintSet {
             constrainWidth(searchBarView.id, searchBarMicroInteractionAttributes.width.toInt())
@@ -164,6 +168,10 @@ class AutoCompleteMicroInteraction internal constructor(
                 searchBarViewId,
                 ConstraintSet.END
             )
+
+            if (searchBtnId != null && useSearchBtn) {
+                connect(searchBtnId, ConstraintSet.START, searchBarViewId, ConstraintSet.END)
+            }
 
             var previousViewStartId = searchBarViewId
 

@@ -17,7 +17,6 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -559,10 +558,9 @@ class SearchBarView(
             this,
             binding?.autocompleteActionUpButton,
             binding?.searchTextView,
-            binding?.autocompleteVoiceButton
-        ) {
-            animateSearchButton()
-        }
+            binding?.autocompleteVoiceButton,
+            binding?.tvSearchCta
+        )
     }
 
     public override fun onSaveInstanceState(): Parcelable? {
@@ -589,34 +587,6 @@ class SearchBarView(
         setHintIfExists(mSavedState?.hint, mSavedState?.placeholder)
 
         super.onRestoreInstanceState(mSavedState?.superState)
-    }
-
-    fun animateSearchButton() {
-        if (!SearchRollenceController.isSearchBtnEnabled()) {
-            return
-        }
-        val searchButton = binding?.tvSearchCta ?: return
-        val anchor = binding?.vSearchBoxEnd ?: return
-        val duration = AutoCompleteMicroInteraction.SEARCH_BAR_ANIMATOR_DURATION
-        searchButton.animate()
-            .x(anchor.x)
-            .setDuration(duration)
-            .start()
-        searchButton.animate()
-        AlphaAnimation(0f, 1.0f).apply {
-            setDuration(duration)
-            searchButton.startAnimation(this)
-            setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {}
-
-                override fun onAnimationEnd(p0: Animation?) {
-                    searchButton.x = anchor.x
-                }
-
-                override fun onAnimationRepeat(p0: Animation?) {
-                }
-            })
-        }
     }
 
     internal class SavedState : BaseSavedState {
