@@ -4,11 +4,11 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.content.ContentCardViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardGridViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardListViewHolder
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.viewholder.BannerTopAdsViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsViewHolder
 import com.tokopedia.home.R as homeR
 
 class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {

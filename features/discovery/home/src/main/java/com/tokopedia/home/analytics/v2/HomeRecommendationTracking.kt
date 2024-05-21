@@ -17,10 +17,10 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.T
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48662
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
-import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.content.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -40,11 +40,6 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             "remove wishlist - product recommendation - login"
         const val RECOMMENDATION_ADD_WISHLIST_NON_LOGIN =
             "add wishlist - product recommendation - non login"
-        const val BANNER_INSIDE_RECOMMENDATION = "banner inside recommendation tab"
-        const val BANNER_ADS_INSIDE_RECOMMENDATION = "banner inside recommendation tab ads"
-        const val BANNER_FIELD = "/ - banner inside recom tab - %s - "
-        const val BANNER_ADS_FIELD = "/ - p%s - banner inside recomm tab ads"
-        private const val LABEL_FULFILLMENT = "fulfillment"
 
         const val CLICK_ON_BANNER_FOR_YOU_WIDGET = "click on banner recommendation card for you"
         const val IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU =

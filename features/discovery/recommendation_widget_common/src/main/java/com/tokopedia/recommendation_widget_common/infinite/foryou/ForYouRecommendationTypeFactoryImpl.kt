@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
-import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.content.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.content.ContentCardViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
@@ -24,8 +24,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.state.viewhold
 import com.tokopedia.recommendation_widget_common.infinite.foryou.state.viewholder.LoadMoreStateViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.state.viewholder.RetryButtonStateViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.state.viewholder.ShimmeringStateViewHolder
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.viewholder.BannerTopAdsViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsViewHolder
 
 class ForYouRecommendationTypeFactoryImpl constructor(
     private val listener: GlobalRecomListener,
