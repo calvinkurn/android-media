@@ -30,12 +30,14 @@ class RecommendationByteIoUseCase {
         sessionId: String? = null,
         totalData: Int? = null,
     ) {
-        requestedRecommendation[pageName]?.let {
-            requestedRecommendation[pageName] = it.copy(
-                sessionId = sessionId ?: it.sessionId,
-                totalData = totalData ?: it.totalData
-            )
-        }
+        val currentData = requestedRecommendation[pageName]
+        requestedRecommendation[pageName] = currentData?.copy(
+            sessionId = sessionId ?: currentData.sessionId,
+            totalData = totalData ?: currentData.totalData
+        ) ?: RecommendationByteIoParam(
+            sessionId = "",
+            totalData = 0
+        )
     }
 
     fun getTotalData(pageName: String): Int {
