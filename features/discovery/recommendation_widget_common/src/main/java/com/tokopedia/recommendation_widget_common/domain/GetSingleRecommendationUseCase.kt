@@ -43,9 +43,12 @@ constructor(
             .map {
                 val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
                 entity.productRecommendationWidget.data.also { data ->
-                    requestParams.parameters[GetRecommendationUseCase.PAGE_NAME]?.toString()?.let { pageName ->
-                        byteIoUseCase.updateSessionId(pageName, data.appLog.sessionId)
+                    // if the request does not have pageName, use productId as identifier
+                    // example use case: similar recommendation landing page
+                    val requestIdentifier = requestParams.parameters[PRODUCT_IDS].toString().ifEmpty {
+                        requestParams.parameters[PRODUCT_IDS].toString()
                     }
+                    byteIoUseCase.updateSessionId(requestIdentifier, data.appLog.sessionId)
                 }
             }
     }
