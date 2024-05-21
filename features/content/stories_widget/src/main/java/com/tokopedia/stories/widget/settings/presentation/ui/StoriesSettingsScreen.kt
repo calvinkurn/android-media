@@ -164,7 +164,7 @@ private fun StoriesSettingsSuccess(
                     this.isEnabled = isEligible
                     this.setOnCheckedChangeListener { view, isActive ->
                         if (!view.isPressed) return@setOnCheckedChangeListener
-                        viewModel.onEvent(StoriesSettingsAction.SelectOption(itemFirst.copy(isSelected = isActive)))
+                        viewModel.onEvent(StoriesSettingsAction.SelectOption(itemFirst.copy(isSelected = !isActive)))
                     }
                 }
             },
@@ -279,7 +279,7 @@ private fun SettingOptItem(
                     this.isEnabled = isEligible
                     this.setOnCheckedChangeListener { view, isActive ->
                         if (!view.isPressed) return@setOnCheckedChangeListener
-                        onOptionClicked(item.copy(isSelected = isActive))
+                        onOptionClicked(item.copy(isSelected = !isActive))
                     }
                 }
             },

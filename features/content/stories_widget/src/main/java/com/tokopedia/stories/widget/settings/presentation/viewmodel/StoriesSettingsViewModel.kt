@@ -98,7 +98,7 @@ class StoriesSettingsViewModel @Inject constructor(
 
     private fun updateOption(option: StoriesSettingOpt) {
         if (!isAvailableForClick) {
-            updatePageOption(option.copy(isSelected = !option.isSelected), false)
+            updatePageOption(option, false)
             onEvent(
                 StoriesSettingsAction.ShowCoolingDown(
                     MessageErrorException("Tunggu 5 detik dulu ya")
@@ -110,14 +110,14 @@ class StoriesSettingsViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val response = repository.updateOption(option)
             if (response) {
-                updatePageOption(option, true)
+                updatePageOption(option.copy(isSelected = !option.isSelected), true)
                 lastRequestTime = System.currentTimeMillis()
-                _event.emit(StoriesSettingEvent.ClickTrack(option))
+                _event.emit(StoriesSettingEvent.ClickTrack(option.copy(isSelected = !option.isSelected)))
             } else {
                 throw Exception()
             }
         }) {
-            updatePageOption(option.copy(isSelected = !option.isSelected), false)
+            updatePageOption(option, false)
             _event.emit(
                 StoriesSettingEvent.ShowErrorToaster(it) {
                     updateOption(option)
