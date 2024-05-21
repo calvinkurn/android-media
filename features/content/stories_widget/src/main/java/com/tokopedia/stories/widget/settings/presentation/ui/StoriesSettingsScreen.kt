@@ -241,6 +241,7 @@ private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsVie
     }
     NestGlobalError(
         type = type,
+        actionText = stringResource(id = globalerrorR.string.noConnectionAction),
         secondaryActionText = text,
         onClickSecondaryAction = {
            viewModel.onEvent(
