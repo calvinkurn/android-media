@@ -17,4 +17,6 @@ interface ShippingDurationAdapterListener {
     )
 
     fun onLogisticPromoClicked(data: LogisticPromoUiModel)
+
+    fun onCollapseClicked(isCollapsed: Boolean)
 }

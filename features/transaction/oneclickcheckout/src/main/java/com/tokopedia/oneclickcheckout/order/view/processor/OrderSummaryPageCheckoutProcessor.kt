@@ -221,7 +221,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     }
                 ),
                 AppLogAnalytics.getEntranceInfoForCheckout(
-                    AtcBuyType.INSTANT,
+                    AtcBuyType.OCC,
                     products.mapNotNull { if (it.isError) null else it.cartId }
                 )
             )

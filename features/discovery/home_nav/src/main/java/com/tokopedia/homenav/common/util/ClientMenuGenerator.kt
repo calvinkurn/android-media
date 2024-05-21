@@ -23,6 +23,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val ID_TICKET = 909
         const val ID_REVIEW = 910
         const val ID_HOME = 911
+        const val ID_BUY_AGAIN = 912
 
         const val ID_OPEN_SHOP_TICKER = 801
         const val PAGE_SOURCE_KEY = "pageSource"
@@ -31,6 +32,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
         const val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
         const val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
+        const val APPLINK_BUY_AGAIN = "https://www.tokopedia.com/discovery/beli-lagi-landing-page-me"
 
         const val IDENTIFIER_TITLE_MY_ACTIVITY = 100
         const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
@@ -58,6 +60,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_TICKET -> return getTicketMenu(notifCount, sectionId)
             ID_REVIEW -> return getReviewMenu(notifCount, sectionId, showCta)
             ID_HOME -> return getHomeMenu(notifCount, sectionId)
+            ID_BUY_AGAIN -> return getBuyAgainMenu(notifCount, sectionId, showCta)
         }
         return HomeNavMenuDataModel()
     }
@@ -169,6 +172,18 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             srcIconId = IconUnify.LIST_TRANSACTION,
             itemTitle = context.getString(R.string.menu_transaction_menu_all_transaction),
             applink = ApplinkConst.PURCHASE_ORDER.needLoginValidation(),
+            notifCount = notifCount,
+            sectionId = sectionId,
+            showCta = showCta
+        )
+    }
+
+    private fun getBuyAgainMenu(notifCount: String, sectionId: Int, showCta: Boolean): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
+            id = ID_BUY_AGAIN,
+            srcIconId = IconUnify.CART,
+            itemTitle = context.getString(R.string.menu_transaction_menu_buy_again),
+            applink = APPLINK_BUY_AGAIN,
             notifCount = notifCount,
             sectionId = sectionId,
             showCta = showCta

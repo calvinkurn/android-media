@@ -63,7 +63,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     private var globalErrorLayout: GlobalError? = null
 
     companion object {
-
+        private const val UNLIMITED_QUOTA = -1
         fun newInstance(): ShopDiscountSellerInfoBottomSheet {
             return ShopDiscountSellerInfoBottomSheet()
         }
@@ -161,13 +161,18 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             val descriptionText: String
             if (data.isUseVps) {
                 val vpsPackageData = getSellerVpsPackageData(data)
-                val formattedExpiryDate = Date(
-                    vpsPackageData?.expiredAtUnix.orZero().unixToMs()
-                ).parseTo(DateUtil.DEFAULT_VIEW_FORMAT)
-                contentText = String.format(
-                    getString(R.string.seller_info_bottom_sheet_expiry_content_vps),
-                    formattedExpiryDate
-                )
+                val expiredAt = vpsPackageData?.expiredAtUnix
+                contentText = if(expiredAt.orZero() < 0){
+                    getString(R.string.seller_info_bottom_sheet_expiry_content_non_vps)
+                }else{
+                    val formattedExpiryDate = Date(
+                        expiredAt.orZero().unixToMs()
+                    ).parseTo(DateUtil.DEFAULT_VIEW_FORMAT)
+                    String.format(
+                        getString(R.string.seller_info_bottom_sheet_expiry_content_vps),
+                        formattedExpiryDate
+                    )
+                }
                 descriptionText = ""
             } else {
                 contentText = getString(R.string.seller_info_bottom_sheet_expiry_content_non_vps)
@@ -190,16 +195,24 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             val descriptionText: String
             if (data.isUseVps) {
                 val vpsData = getSellerVpsPackageData(data)
-                contentText = String.format(
-                    getString(R.string.seller_info_bottom_sheet_quota_left_content_vps_format),
-                    vpsData?.remainingQuota,
-                    vpsData?.maxQuota
-                )
-                descriptionText =
-                    getString(R.string.seller_info_bottom_sheet_quota_left_vps_description)
+                val remainingQuota = vpsData?.remainingQuota
+                if (remainingQuota == UNLIMITED_QUOTA) {
+                    contentText =
+                        getString(R.string.seller_info_bottom_sheet_quota_left_content_unlimited)
+                    descriptionText = ""
+                } else {
+                    contentText = String.format(
+                        getString(R.string.seller_info_bottom_sheet_quota_left_content_limited),
+                        vpsData?.remainingQuota,
+                        vpsData?.maxQuota
+                    )
+                    descriptionText =
+                        getString(R.string.seller_info_bottom_sheet_quota_left_vps_description)
+                }
+
             } else {
                 contentText =
-                    getString(R.string.seller_info_bottom_sheet_quota_left_content_non_vps)
+                    getString(R.string.seller_info_bottom_sheet_quota_left_content_unlimited)
                 descriptionText = ""
             }
             setSectionData(
@@ -243,9 +256,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun getSellerVpsPackageData(data: ShopDiscountSellerInfoUiModel): ShopDiscountSellerInfoUiModel.SlashPriceBenefitData? {
-        return data.listSlashPriceBenefitData.firstOrNull {
-            it.packageId.toIntOrZero() != -1
-        }
+        return data.listSlashPriceBenefitData.firstOrNull()
     }
 
     private fun showErrorState(throwable: Throwable) {

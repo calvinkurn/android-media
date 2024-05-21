@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail
 import androidx.lifecycle.LiveData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommUiState
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -18,8 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface IProductRecommSubViewModel {
 
-    val verticalRecommendation: LiveData<Result<RecommendationWidget>>
-
     val statusFilterTopAdsProduct: LiveData<Result<Boolean>>
 
     val filterTopAdsProduct: LiveData<ProductRecommendationDataModel>
@@ -28,14 +25,6 @@ interface IProductRecommSubViewModel {
 
     val productListData : StateFlow<MutableList<ProductRecommUiState>>
     fun onRecommendationEvent(event: ProductRecommendationEvent)
-
-    fun getVerticalRecommendationData(
-        pageName: String,
-        page: Int? = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-        productId: String?,
-        queryParam: String,
-        thematicId: String
-    )
 
     fun recommendationChipClicked(
         recommendationDataModel: ProductRecommendationDataModel,

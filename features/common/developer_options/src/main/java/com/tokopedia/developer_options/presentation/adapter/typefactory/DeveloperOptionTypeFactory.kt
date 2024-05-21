@@ -37,10 +37,12 @@ import com.tokopedia.developer_options.presentation.model.ResetOnBoardingNavigat
 import com.tokopedia.developer_options.presentation.model.ResetOnBoardingUiModel
 import com.tokopedia.developer_options.presentation.model.RollenceAbTestingManualSwitcherUiModel
 import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
+import com.tokopedia.developer_options.presentation.model.SSOAuthorizationUiModel
 import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggingUiModel
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
+import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
 import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
@@ -69,6 +71,7 @@ import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
 interface DeveloperOptionTypeFactory {
     fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int
     fun type(uiModel: PdpDevUiModel): Int
+    fun type(uiModel: MockDynamicWidgetUiModel): Int
     fun type(uiModel: AccessTokenUiModel): Int
     fun type(uiModel: SystemNonSystemAppsUiModel): Int
     fun type(uiModel: ResetOnBoardingUiModel): Int
@@ -127,4 +130,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: FpiMonitoringUiModel): Int
     fun type(uiModel: UserIdUiModel): Int
     fun type(uiModel: ShopIdUiModel): Int
+
+    fun type(uiModel: SSOAuthorizationUiModel): Int
 }

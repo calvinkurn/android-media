@@ -81,17 +81,12 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerform
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemLevelScoreProjectUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemParameterFaqUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemParentBenefitUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemProtectedParameterUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemReactivatedComebackUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProPotentiallyDowngradedUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
 import com.tokopedia.shop.score.performance.presentation.model.TickerReactivatedUiModel
@@ -271,15 +266,6 @@ open class ShopScoreMapper @Inject constructor(
                 )
             }
 
-            val recommendationTools =
-                shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools
-            if (recommendationTools?.isNotEmpty() == true) {
-                add(
-                    mapToItemRecommendationPMUiModel
-                        (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools)
-                )
-            }
-
             when {
                 isOfficialStore || shopScore < 0 -> {
                     add(
@@ -295,35 +281,6 @@ open class ShopScoreMapper @Inject constructor(
                         )
                     )
                     return@apply
-                }
-                powerMerchantResponse?.pmTier == PMTier.REGULAR || powerMerchantResponse?.pmTier == PMTier.PRO -> {
-                    when (powerMerchantResponse.status) {
-                        PMStatusConst.ACTIVE -> {
-                            if (powerMerchantResponse.pmTier == PMTier.REGULAR) {
-                                add(
-                                    ItemStatusPMUiModel(
-                                        descPM = R.string.description_content_pm_section
-                                    )
-                                )
-                                return@apply
-                            } else {
-                                when (shopScore) {
-                                    in SHOP_SCORE_60..SHOP_SCORE_69 -> {
-                                        add(ItemStatusPMProPotentiallyDowngradedUiModel(false))
-                                        return@apply
-                                    }
-                                    else -> {
-                                        add(ItemStatusPMProUiModel())
-                                        return@apply
-                                    }
-                                }
-                            }
-                        }
-                        PMStatusConst.IDLE -> {
-                            add(ItemStatusPMProPotentiallyDowngradedUiModel(true))
-                            return@apply
-                        }
-                    }
                 }
             }
         }
@@ -932,22 +889,6 @@ open class ShopScoreMapper @Inject constructor(
                 ?: "-", nextUpdate = shopScoreLevelResponse?.nextUpdate
                 ?: "-", isNewSeller = isNewSeller
         )
-    }
-
-    private fun mapToItemRecommendationPMUiModel(
-        recommendationTools: List<GetRecommendationToolsResponse
-        .ValuePropositionGetRecommendationTools.RecommendationTool>?
-    ): SectionShopRecommendationUiModel {
-        return SectionShopRecommendationUiModel(
-            recommendationTools?.map {
-                SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
-                    iconRecommendationUrl = it.imageUrl,
-                    appLinkRecommendation = it.relatedLinkAppLink,
-                    descRecommendation = it.text,
-                    titleRecommendation = it.title,
-                    identifier = it.identifier
-                )
-            } ?: emptyList())
     }
 
     private fun mapToCardTooltipLevel(level: Long = 0): List<CardTooltipLevelUiModel> {

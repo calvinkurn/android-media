@@ -19,9 +19,9 @@ import kotlin.coroutines.CoroutineContext
 
 class CalendarWidgetItemViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
     private val pushBannerSubscription: MutableLiveData<Boolean> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
     private val showErrorToast: MutableLiveData<String> = MutableLiveData()

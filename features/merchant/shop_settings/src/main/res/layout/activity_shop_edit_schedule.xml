@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ilv_content_hint="@string/hint_date"
-            app:ilv_drawable="@drawable/ic_calendar_grey"
+            app:ilv_drawable="@drawable/ic_shop_setting_calendar_grey"
             app:ilv_title="@string/date_start_shop_close" />
 
         <com.tokopedia.shop.settings.common.view.customview.ImageLabelView
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ilv_content_hint="@string/hint_date"
-            app:ilv_drawable="@drawable/ic_calendar_grey"
+            app:ilv_drawable="@drawable/ic_shop_setting_calendar_grey"
             app:ilv_title="@string/date_end_shop_close" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify

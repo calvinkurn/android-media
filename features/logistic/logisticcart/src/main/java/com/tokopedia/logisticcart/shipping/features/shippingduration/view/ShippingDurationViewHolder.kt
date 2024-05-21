@@ -7,10 +7,7 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -18,6 +15,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.utils.ShippingBottomSheetUtils
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -33,8 +31,6 @@ class ShippingDurationViewHolder(
     private val binding: ItemDurationBinding,
     private val cartPosition: Int
 ) : RecyclerView.ViewHolder(binding.root) {
-
-    private var showCaseCoachmark: CoachMark2? = null
 
     fun bindData(
         shippingDurationUiModel: ShippingDurationUiModel,
@@ -53,7 +49,6 @@ class ShippingDurationViewHolder(
             renderEta(shippingDurationUiModel)
             renderDynamicPrice(shippingDurationUiModel)
             renderCheck(shippingDurationUiModel)
-            setShowCase(shippingDurationUiModel)
             setClickListener(shippingDurationUiModel, shippingDurationAdapterListener)
         }
     }
@@ -280,26 +275,6 @@ class ShippingDurationViewHolder(
                 lblDynamicPricing.visible()
                 lblDynamicPricing.text = textLabel
             }
-        }
-    }
-
-    private fun setShowCase(shippingDurationUiModel: ShippingDurationUiModel) {
-        if (shippingDurationUiModel.isShowShowCase) {
-            val label =
-                itemView.context.getString(logisticcartR.string.label_title_showcase_shipping_duration)
-            val text =
-                itemView.context.getString(logisticcartR.string.label_body_showcase_shipping_duration)
-            val coachMarkItem = CoachMark2Item(
-                binding.layoutShippingDuration,
-                label,
-                text,
-                CoachMark2.POSITION_TOP
-            )
-            val list = ArrayList<CoachMark2Item>().apply {
-                add(coachMarkItem)
-            }
-            showCaseCoachmark = CoachMark2(binding.root.context)
-            showCaseCoachmark?.showCoachMark(list, null)
         }
     }
 
