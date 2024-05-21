@@ -9,5 +9,4 @@
     android:focusable="true"
     app:reimagine="true"
     app:reimagine_template="grid"
-    app:useCompatPadding="true"
-    app:useScrollChangedEventAdsByteIo="true" />
+    app:useCompatPadding="true" />
