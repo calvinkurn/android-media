@@ -13,6 +13,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippi
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentLevelAddOnItem
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentWidgetResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAction
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
@@ -25,11 +26,13 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmBenefitProductModel
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmProductModel
 import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmTierProductModel
+import com.tokopedia.checkout.domain.model.cartshipmentform.AdditionalFeature
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ChosenPayment
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
@@ -40,6 +43,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.UI_GROUP_TYPE_OWOC
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
+import com.tokopedia.checkout.domain.model.cartshipmentform.PaymentWidget
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
@@ -193,6 +197,9 @@ class ShipmentMapper @Inject constructor() {
             listSummaryAddons = mapSummaryAddOn(shipmentAddressFormDataResponse.listSummaryAddOns)
             paymentLevelAddOnsPositions =
                 mapPaymentLevelAddOns(shipmentAddressFormDataResponse.paymentLevelAddOns)
+            additionalFeature = mapAdditionalFeatures(shipmentAddressFormDataResponse.additionalFeatures)
+            paymentWidget = mapPaymentWidget(shipmentAddressFormDataResponse.paymentWidget)
+            cartType = shipmentAddressFormDataResponse.cartType
         }
     }
 
@@ -386,6 +393,8 @@ class ShipmentMapper @Inject constructor() {
                     isProductFinsurance = product.productFinsurance == 1
                     isProductFcancelPartial = product.productFcancelPartial == 1
                     productCatId = product.productCatId
+                    lastLevelCategory = product.lastLevelCategory
+                    categoryIdentifier = product.categoryIdentifier
                     isShowTicker = product.productTicker.isShowTicker
                     tickerMessage = product.productTicker.message
                     if (product.freeShippingExtra.eligible) {
@@ -882,7 +891,6 @@ class ShipmentMapper @Inject constructor() {
             voucherOrders = mapPromoVoucherOrders(promoData)
             additionalInfo = mapLastApplyAdditionalInfoUiModel(promoData.additionalInfo)
             message = mapLastApplyMessageUiModel(promoData.message)
-//            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
             userGroupMetadata = promoData.userGroupMetadata
         }
@@ -1392,6 +1400,33 @@ class ShipmentMapper @Inject constructor() {
                     )
                 )
             })
+        )
+    }
+
+    private fun mapAdditionalFeatures(additionalFeatures: List<String>): AdditionalFeature {
+        val additionalFeature = AdditionalFeature()
+        for (feature in additionalFeatures) {
+            if (feature.equals(AdditionalFeature.QTY_EDIT, ignoreCase = true)) {
+                additionalFeature.isEnableQtyEdit = true
+            }
+            if (feature.equals(AdditionalFeature.NOTE_EDIT, ignoreCase = true)) {
+                additionalFeature.isEnableNoteEdit = true
+            }
+        }
+        return additionalFeature
+    }
+
+    private fun mapPaymentWidget(response: PaymentWidgetResponse): PaymentWidget {
+        return PaymentWidget(
+            metadata = response.metadata,
+            enable = response.enable,
+            errorMessage = response.errorMessage,
+            chosenPayment = ChosenPayment(
+                response.chosenPayment.gatewayCode,
+                response.chosenPayment.tenureType,
+                response.chosenPayment.optionId,
+                response.chosenPayment.metadata
+            )
         )
     }
 

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
 import com.tokopedia.analytics.byteio.util.underscoredParam
 import org.json.JSONObject
@@ -31,6 +32,7 @@ data class SlideTrackObject(
     val moduleName: String = "",
     val barName: String = "",
     val shopId: String = "",
+    val additionalParams: AppLogAdditionalParam = AppLogAdditionalParam.None,
 )
 
 /**
@@ -41,9 +43,9 @@ data class RecommendationTriggerObject(
     val sessionId: String = "",
     val requestId: String = "",
     val moduleName: String = "",
-    val isUnderGuide: Boolean = false,
     val listName: String = "",
     val listNum: Int = -1,
+    val additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
 )
 
 class VerticalTrackScrollListener(
@@ -202,7 +204,8 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
 }
 
 fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTriggerObject) {
-    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
+    val additionalParams = model.additionalParam.parameters
+    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject(additionalParams).also {
         it.addPage()
         it.addEnterFrom()
         it.put(AppLogParam.LIST_NAME, model.listName.underscoredParam())
@@ -216,7 +219,8 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
 }
 
 fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
-    AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject().also {
+    val additionalParams = model.additionalParams.parameters
+    AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject(additionalParams).also {
         it.addPage()
         it.addEnterFrom()
         it.put(AppLogParam.SLIDE_TYPE, if (scrollOffset > 0) "show_right" else "show_left")

@@ -373,17 +373,28 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 showError(errorMessage.first.orEmpty())
             }
         })
+
+        bcaBalanceViewModel.errorTagLog.observe(viewLifecycleOwner, Observer {
+            context?.let { context ->
+                sendLogDebugBCAFlazz(it)
+            }
+        }
+        )
     }
 
     private fun processGen2BCA(isoDep: IsoDep, MID: String, TID: String, bRawPublicKey: String,
                                bRawPrivateKey: String, ATD: String) {
         showLoading(getOperatorName(issuerActive))
         bcaBalanceViewModel.processBCATagBalance(isoDep, MID, TID, bRawPublicKey,
-            bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD)
+            bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), ATD,
+            getString(common_electronic_moneyR.string.emoney_nfc_bca_top_up_2)
+        )
     }
     private fun processGen1BCA(isoDep: IsoDep, bRawPublicKey: String, bRawPrivateKey: String) {
         showLoading(getOperatorName(issuerActive))
-        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
+        bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey,
+            getString(common_electronic_moneyR.string.emoney_nfc_bca_gen_one)
+        )
     }
 
     private fun showCardNotEligible() {

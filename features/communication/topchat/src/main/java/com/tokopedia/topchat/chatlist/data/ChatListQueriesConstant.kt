@@ -10,10 +10,10 @@ object ChatListQueriesConstant {
     const val PARAM_TAB_SELLER = "tab-seller"
 
     const val PARAM_FILTER_ALL = "all"
-    const val PARAM_FILTER_READ = "read"
     const val PARAM_FILTER_UNREAD = "unread"
     const val PARAM_FILTER_UNREPLIED = "unreplied"
     const val PARAM_FILTER_TOPBOT = "topbot"
+    const val PARAM_FILTER_BROADCAST = "broadcast"
 
     const val PARAM_PER_PAGE = "per_page"
 

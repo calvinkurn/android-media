@@ -89,6 +89,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+
+    implementation rootProject.ext.slardarDependencies.commonMonitor
 }
 
 project.ext {
@@ -99,3 +101,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'
+apply from: '../../sonar_config.gradle'

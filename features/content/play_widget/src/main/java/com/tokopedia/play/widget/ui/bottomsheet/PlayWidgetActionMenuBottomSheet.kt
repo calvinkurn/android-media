@@ -87,7 +87,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
             if (channel.share.isShow) {
                 actionList.add(
                     Action(
-                        IconUnify.SHARE_MOBILE,
+                        IconUnify.SOCIAL_SHARE,
                         MethodChecker.getColor(
                             requireContext(),
                             com.tokopedia.unifyprinciples.R.color.Unify_NN600

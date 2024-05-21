@@ -3,6 +3,7 @@
 package com.tokopedia.home.beranda.data.newatf
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home.beranda.data.newatf.balance.BalanceWidgetUseCase
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelRepository
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
@@ -10,6 +11,8 @@ import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetRepository
 import com.tokopedia.home.beranda.data.newatf.ticker.TickerRepository
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.constant.AtfKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -37,6 +40,7 @@ class HomeAtfUseCase @Inject constructor(
     private val atfChannelRepository: AtfChannelRepository,
     private val missionWidgetRepository: MissionWidgetRepository,
     private val todoWidgetRepository: TodoWidgetRepository,
+    private val balanceWidgetUseCase: BalanceWidgetUseCase,
 ) : CoroutineScope {
 
     private var workerJob: Job? = null
@@ -56,7 +60,8 @@ class HomeAtfUseCase @Inject constructor(
         dynamicIconRepository.flow,
         missionWidgetRepository.flow,
         todoWidgetRepository.flow,
-        atfChannelRepository.flow
+        atfChannelRepository.flow,
+        balanceWidgetUseCase.flow
     )
 
     /**
@@ -103,6 +108,14 @@ class HomeAtfUseCase @Inject constructor(
         }
     }
 
+    /**
+     * Refresh balance widget data
+     */
+    fun refreshBalanceWidget(contentType: BalanceItemVisitable.ContentType? = null) {
+        val type = contentType ?: return balanceWidgetUseCase.fetchFullData()
+        balanceWidgetUseCase.refresh(type)
+    }
+
     fun dispose() {
         workerJob?.cancel()
         positionObserverJob?.cancel()
@@ -121,9 +134,7 @@ class HomeAtfUseCase @Inject constructor(
         positionObserverJob = launch(homeDispatcher.io) {
             dynamicPositionRepository.flow.collect { value ->
                 if (value != null) {
-                    if (value.isPositionReady() || value.isDataError()) {
-                        emit(value)
-                    }
+                    conditionalEmitPosition(value)
                     if (value.needToFetchComponents) {
                         value.listAtfData.forEach { data ->
                             conditionalFetchAtfData(data.atfMetadata)
@@ -163,11 +174,24 @@ class HomeAtfUseCase @Inject constructor(
             AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> launch { homepageBannerRepository.getData(metadata) }
             AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> launch { dynamicIconRepository.getData(metadata) }
             AtfKey.TYPE_TICKER -> launch { tickerRepository.getData(metadata) }
-            AtfKey.TYPE_CHANNEL -> launch { atfChannelRepository.getData(metadata) }
+            AtfKey.TYPE_CHANNEL,
+            AtfKey.TYPE_HORIZONTAL -> launch { atfChannelRepository.getData(metadata) }
             AtfKey.TYPE_MISSION,
             AtfKey.TYPE_MISSION_V2,
             AtfKey.TYPE_MISSION_V3 -> launch { missionWidgetRepository.getData(metadata) }
             AtfKey.TYPE_TODO -> launch { todoWidgetRepository.getData(metadata) }
+            AtfKey.TYPE_BALANCE -> launch { balanceWidgetUseCase.getData(metadata) }
+        }
+    }
+
+    private fun conditionalEmitPosition(value: AtfDataList) {
+        flow.value?.let {
+            // prevent emitting cache data after refresh
+            if (value.isCache && !it.isCache) return
+        }
+        // only emit data if list is not empty or status = error
+        if (value.isPositionReady() || value.isDataError()) {
+            emit(value)
         }
     }
 

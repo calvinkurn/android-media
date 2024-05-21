@@ -15,5 +15,6 @@ data class CheckoutData(
     var transactionId: String = "",
     var prompt: Prompt = Prompt(),
     var jsonResponse: String = "",
-    var priceValidationData: PriceValidationData = PriceValidationData()
+    var priceValidationData: PriceValidationData = PriceValidationData(),
+    var method: String = ""
 ) : Parcelable

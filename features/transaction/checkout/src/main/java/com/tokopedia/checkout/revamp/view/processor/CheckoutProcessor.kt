@@ -8,16 +8,21 @@ import com.tokopedia.checkout.data.model.request.checkout.Carts
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.Data
 import com.tokopedia.checkout.data.model.request.checkout.Egold
+import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
+import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_OCC_MULTI_TOKONOW
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_REGULAR_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
+import com.tokopedia.checkout.data.model.request.checkout.Payment
 import com.tokopedia.checkout.data.model.request.checkout.Promo
 import com.tokopedia.checkout.data.model.request.checkout.TokopediaCorner
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
 import com.tokopedia.checkout.revamp.view.crossSellGroup
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
+import com.tokopedia.checkout.revamp.view.payment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
@@ -27,6 +32,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.upsell
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -55,14 +61,16 @@ class CheckoutProcessor @Inject constructor(
         deviceId: String,
         checkoutLeasingId: String,
         fingerprintPublicKey: String?,
-        hasClearPromoBeforeCheckout: Boolean
+        hasClearPromoBeforeCheckout: Boolean,
+        cartType: String
     ): CheckoutResult {
         val checkoutRequest = generateCheckoutRequest(
             listData,
             recipientAddressModel,
             validateUsePromoRevampUiModel,
             checkoutLeasingId,
-            isTradeInDropOff
+            isTradeInDropOff,
+            cartType
         )
         if (checkoutRequest.data.isNotEmpty() && checkoutRequest.data.first().groupOrders.isNotEmpty()) {
             // Get additional param for trade in analytics
@@ -77,6 +85,8 @@ class CheckoutProcessor @Inject constructor(
                     diagnosticId = cartItemModel.diagnosticId
                 }
             }
+            val currentPayment = listData.payment()?.data?.paymentWidgetData?.firstOrNull()
+            val paymentParam = generatePayment(currentPayment)
             val params = generateCheckoutParams(
                 isOneClickShipment,
                 isTradeIn,
@@ -84,7 +94,9 @@ class CheckoutProcessor @Inject constructor(
                 deviceId,
                 checkoutRequest,
                 "",
-                fingerprintPublicKey
+                fingerprintPublicKey,
+                paymentParam,
+                cartType
             )
             try {
                 val checkoutData = withContext(dispatchers.io) {
@@ -182,7 +194,8 @@ class CheckoutProcessor @Inject constructor(
         recipientAddressModel: RecipientAddressModel,
         validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
         checkoutLeasingId: String,
-        isTradeInDropOff: Boolean
+        isTradeInDropOff: Boolean,
+        cartType: String
     ): Carts {
         // Set promo merchant request data
         val data = removeErrorShopProduct(listData, recipientAddressModel, isTradeInDropOff)
@@ -274,12 +287,12 @@ class CheckoutProcessor @Inject constructor(
             if (checkoutLeasingId.isNotEmpty()) {
                 leasingId = checkoutLeasingId.toLongOrZero()
             }
-            featureType = setCheckoutFeatureTypeData(data)
+            featureType = setCheckoutFeatureTypeData(data, cartType)
             crossSell = crossSellRequest
         }
     }
 
-    private fun setCheckoutFeatureTypeData(dataCheckoutRequestList: List<Data>): Int {
+    private fun setCheckoutFeatureTypeData(dataCheckoutRequestList: List<Data>, cartType: String): Int {
         var hasTokoNowProduct = false
         loopall@ for (dataCheckoutRequest in dataCheckoutRequestList) {
             for (groupOrder in dataCheckoutRequest.groupOrders) {
@@ -291,7 +304,11 @@ class CheckoutProcessor @Inject constructor(
                 }
             }
         }
-        return if (hasTokoNowProduct) FEATURE_TYPE_TOKONOW_PRODUCT else FEATURE_TYPE_REGULAR_PRODUCT
+        return if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+            if (hasTokoNowProduct) FEATURE_TYPE_OCC_MULTI_TOKONOW else FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
+        } else {
+            if (hasTokoNowProduct) FEATURE_TYPE_TOKONOW_PRODUCT else FEATURE_TYPE_REGULAR_PRODUCT
+        }
     }
 
     private fun setCheckoutRequestPromoData(
@@ -344,8 +361,16 @@ class CheckoutProcessor @Inject constructor(
         deviceId: String,
         carts: Carts,
         dynamicData: String,
-        fingerprintPublicKey: String?
+        fingerprintPublicKey: String?,
+        payment: Payment,
+        cartType: String
     ): CheckoutRequest {
+        val atcBuyType = when {
+            isOneClickShipment -> AtcBuyType.OCS
+            cartType == CartShipmentAddressFormData.CART_TYPE_OCC -> AtcBuyType.OCC
+            else -> AtcBuyType.ATC
+        }
+
         return CheckoutRequest(
             carts,
             isOneClickShipment.toString(),
@@ -359,8 +384,16 @@ class CheckoutProcessor @Inject constructor(
             isExpress = false,
             fingerprintSupport = (fingerprintPublicKey != null).toString(),
             fingerprintPublickey = fingerprintPublicKey ?: "",
-            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC, carts.cartIds)
+            payment = payment,
+            tracker = AppLogAnalytics.getEntranceInfoForCheckout(atcBuyType, carts.cartIds)
         )
+    }
+
+    private fun generatePayment(paymentWidgetData: PaymentWidgetData?): Payment {
+        if (paymentWidgetData == null) {
+            return Payment()
+        }
+        return Payment(gatewayCode = paymentWidgetData.gatewayCode)
     }
 
     private fun removeErrorShopProduct(

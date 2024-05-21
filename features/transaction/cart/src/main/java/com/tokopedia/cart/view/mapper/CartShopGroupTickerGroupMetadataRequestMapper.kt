@@ -21,13 +21,14 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
                             )
                         )
                     }
-
-                    listGroupProductData.add(
-                        CartShopGroupTickerGroupMetadata.OrderData.GroupProduct(
-                            groupQty = groupedByBundleGroupId.value.first().bundleQuantity,
-                            listProduct = listProductBundle
+                    if (listProductBundle.isNotEmpty()) {
+                        listGroupProductData.add(
+                            CartShopGroupTickerGroupMetadata.OrderData.GroupProduct(
+                                groupQty = groupedByBundleGroupId.value.first().bundleQuantity,
+                                listProduct = listProductBundle
+                            )
                         )
-                    )
+                    }
                 }
             } else {
                 groupedByCartString.value.groupBy { it.identifier }.map { groupedByIdentifier ->
@@ -42,13 +43,14 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
                             )
                         )
                     }
-
-                    listGroupProductData.add(
-                        CartShopGroupTickerGroupMetadata.OrderData.GroupProduct(
-                            groupQty = 1,
-                            listProduct = listProduct
+                    if (listProduct.isNotEmpty()) {
+                        listGroupProductData.add(
+                            CartShopGroupTickerGroupMetadata.OrderData.GroupProduct(
+                                groupQty = 1,
+                                listProduct = listProduct
+                            )
                         )
-                    )
+                    }
                 }
             }
 

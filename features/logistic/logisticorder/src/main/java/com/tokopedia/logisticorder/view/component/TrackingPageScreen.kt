@@ -93,6 +93,10 @@ fun TrackingPageScreen(
             DriverWidget(state.trackingData, callDriver, openTippingInfo, onClickTippingButton)
             ShippingStatusSection(state.trackingData?.trackOrder?.status)
             TargetedTicker(state.tickerData, openWebview)
+            Divider(
+                thickness = 1.dp,
+                modifier = Modifier.padding(top = 16.dp, start = 20.dp, end = 20.dp)
+            )
             TrackingHistory(state.trackingData?.trackOrder, seeProofOfDelivery)
             LiveTrackingSection(state.trackingData?.trackOrder?.detail?.trackingUrl, openWebview)
             FindNewDriverSection(state.retryAvailability, onEvent)
@@ -125,10 +129,6 @@ fun ShippingStatusSection(status: String?) {
             NestTypography(
                 text = status,
                 textStyle = NestTheme.typography.heading4.copy(color = NestTheme.colors.NN._950)
-            )
-            Divider(
-                thickness = 1.dp,
-                modifier = Modifier.padding(top = 16.dp)
             )
         }
     }

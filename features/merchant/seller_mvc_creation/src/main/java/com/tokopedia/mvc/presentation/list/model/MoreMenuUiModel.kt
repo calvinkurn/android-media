@@ -62,7 +62,7 @@ sealed class MoreMenuUiModel(
     data class Share(
         override val title: StringHandler?,
         @DrawableRes
-        override val icon: Int = IconUnify.SHARE_MOBILE
+        override val icon: Int = IconUnify.SOCIAL_SHARE
     ) : MoreMenuUiModel(title, icon)
 
     data class Stop(

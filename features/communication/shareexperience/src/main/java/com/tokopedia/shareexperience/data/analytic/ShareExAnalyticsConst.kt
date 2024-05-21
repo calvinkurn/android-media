@@ -10,6 +10,7 @@ object ShareExAnalyticsConst {
         const val TRACKER_ID = "trackerId"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
+        const val SHOP_ID = "shopId"
         const val PRODUCT_ID = "productId"
         const val USER_ID = "userId"
         const val PROMOTIONS = "promotions"
@@ -44,6 +45,8 @@ object ShareExAnalyticsConst {
         const val TOP_NAV_PDP = "top nav - product detail page"
         const val PDP = "product detail page"
         const val REVIEW = "fullscreen review"
+        const val GOPAYLATER_REFERRAL = "gopaylater referral"
+        const val ORDER_DETAIL = "order detail history"
     }
 
     object Tracker {
@@ -60,5 +63,19 @@ object ShareExAnalyticsConst {
         const val ID_50125 = "50125"
         const val ID_50126 = "50126"
         const val ID_50127 = "50127"
+
+        // Gopaylater Referral
+        const val ID_50464 = "50464"
+        const val ID_50465 = "50465"
+        const val ID_50466 = "50466"
+        const val ID_50467 = "50467"
+
+        // Order Detail
+        const val ID_45653 = "45653"
+        const val ID_45654 = "45654"
+        const val ID_45655 = "45655"
+        const val ID_45656 = "45656"
+        const val ID_50278 = "50278"
+        const val ID_50279 = "50279"
     }
 }

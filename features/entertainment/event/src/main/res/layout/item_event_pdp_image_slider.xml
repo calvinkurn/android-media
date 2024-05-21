@@ -6,4 +6,4 @@
     android:layout_height="wrap_content"
     android:adjustViewBounds="true"
     android:focusable="true"
-    app:srcCompat="@drawable/ic_loading_image" />
+    app:srcCompat="@drawable/common_ic_loading_image" />

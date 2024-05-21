@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.mapper.AddToCartBundleDataMapper
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -47,6 +48,7 @@ class AddToCartBundleTest {
     private var miniCartListUiModelMapper: MiniCartListUiModelMapper = spyk()
     private var miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper = spyk()
     private var addToCartBundleDataMapper: AddToCartBundleDataMapper = spyk()
+    private val updateGwpUseCase: BmGmGetGroupProductTickerUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
 
     @get: Rule
@@ -66,6 +68,7 @@ class AddToCartBundleTest {
             addToCartOccMultiUseCase,
             miniCartListUiModelMapper,
             miniCartChatListUiModelMapper,
+            updateGwpUseCase,
             userSession
         )
     }

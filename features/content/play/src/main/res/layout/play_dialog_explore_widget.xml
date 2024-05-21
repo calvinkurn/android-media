@@ -11,6 +11,7 @@
         android:animateLayoutChanges="true"
         android:background="@color/Unify_Background"
         android:paddingTop="@dimen/content_common_space_16"
+        android:paddingEnd="16dp"
         app:layout_behavior="com.tokopedia.content.common.util.sidesheet.SideSheetBehavior"
         app:rcl_bottomRightRadius="@dimen/content_common_space_16"
         app:rcl_topLeftRadius="@dimen/content_common_space_16">

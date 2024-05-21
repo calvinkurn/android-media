@@ -20,17 +20,13 @@ class ShopPerformanceDiffUtilCallback(
         return isTheSameHeaderShopPerformanceUiModel(oldItem, newItem) ||
                 isTheSameDetailPerformanceUiModel(oldItem, newItem) ||
                 isTheSameLevelScoreProjectUiModel(oldItem, newItem) ||
-                isTheSameItemStatusPMProUiModel(oldItem, newItem) ||
-                isTheSameItemStatusPMUiModel(oldItem, newItem) ||
                 isTheSameItemStatusRMUiModel(oldItem, newItem) ||
                 isTheSameItemTimerNewSellerUiModel(oldItem, newItem) ||
                 isTheSamePeriodDetailPerformanceUiModel(oldItem, newItem) ||
                 isTheSameProtectedParameterSectionUiModel(oldItem, newItem) ||
                 isTheSameSectionFaqUiModel(oldItem, newItem) ||
                 isTheSameSectionPMPotentialPMProUiModel(oldItem, newItem) ||
-                isTheSameSectionRMPotentialPMBenefitUiModel(oldItem, newItem) ||
-                isTheSameSectionRMPotentialPMProUiModel(oldItem, newItem) ||
-                isTheSameSectionShopRecommendationUiModel(oldItem, newItem) ||
+                isTheSameSectionShopRecommendationUiModel(oldItem, newItem)||
                 isTheSameTickerReactivatedUiModel(oldItem, newItem) ||
                 isTheSameReactivatedComebackUiModel(oldItem, newItem) ||
                 isTheSameItemHeaderParameterDetailUiModel(oldItem, newItem)
@@ -90,21 +86,6 @@ class ShopPerformanceDiffUtilCallback(
         return oldItem is ItemLevelScoreProjectUiModel && newItem is ItemLevelScoreProjectUiModel
     }
 
-    private fun isTheSameItemStatusPMProUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is ItemStatusPMProUiModel && newItem is ItemStatusPMProUiModel
-    }
-
-    private fun isTheSameItemStatusPMUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is ItemStatusPMUiModel && newItem is ItemStatusPMUiModel &&
-                oldItem.descPM == newItem.descPM
-    }
-
     private fun isTheSameItemStatusRMUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
@@ -154,22 +135,6 @@ class ShopPerformanceDiffUtilCallback(
         newItem: Visitable<*>?
     ): Boolean {
         return oldItem is SectionPMPotentialPMProUiModel && newItem is SectionPMPotentialPMProUiModel
-                && oldItem.potentialPMProPMBenefitList == newItem.potentialPMProPMBenefitList
-    }
-
-    private fun isTheSameSectionRMPotentialPMBenefitUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is SectionRMPotentialPMBenefitUiModel && newItem is SectionRMPotentialPMBenefitUiModel
-                && oldItem.potentialPMBenefitList == newItem.potentialPMBenefitList
-    }
-
-    private fun isTheSameSectionRMPotentialPMProUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is SectionRMPotentialPMProUiModel && newItem is SectionRMPotentialPMProUiModel
                 && oldItem.potentialPMProPMBenefitList == newItem.potentialPMProPMBenefitList
     }
 

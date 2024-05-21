@@ -1,11 +1,11 @@
 package com.tokopedia.oneclickcheckout.payment.di
 
 import com.google.gson.Gson
+import com.tokopedia.checkoutpayment.list.data.PaymentListingParamGqlResponse
+import com.tokopedia.checkoutpayment.list.domain.GetPaymentListingParamUseCase
+import com.tokopedia.checkoutpayment.list.domain.GetPaymentListingParamUseCaseImpl
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
-import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamGqlResponse
-import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCase
-import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCaseImpl
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.url.TokopediaUrl
 import dagger.Module

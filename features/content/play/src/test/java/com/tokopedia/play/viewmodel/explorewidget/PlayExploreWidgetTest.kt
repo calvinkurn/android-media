@@ -132,7 +132,7 @@ class PlayExploreWidgetTest {
                 c.sourceType.assertEqualTo(config.exploreWidgetConfig.sourceType)
                 c.categoryName.assertEqualTo(config.exploreWidgetConfig.categoryName)
             }
-            state.exploreWidget.data.widgets.assertEmpty()
+            state.exploreWidget.data.data.assertEmpty()
             state.exploreWidget.data.chips.assertEqualTo(TabMenuUiModel.Empty)
             it.viewModel.isAnyBottomSheetsShown.assertFalse()
         }

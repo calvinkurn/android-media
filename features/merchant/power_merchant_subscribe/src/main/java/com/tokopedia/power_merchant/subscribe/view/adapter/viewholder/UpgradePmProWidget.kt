@@ -9,7 +9,9 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
@@ -39,11 +41,34 @@ class UpgradePmProWidget(
     private val termAdapter by lazy { PmActiveTermAdapter() }
 
     override fun bind(element: WidgetUpgradePmProUiModel) {
-        setupView()
+        setupView(element)
+        showTermTitle(element)
         showTermsList(element.registrationTerms)
+        showGeneralBenefitsTitle(element)
         showGeneralBenefits(element.generalBenefits)
         setupUpgradeCta(element)
         setupNewSeller(element)
+    }
+
+    private fun showGeneralBenefitsTitle(element: WidgetUpgradePmProUiModel) {
+        binding?.run {
+            val isPm = element.shopGrade == PMConstant.ShopGrade.PM
+            tvPmUpgradeBenefitDescription.text= if (isPm) {
+                root.context.getString(R.string.pm_pro_upgrade_description)
+            } else root.context.getString(R.string.pm_pro_notupgrade_description)
+        }
+    }
+
+    private fun showTermTitle(element: WidgetUpgradePmProUiModel) {
+        binding?.run {
+            val isEgiblePmPro = element.shopInfo.shopScore >= element.shopInfo.shopScorePmProTresholdNew &&
+                element.shopInfo.netItemValueOneMonth >= element.shopInfo.netItemValuePmProThreshold &&
+                element.shopInfo.itemSoldOneMonth >= element.shopInfo.itemSoldPmProThreshold &&
+                element.shopInfo.isKyc
+            tvPmShopAchievement.isVisible = isEgiblePmPro
+            icTargetHeader.isVisible = !isEgiblePmPro
+            tvPmHeaderTermsStatus.isVisible = !isEgiblePmPro
+        }
     }
 
     private fun setupNewSeller(element: WidgetUpgradePmProUiModel) {
@@ -68,13 +93,17 @@ class UpgradePmProWidget(
                     && shopInfo.shopScore > scoreShowTickerEligible
                     && shopLevel == PMConstant.ShopLevel.FOUR
                     && shopInfo.isEligiblePmPro
+            val pmEgiblePMPRO = element.shopGrade == PMConstant.ShopGrade.PM
+                && shopInfo.shopScore > scoreShowTickerEligible
+                && shopLevel == PMConstant.ShopLevel.ONE
+                && shopInfo.isEligiblePmPro
 
             when {
                 eligibleForUpdateProAdvance -> {
                     tickerPmWidget.setHtmlDescription(
                         root.context.getString(
                             R.string.pm_ticker_eligble_upgrade,
-                            PMConstant.EligibleShopGrade.PRO_ADVANCE,
+                            PMConstant.EligibleShopGrade.PRO,
                             element.nextMonthlyRefreshDate
                         )
                     )
@@ -84,7 +113,7 @@ class UpgradePmProWidget(
                     tickerPmWidget.setHtmlDescription(
                         root.context.getString(
                             R.string.pm_ticker_eligble_upgrade,
-                            PMConstant.EligibleShopGrade.PRO_EXPERT,
+                            PMConstant.EligibleShopGrade.PRO,
                             element.nextMonthlyRefreshDate
                         )
                     )
@@ -94,7 +123,17 @@ class UpgradePmProWidget(
                     tickerPmWidget.setHtmlDescription(
                         root.context.getString(
                             R.string.pm_ticker_eligble_upgrade,
-                            PMConstant.EligibleShopGrade.PRO_ULTIMATE,
+                            PMConstant.EligibleShopGrade.PRO,
+                            element.nextMonthlyRefreshDate
+                        )
+                    )
+                    tickerPmWidget.show()
+                }
+                pmEgiblePMPRO -> {
+                    tickerPmWidget.setHtmlDescription(
+                        root.context.getString(
+                            R.string.pm_ticker_eligble_upgrade,
+                            PMConstant.EligibleShopGrade.PRO,
                             element.nextMonthlyRefreshDate
                         )
                     )
@@ -139,8 +178,17 @@ class UpgradePmProWidget(
         termAdapter.notifyDataSetChanged()
     }
 
-    private fun setupView() = binding?.run {
+    private fun setupView(element: WidgetUpgradePmProUiModel) = binding?.run {
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_SHOP_ICON)
+        val isEgiblePmPro = element.shopInfo.shopScore >= 80 &&
+            element.shopInfo.netItemValueOneMonth >= element.shopInfo.netItemValuePmProThreshold &&
+            element.shopInfo.itemSoldOneMonth >= element.shopInfo.itemSoldPmProThreshold &&
+            element.shopInfo.isKyc
+        tvPmUpgradePmProTitle.text = if (isEgiblePmPro) {
+            root.context.getString(R.string.pm_keep_being_of_pm_pro)
+        } else {
+            root.context.getString(R.string.pm_get_exclusive_benefit_of_being_pm_pro)
+        }
     }
 }

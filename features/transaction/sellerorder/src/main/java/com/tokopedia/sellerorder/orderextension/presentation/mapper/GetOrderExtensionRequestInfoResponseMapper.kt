@@ -7,6 +7,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensio
 import com.tokopedia.sellerorder.orderextension.presentation.util.ResourceProvider
 import com.tokopedia.utils.date.toDate
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     private val resourceProvider: ResourceProvider
@@ -37,10 +38,9 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             addOrderExtensionOptionsShimmer()
             addOrderExtensionFooter(ID_FOOTER_TITLE)
         },
-        processing = false,
-        success = true,
+        sendingRequest = false,
+        success = false,
         completed = false,
-        refreshOnDismiss = false,
         message = "",
         throwable = null
     )
@@ -51,7 +51,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         items = if (!response.reason.isNullOrEmpty()) {
             mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
                 addOrderExtensionHeader(ID_HEADER)
-                addOrderExtensionDescription(ID_DESCRIPTION, response.text, response.newDeadline)
+                addOrderExtensionDescription(ID_DESCRIPTION, response.text)
                 addOrderExtensionPickTimeTitle(ID_PICK_TIME_TITLE)
                 addOrderExtensionPickTimeField()
                 addOrderExtensionOptionsTitle(ID_OPTIONS_TITLE)
@@ -68,10 +68,9 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
                 )
             }.orEmpty()
         ),
-        processing = false,
-        success = response.isSuccess(),
-        completed = response.isSuccess().not(),
-        refreshOnDismiss = false,
+        sendingRequest = false,
+        success = false,
+        completed = false,
         message = response.message.orEmpty(),
         throwable = null
     )
@@ -130,7 +129,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 id = id,
-                fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
+                fontColor = unifyprinciplesR.color.Unify_NN950,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_3,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetTitleComposer()
             )
@@ -139,17 +138,14 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescription(
         id: Int,
-        text: String?,
-        newDeadline: String?
+        text: String?
     ) {
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 id = id,
-                fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+                fontColor = unifyprinciplesR.color.Unify_NN600,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.BODY_2,
-                description = resourceProvider.getOrderExtensionDescriptionComposer(
-                    text
-                )
+                description = resourceProvider.getOrderExtensionDescriptionComposer(text)
             )
         )
     }
@@ -160,7 +156,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 id = id,
-                fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
+                fontColor = unifyprinciplesR.color.Unify_NN950,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_4,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetPickTimeTitleComposer()
             )
@@ -177,7 +173,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 id = id,
-                fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
+                fontColor = unifyprinciplesR.color.Unify_NN950,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_4,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetOptionsTitleComposer()
             )
@@ -206,7 +202,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 id = id,
                 alignment = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionAlignment.TEXT_ALIGNMENT_TEXT_START,
-                fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+                fontColor = unifyprinciplesR.color.Unify_NN600,
                 description = resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer(),
                 show = true
             )
@@ -218,9 +214,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     ) {
         add(
             OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel(
-                com.tokopedia.sellerorder.orderextension.presentation.model.DimenRes(
-                    widthResId
-                )
+                com.tokopedia.sellerorder.orderextension.presentation.model.DimenRes(widthResId)
             )
         )
     }

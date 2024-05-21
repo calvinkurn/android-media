@@ -27,6 +27,7 @@
     <string name="ga_id_ma" translatable="false">UA-9801603-4</string>
     <string name="ga_id_pro" translatable="false">UA-9801603-4</string>
     <string name="ga_id_sa" translatable="false">UA-9801603-29</string>
+    <string name="mssdk_key" translatable="false">default_key</string>
     <string name="branch_sdk_key_ma" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_pro" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_sa" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
@@ -60,5 +61,6 @@
     <string name="tikanshfd" translatable="false"></string>
     <string name="aokfokotd" translatable="false"></string>
     <string name="ainfhfjsd" translatable="false"></string>
+    <string name="sso_lark_key" translatable="false">cli_a6a8acbf677e900e</string>
 </resources>
 

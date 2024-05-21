@@ -30,6 +30,7 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
 import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
+import com.tokopedia.loginregister.shopcreation.common.ShopCreationConstant.ROLLENCE_KYC_SHOP_CREATION
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
@@ -38,6 +39,7 @@ import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -278,6 +280,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun showVerifyPhoneNoDialog(phoneNo: String) {
+        hideLoading()
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(it.getString(R.string.verify_phone_dialog_title))
@@ -314,7 +317,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
             } else {
-                goToPhoneShopCreation(userProfileCompletionData.phone)
+                showVerifyPhoneNoDialog(userProfileCompletionData.phone)
             }
         } else {
             goToPhoneShopCreation()
@@ -417,7 +420,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun isForceKycEnabkled(): Boolean {
-        return true
+        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KYC_SHOP_CREATION,
+            ""
+        )?.isNotEmpty() == true
     }
 
     private fun goToShopLogistic() {
