@@ -38,7 +38,6 @@ import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 /**
  * Created By : Jonathan Darwin on August 08, 2023
  */
-@CassavaTest
 class UserProfileSettingsUiTest {
 
     private val mockUserId = "123123"
