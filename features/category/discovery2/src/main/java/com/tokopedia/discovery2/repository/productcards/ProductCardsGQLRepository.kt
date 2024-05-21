@@ -31,7 +31,8 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                     requestParams.componentId,
                     requestParams.pageEndpoint,
                     Utils.getQueryString(queryParameterMap),
-                    requestParams.sessionId
+                    requestParams.sessionId,
+                    requestParams.refreshType
                 ),
                 GQL_COMPONENT_QUERY_NAME
             ) as DataResponse
