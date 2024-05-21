@@ -1,5 +1,6 @@
 package com.tokopedia.stories.widget.settings.presentation.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,6 +77,7 @@ private fun StoriesSettingsSuccess(
 
     ConstraintLayout(
         modifier = Modifier
+            .background(color = NestTheme.colors.NN._0)
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -118,101 +120,109 @@ private fun StoriesSettingsSuccess(
             )
         )
 
-        // Icon - Mobile
-        NestIcon(iconId = IconUnify.SOCIAL_STORY,
-            colorNightDisable = textColor,
-            colorLightEnable = textColor,
-            modifier = Modifier.constrainAs(ivIconHeader) {
-                top.linkTo(tvHeader.bottom)
-                start.linkTo(tvHeader.start)
-            })
+        if (pageInfo.options.isNotEmpty()) {
+            // Icon - Mobile
+            NestIcon(iconId = IconUnify.SOCIAL_STORY,
+                colorNightEnable = textColor,
+                colorLightEnable = textColor,
+                modifier = Modifier.constrainAs(ivIconHeader) {
+                    top.linkTo(tvHeader.bottom)
+                    start.linkTo(tvHeader.start)
+                })
 
-        // Text - Buat Stories Otomatis
-        NestTypography(
-            modifier = Modifier
-                .padding(start = 12.dp)
-                .constrainAs(tvDescription) {
-                    start.linkTo(ivIconHeader.end)
-                    top.linkTo(ivIconHeader.top)
-                    bottom.linkTo(ivIconHeader.bottom)
-                }, text = itemFirst.text, textStyle = NestTheme.typography.display2.copy(
-                fontWeight = FontWeight.Bold, color = textColor
+            // Text - Buat Stories Otomatis
+            NestTypography(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .constrainAs(tvDescription) {
+                        start.linkTo(ivIconHeader.end)
+                        top.linkTo(ivIconHeader.top)
+                        bottom.linkTo(ivIconHeader.bottom)
+                    }, text = itemFirst.text, textStyle = NestTheme.typography.display2.copy(
+                    fontWeight = FontWeight.Bold, color = textColor
+                )
             )
-        )
 
-        // Text - Buat Stories Otomatis - Toggle
-        AndroidView(
-            modifier = Modifier.constrainAs(switchHeader) {
-                top.linkTo(tvDescription.top)
-                bottom.linkTo(tvDescription.bottom)
-                end.linkTo(parent.end)
-            },
-            factory = { context ->
-                SwitchUnify(context).apply {
-                    this.isChecked = itemFirst.isSelected
-                    this.isEnabled = isEligible
-                    this.setOnCheckedChangeListener { view, isActive ->
-                        if (view.isPressed) {
-                            viewModel.onEvent(StoriesSettingsAction.SelectOption(itemFirst.copy(isSelected = !isActive)))
+            // Text - Buat Stories Otomatis - Toggle
+            AndroidView(
+                modifier = Modifier.constrainAs(switchHeader) {
+                    top.linkTo(tvDescription.top)
+                    bottom.linkTo(tvDescription.bottom)
+                    end.linkTo(parent.end)
+                },
+                factory = { context ->
+                    SwitchUnify(context).apply {
+                        this.isChecked = itemFirst.isSelected
+                        this.isEnabled = isEligible
+                        this.setOnCheckedChangeListener { view, isActive ->
+                            if (view.isPressed) {
+                                viewModel.onEvent(
+                                    StoriesSettingsAction.SelectOption(
+                                        itemFirst.copy(
+                                            isSelected = !isActive
+                                        )
+                                    )
+                                )
+                            }
                         }
                     }
-                }
-            },
-            update = { switchUnify ->
-                switchUnify.isChecked = itemFirst.isSelected
-                switchUnify.isEnabled = isEligible
-            }
-        )
-
-        // Text - Selengkapnya
-        val text = buildAnnotatedString {
-            append(pageInfo.config.articleCopy.replace(tagLink, ""))
-            withStyle(
-                style = SpanStyle(
-                    color = NestTheme.colors.GN._500, fontWeight = FontWeight.Bold
-                )
-            ) {
-                pushStringAnnotation(tagLink, tagLink)
-                append(finalText)
-            }
-        }
-        NestTypography(modifier = Modifier
-            .padding(vertical = 16.dp, horizontal = 12.dp)
-            .constrainAs(tvAll) {
-                top.linkTo(tvDescription.bottom)
-                start.linkTo(tvDescription.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            },
-            text = text,
-            textStyle = NestTheme.typography.display3.copy(color = textColor),
-            onClickText = {
-                viewModel.onEvent(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
-            })
-        // Text - Kategori update produk
-        NestTypography(
-            modifier = Modifier
-                .padding(bottom = 16.dp, start = 12.dp)
-                .constrainAs(tvCategory) {
-                    top.linkTo(tvAll.bottom)
-                    start.linkTo(tvAll.start)
                 },
-            text = stringResource(id = R.string.stories_settings_body),
-            textStyle = NestTheme.typography.paragraph3.copy(color = textColor)
-        )
+                update = { switchUnify ->
+                    switchUnify.isChecked = itemFirst.isSelected
+                    switchUnify.isEnabled = isEligible
+                }
+            )
 
-        // List of Options
-        LazyColumn(modifier = Modifier
-            .padding(start = 16.dp)
-            .constrainAs(rvOptions) {
-                top.linkTo(tvCategory.bottom)
-                start.linkTo(tvCategory.start)
-                end.linkTo(parent.end)
-            }) {
-            items(pageInfo.options.drop(1)) { item ->
-                SettingOptItem(item, isEligible, textColor, onOptionClicked = {
-                    viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+            // Text - Selengkapnya
+            val text = buildAnnotatedString {
+                append(pageInfo.config.articleCopy.replace(tagLink, ""))
+                withStyle(
+                    style = SpanStyle(
+                        color = NestTheme.colors.GN._500, fontWeight = FontWeight.Bold
+                    )
+                ) {
+                    pushStringAnnotation(tagLink, tagLink)
+                    append(finalText)
+                }
+            }
+            NestTypography(modifier = Modifier
+                .padding(vertical = 16.dp, horizontal = 12.dp)
+                .constrainAs(tvAll) {
+                    top.linkTo(tvDescription.bottom)
+                    start.linkTo(tvDescription.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                },
+                text = text,
+                textStyle = NestTheme.typography.display3.copy(color = textColor),
+                onClickText = {
+                    viewModel.onEvent(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
                 })
+            // Text - Kategori update produk
+            NestTypography(
+                modifier = Modifier
+                    .padding(bottom = 16.dp, start = 12.dp)
+                    .constrainAs(tvCategory) {
+                        top.linkTo(tvAll.bottom)
+                        start.linkTo(tvAll.start)
+                    },
+                text = stringResource(id = R.string.stories_settings_body),
+                textStyle = NestTheme.typography.paragraph3.copy(color = textColor)
+            )
+
+            // List of Options
+            LazyColumn(modifier = Modifier
+                .padding(start = 16.dp)
+                .constrainAs(rvOptions) {
+                    top.linkTo(tvCategory.bottom)
+                    start.linkTo(tvCategory.start)
+                    end.linkTo(parent.end)
+                }) {
+                items(pageInfo.options.drop(1)) { item ->
+                    SettingOptItem(item, isEligible, textColor, onOptionClicked = {
+                        viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                    })
+                }
             }
         }
     }
