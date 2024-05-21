@@ -15,6 +15,7 @@ class DeviceNotificationSettingActivity: BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         showNotificationSettings(this)
+        finish()
     }
 
     private fun showNotificationSettings(context: Context) {
