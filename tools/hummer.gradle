@@ -53,6 +53,7 @@ println("Current Env: $env")
 println("Build Type: $buildType")
 println("Tier: $tier")
 println("Gradle Version: $gradleVersion")
+println("Job Name: $jobName")
 
 if (project.extensions.findByName("buildCollectConfig") != null) {
     def projectName = project.projectDir
