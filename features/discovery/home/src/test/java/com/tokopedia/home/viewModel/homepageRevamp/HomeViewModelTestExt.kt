@@ -76,6 +76,7 @@ import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.libra.LibraInstance
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -131,7 +132,8 @@ fun createHomeViewModel(
     todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
     homeThematicUseCase: ThematicUseCase = mockk(relaxed = true),
     homeClaimCouponUseCase: HomeClaimCouponUseCase = mockk(relaxed = true),
-    remoteConfig: RemoteConfig = mockk(relaxed = true)
+    remoteConfig: RemoteConfig = mockk(relaxed = true),
+    libraInstance: LibraInstance = mockk(relaxed = true),
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
@@ -163,7 +165,8 @@ fun createHomeViewModel(
             todoWidgetRepository = { todoWidgetRepository },
             homeThematicUseCase = { homeThematicUseCase },
             claimCouponUseCase = { homeClaimCouponUseCase },
-            remoteConfig = { remoteConfig }
+            remoteConfig = { remoteConfig },
+            libraInstance = { libraInstance },
         ),
         recordPrivateCalls = true
     )

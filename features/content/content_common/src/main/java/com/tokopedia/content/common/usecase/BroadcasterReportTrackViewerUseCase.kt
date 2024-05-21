@@ -2,6 +2,7 @@ package com.tokopedia.content.common.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.BroadcasterReportTrackViewerResponse
+import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -65,26 +66,45 @@ class BroadcasterReportTrackViewerUseCase @Inject constructor(
 
         private const val RETRY_COUNT = 3
 
-        private const val PARAMS_CHANNEL_ID = "channelId"
-        private const val PARAMS_PRODUCT_ID = "productIds"
+        private const val PARAMS_CHANNEL_ID = "channelID"
+        private const val PARAMS_PRODUCT_ID = "productIDs"
+        private const val PARAMS_EVENT = "event"
+        private const val PARAMS_SOURCE = "source"
 
         const val QUERY_NAME = "BroadcasterReportTrackViewerUseCaseQuery"
         const val QUERY = """
-            mutation broadcasterReportTrackViewer(${'$'}channelId: String!, ${'$'}productIds: [String]){
+            mutation broadcasterReportTrackViewer(${'$'}channelID: String!, ${'$'}productIDs: [String], ${'$'}event: String, ${'$'}source: broadcasterReportTrackViewerSource){
               broadcasterReportTrackViewer(
-                channelID: ${'$'}channelId,
-                productIDs: ${'$'}productIds) {
-                success
+                channelID: ${'$'}channelID,
+                productIDs: ${'$'}productIDs,
+                event: ${'$'}event,
+                source: ${'$'}source) {
+                    success
               }
             }
         """
 
         fun createParams(
             channelId: String,
-            productIds: List<String>
+            productIds: List<String>,
+            event: Event,
+            type: TrackContentType,
         ): Map<String, Any> = mapOf(
             PARAMS_CHANNEL_ID to channelId,
-            PARAMS_PRODUCT_ID to productIds
+            PARAMS_PRODUCT_ID to productIds,
+            PARAMS_EVENT to event.value,
+            PARAMS_SOURCE to mapOf(
+                "ID" to channelId,
+                "type" to type.value
+            )
         )
+
+        enum class Event(val value: String) {
+            Visit("visit"),
+            ProductChanges("product_change"),
+            Unknown("");
+        }
+        val Event.isVisit : Boolean get() = this == Event.Visit
+
     }
 }

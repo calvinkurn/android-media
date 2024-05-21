@@ -1,6 +1,6 @@
 {
   "readme": "Play - Explore Widget",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "viewContentIris",

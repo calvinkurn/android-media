@@ -19,6 +19,7 @@ import com.tokopedia.stories.analytics.StoriesSharingAnalytics
 import com.tokopedia.stories.analytics.StoriesSharingAnalyticsImpl
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.factory.StoriesFragmentFactoryUITest
+import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.utils.delay
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
@@ -34,6 +35,7 @@ internal class StoriesRobotUITest(
     private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
+    private val sharedPref: StoriesPreference,
 ) {
 
     private val viewModel: StoriesViewModel by lazy {
@@ -41,6 +43,7 @@ internal class StoriesRobotUITest(
             args = args,
             repository = repository,
             userSession = userSession,
+            sharedPref = sharedPref,
         )
     }
 

@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -99,6 +100,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
@@ -148,6 +151,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.ShopFlashSaleWidget
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.shorten.TwoSquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -183,6 +187,8 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.libra.LibraInstance
+import com.tokopedia.libra.LibraOwner
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -483,6 +489,12 @@ open class HomeRevampFragment :
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         }
         startToTransitionOffset = 1f.toDpInt()
+
+        lifecycleScope.launchWhenCreated {
+            context?.let {
+                LibraInstance.get(it).fetch(LibraOwner.Home)
+            }
+        }
     }
 
     protected open fun initHomePageFlows(): Boolean {
@@ -1312,7 +1324,6 @@ open class HomeRevampFragment :
             viewLifecycleOwner,
             Observer { dynamicChannel: HomeDynamicChannelModel? ->
                 dynamicChannel?.let {
-                    val data = dynamicChannel.list.filter { it is HomeRecommendationFeedDataModel }
                     if (dynamicChannel.list.isNotEmpty()) {
                         setData(dynamicChannel.list, dynamicChannel.isCache)
                     }
@@ -1668,6 +1679,7 @@ open class HomeRevampFragment :
             getThematicUtil(),
             HomeOrigamiListenerDelegate(context, this),
             Mission4SquareWidgetListenerCallback(this),
+            TwoSquareWidgetListenerCallback(this),
             getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -3118,7 +3130,15 @@ open class HomeRevampFragment :
     }
 
     override fun refreshBalanceWidget() {
-        getHomeViewModel().getBalanceWidgetData()
+        getHomeViewModel().refreshBalanceWidget()
+    }
+
+    override fun refreshBalanceWidget(contentType: BalanceItemVisitable.ContentType?) {
+        getHomeViewModel().refreshBalanceWidget(contentType)
+    }
+
+    override fun refreshShortenWidget() {
+        getHomeViewModel().refreshShortenWidget()
     }
 
     override fun showHomeCoachmark(

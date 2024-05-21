@@ -27,6 +27,7 @@ import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
 import com.tokopedia.developer_options.presentation.model.LoginHelperUiModel
 import com.tokopedia.developer_options.presentation.model.MsSdkUiModel
 import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.OkHttpTimeoutUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
@@ -42,6 +43,7 @@ import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggi
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
+import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
 import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
@@ -70,6 +72,7 @@ import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
 interface DeveloperOptionTypeFactory {
     fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int
     fun type(uiModel: PdpDevUiModel): Int
+    fun type(uiModel: MockDynamicWidgetUiModel): Int
     fun type(uiModel: AccessTokenUiModel): Int
     fun type(uiModel: SystemNonSystemAppsUiModel): Int
     fun type(uiModel: ResetOnBoardingUiModel): Int
@@ -128,6 +131,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: FpiMonitoringUiModel): Int
     fun type(uiModel: UserIdUiModel): Int
     fun type(uiModel: ShopIdUiModel): Int
-
     fun type(uiModel: SSOAuthorizationUiModel): Int
+    fun type(uiModel: OkHttpTimeoutUiModel): Int
 }

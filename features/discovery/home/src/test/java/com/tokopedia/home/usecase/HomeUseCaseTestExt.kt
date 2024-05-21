@@ -3,6 +3,7 @@ package com.tokopedia.home.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.newatf.DynamicPositionRepository
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
+import com.tokopedia.home.beranda.data.newatf.balance.BalanceWidgetUseCase
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelRepository
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
@@ -43,7 +44,8 @@ fun createHomeAtfUseCase(
     tickerRepository: TickerRepository = mockk(relaxed = true),
     atfChannelRepository: AtfChannelRepository = mockk(relaxed = true),
     missionWidgetRepository: MissionWidgetRepository = mockk(relaxed = true),
-    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true)
+    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
+    balanceWidgetUseCase: BalanceWidgetUseCase = mockk(relaxed = true),
 ): HomeAtfUseCase {
     return HomeAtfUseCase(
         homeDispatcher = homeDispatcher,
@@ -53,7 +55,8 @@ fun createHomeAtfUseCase(
         tickerRepository = tickerRepository,
         atfChannelRepository = atfChannelRepository,
         missionWidgetRepository = missionWidgetRepository,
-        todoWidgetRepository = todoWidgetRepository
+        todoWidgetRepository = todoWidgetRepository,
+        balanceWidgetUseCase = balanceWidgetUseCase
     )
 }
 

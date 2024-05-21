@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.domain.pojo.tickerreminder.TickerReminderPojo
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 data class ReminderTickerUiModel(
     @SerializedName("enable")
@@ -28,11 +28,11 @@ data class ReminderTickerUiModel(
     var replyId: String = "",
     @SerializedName("tickerType")
     var tickerType: String = ""
-) : Visitable<TopChatTypeFactory> {
+) : Visitable<TopChatRoomTypeFactory> {
     val impressHolder = ImpressHolder()
     var localId: String = ""
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

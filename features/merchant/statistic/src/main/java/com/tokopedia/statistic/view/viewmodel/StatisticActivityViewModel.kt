@@ -3,10 +3,8 @@ package com.tokopedia.statistic.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.usecase.GetElementBenefitByKeyBulkUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.domain.usecase.CheckWhitelistedStatusUseCase
 import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
@@ -31,7 +29,7 @@ class StatisticActivityViewModel @Inject constructor(
     private val getUserRoleUseCase: Lazy<GetUserRoleUseCase>,
     private val getElementBenefitByKeyBulkUseCase: Lazy<GetElementBenefitByKeyBulkUseCase>,
     private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+) : BaseViewModel() {
 
     val whitelistedStatus: LiveData<Result<Boolean>>
         get() = _whitelistedStatus
@@ -45,37 +43,42 @@ class StatisticActivityViewModel @Inject constructor(
     val paywallAccess: StateFlow<Boolean> = _paywallAccessState
 
     fun checkWhiteListStatus() {
-        launchCatchError(block = {
-            val whiteListPageSource = Const.WHITE_LIST_KEY_TRAFFIC_INSIGHT
-            val useCase = checkWhitelistedStatusUseCase.get()
-            val requestParams = useCase.createParam(whiteListPageSource)
-            val result = Success(withContext(dispatchers.io) {
-                useCase.execute(requestParams)
-            })
-            _whitelistedStatus.postValue(result)
-        }, onError = {
-            _whitelistedStatus.postValue(Fail(it))
-        })
+        viewModelScope.launch(dispatchers.io) {
+            runCatching {
+                val whiteListPageSource = Const.WHITE_LIST_KEY_TRAFFIC_INSIGHT
+                val useCase = checkWhitelistedStatusUseCase.get()
+                val requestParams = useCase.createParam(whiteListPageSource)
+                val result = Success(withContext(dispatchers.io) {
+                    useCase.execute(requestParams)
+                })
+                _whitelistedStatus.postValue(result)
+            }.onFailure {
+                _whitelistedStatus.postValue(Fail(it))
+            }
+        }
     }
 
     fun getUserRole() {
-        launchCatchError(block = {
-            val result: Success<List<String>> = Success(withContext(dispatchers.io) {
-                getUserRoleUseCase.get().params =
-                    GetUserRoleUseCase.createParam(userSession.get().userId)
-                return@withContext getUserRoleUseCase.get().executeOnBackground()
-            })
-            _userRole.postValue(result)
-        }, onError = {
-            _userRole.postValue(Fail(it))
-        })
+        viewModelScope.launch(dispatchers.io) {
+            runCatching {
+                val result: Success<List<String>> = Success(withContext(dispatchers.io) {
+                    getUserRoleUseCase.get().params =
+                        GetUserRoleUseCase.createParam(userSession.get().userId)
+                    return@withContext getUserRoleUseCase.get().executeOnBackground()
+                })
+                _userRole.postValue(result)
+            }.onFailure {
+                _userRole.postValue(Fail(it))
+            }
+        }
     }
 
     fun fetchPaywallAccessState() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             runCatching {
                 val shopId = userSession.get().shopId
-                val elementKey = GetElementBenefitByKeyBulkUseCase.Companion.Keys.STATISTIC_PAYWALL_ACCESS
+                val elementKey =
+                    GetElementBenefitByKeyBulkUseCase.Companion.Keys.STATISTIC_PAYWALL_ACCESS
                 val source = GetElementBenefitByKeyBulkUseCase.Companion.Sources.STATISTIC
                 val data = withContext(dispatchers.io) {
                     getElementBenefitByKeyBulkUseCase.get().execute(

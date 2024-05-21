@@ -10,16 +10,16 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 
 object ProductCarouselListAttachmentViewHolderBinder {
 
     fun initRecyclerView(
-            recyclerView: ProductCarouselRecyclerView?,
-            adapterListener: AdapterListener,
-            rvAdapter: ProductListAdapter,
-            listener: ProductCarouselListAttachmentViewHolder.Listener,
-            viewHolder: RecyclerView.ViewHolder
+        recyclerView: ProductCarouselRecyclerView?,
+        adapterListener: AdapterListener,
+        rvAdapter: ProductListAdapter,
+        listener: ProductCarouselListAttachmentViewHolder.Listener,
+        viewHolder: RecyclerView.ViewHolder
     ) {
         recyclerView?.apply {
             setHasFixedSize(true)
@@ -36,8 +36,8 @@ object ProductCarouselListAttachmentViewHolderBinder {
     }
 
     fun bindDeferredAttachment(
-            carousel: ProductCarouselUiModel,
-            deferredAttachment: DeferredViewHolderAttachment
+        carousel: TopChatRoomProductCarouselUiModel,
+        deferredAttachment: DeferredViewHolderAttachment
     ) {
         if (!carousel.isLoading()) return
         val attachments = deferredAttachment.getLoadedChatAttachments()
@@ -59,32 +59,35 @@ object ProductCarouselListAttachmentViewHolderBinder {
     }
 
     fun bindProductCarousel(
-            carousel: ProductCarouselUiModel,
-            adapter: ProductListAdapter
+        carousel: TopChatRoomProductCarouselUiModel,
+        adapter: ProductListAdapter
     ) {
         adapter.carousel = carousel
     }
 
     fun bindScrollState(
-            rv: ProductCarouselRecyclerView?,
-            listener: ProductCarouselListAttachmentViewHolder.Listener,
-            vh: RecyclerView.ViewHolder
+        rv: ProductCarouselRecyclerView?,
+        listener: ProductCarouselListAttachmentViewHolder.Listener,
+        vh: RecyclerView.ViewHolder
     ) {
         rv?.restoreSavedCarouselState(vh.adapterPosition, listener)
     }
 
     fun updateParentMetaData(
-            uiModel: Visitable<*>, lastKnownPosition: Int, adapter: ProductListAdapter
+        uiModel: Visitable<*>,
+        lastKnownPosition: Int,
+        adapter: ProductListAdapter
     ) {
         val metaData = SingleProductAttachmentContainer.ParentViewHolderMetaData(
-                uiModel, lastKnownPosition
+            uiModel,
+            lastKnownPosition
         )
         adapter.updateParentMetaData(metaData)
     }
 
     fun updateCarouselProductStock(
-            adapter: ProductListAdapter,
-            payload: SingleProductAttachmentContainer.PayloadUpdateStock
+        adapter: ProductListAdapter,
+        payload: SingleProductAttachmentContainer.PayloadUpdateStock
     ) {
         val productPosition = adapter.findProductPosition(payload.productId)
         if (productPosition == RecyclerView.NO_POSITION) return

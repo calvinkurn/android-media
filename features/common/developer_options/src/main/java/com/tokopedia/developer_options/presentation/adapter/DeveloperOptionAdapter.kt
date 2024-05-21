@@ -22,6 +22,7 @@ class DeveloperOptionAdapter(
     companion object {
         const val KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION = "Enable Developer Options on Notification"
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
+        const val MOCK_DYNAMIC_WIDGET_DEV = "Mock Dynamic Widget"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
         const val KEYWORD_SYSTEM_APPS = "System Apps"
         const val KEYWORD_NON_SYSTEM_APPS = "Non System Apps"
@@ -60,6 +61,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_NEW_RELIC = "View New Relic Log"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
+        const val KEYWORD_OK_HTTP_TIMEOUT = "OkHttp default timeout value"
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
@@ -114,6 +116,7 @@ class DeveloperOptionAdapter(
         SSOAuthorizationUiModel(listOf(KEYWORD_SSO_LOGIN)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
+        MockDynamicWidgetUiModel(listOf(MOCK_DYNAMIC_WIDGET_DEV)),
         DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
         SystemNonSystemAppsUiModel(
             listOf(
@@ -212,6 +215,7 @@ class DeveloperOptionAdapter(
                 KEYWORD_LIVE
             )
         ),
+        OkHttpTimeoutUiModel(listOf(KEYWORD_OK_HTTP_TIMEOUT)),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
         DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),

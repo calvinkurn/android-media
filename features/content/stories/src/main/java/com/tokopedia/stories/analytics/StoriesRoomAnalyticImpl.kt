@@ -485,4 +485,23 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .build()
             .send()
     }
+
+    override fun clickPerformance(
+        storiesId: String,
+        contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String
+    ) {
+        val authorId = if (storiesId == "0") "0" else args.authorId
+        Tracker.Builder()
+            .setEvent(Event.clickContent)
+            .setEventAction("click - perform view bottomsheet")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value}")
+            .setCustomProperty(Key.trackerId, "50404")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(currentSite)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
 }
