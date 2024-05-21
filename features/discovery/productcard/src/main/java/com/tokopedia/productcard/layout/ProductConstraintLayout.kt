@@ -31,7 +31,6 @@ open class ProductConstraintLayout :
     private var maxAreaPercentage = 0
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
-    private var useScrollChangedEventAdsByteIo = false
 
     private val TOP = 1
     private val BOTTOM = 3
@@ -44,11 +43,11 @@ open class ProductConstraintLayout :
     private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context) {
-        inflateView(null)
+        inflateView()
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        inflateView(attrs)
+        inflateView()
     }
 
     constructor(
@@ -56,22 +55,7 @@ open class ProductConstraintLayout :
         attrs: AttributeSet?,
         defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
-        inflateView(attrs)
-    }
-
-    private fun initAttributes(attrs: AttributeSet?) {
-        attrs ?: return
-
-        val typedArray = context
-            ?.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
-            ?: return
-
-        return try {
-            useScrollChangedEventAdsByteIo = typedArray.getBoolean(R.styleable.ProductCardView_useScrollChangedEventAdsByteIo, false)
-        } catch(_: Throwable) {
-        } finally {
-            typedArray.recycle()
-        }
+        inflateView()
     }
 
     private fun calculateVisibility() {
@@ -137,17 +121,11 @@ open class ProductConstraintLayout :
 
     private fun setScrollChangedEvents(areaPercentage: Int, isVisible: Boolean) {
         val isShown = areaPercentage > 0 && isVisible
-        if (useScrollChangedEventAdsByteIo) {
-            if (isShown) {
-                onShow()
-            } else {
-                onShowOver()
-                maxAreaPercentage = 0
-            }
+        if (isShown) {
+            onShow()
         } else {
-            if (!isShown) {
-                maxAreaPercentage = 0
-            }
+            onShowOver()
+            maxAreaPercentage = 0
         }
     }
 
@@ -290,7 +268,7 @@ open class ProductConstraintLayout :
         }
     }
 
-    private fun inflateView(attrs: AttributeSet?) {
+    private fun inflateView() {
         if (isPercentViewEnabled(context)) {
             set.clone(this)
             val view = LayoutInflater.from(context).inflate(
@@ -300,7 +278,6 @@ open class ProductConstraintLayout :
             )
             debugTextView = view.findViewById(productcardR.id.productCardPercentText)
         }
-        initAttributes(attrs)
     }
 
     private fun isBetweenHorizontalPercentageLimits(a: Int): Boolean {
