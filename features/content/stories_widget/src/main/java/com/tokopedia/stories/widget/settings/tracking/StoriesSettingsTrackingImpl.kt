@@ -49,8 +49,8 @@ class StoriesSettingsTrackingImpl @Inject constructor(
         analyticManager.sendClickContent(
             eventAction = "click - pengaturan konten checkbox",
             eventLabel = "$authorId - $status - ${option.optionType}",
-            mainAppTrackerId = "50195",
-            sellerAppTrackerId = "50294"
+            mainAppTrackerId = "50196",
+            sellerAppTrackerId = "50295"
         )
     }
 }
