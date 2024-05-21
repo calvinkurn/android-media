@@ -178,7 +178,7 @@ class MenuSettingAdapter(
             MenuItemUiModel(
                 context?.getString(sellermenucommonR.string.seller_content_settings_body)
                     .orEmpty(),
-                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING, //todo() - ask team Product
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 clickAction = {
                     goToApplinkWhenAccessAuthorized(
                         true, //checker is inside page

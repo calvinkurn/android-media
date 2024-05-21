@@ -22,13 +22,6 @@ class StoriesSettingsRepo @Inject constructor(
     private val userSessionInterface: UserSessionInterface
 ) : StoriesSettingsRepository {
 
-    private var lastRequestTime: Long = 0L
-    private val isAvailable: Boolean
-        get() {
-            val diff = System.currentTimeMillis() - lastRequestTime
-            return diff >= DELAY_MS
-        }
-
     private val entryPoint: StoriesSettingsEntryPoint
         get() = StoriesSettingsEntryPoint(
             authorType = "shop",
@@ -80,9 +73,5 @@ class StoriesSettingsRepo @Inject constructor(
 
             return@withContext response.response.success
         }
-
-    companion object {
-        private const val DELAY_MS = 5000L
-    }
 }
 
