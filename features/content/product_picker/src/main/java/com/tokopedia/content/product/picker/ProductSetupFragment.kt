@@ -9,16 +9,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 /**
@@ -212,6 +212,7 @@ class ProductSetupFragment @Inject constructor(
                         mDataSource?.isNumerationShown().orFalse(),
                         mDataSource?.isEligibleForPin().orTrue(),
                         mDataSource?.fetchCommissionProduct().orFalse(),
+                        mDataSource?.getSelectedAccount().orUnknown(),
                     ) as T
                 }
             }

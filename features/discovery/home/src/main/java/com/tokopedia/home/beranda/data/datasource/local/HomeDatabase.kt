@@ -19,7 +19,7 @@ abstract class HomeDatabase: RoomDatabase() {
     abstract fun homeAtfDao(): AtfDao
     companion object{
         const val homeDatabase = "HomeCache.db"
-        const val homeVersion = 13
+        const val homeVersion = 14
         fun buildDatabase(context: Context) = Room.databaseBuilder(context.applicationContext, HomeDatabase::class.java, homeDatabase).fallbackToDestructiveMigration().build()
     }
 }

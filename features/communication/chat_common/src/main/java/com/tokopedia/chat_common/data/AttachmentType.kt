@@ -6,7 +6,7 @@ package com.tokopedia.chat_common.data
 class AttachmentType {
 
     object Companion {
-        //COMMON
+        // COMMON
         const val TYPE_IMAGE_ANNOUNCEMENT = "1"
         const val TYPE_IMAGE_UPLOAD = "2"
         const val TYPE_IMAGE_UPLOAD_SECURE = "26"
@@ -15,15 +15,16 @@ class AttachmentType {
         const val TYPE_STICKER = 21
         const val TYPE_REVIEW_REMINDER = "24"
 
-        //TOPCHAT
+        // TOPCHAT
         const val TYPE_IMAGE_DUAL_ANNOUNCEMENT = "4"
-        const val TYPE_IMAGE_CAROUSEL = "991"
+        const val TYPE_PRODUCT_CAROUSEL_ATTACHMENT = "991"
+        const val TYPE_VOUCHER_CAROUSEL_ATTACHMENT = "992"
         const val TYPE_MESSAGE = "0"
         const val TYPE_CTA_HEADER_MSG = "27"
         const val TYPE_PRODUCT_BUNDLING = "32"
         const val TYPE_ORDER_CANCELLATION = "36"
 
-        //CHATBOT
+        // CHATBOT
         const val TYPE_INVOICES_SELECTION = "6"
         const val TYPE_INVOICE_SEND = "7"
         const val TYPE_QUICK_REPLY = "8"

@@ -58,7 +58,9 @@ internal enum class DevopsFeature {
     LOGIN_HELPER,
     ENABLE_DEVOPS_ON_NOTIF,
     PRODUCT_DETAIL_DEV,
+    MOCK_DYNAMIC_WIDGET,
     MSSDK_DEV,
+    SHOP_PAGE_DEV,
     SYSTEM_APPS,
     NON_SYSTEM_APPS,
     RESET_ONBOARDING,
@@ -100,5 +102,6 @@ internal enum class DevopsFeature {
     VIEW_TOPCHAT_WEBSOCKET_LOG,
     ENABLE_FPI_MONITORING,
     USER_ID,
-    SHOP_ID
+    SHOP_ID,
+    OK_HTTP_TIMEOUT_HANDLER
 }

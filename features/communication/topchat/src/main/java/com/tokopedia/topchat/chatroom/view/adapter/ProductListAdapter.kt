@@ -12,18 +12,18 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 
 class ProductListAdapter constructor(
-        private val searchListener: SearchListener,
-        private val listener: TopchatProductAttachmentListener,
-        private val deferredAttachment: DeferredViewHolderAttachment,
-        private val commonListener: CommonViewHolderListener,
-        private val adapterListener: AdapterListener,
-        private val isUnifyBroadcast: Boolean = false
+    private val searchListener: SearchListener,
+    private val listener: TopchatProductAttachmentListener,
+    private val deferredAttachment: DeferredViewHolderAttachment,
+    private val commonListener: CommonViewHolderListener,
+    private val adapterListener: AdapterListener,
+    private val isUnifyBroadcast: Boolean = false
 ) : RecyclerView.Adapter<TopchatProductAttachmentViewHolder>() {
 
-    var carousel: ProductCarouselUiModel? = null
+    var carousel: TopChatRoomProductCarouselUiModel? = null
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -34,9 +34,14 @@ class ProductListAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopchatProductAttachmentViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(ProductCarouselAttachmentViewHolder.LAYOUT, parent, false)
+            .inflate(ProductCarouselAttachmentViewHolder.LAYOUT, parent, false)
         return ProductCarouselAttachmentViewHolder(
-                view, listener, deferredAttachment, searchListener, commonListener, adapterListener
+            view,
+            listener,
+            deferredAttachment,
+            searchListener,
+            commonListener,
+            adapterListener
         )
     }
 
@@ -47,7 +52,7 @@ class ProductListAdapter constructor(
     }
 
     fun updateParentMetaData(
-            metaData: SingleProductAttachmentContainer.ParentViewHolderMetaData
+        metaData: SingleProductAttachmentContainer.ParentViewHolderMetaData
     ) {
         parentMetaData = metaData
     }
@@ -57,5 +62,4 @@ class ProductListAdapter constructor(
             item is ProductAttachmentUiModel && item.productId == productId
         } ?: RecyclerView.NO_POSITION
     }
-
 }
