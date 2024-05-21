@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
@@ -96,6 +97,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -130,6 +133,7 @@ class FeedPostViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase,
+    private val getCartCountUseCase: UpdateCartCounterUseCase,
     private val tooltipManager: FeedTooltipManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -169,6 +173,9 @@ class FeedPostViewModel @Inject constructor(
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
+
+    private val _cartCount = MutableStateFlow(0)
+    val cartCount: StateFlow<Int> = _cartCount.asStateFlow()
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
@@ -1141,7 +1148,11 @@ class FeedPostViewModel @Inject constructor(
                         userId = userSession.userId
                     )
                 )
-            }.executeOnBackground()
+            }.executeOnBackground().also {
+                if (!it.isDataError()) {
+                    fetchCartCount()
+                }
+            }
         }
 
     /**
@@ -1337,6 +1348,15 @@ class FeedPostViewModel @Inject constructor(
             } catch (t: Throwable) {
                 _feedTagProductList.update { state -> state.copy(state = ResultState.Fail(t)) }
             }
+        }
+    }
+
+    fun fetchCartCount() {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) { getCartCountUseCase(Unit) }
+            _cartCount.update { response }
+        }) {
+            _cartCount.update { 0 }
         }
     }
 

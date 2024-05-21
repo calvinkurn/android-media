@@ -138,6 +138,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -332,6 +333,17 @@ class FeedFragment :
 
                 feedPostViewModel.updateFollowStatus(shopId, isFollow)
             }
+        }
+
+    private val openCartPageLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (!userSession.isLoggedIn) return@registerForActivityResult
+            openCartPage()
+        }
+
+    private val cartResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            feedPostViewModel.fetchCartCount()
         }
 
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
@@ -1917,6 +1929,8 @@ class FeedFragment :
             sourceType
         )
 
+        feedPostViewModel.fetchCartCount()
+
         productBottomSheet.show(
             activityId = activityId,
             shopId = author?.id ?: "",
@@ -2009,6 +2023,9 @@ class FeedFragment :
     override val productListLiveData: Flow<FeedProductPaging>
         get() = feedPostViewModel.feedTagProductList
 
+    override val cartCount: StateFlow<Int>
+        get() = feedPostViewModel.cartCount
+
     override fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>) {
         if (currentTrackerData != null) {
             feedAnalytics?.eventMvcWidgetImpression(
@@ -2017,6 +2034,18 @@ class FeedFragment :
             )
             feedMvcAnalytics.voucherList = mvcList
         }
+    }
+
+    override fun onCartClicked() {
+        if (!userSession.isLoggedIn) {
+            router.route(requireContext(), openCartPageLoginResult, ApplinkConst.LOGIN)
+        } else {
+            openCartPage()
+        }
+    }
+
+    private fun openCartPage() {
+        router.route(requireContext(), cartResult, ApplinkConst.CART)
     }
 
     private fun observeReminder() {
