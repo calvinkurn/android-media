@@ -145,10 +145,8 @@ class CatalogSellerOfferingFragment :
                         selectedMoreFilterCount.value,
                         throwableError.value,
                         lcaListener = {
-                            if (this@CatalogSellerOfferingFragment.chooseAddressWidget == null) {
-                                this@CatalogSellerOfferingFragment.chooseAddressWidget = it
-                                chooseAddressWidget?.bindChooseAddress(this@CatalogSellerOfferingFragment)
-                            }
+                            this@CatalogSellerOfferingFragment.chooseAddressWidget = it
+                            chooseAddressWidget?.bindChooseAddress(this@CatalogSellerOfferingFragment)
                         },
                         onClickVariant = {
                         },
@@ -326,7 +324,7 @@ class CatalogSellerOfferingFragment :
         }
 
         viewModel.textToaster.observe(viewLifecycleOwner) {
-            if (it != null) Toaster.build(view, it).show()
+            if (it != null) goToCart()
         }
         viewModel.selectedSortIndicatorCount.observe(viewLifecycleOwner) {
             selectedMoreFilterCount.value = it
