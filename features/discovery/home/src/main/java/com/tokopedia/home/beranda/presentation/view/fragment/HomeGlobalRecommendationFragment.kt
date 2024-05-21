@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
@@ -37,9 +37,6 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asCardTrackModel
-import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
@@ -49,7 +46,6 @@ import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.GlobalHomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.helper.ScrollToTopAdapterDataObserver
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
@@ -62,17 +58,16 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
 import com.tokopedia.recommendation_widget_common.byteio.RefreshType
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asCardTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
-import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardGridViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -85,11 +80,9 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.abstraction.R as abstractionR
 
-@RecomTemporary
 class HomeGlobalRecommendationFragment :
-    BaseRecommendationFragment(),
+    Fragment(),
     GlobalRecomListener,
     TopAdsBannerClickListener {
 
@@ -209,11 +202,9 @@ class HomeGlobalRecommendationFragment :
         super.onViewCreated(view, savedInstanceState)
 
         setupArgs()
-        fetchHomeRecommendationRollence()
         setupRecyclerView()
         loadFirstPageData()
         initListeners()
-        observeLiveData()
         observeStateFlow()
     }
 
@@ -231,10 +222,6 @@ class HomeGlobalRecommendationFragment :
     override fun onResume() {
         super.onResume()
         handlingNestedRecyclerView()
-    }
-
-    private fun fetchHomeRecommendationRollence() {
-        HomeRecommendationController.fetchRecommendationCardRollence()
     }
 
     private fun setupArgs() {
@@ -256,39 +243,6 @@ class HomeGlobalRecommendationFragment :
     private fun initBuilderComponent(): DaggerBerandaComponent.Builder {
         return DaggerBerandaComponent.builder()
             .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
-    }
-
-    private fun observeLiveData() {
-        if (!HomeRecommendationController.isUsingRecommendationCard()) {
-            viewModel.homeRecommendationLiveData.observe(
-                viewLifecycleOwner
-            ) { data ->
-                adapter.submitList(data.homeRecommendations)
-            }
-
-            viewModel.homeRecommendationNetworkLiveData.observe(
-                viewLifecycleOwner
-            ) { result ->
-                if (result.isFailure) {
-                    view?.let {
-                        if (adapter.itemCount > 1) {
-                            Toaster.build(
-                                it,
-                                getString(R.string.home_error_connection),
-                                Snackbar.LENGTH_LONG,
-                                Toaster.TYPE_ERROR,
-                                getString(abstractionR.string.title_try_again),
-                                View.OnClickListener {
-                                    endlessRecyclerViewScrollListener?.loadMoreNextPage()
-                                }
-                            ).show()
-                        }
-                    }
-                } else {
-                    updateScrollEndlessListener(result.getOrNull()?.isHasNextPage ?: false)
-                }
-            }
-        }
     }
 
     private fun observeStateFlow() {
@@ -426,8 +380,6 @@ class HomeGlobalRecommendationFragment :
                     viewModel.fetchNextHomeRecommendation(
                         tabIndex,
                         tabName,
-                        recomId,
-                        DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                         page,
                         getLocationParamString(),
                         sourceType,
@@ -543,38 +495,6 @@ class HomeGlobalRecommendationFragment :
         )
     }
 
-    override fun onBannerImpressed(model: BannerRecommendationModel) {
-        trackingQueue.putEETracking(
-            HomeRecommendationTracking.getBannerRecommendation(model) as HashMap<String, Any>
-        )
-    }
-
-    override fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageUiModel,
-                tabIndex,
-                position
-            )
-        )
-
-        val rvContext = recyclerView?.context
-
-        rvContext?.let {
-            RouteManager.route(it, model.topAdsImageUiModel?.applink)
-        }
-    }
-
-    override fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int) {
-        trackingQueue.putEETracking(
-            HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageUiModel,
-                tabIndex,
-                position
-            ) as HashMap<String, Any>
-        )
-    }
-
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(model.asCardTrackModel())
         AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${model.pageName}_${position + 1}"))
@@ -684,16 +604,9 @@ class HomeGlobalRecommendationFragment :
         playVideoWidgetViewListener.onVideoError(view, error)
     }
 
-    override fun onBannerClicked(model: BannerRecommendationModel) {
-        HomePageTracking.eventClickOnBannerFeed(model, model.tabName)
-        RouteManager.route(requireContext(), model.applink)
-    }
-
     override fun onRetryGetProductRecommendationData() {
         viewModel.fetchHomeRecommendation(
             tabName,
-            recomId,
-            DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
             sourceType = sourceType,
             refreshType = RefreshType.REFRESH,
@@ -783,8 +696,6 @@ class HomeGlobalRecommendationFragment :
 
             viewModel.fetchHomeRecommendation(
                 tabName,
-                recomId,
-                DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
                 sourceType = sourceType,
                 refreshType = refreshType.toRecomRequestType(),
@@ -793,7 +704,7 @@ class HomeGlobalRecommendationFragment :
         }
     }
 
-    override fun scrollToTop() {
+    fun scrollToTop() {
         if (view == null) {
             return
         }
@@ -808,7 +719,7 @@ class HomeGlobalRecommendationFragment :
         recyclerView?.smoothScrollToPosition(0)
     }
 
-    override fun setRefreshType(refreshType: HomeRefreshType) {
+    fun setRefreshType(refreshType: HomeRefreshType) {
         this.refreshType = refreshType
     }
 
@@ -961,7 +872,6 @@ class HomeGlobalRecommendationFragment :
         const val ARG_RECOM_ID = "ARG_RECOM_ID"
         const val ARG_SOURCE_TYPE = "ARG_SOURCE_TYPE"
         const val ARG_TAB_NAME = "ARG_TAB_NAME"
-        const val DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE = 12
 
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"

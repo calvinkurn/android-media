@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.data.mapper.HomeGlobalRecommendationMapper
-import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.di.HomeScope
@@ -28,13 +26,5 @@ class HomeMapperModule {
     @HomeScope
     @Provides
     fun provideFeedTabMapper(): FeedTabMapper = FeedTabMapper()
-
-    @HomeScope
-    @Provides
-    fun provideHomRecommendationMapper() = HomeRecommendationMapper()
-
-    @HomeScope
-    @Provides
-    fun provideGlobalHomeRecommendationMapper() = HomeGlobalRecommendationMapper()
 
 }

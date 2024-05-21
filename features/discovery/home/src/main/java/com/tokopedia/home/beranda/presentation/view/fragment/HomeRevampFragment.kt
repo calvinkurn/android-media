@@ -1730,8 +1730,7 @@ open class HomeRevampFragment :
             getThematicUtil(),
             HomeOrigamiListenerDelegate(context, this),
             Mission4SquareWidgetListenerCallback(this),
-            TwoSquareWidgetListenerCallback(this),
-            getRemoteConfig()
+            TwoSquareWidgetListenerCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

@@ -10,8 +10,6 @@ import com.tokopedia.home.beranda.data.balance.HomeHeaderUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.data.mapper.HomeGlobalRecommendationMapper
-import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -33,14 +31,11 @@ import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
 import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
-import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeGlobalRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
@@ -180,28 +175,6 @@ class HomeUseCaseModule {
         homeHeaderUseCase = homeHeaderUseCase,
         atfMapper = atfMapper,
     )
-
-    @Provides
-    fun provideGetHomeRecommendationUseCase(
-        graphqlRepository: GraphqlRepository,
-        homeRecommendationMapper: HomeRecommendationMapper
-    ): GetHomeRecommendationUseCase {
-        return GetHomeRecommendationUseCase(
-            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeRecommendationContent>(graphqlRepository),
-            homeRecommendationMapper
-        )
-    }
-
-    @Provides
-    fun provideGetHomeGlobalRecommendationUseCase(
-        graphqlRepository: GraphqlRepository,
-        homeRecommendationMapper: HomeGlobalRecommendationMapper
-    ): GetHomeGlobalRecommendationUseCase {
-        return GetHomeGlobalRecommendationUseCase(
-            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeRecommendationContent>(graphqlRepository),
-            homeRecommendationMapper
-        )
-    }
 
     @Provides
     @HomeScope
