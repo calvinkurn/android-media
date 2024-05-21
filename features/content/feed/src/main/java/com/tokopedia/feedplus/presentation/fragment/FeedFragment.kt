@@ -44,6 +44,7 @@ import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsM
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
@@ -95,6 +96,7 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
+import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -136,6 +138,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -330,6 +334,17 @@ class FeedFragment :
 
                 feedPostViewModel.updateFollowStatus(shopId, isFollow)
             }
+        }
+
+    private val openCartPageLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (!userSession.isLoggedIn) return@registerForActivityResult
+            openCartPage()
+        }
+
+    private val cartResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            feedPostViewModel.fetchCartCount()
         }
 
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
@@ -851,8 +866,7 @@ class FeedFragment :
         model: FeedCardVideoContentModel,
         trackerModel: FeedTrackerDataModel
     ) {
-        feedPostViewModel.trackVisitChannel(model)
-        feedPostViewModel.trackChannelPerformance(model)
+        feedPostViewModel.trackPerformance(model.playChannelId, model.products.map(FeedCardProductModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
     }
 
     override fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel) {
@@ -1912,20 +1926,33 @@ class FeedFragment :
         feedPostViewModel.fetchFeedProduct(
             activityId,
             if (isTopAds) taggedProductList else emptyList(),
-            sourceType
+            sourceType,
+            trackerData?.mediaType.orEmpty(),
         )
+
+        feedPostViewModel.fetchCartCount()
 
         productBottomSheet.show(
             activityId = activityId,
             shopId = author?.id ?: "",
             manager = childFragmentManager,
-            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
+            tag = TAG_FEED_PRODUCT_BOTTOM_SHEET,
+            sourceType = sourceType
         )
         if (hasVoucher && author?.type?.isShop == true) {
             getMerchantVoucher(author.id)
         } else {
             feedPostViewModel.clearMerchantVoucher()
         }
+    }
+
+    override fun onFeedProductNextPage(activityId: String, sourceType : ContentTaggedProductUiModel.SourceType) {
+        feedPostViewModel.fetchFeedProduct(
+            activityId = activityId,
+            sourceType = sourceType,
+            isNextPage = true,
+            mediaType = currentTrackerData?.mediaType.orEmpty(),
+        )
     }
 
     private fun convertToSourceType(type: String): ContentTaggedProductUiModel.SourceType =
@@ -1995,8 +2022,11 @@ class FeedFragment :
     override val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         get() = feedPostViewModel.merchantVoucherLiveData
 
-    override val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
+    override val productListLiveData: Flow<FeedProductPaging>
         get() = feedPostViewModel.feedTagProductList
+
+    override val cartCount: StateFlow<Int>
+        get() = feedPostViewModel.cartCount
 
     override fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>) {
         if (currentTrackerData != null) {
@@ -2006,6 +2036,18 @@ class FeedFragment :
             )
             feedMvcAnalytics.voucherList = mvcList
         }
+    }
+
+    override fun onCartClicked() {
+        if (!userSession.isLoggedIn) {
+            router.route(requireContext(), openCartPageLoginResult, ApplinkConst.LOGIN)
+        } else {
+            openCartPage()
+        }
+    }
+
+    private fun openCartPage() {
+        router.route(requireContext(), cartResult, ApplinkConst.CART)
     }
 
     private fun observeReminder() {

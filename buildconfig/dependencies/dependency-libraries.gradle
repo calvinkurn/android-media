@@ -28,8 +28,8 @@ ext {
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
             byteplusEffectSdk       : "com.bef.effectsdk:effect-android:11.6.0-bd-modified@aar",
             logger                  : "com.tokopedia.library:logger:0.0.2",
-            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.6.0-beta2",
-            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.6.0-beta",
+            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.9.10-beta1",
+            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.8.1-beta2",
             cassavaTest             : "com.tokopedia.analyticsdebugger:cassavatest:1.5.0"
     ]
 
@@ -82,6 +82,7 @@ ext {
             irisSession             : ":libraries:iris_session",
             keys                    : ":libraries:keys",
             linker                  : ":libraries:linker",
+            libra                   : ":libraries:libra",
             sdui                    : ":libraries:sdui",
             universal_sharing       : ":libraries:universal_sharing",
             locationmanager         : ":libraries:locationmanager",
