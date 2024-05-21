@@ -29,12 +29,20 @@ object BtmApi {
 
     @JvmStatic
     fun registerBtmPageOnCreate(page: Fragment, pageBtm: Site.Page, sourceBtmToken: String? = null) {
-        registerBtmPage(page, pageBtm, sourceBtmToken)
+        page.context?.let {
+            val isBtmEnabled = BtmRemoteConfig.isBtmEnabled(it.applicationContext)
+            if (isBtmEnabled) {
+                registerBtmPage(page, pageBtm, sourceBtmToken)
+            }
+        }
     }
 
     @JvmStatic
     fun registerBtmPageOnCreate(page: Activity, pageBtm: Site.Page, sourceBtmToken: String? = null) {
-        registerBtmPage(page, pageBtm, sourceBtmToken)
+        val isBtmEnabled = BtmRemoteConfig.isBtmEnabled(page.applicationContext)
+        if (isBtmEnabled) {
+            registerBtmPage(page, pageBtm, sourceBtmToken)
+        }
     }
 
     @JvmStatic
