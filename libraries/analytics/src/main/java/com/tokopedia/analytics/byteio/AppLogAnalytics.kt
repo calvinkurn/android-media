@@ -87,6 +87,8 @@ object AppLogAnalytics {
 
     fun clearGlobalParamsOnClick(hash: Int) {
         removePageDataBeforeHash(hash, GLOBAL_PARAMS_ONCLICK)
+        AppLogFirstTrackId.removePageDataBeforeHash(hash, GLOBAL_PARAMS_ONCLICK)
+        AppLogFirstTrackId.updateFirstTrackId()
     }
 
     internal fun addPageName(activity: Activity) {
@@ -130,7 +132,7 @@ object AppLogAnalytics {
             it.addEntranceForm()
             it.addSourcePageType()
             it.addTrackId()
-            it.put(IS_AD, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true))
+            it.put(IS_AD, getPreviousDataFrom(PageName.PDP, IS_AD, true))
             it.addRequestId()
             it.addSourceModulePdp()
             it.addEnterMethodPdp()

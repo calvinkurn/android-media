@@ -117,6 +117,17 @@ object AppLogFirstTrackId {
         _pdpPageDataList.removeAt(pageDataIndexed.index)
     }
 
+    fun removePageDataBeforeHash(hash: Int, listOfRemovedKey: List<String>) {
+        val pageDataIndex = _pdpPageDataList
+            .withIndex()
+            .find { it.value[AppLogParam.ACTIVITY_HASH_CODE] == hash }?.index?.minus(1)
+            ?: return
+
+        listOfRemovedKey.forEach {
+            _pdpPageDataList[pageDataIndex].remove(it)
+        }
+    }
+
     fun removePageData(appLogInterface: AppLogInterface) {
         val pageDataIndexed = _pdpPageDataList
             .withIndex()
