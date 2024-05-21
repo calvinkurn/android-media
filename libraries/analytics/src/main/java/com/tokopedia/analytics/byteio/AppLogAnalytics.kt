@@ -121,7 +121,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, getPreviousDataFrom(PageName.PDP, SOURCE_PAGE_TYPE, true))
+        put(ENTRANCE_FORM, getPreviousDataFrom(PageName.PDP, ENTRANCE_FORM, true))
     }
 
     fun generateEntranceInfoJson(): JSONObject {
