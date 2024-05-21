@@ -121,6 +121,8 @@ object TrackDiscoveryRecommendationMapper {
 
     private fun String.isTrackAsHorizontalSourceModule() : Boolean{
         return when(this){
+            ComponentNames.ProductCardSingle.componentName,
+            ComponentNames.ProductCardSingleReimagine.componentName,
             ComponentNames.ProductCardSingleItem.componentName,
             ComponentNames.ProductCardSingleItemReimagine.componentName -> true
             else -> false
