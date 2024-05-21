@@ -126,7 +126,7 @@ class ExpertReviewViewHolder(
                 element.styleIconPlay.iconColor
             )
         )
-        view.clLayout.changeColorBackground(R.drawable.bg_rounded_border_light,
+        view.clLayout.changeColorBackground(R.drawable.bg_rounded_border_dynamic_color,
             Color.parseColor("#${element.backgroundColor}"))
     }
 

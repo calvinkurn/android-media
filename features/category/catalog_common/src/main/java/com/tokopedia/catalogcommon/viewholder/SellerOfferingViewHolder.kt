@@ -313,7 +313,7 @@ class SellerOfferingViewHolder(
         )
 
         val drawable =
-            ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
+            ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_dynamic_color)
         if (drawable is GradientDrawable) {
             if (element.cardColor.isNotEmpty()) {
                 drawable.setColor(Color.parseColor(element.cardColor))
