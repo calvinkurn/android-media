@@ -60,7 +60,7 @@ if (project.extensions.findByName("buildCollectConfig") != null) {
     println("-----Project Name: $projectName -----")
     buildCollectConfig{
         if (jobName != null) {
-            tags = [appName, isCiBuild, jobName, env, buildType, tier, gradleVersion]
+            tags = [appName, isCiBuild, jobName.toString(), env, buildType, tier, gradleVersion.toString()]
         } else {
             tags = [appName, isCiBuild, env, buildType, tier, gradleVersion]
         }
