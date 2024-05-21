@@ -201,7 +201,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addRequestId() {
-        put(REQUEST_ID, getPreviousDataFrom(PageName.PDP, ENTER_METHOD, true))
+        put(REQUEST_ID, getPreviousDataFrom(PageName.PDP, REQUEST_ID, true))
     }
 
     internal fun JSONObject.addTrackId() {
