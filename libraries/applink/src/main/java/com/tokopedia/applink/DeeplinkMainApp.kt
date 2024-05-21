@@ -495,6 +495,11 @@ object DeeplinkMainApp {
                 ApplinkConstInternalMarketplace.ONBOARDING
             }
         ),
+        "me-page" to mutableListOf(
+            DLP.matchPattern("") { deepLink: String ->
+                DeeplinkMapperMainNavigation.getRegisteredNavigation(deepLink)
+            }
+        ),
         "medali" to mutableListOf(
             DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ ->
                 getInternalDeeplinkForScpCelebration(
@@ -542,11 +547,6 @@ object DeeplinkMainApp {
         "merchant-voucher" to mutableListOf(
             DLP.matchPattern("list") { _: String ->
                 ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
-            }
-        ),
-        "me-page" to mutableListOf(
-            DLP.matchPattern("") { deepLink: String ->
-                DeeplinkMapperMainNavigation.getRegisteredNavigation(deepLink)
             }
         ),
         "modaltoko" to mutableListOf(
