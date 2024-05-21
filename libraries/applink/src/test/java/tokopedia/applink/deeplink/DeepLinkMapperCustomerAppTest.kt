@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 164
+        const val SIZE_HOST = 165
         const val SIZE_PATH = 282
     }
 
