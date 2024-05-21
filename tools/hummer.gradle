@@ -46,7 +46,7 @@ def tier = getTier()
 def jobName = System.getenv('WORKFLOW_JOB_NAME')
 def isCiBuild = jobName ? "CI" : "LOCAL"
 def appName = gradle.startParameter.projectDir.name
-def gradleVersion = project.getGradle().getGradleVersion()
+def gradleVersion = "gradleVersion=${project.getGradle().getGradleVersion()}"
 println("Job Name: $jobName")
 println("Is CI Build: $isCiBuild")
 println("Current Env: $env")
@@ -60,9 +60,9 @@ if (project.extensions.findByName("buildCollectConfig") != null) {
     println("-----Project Name: $projectName -----")
     buildCollectConfig{
         if (jobName != null) {
-            tags = [appName, isCiBuild, jobName.toString(), env, buildType, tier, gradleVersion.toString()]
+            tags = [appName, isCiBuild, jobName.toString(), env, buildType, tier, gradleVersion]
         } else {
-            tags = [appName, isCiBuild, env, buildType, tier, gradleVersion.toString()]
+            tags = [appName, isCiBuild, env, buildType, tier, gradleVersion]
         }
     }
 }
