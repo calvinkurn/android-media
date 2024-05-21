@@ -721,6 +721,7 @@ class ProductListPresenter @Inject constructor(
 
         if (productDataView.productList.isEmpty()) {
             AppLogTopAds.isSearchPageNonEmptyState = false
+
             postProcessingFilter.checkPostProcessingFilter(
                 productDataView.isPostProcessing,
                 searchParameter,
