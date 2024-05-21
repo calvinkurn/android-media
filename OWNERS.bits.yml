@@ -238,6 +238,12 @@ code_review_rule:
         - ilham.i
         - yovi.putra
         - yusuf.hendrawan
+    - pattern: /libraries/libra/.*
+      reviewers:
+        - zulfikar.rahman
+        - isfhani.ghiath
+        - frenzel.surya
+        - winston.pangestu
       required_approvals: 1
     - pattern: /features/watch/.*
       reviewers:
