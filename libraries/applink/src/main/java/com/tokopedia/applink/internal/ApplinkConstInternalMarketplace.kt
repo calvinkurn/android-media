@@ -201,6 +201,8 @@ object ApplinkConstInternalMarketplace {
     // SettingFieldActivity
     const val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
+    const val DEVICE_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/device-notification-setting"
+
     const val CHAT_SETTING = "$INTERNAL_MARKETPLACE/chat/settings"
     const val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
