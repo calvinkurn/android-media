@@ -8,7 +8,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -42,10 +46,10 @@ class PofActivity : BaseSimpleActivity(), HasComponent<PofComponent> {
     }
 
     override fun getNewFragment(): Fragment? {
-        orderId = intent.extras?.getString(DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID)?.toLongOrNull()
-            ?: intent.data?.getQueryParameter(DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID).toLongOrZero()
-        pofStatus = intent.extras?.getString(DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS)?.toIntOrNull()
-            ?: intent.data?.getQueryParameter(DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS).toIntOrZero()
+        orderId = intent.extras?.getString(INTENT_PARAM_ORDER_ID)?.toLongOrNull()
+            ?: intent.data?.getQueryParameter(PARAM_ORDER_ID).toLongOrZero()
+        pofStatus = intent.extras?.getString(INTENT_PARAM_POF_STATUS)?.toIntOrNull()
+            ?: intent.data?.getQueryParameter(PARAM_POF_STATUS).toIntOrZero()
         return null
     }
 

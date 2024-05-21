@@ -159,9 +159,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle): BuyerOrderExtensionFragment {
-            return BuyerOrderExtensionFragment().apply {
-                this.arguments = bundle
-            }
+            return BuyerOrderExtensionFragment().apply { arguments = bundle }
         }
     }
 }

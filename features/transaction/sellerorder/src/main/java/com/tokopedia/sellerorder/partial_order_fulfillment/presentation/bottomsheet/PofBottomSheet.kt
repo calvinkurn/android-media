@@ -10,7 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.sellerorder.R
@@ -43,8 +44,8 @@ class PofBottomSheet : BottomSheetUnify(),
         fun createInstance(orderId: Long, pofStatus: Int): PofBottomSheet {
             return PofBottomSheet().apply {
                 val fragmentArguments = Bundle()
-                fragmentArguments.putLong(DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID, orderId)
-                fragmentArguments.putInt(DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS, pofStatus)
+                fragmentArguments.putLong(INTENT_PARAM_ORDER_ID, orderId)
+                fragmentArguments.putInt(INTENT_PARAM_POF_STATUS, pofStatus)
                 arguments = fragmentArguments
             }
         }
@@ -60,10 +61,10 @@ class PofBottomSheet : BottomSheetUnify(),
         PofAdapter(PofAdapterTypeFactoryImpl(this))
     }
     private val orderId by lazyThreadSafetyNone {
-        arguments?.getLong(DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID).orZero()
+        arguments?.getLong(INTENT_PARAM_ORDER_ID).orZero()
     }
     private val pofStatus by lazyThreadSafetyNone {
-        arguments?.getInt(DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS).orZero()
+        arguments?.getInt(INTENT_PARAM_POF_STATUS).orZero()
     }
 
     private var binding by viewBinding(BottomSheetPofBinding::bind)
