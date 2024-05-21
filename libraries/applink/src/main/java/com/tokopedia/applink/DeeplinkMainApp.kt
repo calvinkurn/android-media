@@ -34,8 +34,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -485,8 +483,8 @@ object DeeplinkMainApp {
             DLP.startsWith("order") { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             },
-            DLP.startsWith("buyer-order-extension") { _: String ->
-                ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION
+            DLP.startsWith("buyer-order-extension") { uri: Uri ->
+                DeeplinkMapperOrder.Soe.Buyer.getRegisteredNavigation(uri)
             },
             DLP.startsWith("buyer-partial-order-fulfillment") { uri: Uri ->
                 DeeplinkMapperOrder.Pof.Buyer.getRegisteredNavigation(uri)
@@ -996,14 +994,14 @@ object DeeplinkMainApp {
             DLP.startsWith("seller-center") { _: String ->
                 DeeplinkMapperMerchant.getRegisteredSellerCenter()
             },
-            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
+            DLP.startsWith(DeeplinkMapperOrder.Pof.Seller.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.Pof.Seller.getRegisteredNavigation(uri)
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
             },
-            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
-                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
+            DLP.startsWith(DeeplinkMapperOrder.Soe.Seller.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.Soe.Seller.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(

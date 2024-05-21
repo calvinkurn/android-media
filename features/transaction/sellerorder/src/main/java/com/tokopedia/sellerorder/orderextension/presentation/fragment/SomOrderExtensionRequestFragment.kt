@@ -74,7 +74,7 @@ class SomOrderExtensionRequestFragment : BaseDaggerFragment(),
     }
 
     override fun getSomOrderExtensionOrderId(): String {
-        return activity?.intent?.getStringExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_PARAM_ORDER_ID) ?: Int.ZERO.toString()
+        return activity?.intent?.getStringExtra(DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID) ?: Int.ZERO.toString()
     }
 
     override fun getSomOrderExtensionViewModel(): SomOrderExtensionViewModel {
@@ -83,8 +83,8 @@ class SomOrderExtensionRequestFragment : BaseDaggerFragment(),
 
     override fun onSuccessRequestOrderExtension(message: String) {
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_SUCCESS, true)
-            putExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_MESSAGE, message)
+            putExtra(DeeplinkMapperOrder.Soe.Seller.INTENT_RESULT_SUCCESS, true)
+            putExtra(DeeplinkMapperOrder.Soe.Seller.INTENT_RESULT_MESSAGE, message)
         })
         somBottomSheetOrderExtensionRequest?.dismiss()
     }

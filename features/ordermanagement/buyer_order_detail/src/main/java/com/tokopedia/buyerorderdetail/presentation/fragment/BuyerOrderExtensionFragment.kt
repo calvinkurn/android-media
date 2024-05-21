@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderExtensionBinding
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
@@ -84,7 +85,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
     }
 
     private fun loadRespondInfo() {
-        val orderId = arguments?.getString(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
+        val orderId = arguments?.getString(DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID).orEmpty()
         binding?.loaderBuyerOrderExtension?.show()
         buyerOrderDetailExtensionViewModel.requestRespondInfo(orderId)
     }

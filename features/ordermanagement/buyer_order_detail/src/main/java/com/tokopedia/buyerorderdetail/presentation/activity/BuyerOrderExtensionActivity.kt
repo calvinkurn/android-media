@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
@@ -19,8 +20,8 @@ class BuyerOrderExtensionActivity : BaseSimpleActivity(), HasComponent<BuyerOrde
 
     override fun getNewFragment(): Fragment {
         val intentExtras = intent.extras?.apply {
-            val orderId = intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
-            putString(ApplinkConstInternalOrder.PARAM_ORDER_ID, orderId)
+            val orderId = intent?.data?.getQueryParameter(DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID).orEmpty()
+            putString(DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID, orderId)
         } ?: Bundle()
         return BuyerOrderExtensionFragment.newInstance(intentExtras)
     }
