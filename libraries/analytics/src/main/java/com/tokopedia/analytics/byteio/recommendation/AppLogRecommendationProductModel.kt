@@ -5,11 +5,8 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -84,10 +81,6 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
-        put(
-            AppLogParam.ENTRANCE_INFO,
-            generateEntranceInfoJson(sourceModule).toString()
-        )
         put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
         put(AppLogParam.ENTRANCE_FORM, entranceForm)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
