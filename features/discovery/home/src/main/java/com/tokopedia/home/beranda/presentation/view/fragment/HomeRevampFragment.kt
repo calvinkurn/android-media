@@ -114,8 +114,10 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceControlle
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.hasInboxCoachMarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setInboxCoachMarkHasShown
 import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.BestSellerWidgetCallback
@@ -428,6 +430,7 @@ open class HomeRevampFragment :
     private var tokonowCoachmarkIsShowing = false
     private var coachmarkTokonow: CoachMark2? = null
     private var coachmarkSubscription: CoachMark2? = null
+    private var inboxCoachMark: CoachMark2? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
     private val coachMarkItemSubscription = ArrayList<CoachMark2Item>()
@@ -685,6 +688,9 @@ open class HomeRevampFragment :
                 AppLogSearch.eventShowSearch()
             }
             it.setSearchStyle(getSearchStyle(shouldCombineInboxNotif))
+            it.setupItemCoachMark(IconList.ID_MESSAGE) { inboxView ->
+                showInboxCoachMark(inboxView)
+            }
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
@@ -826,6 +832,30 @@ open class HomeRevampFragment :
                     e.printStackTrace()
                     homeCoachmarkListener?.onHomeCoachMarkFinished()
                 }
+            }
+        }
+    }
+
+    private fun showInboxCoachMark(inboxView: View) {
+        val ctx = context ?: return
+        val combineNative = HomeRollenceController.shouldCombineInboxNotif()
+        val neverShowInboxCoachMark = !hasInboxCoachMarkShown(ctx.applicationContext)
+        val isValidToShowCoachMark = isValidToShowCoachMark()
+        val isEligibleCoachMark = isValidToShowCoachMark && neverShowInboxCoachMark && combineNative
+        if (isEligibleCoachMark) {
+            inboxCoachMark = CoachMark2(ctx)
+            inboxCoachMark?.run {
+                onDismissListener = {
+                    setInboxCoachMarkHasShown(ctx.applicationContext)
+                }
+                showCoachMark(arrayListOf(
+                    CoachMark2Item(
+                        inboxView,
+                        getString(R.string.home_inbox_coach_mark_title),
+                        getString(R.string.home_inbox_coach_mark_description),
+                        position = CoachMark2.POSITION_BOTTOM
+                    )
+                ))
             }
         }
     }
@@ -2773,6 +2803,9 @@ open class HomeRevampFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
+        if (hidden) {
+            inboxCoachMark?.dismissCoachMark()
+        }
     }
 
     override fun hideEggOnScroll() {

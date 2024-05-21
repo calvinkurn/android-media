@@ -186,6 +186,10 @@ internal class NavToolbarIconAdapter(
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+
+    fun indexOf(iconId: Int): Int {
+        return iconConfig.iconList.indexOfFirst { it.id == iconId }
+    }
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
