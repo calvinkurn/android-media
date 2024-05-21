@@ -131,4 +131,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/searchTextView"
         tools:visibility="visible" />
+
+    <View
+        android:id="@+id/vSearchBoxEnd"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/searchTextView"
+        app:layout_constraintEnd_toStartOf="@+id/tvSearchCta"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@+id/searchTextView"
+        app:layout_constraintTop_toTopOf="@+id/searchTextView" />
 </merge>

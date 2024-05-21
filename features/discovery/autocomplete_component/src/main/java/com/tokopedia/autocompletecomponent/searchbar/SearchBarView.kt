@@ -16,6 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -52,7 +54,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SearchBarView(
     private val mContext: Context,
-    attrs: AttributeSet,
+    attrs: AttributeSet
 ) : ConstraintLayout(mContext, attrs) {
 
     companion object {
@@ -90,7 +92,7 @@ class SearchBarView(
 
     private var viewListener: SearchBarViewListener? = null
 
-    val addButton : ImageUnify?
+    val addButton: ImageUnify?
         get() = binding?.autocompleteAddButton
 
     private val searchNavigationOnClickListener = OnClickListener { v ->
@@ -115,7 +117,9 @@ class SearchBarView(
         get() {
             val pm = context.packageManager
             val activities = pm.queryIntentActivities(
-                    Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0)
+                Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH),
+                0
+            )
             return activities.size != 0
         }
 
@@ -124,7 +128,6 @@ class SearchBarView(
         initiateView(attrs)
 
         initCompositeSubscriber()
-
     }
 
     private fun onVoiceClicked() {
@@ -161,7 +164,8 @@ class SearchBarView(
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.SearchBarView,
-            0, 0
+            0,
+            0
         ).apply {
             try {
                 isMpsEnabled = getBoolean(R.styleable.SearchBarView_enable_mps, false)
@@ -187,10 +191,11 @@ class SearchBarView(
 
     private fun showVoiceButton(show: Boolean) {
         val binding = binding ?: return
-        if (show && isVoiceAvailable && !isSearchBtnEnabled)
+        if (show && isVoiceAvailable && !isSearchBtnEnabled) {
             binding.autocompleteVoiceButton.visibility = View.VISIBLE
-        else
+        } else {
             binding.autocompleteVoiceButton.visibility = View.GONE
+        }
     }
 
     private fun initSearchView() {
@@ -339,31 +344,32 @@ class SearchBarView(
                     }
                 }
             )
-            .debounce(SEARCH_BAR_DELAY_MS, TimeUnit.MILLISECONDS)
-            .subscribeOn(Schedulers.io())
-            .unsubscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Subscriber<String>() {
-                override fun onCompleted() {}
+                .debounce(SEARCH_BAR_DELAY_MS, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<String>() {
+                    override fun onCompleted() {}
 
-                override fun onError(e: Throwable) {
-                    Timber.e(e)
-                }
-
-                override fun onNext(s: String?) {
-                    if (s != null) {
-                        onTextChanged(s)
+                    override fun onError(e: Throwable) {
+                        Timber.e(e)
                     }
-                }
-            })
+
+                    override fun onNext(s: String?) {
+                        if (s != null) {
+                            onTextChanged(s)
+                        }
+                    }
+                })
         )
     }
 
     private fun getNewCompositeSubIfUnsubscribed(subscription: CompositeSubscription?): CompositeSubscription {
         return if (subscription == null || subscription.isUnsubscribed) {
             CompositeSubscription()
-        } else subscription
-
+        } else {
+            subscription
+        }
     }
 
     private fun onTextChanged(newText: CharSequence?) {
@@ -396,7 +402,7 @@ class SearchBarView(
                 paddingLeft,
                 paddingTop,
                 TEXT_EDIT_PADDING_LEFT_MPS_ENABLED.toPx(),
-                paddingBottom,
+                paddingBottom
             )
         }
     }
@@ -410,17 +416,17 @@ class SearchBarView(
                 paddingLeft,
                 paddingTop,
                 TEXT_EDIT_PADDING_LEFT_MPS_DISABLED.toPx(),
-                paddingBottom,
+                paddingBottom
             )
         }
     }
 
     fun enableAddButton() {
-        if(isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = true
+        if (isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = true
     }
 
     fun disableAddButton() {
-        if(isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = false
+        if (isMpsEnabled) binding?.autocompleteAddButton?.isEnabled = false
     }
 
     fun setActiveKeyword(searchBarKeyword: SearchBarKeyword) {
@@ -505,7 +511,7 @@ class SearchBarView(
             ServerLogger.log(
                 Priority.P2,
                 AUTO_COMPLETE_ERROR,
-                mapOf("type" to throwable.stackTraceToString()),
+                mapOf("type" to throwable.stackTraceToString())
             )
         }
     }
@@ -553,8 +559,10 @@ class SearchBarView(
             this,
             binding?.autocompleteActionUpButton,
             binding?.searchTextView,
-            binding?.autocompleteVoiceButton,
-        )
+            binding?.autocompleteVoiceButton
+        ) {
+            animateSearchButton()
+        }
     }
 
     public override fun onSaveInstanceState(): Parcelable? {
@@ -581,6 +589,34 @@ class SearchBarView(
         setHintIfExists(mSavedState?.hint, mSavedState?.placeholder)
 
         super.onRestoreInstanceState(mSavedState?.superState)
+    }
+
+    fun animateSearchButton() {
+        if (!SearchRollenceController.isSearchBtnEnabled()) {
+            return
+        }
+        val searchButton = binding?.tvSearchCta ?: return
+        val anchor = binding?.vSearchBoxEnd ?: return
+        val duration = AutoCompleteMicroInteraction.SEARCH_BAR_ANIMATOR_DURATION
+        searchButton.animate()
+            .x(anchor.x)
+            .setDuration(duration)
+            .start()
+        searchButton.animate()
+        AlphaAnimation(0f, 1.0f).apply {
+            setDuration(duration)
+            searchButton.startAnimation(this)
+            setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {}
+
+                override fun onAnimationEnd(p0: Animation?) {
+                    searchButton.x = anchor.x
+                }
+
+                override fun onAnimationRepeat(p0: Animation?) {
+                }
+            })
+        }
     }
 
     internal class SavedState : BaseSavedState {

@@ -60,14 +60,14 @@ import com.tokopedia.autocompletecomponent.unify.AutoCompleteFragment
 import com.tokopedia.autocompletecomponent.unify.AutoCompleteFragment.Companion.AUTO_COMPLETE_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.unify.AutoCompleteListener
 import com.tokopedia.autocompletecomponent.unify.AutoCompleteStateModule
+import com.tokopedia.autocompletecomponent.util.EXCLUDED_NAV_SOURCE
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
+import com.tokopedia.autocompletecomponent.util.SearchRollenceController
 import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
-import com.tokopedia.autocompletecomponent.util.enterMethodMap
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
-import com.tokopedia.autocompletecomponent.util.EXCLUDED_NAV_SOURCE
-import com.tokopedia.autocompletecomponent.util.SearchRollenceController
+import com.tokopedia.autocompletecomponent.util.enterMethodMap
 import com.tokopedia.autocompletecomponent.util.getSearchQuery
 import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
 import com.tokopedia.autocompletecomponent.util.getWithDefault
@@ -480,7 +480,7 @@ open class BaseAutoCompleteActivity :
         autoCompleteMicroInteraction?.run {
             searchBarView?.setupMicroInteraction(this)
             setSearchBarMicroInteractionAttributes(searchBarMicroInteractionAttributes)
-            animateSearchBar()
+            animateSearchBar(SearchRollenceController.isSearchBtnEnabled())
         }
     }
 
@@ -527,8 +527,10 @@ open class BaseAutoCompleteActivity :
     }
 
     private fun sendTrackingByteIOTrendingWords(searchParameter: Map<String, String>) {
-        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) // Enter with placeholder
+        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) {
+            // Enter with placeholder
             AppLogSearch.eventTrendingWordsClick()
+        }
     }
 
     private fun getTrackingQueryOrHint(searchParameter: Map<String, String>): String {
@@ -555,9 +557,12 @@ open class BaseAutoCompleteActivity :
 
     private fun enterMethod(searchParameter: Map<String, String>) =
         // Enter with placeholder
-        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) DEFAULT_SEARCH_KEYWORD
-        // Enter with keyword input
-        else NORMAL_SEARCH
+        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) {
+            DEFAULT_SEARCH_KEYWORD
+        } // Enter with keyword input
+        else {
+            NORMAL_SEARCH
+        }
 
     private fun sendTrackingSubmitQuery(
         searchParameter: Map<String, String>,
