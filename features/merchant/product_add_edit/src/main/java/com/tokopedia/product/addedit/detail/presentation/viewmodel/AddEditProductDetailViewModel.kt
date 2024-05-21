@@ -52,7 +52,6 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameU
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
-import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.constant.ShopStatusLevelDef
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
@@ -340,20 +339,20 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductNameInput(productNameInput: String) {
-        if (productNameInput.isEmpty()) {
+        if (productNameInput.trim().isEmpty()) {
             // show product error when product name is empty
             val errorMessage = provider.getEmptyProductNameErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
-        }else if (productNameInput.length < 25) {
+        } else if (productNameInput.trim().length < 25) {
             val errorMessage = provider.getProductNameMinimumCharErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
-        }else if (containsEmoji(productNameInput)) {
+        } else if (containsEmoji(productNameInput)) {
             val errorMessage = provider.getProductNameEmojiMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
-        }else {
+        } else {
             // show product name tips
             val productNameTips = provider.getProductNameTips()
             productNameTips?.let { productNameMessage = it }

@@ -220,7 +220,8 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddEditProductVariantBinding.inflate(inflater, container, false)
@@ -254,7 +255,6 @@ class AddEditProductVariantFragment :
         // button "tambah" variant values level 2 on click listener
         linkAddVariantValueLevel2.setOnClickListener {
             addVariantValueAtLevel(VARIANT_VALUE_LEVEL_TWO_POSITION)
-
         }
 
         observeIsEditMode()
@@ -275,8 +275,11 @@ class AddEditProductVariantFragment :
         // track selected variant type
         viewModel.isEditMode.value?.let { isEditMode ->
             val variantTypeName = variantDetail.name
-            if (isEditMode) ProductEditVariantTracking.selectVariantType(variantTypeName, shopId)
-            else ProductAddVariantTracking.selectVariantType(variantTypeName, shopId)
+            if (isEditMode) {
+                ProductEditVariantTracking.selectVariantType(variantTypeName, shopId)
+            } else {
+                ProductAddVariantTracking.selectVariantType(variantTypeName, shopId)
+            }
         }
 
         // disable removing variant state, means it's back to add/edit-ing state
@@ -373,7 +376,6 @@ class AddEditProductVariantFragment :
                     VARIANT_VALUE_LEVEL_ONE_POSITION,
                     selectedVariantUnitValuesLevel1
                 )
-
             } else {
                 // render the new variant type values in level two position
                 // get rendered layout position
@@ -513,14 +515,17 @@ class AddEditProductVariantFragment :
             cancellationDialog?.dismiss()
             // track variant type cancellation
             viewModel.isEditMode.value?.let { isEditMode ->
-                if (isEditMode) ProductEditVariantTracking.confirmVariantTypeCancellation(
-                    variantTypeName,
-                    shopId
-                )
-                else ProductAddVariantTracking.confirmVariantTypeCancellation(
-                    variantTypeName,
-                    shopId
-                )
+                if (isEditMode) {
+                    ProductEditVariantTracking.confirmVariantTypeCancellation(
+                        variantTypeName,
+                        shopId
+                    )
+                } else {
+                    ProductAddVariantTracking.confirmVariantTypeCancellation(
+                        variantTypeName,
+                        shopId
+                    )
+                }
             }
         }
     }
@@ -744,7 +749,6 @@ class AddEditProductVariantFragment :
                 variantTypeAdapter?.getSelectedItems().orEmpty()
             )
         }
-
     }
 
     override fun onItemClicked(position: Int) {
@@ -866,13 +870,13 @@ class AddEditProductVariantFragment :
     override fun startRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
         recyclerViewVariantType.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                stopRenderPerformanceMonitoring()
-                stopPerformanceMonitoring()
-                recyclerViewVariantType.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    stopRenderPerformanceMonitoring()
+                    stopPerformanceMonitoring()
+                    recyclerViewVariantType.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun stopRenderPerformanceMonitoring() {
@@ -882,14 +886,19 @@ class AddEditProductVariantFragment :
     private fun setupButtonSave() {
         buttonSave.setOnClickListener {
             // track click action on continue button
-            if (viewModel.isVariantSizechartVisible.value.orFalse() && viewModel.pictureSizeChart.value?.urlOriginal.orEmpty().isEmpty()){
+            if (viewModel.isVariantSizechartVisible.value.orFalse() && viewModel.pictureSizeChart.value?.urlOriginal.orEmpty().isEmpty() &&
+                viewModel.isRemovingVariant.value == false
+            ) {
                 cardSizechart.background = context?.let { it1 -> ContextCompat.getDrawable(it1, R.drawable.rect_red_dash_border) }
                 typographySizechartRequired.visible()
                 return@setOnClickListener
             }
             viewModel.isEditMode.value?.let { isEditMode ->
-                if (isEditMode) ProductEditVariantTracking.continueToVariantDetailPage(shopId)
-                else ProductAddVariantTracking.continueToVariantDetailPage(shopId)
+                if (isEditMode) {
+                    ProductEditVariantTracking.continueToVariantDetailPage(shopId)
+                } else {
+                    ProductAddVariantTracking.continueToVariantDetailPage(shopId)
+                }
             }
             // perform the save button function
             if (viewModel.isRemovingVariant.value == true) {
@@ -1009,8 +1018,9 @@ class AddEditProductVariantFragment :
         }
 
         // update variant selection state
-        if (selectedVariantDetails.size == VARIANT_VALUE_LEVEL_ONE_COUNT)
+        if (selectedVariantDetails.size == VARIANT_VALUE_LEVEL_ONE_COUNT) {
             viewModel.isSingleVariantTypeIsSelected = true
+        }
 
         // set selected variant unit and values
         displayedVariantDetail.forEachIndexed { index, variantDetail ->
@@ -1109,7 +1119,6 @@ class AddEditProductVariantFragment :
 
         // update sizechart visibility based on variant selected type
         viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
-
     }
 
     private fun observeGetVariantCategoryCombinationResult() {
@@ -1205,15 +1214,21 @@ class AddEditProductVariantFragment :
     private fun observeIsEditMode() {
         viewModel.isEditMode.observe(viewLifecycleOwner) { isEditMode ->
             // track the screen
-            if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
-            else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
+            if (isEditMode) {
+                ProductEditVariantTracking.trackScreen(isLoggedin, userId)
+            } else {
+                ProductAddVariantTracking.trackScreen(isLoggedin, userId)
+            }
         }
     }
 
     private fun observeVariantPhotosVisibility() {
         viewModel.isVariantPhotosVisible.observe(viewLifecycleOwner) { isVisible ->
-            if (isVisible) variantPhotoLayout.show()
-            else variantPhotoLayout.hide()
+            if (isVisible) {
+                variantPhotoLayout.show()
+            } else {
+                variantPhotoLayout.hide()
+            }
         }
     }
 
@@ -1261,7 +1276,9 @@ class AddEditProductVariantFragment :
 
     private fun showToaster(message: String) {
         Toaster.build(
-            requireView(), message, Toaster.LENGTH_LONG,
+            requireView(),
+            message,
+            Toaster.LENGTH_LONG,
             actionText = getString(R.string.action_oke)
         )
             .setAnchorView(R.id.cardViewSave)
@@ -1425,8 +1442,11 @@ class AddEditProductVariantFragment :
                 removeVariant()
                 // track product variant reset
                 viewModel.isEditMode.value?.let { isEditMode ->
-                    if (isEditMode) ProductEditVariantTracking.confirmProductVariantReset(shopId)
-                    else ProductAddVariantTracking.confirmProductVariantReset(shopId)
+                    if (isEditMode) {
+                        ProductEditVariantTracking.confirmProductVariantReset(shopId)
+                    } else {
+                        ProductAddVariantTracking.confirmProductVariantReset(shopId)
+                    }
                 }
             }
         }
@@ -1498,7 +1518,9 @@ class AddEditProductVariantFragment :
 
     private fun showGetVariantCategoryCombinationErrorToast(errorMessage: String) {
         view?.let {
-            Toaster.build(it, errorMessage,
+            Toaster.build(
+                it,
+                errorMessage,
                 duration = Snackbar.LENGTH_INDEFINITE,
                 type = Toaster.TYPE_ERROR,
                 actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
@@ -1511,7 +1533,8 @@ class AddEditProductVariantFragment :
                         val paramId = id.toIntOrNull()
                         paramId?.run { viewModel.getVariantCategoryCombination(this, selections) }
                     }
-                }).show()
+                }
+            ).show()
         }
     }
 
@@ -1702,19 +1725,19 @@ class AddEditProductVariantFragment :
             val dialogFragment = AddEditProductVariantSizechartDialogFragment.newInstance()
             dialogFragment.show(fm, AddEditProductVariantSizechartDialogFragment.FRAGMENT_TAG)
             dialogFragment.setOnImageEditListener(object :
-                AddEditProductVariantSizechartDialogFragment.OnImageEditListener {
-                override fun clickImageEditor() {
-                    showImageEditorVariantSizeGuide()
-                }
+                    AddEditProductVariantSizechartDialogFragment.OnImageEditListener {
+                    override fun clickImageEditor() {
+                        showImageEditorVariantSizeGuide()
+                    }
 
-                override fun clickRemoveImage() {
-                    removeSizechart()
-                }
+                    override fun clickRemoveImage() {
+                        removeSizechart()
+                    }
 
-                override fun clickChangeImagePath() {
-                    showImagePickerVariantSizeGuide()
-                }
-            })
+                    override fun clickChangeImagePath() {
+                        showImagePickerVariantSizeGuide()
+                    }
+                })
         }
     }
 
@@ -1794,10 +1817,11 @@ class AddEditProductVariantFragment :
     ): ImagePickerCallback {
         return ImagePickerCallback(context) { it, _ ->
             val shopId = UserSession(it).shopId.orEmpty()
-            if (isInEditMode)
+            if (isInEditMode) {
                 ProductEditVariantTracking.pickSizeChartImage(shopId)
-            else
+            } else {
                 ProductAddVariantTracking.pickSizeChartImage(shopId)
+            }
         }
     }
 
@@ -1833,8 +1857,11 @@ class AddEditProductVariantFragment :
         variantTypeName: String,
         shopId: String
     ) {
-        if (isEditMode) ProductEditVariantTracking.addingVariantDetailValue(variantTypeName, shopId)
-        else ProductAddVariantTracking.addingVariantDetailValue(variantTypeName, shopId)
+        if (isEditMode) {
+            ProductEditVariantTracking.addingVariantDetailValue(variantTypeName, shopId)
+        } else {
+            ProductAddVariantTracking.addingVariantDetailValue(variantTypeName, shopId)
+        }
     }
 
     private fun trackSelectingVariantUnitEvent(
@@ -1842,8 +1869,11 @@ class AddEditProductVariantFragment :
         variantTypeName: String,
         shopId: String
     ) {
-        if (isEditMode) ProductEditVariantTracking.selectingVariantUnit(variantTypeName, shopId)
-        else ProductAddVariantTracking.selectingVariantUnit(variantTypeName, shopId)
+        if (isEditMode) {
+            ProductEditVariantTracking.selectingVariantUnit(variantTypeName, shopId)
+        } else {
+            ProductAddVariantTracking.selectingVariantUnit(variantTypeName, shopId)
+        }
     }
 
     private fun trackSelectVariantUnitValueEvent(
@@ -1851,8 +1881,11 @@ class AddEditProductVariantFragment :
         eventLabel: String,
         shopId: String
     ) {
-        if (isEditMode) ProductEditVariantTracking.selectVariantUnitValue(eventLabel, shopId)
-        else ProductAddVariantTracking.selectVariantUnitValue(eventLabel, shopId)
+        if (isEditMode) {
+            ProductEditVariantTracking.selectVariantUnitValue(eventLabel, shopId)
+        } else {
+            ProductAddVariantTracking.selectVariantUnitValue(eventLabel, shopId)
+        }
     }
 
     private fun trackSaveVariantUnitValueEvent(
@@ -1860,8 +1893,11 @@ class AddEditProductVariantFragment :
         eventLabel: String,
         shopId: String
     ) {
-        if (isEditMode) ProductEditVariantTracking.saveVariantUnitValues(eventLabel, shopId)
-        else ProductAddVariantTracking.saveVariantUnitValues(eventLabel, shopId)
+        if (isEditMode) {
+            ProductEditVariantTracking.saveVariantUnitValues(eventLabel, shopId)
+        } else {
+            ProductAddVariantTracking.saveVariantUnitValues(eventLabel, shopId)
+        }
     }
 
     private fun trackSaveCustomVariantUnitValueEvent(
@@ -1869,8 +1905,11 @@ class AddEditProductVariantFragment :
         eventLabel: String,
         shopId: String
     ) {
-        if (isEditMode) ProductEditVariantTracking.saveCustomVariantUnitValue(eventLabel, shopId)
-        else ProductAddVariantTracking.saveCustomVariantUnitValue(eventLabel, shopId)
+        if (isEditMode) {
+            ProductEditVariantTracking.saveCustomVariantUnitValue(eventLabel, shopId)
+        } else {
+            ProductAddVariantTracking.saveCustomVariantUnitValue(eventLabel, shopId)
+        }
     }
 
     private fun trackRemoveVariantUnitValueEvent(
@@ -1878,8 +1917,11 @@ class AddEditProductVariantFragment :
         eventLabel: String,
         shopId: String
     ) {
-        if (isEditMode) ProductEditVariantTracking.removeVariantUnitValue(eventLabel, shopId)
-        else ProductAddVariantTracking.removeVariantUnitValue(eventLabel, shopId)
+        if (isEditMode) {
+            ProductEditVariantTracking.removeVariantUnitValue(eventLabel, shopId)
+        } else {
+            ProductAddVariantTracking.removeVariantUnitValue(eventLabel, shopId)
+        }
     }
 
     private fun trackOopsConnectionPageScreen(

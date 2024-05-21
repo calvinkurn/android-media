@@ -13,7 +13,6 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.Guideline
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -85,8 +84,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
-import com.tokopedia.seller_migration_common.R as seller_migration_commonR
 import com.tokopedia.product.addedit.R as productaddeditR
+import com.tokopedia.seller_migration_common.R as seller_migration_commonR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -410,19 +409,19 @@ class AddEditProductDescriptionFragment :
     private fun setupSubmitButton() {
         btnNext?.setOnClickListener {
             btnNext?.isLoading = true
-            if (textFieldDescription.getText().isEmpty()){
+            if (textFieldDescription.getText().trim().isEmpty()) {
                 textFieldDescription?.isInputError = true
                 textFieldDescription?.setMessage(getString(productaddeditR.string.error_product_description))
-            }else{
+            } else {
                 moveToShipmentActivity()
             }
         }
 
         btnSave?.setOnClickListener {
-            if (textFieldDescription.getText().isEmpty()){
+            if (textFieldDescription.getText().trim().isEmpty()) {
                 textFieldDescription?.isInputError = true
                 textFieldDescription?.setMessage(getString(productaddeditR.string.error_product_description))
-            }else{
+            } else {
                 btnSave?.isLoading = true
                 val isAdding = descriptionViewModel.isAddMode
                 val isDrafting = descriptionViewModel.isDraftMode
@@ -895,8 +894,6 @@ class AddEditProductDescriptionFragment :
             getString(R.string.label_gifting_description_copied_message),
             Snackbar.LENGTH_LONG
         ).show()
-
-
     }
 
     private fun highlightNavigationButton() {
@@ -910,5 +907,4 @@ class AddEditProductDescriptionFragment :
         btnIndicatorDescription?.activateHighlight(true)
         btnIndicatorShipment?.activateHighlight(false)
     }
-
 }
