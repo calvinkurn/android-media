@@ -20,7 +20,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 const val READ_MORE_URL =
-    "https://seller.tokopedia.com/edu/topic/fitur-kembangkan-toko-promosi/topads/"
+    "https://seller.tokopedia.com/edu/topic/kunjungan-dan-konversi/fitur-iklan"
 
 class ListArticleTopAdsEducationFragment : TkpdBaseV4Fragment() {
 
