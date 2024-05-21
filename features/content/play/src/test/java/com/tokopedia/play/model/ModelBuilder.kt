@@ -1267,24 +1267,6 @@ class ModelBuilder {
         }
     """.trimIndent()
 
-    fun buildChannel(): ChannelDetailsWithRecomResponse =
-        gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
-
-    fun buildSocketCredential(): SocketCredential =
-        gson.fromJson(socketCredential, SocketCredential::class.java)
-
-    fun buildChannelWithShop(): ChannelDetailsWithRecomResponse =
-        gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
-
-    fun buildShopInfo(): ShopInfo = gson.fromJson(shopInfoJson, ShopInfo::class.java)
-
-    fun buildNewChat(): PlayChat = gson.fromJson(newChatJson, PlayChat::class.java)
-
-    fun buildTotalLike(): TotalLikeContent.Response =
-        gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
-
-    fun buildIsLike(): IsLikedContent.Data = gson.fromJson(isLike, IsLikedContent.Data::class.java)
-
     fun buildProductTagging(): ProductSection.Response =
         gson.fromJson(channelTagItemsJson, ProductSection.Response::class.java)
 

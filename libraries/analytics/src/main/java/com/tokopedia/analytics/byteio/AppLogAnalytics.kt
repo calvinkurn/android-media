@@ -75,22 +75,6 @@ object AppLogAnalytics {
     @JvmField
     var activityCount: Int = 0
 
-    // TODO check how to make this null again
-    @JvmField
-    var sourcePageType: SourcePageType? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var globalTrackId: String? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var globalRequestId: String? = null
-
-    // TODO check how to make this null again
-    @JvmField
-    var entranceForm: EntranceForm? = null
-
     private val lock = Any()
 
     private var remoteConfig: RemoteConfig? = null
@@ -179,8 +163,11 @@ object AppLogAnalytics {
         put(ENTER_FROM, getLastData(ENTER_FROM))
     }
 
+    /**
+     *  In the case of stay PDP (next), when in cart the enter_from will be changed, thus we need to take
+     *  enter_from starting from N-1
+     * */
     internal fun JSONObject.addEnterFromInfo() {
-        // todo: explain
         put(ENTER_FROM_INFO, getLastDataBeforeCurrent(ENTER_FROM))
     }
 
@@ -198,18 +185,18 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addSourceModulePdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataLast(SOURCE_MODULE, 2)
+            getDataBeforeStep(SOURCE_MODULE, 2)
         } else {
-            getDataLast(SOURCE_MODULE)
+            getDataBeforeStep(SOURCE_MODULE)
         }
         put(SOURCE_MODULE, sourceModule)
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataLast(ENTER_METHOD, 2)
+            getDataBeforeStep(ENTER_METHOD, 2)
         } else {
-            getDataLast(ENTER_METHOD)
+            getDataBeforeStep(ENTER_METHOD)
         }
         put(ENTER_METHOD, sourceModule)
     }
@@ -371,7 +358,7 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getDataLast(key: String, step: Int = 1): Any? {
+    fun getDataBeforeStep(key: String, step: Int = 1): Any? {
         val idx = _pageDataList.lastIndex - step
         val map = _pageDataList.getOrNull(idx)
         return map?.get(key)
@@ -515,20 +502,6 @@ object AppLogAnalytics {
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
-    fun removeGlobalParam() {
-        listOf(
-            ENTRANCE_FORM,
-            ENTER_METHOD,
-            SOURCE_MODULE,
-            IS_AD,
-            TRACK_ID,
-            SOURCE_PAGE_TYPE,
-            REQUEST_ID
-        ).forEach {
-            _pageDataList.lastOrNull()?.remove(it)
-        }
-    }
-
     private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
         return takeLast(5).joinToString("\n")
     }
@@ -595,7 +568,7 @@ object AppLogAnalytics {
     /**
      * Starting from N-1, this method will start searching for a key after the current item is the anchor
      * */
-    private fun getPreviousDataFrom(anchor: String, key: String): Any? {
+    fun getPreviousDataFrom(anchor: String, key: String): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
@@ -612,10 +585,4 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getSourcePreviousPage(): String? {
-        getLastDataBeforeCurrent(PAGE_NAME)?.let {
-            return it.toString()
-        }
-        return null
-    }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain.model.report.live
+package com.tokopedia.content.common.track.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -42,5 +42,8 @@ data class GetReportSummaryResponse(
 
         @SerializedName("totalLikeFmt")
         val totalLike: String = "",
+
+        @SerializedName("totalLike")
+        val totalLikeRaw: String = "",
     )
 }
