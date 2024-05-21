@@ -11,8 +11,16 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
     private const val TWO_SQUARE_TYPE = "dynamic channel 2 square"
     private const val ITEM_TYPE = "product"
 
+    /**
+     * There's intermittent issue in GTM, although the data already sent with max 2 items,
+     * buy somehow the data shows more than 2 items in the GTM analytics log, hence we have to
+     * set such limitation for temporary solution.
+     */
+    private const val LIMIT_PRODUCT_TO_TRACK = 2
+
     fun productView(data: ProductWidgetUiModel, userId: String, position: Int): Map<String, Any> {
         val model = data.channelModel
+
         val atLeastGetFirstProductData = data.data.firstOrNull() ?: return mapOf()
 
         return BaseTrackerBuilder()
@@ -28,7 +36,7 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
                     tracker = atLeastGetFirstProductData.tracker,
                     headerName = model.channelHeader.name
                 ),
-                products = data.data.mapIndexed { index, item ->
+                products = data.data.take(LIMIT_PRODUCT_TO_TRACK).mapIndexed { index, item ->
                         val channelGrid = data.channelModel.channelGrids[index]
 
                         Product(
