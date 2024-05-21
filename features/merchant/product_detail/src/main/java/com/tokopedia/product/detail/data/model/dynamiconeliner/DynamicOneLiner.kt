@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.dynamiconeliner
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.pdplayout.ImageSize
 import com.tokopedia.product.detail.common.data.model.pdplayout.Padding
 
 data class DynamicOneLiner(
@@ -35,5 +36,9 @@ data class DynamicOneLiner(
 
     @SerializedName("padding")
     @Expose
-    val padding: Padding = Padding()
+    val padding: Padding = Padding(),
+
+    @SerializedName("imageSize")
+    @Expose
+    val imageSize: ImageSize = ImageSize()
 )

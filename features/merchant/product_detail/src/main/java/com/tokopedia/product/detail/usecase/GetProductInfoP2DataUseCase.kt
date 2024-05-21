@@ -560,6 +560,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   t
                   b
                 }
+                imageSize {
+                  w
+                  h
+                }
             }
             bmgm {
               separator
@@ -593,6 +597,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 padding {
                   t
                   b
+                }
+                imageSize {
+                  w
+                  h
                 }
               }
             }

@@ -267,6 +267,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         return "";
     }
 
+    @NonNull
+    @Override
+    public String getEnterFrom() {
+        return getPageName();
+    }
+
     @Override
     public boolean isEnterFromWhitelisted() {
         return false;

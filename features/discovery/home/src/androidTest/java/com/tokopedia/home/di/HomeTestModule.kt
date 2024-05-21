@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.di.module.HomeMapperModule
 import com.tokopedia.home.beranda.di.module.HomeUseCaseModule
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
+import com.tokopedia.libra.LibraInstance
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -88,4 +89,10 @@ class HomeTestModule {
     fun provideHomeThematicUtil(
         @ApplicationContext context: Context
     ): HomeThematicUtil = HomeThematicUtil(context)
+
+    @HomeScope
+    @Provides
+    fun provideLibraInstance(
+        @ApplicationContext context: Context
+    ): LibraInstance = LibraInstance(context)
 }

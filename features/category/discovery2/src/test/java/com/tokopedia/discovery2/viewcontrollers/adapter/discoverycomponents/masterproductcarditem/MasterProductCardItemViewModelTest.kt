@@ -539,7 +539,8 @@ class MasterProductCardItemViewModelTest {
         val componentName = listOf(
             ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
             ComponentNames.ProductCardCarouselItem.componentName,
-            ComponentNames.ShopOfferHeroBrandProductItem.componentName
+            ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+            ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName,
         ).random()
 
         every { componentsItem.name } returns componentName

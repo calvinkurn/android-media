@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatroom.domain.pojo.srw
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
@@ -9,7 +9,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPrevi
 data class SrwBubbleUiModel constructor(
     val srwPreviewState: SrwFrameLayout.SrwState,
     val products: List<SendablePreview>
-) : Visitable<TopChatTypeFactory> {
+) : Visitable<TopChatRoomTypeFactory> {
 
     var isExpanded = true
     var alreadyInitializeWithSrwPreview = false
@@ -19,7 +19,7 @@ data class SrwBubbleUiModel constructor(
             .filterIsInstance<TopchatProductAttachmentPreviewUiModel>()
             .map { it.productId }
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 
