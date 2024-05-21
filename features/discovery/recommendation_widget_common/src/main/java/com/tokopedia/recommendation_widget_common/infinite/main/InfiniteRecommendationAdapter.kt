@@ -9,6 +9,7 @@ import com.tokopedia.adapterdelegate.AdapterDelegatesManager
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingDelegate
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductDelegate
+import com.tokopedia.recommendation_widget_common.infinite.component.separator.InfiniteSeparatorDelegate
 import com.tokopedia.recommendation_widget_common.infinite.component.title.InfiniteTitleDelegate
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationViewHolder
@@ -25,6 +26,7 @@ class InfiniteRecommendationAdapter(
 
     init {
         delegatesManager
+            .addDelegate(InfiniteSeparatorDelegate())
             .addDelegate(InfiniteLoadingDelegate())
             .addDelegate(InfiniteProductDelegate(callback))
             .addDelegate(InfiniteTitleDelegate(callback, headingType))
