@@ -42,7 +42,7 @@ object Constant {
         const val PM_PRO_BENEFIT_PACKAGE_EDU =
             "https://seller.tokopedia.com/edu/paket-keuntungan-power-merchant-pro"
         const val POWER_MERCHANT_TERMS_AND_CONDITION =
-            "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-power-merchant-dan-power-merchant-pro"
+            "https://www.tokopedia.com/help/seller/article/syarat-dan-ketentuan-pm-dan-pmpro"
         const val SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/skor-toko"
         const val PM_PRO_IDLE =
             "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
