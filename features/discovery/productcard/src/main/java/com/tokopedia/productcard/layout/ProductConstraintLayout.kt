@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnAttachStateChangeListener
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnScrollChangedListener
@@ -18,8 +17,9 @@ import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
     ConstraintLayout,
-    OnAttachStateChangeListener,
-    OnScrollChangedListener {
+    View.OnAttachStateChangeListener,
+    OnScrollChangedListener,
+    ViewTreeObserver.OnGlobalLayoutListener {
 
     private var mPercentageListener: OnVisibilityPercentChanged? = null
     private var lastPercentageWidht = 0
@@ -29,6 +29,10 @@ open class ProductConstraintLayout :
     private var minVerticalPercentage = 0
     private var maxVerticalPercentage = 100
     private var maxAreaPercentage = 0
+    private var viewDetachedFromWindows = true
+    private var debugTextView: TextView? = null
+    private var useScrollChangedEventAdsByteIo = false
+
     private val TOP = 1
     private val BOTTOM = 3
     private val RIGHT = 2
@@ -36,11 +40,6 @@ open class ProductConstraintLayout :
     private val LEFT_AND_RIGHT = 5
     private val TOP_AND_BOTTOM = 6
     private val NOWHERE = 7
-    private var viewDetachedFromWindows = true
-    private var debugTextView: TextView? = null
-
-    private var useScrollChangedEventAdsByteIo = false
-
     private val set: ConstraintSet by lazy { ConstraintSet() }
     private val rectf: Rect by lazy { Rect() }
 
@@ -137,11 +136,17 @@ open class ProductConstraintLayout :
     }
 
     private fun setScrollChangedEvents(areaPercentage: Int, isVisible: Boolean) {
+        val isShown = areaPercentage > 0 && isVisible
         if (useScrollChangedEventAdsByteIo) {
-            if (areaPercentage > 0 && isVisible) {
+            if (isShown) {
                 onShow()
             } else {
                 onShowOver()
+                maxAreaPercentage = 0
+            }
+        } else {
+            if (!isShown) {
+                maxAreaPercentage = 0
             }
         }
     }
@@ -196,7 +201,7 @@ open class ProductConstraintLayout :
         fun onShowOver(maxPercentage: Int)
     }
 
-    fun removeVisibilityPercentageListener() {
+    private fun removeVisibilityPercentageListener() {
         mPercentageListener = null
     }
 
@@ -212,23 +217,18 @@ open class ProductConstraintLayout :
 
     private fun unsetListener() {
         removeVisibilityPercentageListener()
-        if (this.viewTreeObserver.isAlive) {
-            this.viewTreeObserver.removeOnScrollChangedListener(this)
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+            viewTreeObserver.removeOnScrollChangedListener(this)
         }
-        this.removeOnAttachStateChangeListener(this)
+        removeOnAttachStateChangeListener(this)
     }
 
     private fun setListener(eventListener: OnVisibilityPercentChanged?) {
         mPercentageListener = eventListener
-        this.addOnAttachStateChangeListener(this)
-        this.viewTreeObserver.addOnScrollChangedListener(this)
-        this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    calculateVisibility()
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            }
-        )
+        addOnAttachStateChangeListener(this)
+        viewTreeObserver.addOnScrollChangedListener(this)
+        viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     private fun View?.removeSelf() {
@@ -245,6 +245,15 @@ open class ProductConstraintLayout :
         }
     }
 
+    override fun onScrollChanged() {
+        calculateVisibility()
+    }
+
+    override fun onGlobalLayout() {
+        calculateVisibility()
+        removeOnGlobalLayoutListener()
+    }
+
     override fun onViewAttachedToWindow(p0: View) {
         onShow()
     }
@@ -253,8 +262,10 @@ open class ProductConstraintLayout :
         onShowOver()
     }
 
-    override fun onScrollChanged() {
-        calculateVisibility()
+    private fun removeOnGlobalLayoutListener() {
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
     }
 
     fun isVisible(): Boolean {
@@ -275,10 +286,10 @@ open class ProductConstraintLayout :
     private fun onShowOver() {
         if (!viewDetachedFromWindows && maxAreaPercentage > 0) {
             mPercentageListener?.onShowOver(maxAreaPercentage)
-            maxAreaPercentage = 0
             viewDetachedFromWindows = true
         }
     }
+
     private fun inflateView(attrs: AttributeSet?) {
         if (isPercentViewEnabled(context)) {
             set.clone(this)

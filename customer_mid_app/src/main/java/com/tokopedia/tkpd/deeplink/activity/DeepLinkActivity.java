@@ -40,7 +40,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.uri.DeeplinkUtils;
@@ -77,19 +76,10 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
         }
         initializationNewRelic();
 
-        setAdsLogData();
-
         checkUrlMapToApplink();
         initBranchIO(this);
         logDeeplink();
         new FirebaseDLWrapper().getFirebaseDynamicLink(this, getIntent());
-    }
-
-    private void setAdsLogData() {
-        AppLogAnalytics.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
-        AppLogAnalytics.currentPageName = PageName.FIND_PAGE;
-        AppLogAnalytics.putAdsPageData(this, PAGE_NAME, PageName.FIND_PAGE);
-        AppLogAnalytics.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
     }
 
     private void checkUrlMapToApplink() {
@@ -104,6 +94,7 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
                 List<String> pathSegments = uriData.getPathSegments();
                 if (pathSegments.size() > 0 && pathSegments.get(0).equals(PATH_FIND)) {
                     screenName = PRODUCT_SEARCH_RESULT;
+                    setAdsLogData();
                 } else {
                     screenName = uriData.getPath();
                 }
@@ -117,8 +108,14 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
             finish();
         } else {
             initDeepLink();
-            TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_DEEP_LINK);
         }
+    }
+
+    private void setAdsLogData() {
+        AppLogAnalytics.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
+        AppLogAnalytics.currentPageName = PageName.FIND_PAGE;
+        AppLogAnalytics.putAdsPageData(this, PAGE_NAME, PageName.FIND_PAGE);
+        AppLogAnalytics.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
     }
 
     private void initBranchIO(Context context) {
@@ -138,7 +135,8 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
         return uriHaveCampaignData;
     }
 
-    private void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp) {
+    @Override
+    public void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp) {
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()), isOriginalUrlAmp);
         presenter.sendOpenScreen(uriData, campaign, AppScreen.SCREEN_DEEP_LINK, extraReferrer);
@@ -244,6 +242,12 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
     @Override
     public String getPageName() {
         return "";
+    }
+
+    @NonNull
+    @Override
+    public String getEnterFrom() {
+        return getPageName();
     }
 
     @Override

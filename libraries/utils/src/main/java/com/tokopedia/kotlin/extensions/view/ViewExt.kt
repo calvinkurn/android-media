@@ -282,17 +282,6 @@ fun View.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
     )
 }
 
-fun View.addOnScrollChangedListener(onView: () -> Unit) {
-    viewTreeObserver.addOnScrollChangedListener(
-        object : ViewTreeObserver.OnScrollChangedListener {
-            override fun onScrollChanged() {
-                onView.invoke()
-                viewTreeObserver.removeOnScrollChangedListener(this)
-            }
-        }
-    )
-}
-
 fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
@@ -559,38 +548,4 @@ fun View.getLocationOnScreen(): Point {
     val location = IntArray(2)
     this.getLocationOnScreen(location)
     return Point(location[0], location[1])
-}
-
-fun View.addOnAttachStateChangeListener(onViewAttachedToWindow: () -> Unit, onViewDetachedFromWindow: () -> Unit) {
-    addOnAttachStateChangeListener(
-        object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                onViewAttachedToWindow()
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                onViewDetachedFromWindow()
-            }
-        }
-    )
-}
-
-fun View.setAdsTrackListener(onViewAttachedToWindow: () -> Unit,
-                             onViewDetachedFromWindow: () -> Unit,
-                             setVisiblePercentage: () -> Unit) {
-    addOnAttachStateChangeListener(
-        object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                onViewAttachedToWindow()
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                onViewDetachedFromWindow()
-            }
-        }
-    )
-
-    viewTreeObserver.addOnScrollChangedListener {
-        setVisiblePercentage()
-    }
 }

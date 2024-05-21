@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -224,7 +225,7 @@ class DiscoveryPageDataMapper(
             }
 
             ComponentNames.ProductCardSingle.componentName -> {
-                if (component.properties?.cardType.equals("V1", true)) {
+                if (component.properties.isOldProductCardType()) {
                     if (!shouldHideSingleProdCard) {
                         addRecomQueryProdID(component)
                         listComponents.add(component)

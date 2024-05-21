@@ -27,6 +27,7 @@ class RecommendationItemViewHolder (
         @JvmField
         val LAYOUT = R.layout.search_result_recommendation_card_small_grid
     }
+
     private var binding: SearchResultRecommendationCardSmallGridBinding? by viewBinding()
 
     override fun bind(recommendationItemDataView: RecommendationItemDataView) {
@@ -37,6 +38,7 @@ class RecommendationItemViewHolder (
             cardInteraction = true,
         )
         view.setProductModel(productModel)
+
         view.setVisibilityPercentListener(recommendationItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
             override fun onShow() {
                 recommendationItem.sendShowAdsByteIo(itemView.context)

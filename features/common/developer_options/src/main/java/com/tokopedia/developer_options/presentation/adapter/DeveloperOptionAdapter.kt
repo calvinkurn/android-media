@@ -22,6 +22,7 @@ class DeveloperOptionAdapter(
     companion object {
         const val KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION = "Enable Developer Options on Notification"
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
+        const val MOCK_DYNAMIC_WIDGET_DEV = "Mock Dynamic Widget"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
         const val KEYWORD_SYSTEM_APPS = "System Apps"
         const val KEYWORD_NON_SYSTEM_APPS = "Non System Apps"
@@ -102,6 +103,7 @@ class DeveloperOptionAdapter(
         const val FPI_MONITORING = "FPI Monitoring"
         const val KEYWORD_GET_USER_ID = "Get User Id"
         const val KEYWORD_GET_SHOP_ID = "Get Shop Id"
+        const val KEYWORD_SSO_LOGIN = "Login SSO"
     }
 
     /**
@@ -111,8 +113,10 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
+        SSOAuthorizationUiModel(listOf(KEYWORD_SSO_LOGIN)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
+        MockDynamicWidgetUiModel(listOf(MOCK_DYNAMIC_WIDGET_DEV)),
         DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
         SystemNonSystemAppsUiModel(
             listOf(
@@ -255,6 +259,7 @@ class DeveloperOptionAdapter(
             defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
+            removeWidget(SSOAuthorizationUiModel::class.java)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
         }
 
