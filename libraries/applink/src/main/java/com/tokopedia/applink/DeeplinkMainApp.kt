@@ -483,10 +483,10 @@ object DeeplinkMainApp {
             DLP.startsWith("order") { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             },
-            DLP.startsWith("buyer-order-extension") { uri: Uri ->
+            DLP.startsWith(DeeplinkMapperOrder.Soe.Buyer.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.Soe.Buyer.getRegisteredNavigation(uri)
             },
-            DLP.startsWith("buyer-partial-order-fulfillment") { uri: Uri ->
+            DLP.startsWith(DeeplinkMapperOrder.Pof.Buyer.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.Pof.Buyer.getRegisteredNavigation(uri)
             },
             DLP.startsWith("onboarding") { _: String ->

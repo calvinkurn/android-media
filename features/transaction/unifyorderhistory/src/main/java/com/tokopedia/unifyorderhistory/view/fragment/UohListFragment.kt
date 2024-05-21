@@ -2846,7 +2846,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {
-        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
+        val params = mapOf<String, Any>(DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
             DeeplinkMapperOrder.Soe.Buyer.INTERNAL_APP_LINK,
             params
@@ -2881,7 +2881,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun goToPartialOrderFulfillment(order: UohListOrder.UohOrders.Order, index: Int) {
-        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
+        val params = mapOf<String, Any>(DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
             DeeplinkMapperOrder.Pof.Buyer.INTERNAL_APP_LINK,
             params

@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
-import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent

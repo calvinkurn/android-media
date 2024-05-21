@@ -12,7 +12,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -211,8 +212,8 @@ class SomDetailHeaderViewHolder(
             val tickerUrl = UriUtil.buildUriAppendParams(
                 ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT,
                 mapOf(
-                    DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID to orderId,
-                    DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS to pofStatus
+                    INTENT_PARAM_ORDER_ID to orderId,
+                    INTENT_PARAM_POF_STATUS to pofStatus
                 )
             )
             val tickerCta = context

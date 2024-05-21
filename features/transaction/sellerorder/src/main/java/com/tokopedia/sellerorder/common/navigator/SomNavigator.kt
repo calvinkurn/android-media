@@ -10,7 +10,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
@@ -163,8 +164,8 @@ object SomNavigator {
             val appLink = UriUtil.buildUriAppendParam(
                 ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT,
                 mapOf(
-                    DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID to orderId,
-                    DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS to pofStatus.toString()
+                    INTENT_PARAM_ORDER_ID to orderId,
+                    INTENT_PARAM_POF_STATUS to pofStatus.toString()
                 )
             )
             startActivityForResult(RouteManager.getIntent(context, appLink), REQUEST_POF)
