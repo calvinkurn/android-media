@@ -18,6 +18,7 @@ data class PMShopInfoUiModel(
     val shopLevel: Int = PMConstant.ShopLevel.ONE,
     val shopScoreThreshold: Int = DEFAULT_PM_SHOP_SCORE_THRESHOLD,
     val shopScorePmProThreshold: Int = DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD,
+    val shopScorePmProTresholdNew: Int = DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD_NEW,
     val hasActiveProduct: Boolean = false,
     val isEligiblePm: Boolean = false,
     val isEligiblePmPro: Boolean = false,
@@ -33,6 +34,7 @@ data class PMShopInfoUiModel(
         const val DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD = 70
         const val DEFAULT_ORDER_THRESHOLD = 3L
         const val DEFAULT_NIV_THRESHOLD = 350000L
+        const val DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD_NEW = 80
     }
 
     fun isEligibleShopScore() = shopScore >= shopScoreThreshold
