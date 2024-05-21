@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.SystemClock
 import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch
@@ -19,6 +18,7 @@ import org.json.JSONObject
  */
 object AppLogTopAds {
 
+    private const val EXTERNAL_SEARCH = "external_search"
     var isSearchPageNonEmptyState = true
 
     /**
@@ -36,7 +36,7 @@ object AppLogTopAds {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(isSearchPage(getPageName())) {
+                        if(getTagValue(getPageName()) == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -79,7 +79,7 @@ object AppLogTopAds {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(isSearchPage(pageName)) {
+                        if(getTagValue(pageName) == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -120,7 +120,7 @@ object AppLogTopAds {
                 put(
                     AdsLogConst.Param.AD_EXTRA_DATA,
                     JSONObject().apply {
-                        if(isSearchPage(pageName)) {
+                        if(getTagValue(pageName) == AdsLogConst.Tag.TOKO_RESULT_MALL_AD) {
                             putChannelName(getChannel())
                             putEnterFrom(getEnterFrom())
                         }
@@ -149,7 +149,8 @@ object AppLogTopAds {
 
     fun getChannelNameParam(): String {
         val prevPageName = AppLogAnalytics.getLastAdsPageNameBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
-        return mapPrevPageNameToChannelName(prevPageName)
+        val mapChannelName = mapPrevPageNameToChannelName(prevPageName)
+        return if (mapChannelName == PageName.FIND_PAGE) EXTERNAL_SEARCH else mapChannelName
     }
 
     private fun getPageName() = AppLogAnalytics.currentPageName
@@ -195,12 +196,17 @@ object AppLogTopAds {
     }
 
     private fun JSONObject.putTag(currentPageName: Any?) {
-        val tagName = if (isSearchPage(currentPageName)) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
-        put(AdsLogConst.TAG, tagName)
+        put(AdsLogConst.TAG, getTagValue(currentPageName))
+    }
+
+    private fun getTagValue(currentPageName: Any?): String {
+        return if (isSearchPage(currentPageName)) AdsLogConst.Tag.TOKO_RESULT_MALL_AD else AdsLogConst.Tag.TOKO_MALL_AD
     }
 
     private fun isSearchPage(currentPageName: Any?): Boolean {
-        return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH) && isSearchPageNonEmptyState
+        val isPrevPageNonFindPage = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
+        return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH)
+            && isSearchPageNonEmptyState && isPrevPageNonFindPage
     }
 
     private fun JSONObject.putNetworkType(context: Context) {
