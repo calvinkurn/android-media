@@ -28,29 +28,29 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
                     tracker = atLeastGetFirstProductData.tracker,
                     headerName = model.channelHeader.name
                 ),
-                products = model.channelGrids.mapIndexed { index, channelGrid ->
-                    val trackerJson = data.data[index].tracker
+                products = data.data.mapIndexed { index, item ->
+                        val channelGrid = data.channelModel.channelGrids[index]
 
-                    Product(
-                        name = trackerJson.productName,
-                        id = trackerJson.productId,
-                        productPrice = convertRupiahToInt(channelGrid.price).toString(),
-                        brand = Value.NONE_OTHER,
-                        category = Value.NONE_OTHER,
-                        variant = Value.NONE_OTHER,
-                        productPosition = (index + 1).toString(),
-                        channelId = model.id,
-                        isFreeOngkir = channelGrid.isFreeOngkirActive && !channelGrid.labelGroup.hasLabelGroupFulfillment(),
-                        isFreeOngkirExtra = channelGrid.isFreeOngkirActive && channelGrid.labelGroup.hasLabelGroupFulfillment(),
-                        persoType = model.trackingAttributionModel.persoType,
-                        categoryId = model.trackingAttributionModel.categoryId,
-                        isTopAds = channelGrid.isTopads,
-                        isCarousel = false,
-                        headerName = model.channelHeader.name,
-                        recommendationType = channelGrid.recommendationType,
-                        pageName = model.pageName
-                    )
-                }
+                        Product(
+                            name = item.tracker.productName,
+                            id = item.tracker.productId,
+                            productPrice = convertRupiahToInt(channelGrid.price).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = model.id,
+                            isFreeOngkir = channelGrid.isFreeOngkirActive && !channelGrid.labelGroup.hasLabelGroupFulfillment(),
+                            isFreeOngkirExtra = channelGrid.isFreeOngkirActive && channelGrid.labelGroup.hasLabelGroupFulfillment(),
+                            persoType = model.trackingAttributionModel.persoType,
+                            categoryId = model.trackingAttributionModel.categoryId,
+                            isTopAds = channelGrid.isTopads,
+                            isCarousel = false,
+                            headerName = model.channelHeader.name,
+                            recommendationType = channelGrid.recommendationType,
+                            pageName = model.pageName
+                        )
+                    }
             )
             .appendChannelId(model.id)
             .appendUserId(userId)

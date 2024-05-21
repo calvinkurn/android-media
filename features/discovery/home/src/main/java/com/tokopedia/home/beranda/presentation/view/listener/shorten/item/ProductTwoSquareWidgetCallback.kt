@@ -27,8 +27,10 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
     }
 
     override fun productImpressed(data: ProductWidgetUiModel, position: Int) {
+        // Used in the [itemProductClicked] method.
         channelModel = data.channelModel
 
+        // indicates a product list if all items are contains productId in their [ChannelTracker].
         val isProduct = data.data.map { it.tracker }.all { it.isProduct() }
 
         if (isProduct) {
@@ -64,8 +66,6 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
                     )
                 )
             }
-
-            channelModel = null
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 Kd2BannerSquareTracker.cardClicked(
