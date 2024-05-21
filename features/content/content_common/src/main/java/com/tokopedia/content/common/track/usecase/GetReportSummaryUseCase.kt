@@ -1,16 +1,15 @@
-package com.tokopedia.play.broadcaster.domain.usecase.report.live
+package com.tokopedia.content.common.track.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase.Companion.QUERY
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase.Companion.QUERY_NAME
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.play.broadcaster.domain.model.report.live.GetReportSummaryRequest
-import com.tokopedia.play.broadcaster.domain.model.report.live.GetReportSummaryResponse
-import com.tokopedia.play.broadcaster.domain.usecase.report.live.GetReportSummaryUseCase.Companion.QUERY
-import com.tokopedia.play.broadcaster.domain.usecase.report.live.GetReportSummaryUseCase.Companion.QUERY_NAME
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
 import javax.inject.Inject
 
 /**
@@ -57,6 +56,7 @@ class GetReportSummaryUseCase @Inject constructor(
                                 visitContentFmt
                                 estimatedIncomeFmt
                                 totalLikeFmt
+                                totalLike
                             }
                         }
                     }

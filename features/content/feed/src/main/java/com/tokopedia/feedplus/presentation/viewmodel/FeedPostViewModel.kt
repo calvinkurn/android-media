@@ -16,12 +16,13 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase.Companion.isVisit
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
@@ -36,6 +37,7 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_MEDIA_VIDEO
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
@@ -44,7 +46,6 @@ import com.tokopedia.feedplus.domain.usecase.FeedGetChannelStatusUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
-import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
@@ -59,6 +60,7 @@ import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -124,7 +126,6 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val affiliateCookieHelper: AffiliateCookieHelper,
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
@@ -1237,41 +1238,28 @@ class FeedPostViewModel @Inject constructor(
     }
 
     /**
-     * Track Visit Channel
+     * Track
      */
-    fun trackVisitChannel(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
+    private val trackedProductIds = mutableListOf<String>()
+    fun trackPerformance(playChannelId: String, ids: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         if (playChannelId.isBlank()) return
 
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            trackVisitChannelUseCase.apply {
-                setRequestParams(
-                    TrackVisitChannelBroadcasterUseCase.createParams(
-                        playChannelId,
-                        TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
-                    )
-                )
-            }.executeOnBackground()
-        }) {
-        }
-    }
+        val hasChanged = ids.filterNot { trackedProductIds.contains(it) }.isNotEmpty()
+        if (hasChanged || event.isVisit) {
+            trackedProductIds.clear()
+            ids.map { trackedProductIds.add(it) }
+        } else { return }
 
-    fun trackChannelPerformance(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
-        if (playChannelId.isBlank()) return
-
-        val productIds = model.products.map { it.id }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             trackReportTrackViewerUseCase.apply {
-                setRequestParams(
-                    BroadcasterReportTrackViewerUseCase.createParams(
-                        playChannelId,
-                        productIds
-                    )
+                params = BroadcasterReportTrackViewerUseCase.createParams(
+                    channelId = playChannelId,
+                    productIds = trackedProductIds,
+                    event = event,
+                    type = TrackContentType.Play
                 )
             }.executeOnBackground()
-        }) {
-        }
+        }) {}
     }
 
     fun updateChannelStatus(playChannelId: String) {
@@ -1312,6 +1300,7 @@ class FeedPostViewModel @Inject constructor(
         activityId: String,
         products: List<ContentTaggedProductUiModel> = _feedTagProductList.value.products,
         sourceType: ContentTaggedProductUiModel.SourceType,
+        mediaType: String,
         isNextPage: Boolean = false,
     ) {
         viewModelScope.launch {
@@ -1342,9 +1331,11 @@ class FeedPostViewModel @Inject constructor(
                 val mappedData = response.products.map {
                     ProductMapper.transform(it, response.campaign, sourceType)
                 }
-
-                val distinctData = (currentList + mappedData).distinctBy { it.id }
+                val distinctData = (currentList + mappedData).distinctBy {
+                    it.id
+                }
                 _feedTagProductList.value = FeedProductPaging(ResultState.Success ,distinctData, response.nextCursor)
+                if (mediaType == TYPE_MEDIA_VIDEO) trackPerformance(activityId, distinctData.map(ContentTaggedProductUiModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
             } catch (t: Throwable) {
                 _feedTagProductList.update { state -> state.copy(state = ResultState.Fail(t)) }
             }
