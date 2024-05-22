@@ -22,7 +22,6 @@ import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSetti
 import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSettingsViewModel
 import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTracking
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,16 +37,14 @@ class StoriesSettingsFragment @Inject constructor(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_stories_setting, container, false)
-        val composeView = view.findViewById<ComposeView>(R.id.container_stories_settings)
-        composeView.apply {
+    ): View {
+        val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 StoriesSettingsScreen(viewModel)
             }
         }
-        return view
+        return composeView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +60,7 @@ class StoriesSettingsFragment @Inject constructor(
             viewModel.uiEvent.flowWithLifecycle(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
-            ).collectLatest {
+            ).collect {
                 when (val event = it) {
                     is StoriesSettingEvent.ShowErrorToaster -> {
                         Toaster.build(

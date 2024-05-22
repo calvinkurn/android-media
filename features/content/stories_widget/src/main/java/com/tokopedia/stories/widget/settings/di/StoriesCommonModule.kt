@@ -14,7 +14,7 @@ import dagger.Provides
  * @author by astidhiyaa on 4/18/24
  */
 @Module
-class StoriesCommonModule {
+object StoriesCommonModule {
     @ActivityScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository {

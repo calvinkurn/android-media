@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsFragment
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepo
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
@@ -27,9 +28,11 @@ abstract class StoriesSettingsModule {
     abstract fun bindFragment(fragment: StoriesSettingsFragment): Fragment
 
     @Binds
+    @ActivityScope
     abstract fun bindRepo(repo: StoriesSettingsRepo): StoriesSettingsRepository
 
     @Binds
+    @ActivityScope
     abstract fun bindAnalytic(trackingImpl: StoriesSettingsTrackingImpl): StoriesSettingsTracking
 
     @Binds

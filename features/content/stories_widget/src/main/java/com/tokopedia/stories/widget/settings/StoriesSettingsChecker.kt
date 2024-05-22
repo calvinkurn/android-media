@@ -11,11 +11,11 @@ import javax.inject.Inject
  */
 class StoriesSettingsChecker @Inject constructor(
     private val checkEligibilityUseCase: StoriesEligibilityUseCase,
-    private val userSessionInterface: UserSessionInterface,
+    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) {
     private val authorId: String
-        get() = userSessionInterface.shopId
+        get() = userSession.shopId
 
     private val authorType: String
         get() = "shop"
