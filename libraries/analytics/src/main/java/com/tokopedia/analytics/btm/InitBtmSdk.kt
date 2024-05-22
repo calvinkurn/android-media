@@ -14,6 +14,7 @@ import com.bytedance.android.btm.api.model.EventModelV3
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.IEventObserver
 import com.bytedance.dataplatform.remote_config.Experiments
+import com.tokopedia.config.GlobalConfig
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -29,9 +30,9 @@ object InitBtmSdk {
             BtmSDKBuilder().apply {
                 app = context.applicationContext as Application
                 appIds = arrayOf(AppLog.getAppId())
-                debug = false
-                versionName = "1"
-                updateVersionCode = "1"
+                debug = GlobalConfig.DEBUG
+                versionName = GlobalConfig.VERSION_NAME
+                updateVersionCode = GlobalConfig.VERSION_CODE.toString()
                 appLogDepend = object : IAppLogDepend {
                     override fun onEventV1(model: EventModelV1) {
                     }
@@ -101,31 +102,6 @@ object InitBtmSdk {
                 enableDebugCrash = false
                 enableBtmPageAnnotation = false
                 appId = Integer.getInteger(AppLog.getAppId()) ?: 0
-                // TODO TOKO does not have thread pool management and uses the default thread pool
-//            executorDepend = object : IExecutorDepend {
-//                override fun getCPUExecutor(): ExecutorService? {
-//                    return ThreadPoolHelper.getDefaultExecutor()
-//                }
-//
-//                override fun getIOExecutor(): ExecutorService? {
-//                    return ThreadPoolHelper.getIOExecutor()
-//                }
-//
-//                override fun getScheduledExecutor(): ScheduledExecutorService? {
-//                    return ThreadPoolHelper.getScheduledExecutor()
-//                }
-//
-//                override fun getSerialExecutor(): ExecutorService? {
-//                    return ThreadPoolHelper.getSerialExecutor()
-//                }
-//            }
-                // TODO When pulled up by other applications, we need to pay attention to the name of the pulled up application.
-//            appLaunchDepend = object : IAppLaunchDepend {
-//                override fun getReferrer(): String {
-//                    return ServiceManager.get().getService(IRouteMonitorApi::class.java)
-//                        .getReferrer()
-//                }
-//            }
             }
         )
         BtmSDK.getDepend().addUnknownWhiteClass(
@@ -157,29 +133,3 @@ object InitBtmSdk {
         }
     }
 }
-
-// const val Settings = """
-//    {
-//    "bugfix": {
-//        "fix_bcm_description_big_size": 0,
-//        "fix_fe_register_resume": 2,
-//        "fix_register_page_when_no_resume": 0
-//    },
-//    "feature": {
-//        "aLog": 1,
-//        "add_token_in_chain": 1,
-//        "bcm_check_switch": True,
-//        "check_event_switch": 1,
-//        "enable_bcm_report": 1,
-//        "fe_switch": True,
-//        "remove_enter_page": 1,
-//        "show_id_chain_switch": 2,
-//        "unknown_dialog_frag_switch": 0
-//    },
-//    "optimize": {
-//        "enable_btm_page_show_opt": 1,
-//        "enable_event_btm_map": 1
-//    },
-//    "sdk_switch": 1
-// }
-// """

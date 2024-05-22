@@ -18,7 +18,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
@@ -356,9 +355,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initBTMSDK(){
-        long timeStart = System.currentTimeMillis();
         InitBtmSdk.INSTANCE.init(this);
-        Log.i("BTMSDK","init time elapse: " + (System.currentTimeMillis() - timeStart));
     }
 
     private void checkAppPackageNameAsync() {

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bytedance.applog.AppLog;
@@ -246,9 +245,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     private void initBTMSDK(){
-        long timeStart = System.currentTimeMillis();
         InitBtmSdk.INSTANCE.init(this);
-        Log.i("BTMSDK","init time elapse: " + (System.currentTimeMillis() - timeStart));
     }
 
     private void initMsSDK(){
