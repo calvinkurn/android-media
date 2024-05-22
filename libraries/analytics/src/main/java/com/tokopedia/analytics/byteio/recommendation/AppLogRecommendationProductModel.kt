@@ -5,7 +5,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -144,7 +143,6 @@ data class AppLogRecommendationProductModel(
     fun toConfirmCartResultJson(product: TrackConfirmCartResult) = JSONObject().apply {
         addPage()
         addEnterFrom()
-        addEnterFromInfo()
         put(
             AppLogParam.ENTRANCE_INFO,
             generateEntranceInfoJson(sourceModule).toString()
