@@ -75,13 +75,13 @@ class InfiniteRecommendationViewModel @Inject constructor(
         val components = _components.value?.toMutableList() ?: mutableListOf()
 
         if ((this == null || recommendationItemList.isEmpty()) &&
-            currentPage == 0 &&
+            currentPage == 1 &&
             enableSeparator
         ) {
             components.remove(InfiniteSeparatorUiModel)
         }
 
-        if (this == null) {
+        if (this == null || recommendationItemList.isEmpty()) {
             components.remove(InfiniteLoadingUiModel)
         } else {
             /**
