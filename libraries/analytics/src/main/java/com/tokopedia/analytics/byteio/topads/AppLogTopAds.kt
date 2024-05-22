@@ -152,7 +152,7 @@ object AppLogTopAds {
     fun getChannelNameParam(): String {
         val prevPageName = AppLogAnalytics.getLastAdsPageNameBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
         val mapChannelName = mapPrevPageNameToChannelName(prevPageName)
-        return if (mapChannelName == PageName.FIND_PAGE) EXTERNAL_SEARCH else mapChannelName
+        return if (mapChannelName == AdsLogConst.Channel.FIND_SEARCH) EXTERNAL_SEARCH else mapChannelName
     }
 
     private fun getPageName() = AppLogAnalytics.currentPageName
