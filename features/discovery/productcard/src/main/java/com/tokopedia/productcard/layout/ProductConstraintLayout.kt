@@ -39,7 +39,6 @@ open class ProductConstraintLayout :
     private val LEFT_AND_RIGHT = 5
     private val TOP_AND_BOTTOM = 6
     private val NOWHERE = 7
-    private val set: ConstraintSet by lazy { ConstraintSet() }
     private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context) {
@@ -270,7 +269,6 @@ open class ProductConstraintLayout :
 
     private fun inflateView() {
         if (isPercentViewEnabled(context)) {
-            set.clone(this)
             val view = LayoutInflater.from(context).inflate(
                 productcardR.layout.product_card_percent_text_view,
                 this,
