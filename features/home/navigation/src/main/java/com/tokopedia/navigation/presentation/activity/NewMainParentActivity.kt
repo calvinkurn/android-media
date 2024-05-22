@@ -84,6 +84,7 @@ import com.tokopedia.navigation.presentation.util.EmbraceNavAnalyticsProcessor
 import com.tokopedia.navigation.presentation.util.GlobalNavAnalyticsProcessor
 import com.tokopedia.navigation.presentation.util.TabSelectedListener
 import com.tokopedia.navigation.presentation.util.VisitFeedProcessor
+import com.tokopedia.navigation.presentation.util.awaitLayout
 import com.tokopedia.navigation.presentation.util.createTabSelectedListener
 import com.tokopedia.navigation.util.AssetPreloadManager
 import com.tokopedia.navigation.util.MePageCoachMark
@@ -163,6 +164,8 @@ class NewMainParentActivity :
 
     @Inject
     lateinit var mePageCoachMark: Lazy<MePageCoachMark>
+
+    private var coachMarkJob: Job? = null
 
     private val onTabSelected: List<TabSelectedListener> by lazy {
         listOf(
@@ -325,6 +328,12 @@ class NewMainParentActivity :
             pltPerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS)
             intent.putExtra(ARGS_HAS_RUN_ON_RESUME_PLT, true)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        coachMarkJob?.cancel()
+        mePageCoachMark.get().forceDismiss()
     }
 
     override fun onDestroy() {
@@ -511,8 +520,12 @@ class NewMainParentActivity :
 
     override fun onHomeCoachMarkFinished() {
         // Feed Coachmark has been deprecated, so this is expected to be empty as of now
-        val mePageView = binding.dynamicNavbar.findBottomNavItemViewById(BottomNavMePageId) ?: return
-        mePageCoachMark.get().show(mePageView)
+        coachMarkJob?.cancel()
+        coachMarkJob = lifecycleScope.launch {
+            val mePageView = binding.dynamicNavbar.findBottomNavItemViewById(BottomNavMePageId) ?: return@launch
+            mePageView.awaitLayout()
+            mePageCoachMark.get().show(mePageView)
+        }
     }
 
     override fun setForYouToHomeMenuTabSelected() {
