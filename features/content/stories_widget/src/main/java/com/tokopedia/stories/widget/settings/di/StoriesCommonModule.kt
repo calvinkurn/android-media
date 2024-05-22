@@ -15,14 +15,14 @@ import dagger.Provides
  */
 @Module
 object StoriesCommonModule {
-    @ActivityScope
     @Provides
+    @ActivityScope
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
-    @ActivityScope
     @Provides
+    @ActivityScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
