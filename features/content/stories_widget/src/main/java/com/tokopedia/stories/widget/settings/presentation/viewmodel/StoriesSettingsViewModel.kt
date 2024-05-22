@@ -154,7 +154,7 @@ class StoriesSettingsViewModel @Inject constructor(
                                 isSelected = option.isSelected,
                             )
 
-                            "all" -> opt.copy(
+                            OPTION_TYPE_ALL -> opt.copy(
                                 isSelected = _pageInfo.value.options.any { it.isSelected },
                             )
 
@@ -165,10 +165,14 @@ class StoriesSettingsViewModel @Inject constructor(
             }
         }
 
-        if (option.optionType == "all") {
+        if (option.optionType == OPTION_TYPE_ALL) {
             updateSwitch(option.isSelected)
         } else {
             updateCheckbox(option)
         }
+    }
+
+    companion object {
+        private const val OPTION_TYPE_ALL = "all"
     }
 }

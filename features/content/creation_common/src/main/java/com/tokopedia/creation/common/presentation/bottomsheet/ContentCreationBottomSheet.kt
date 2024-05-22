@@ -116,25 +116,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         viewModel.fetchConfig(widgetSource, creationConfig)
     }
 
-    private fun renderHeaderView() {
-        context?.let {
-            setTitle(it.getString(R.string.content_creation_bottom_sheet_title))
-
-            if (shouldShowPerformanceAction) {
-                setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
-                    analytics?.eventClickPerformanceDashboard(
-                        viewModel.authorType,
-                        widgetSource
-                    )
-                    RouteManager.route(
-                        it,
-                        viewModel.getPerformanceDashboardApplink()
-                    )
-                }
-            }
-        }
-    }
-
     fun show(fragmentManager: FragmentManager) {
         if (!isAdded) show(fragmentManager, TAG)
     }

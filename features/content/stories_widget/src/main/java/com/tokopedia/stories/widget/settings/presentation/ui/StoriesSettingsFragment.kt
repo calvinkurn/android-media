@@ -68,13 +68,13 @@ class StoriesSettingsFragment @Inject constructor(
                     is StoriesSettingEvent.ShowErrorToaster -> {
                         Toaster.build(
                             requireView(),
-                            text = event.message.message ?: "Terjadi kesalahan",
+                            text = event.message.message ?: getString(R.string.stories_settings_general_error),
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
 
                     is StoriesSettingEvent.ClickTrack -> {
-                        if (event.option.optionType == "all") {
+                        if (event.option.optionType == OPTION_TYPE_ALL) {
                             analytic.clickToggle(event.option)
                         } else {
                             analytic.clickCheck(event.option)
@@ -97,6 +97,7 @@ class StoriesSettingsFragment @Inject constructor(
 
     companion object {
         const val TAG = "StoriesSettingsFragment"
+        private const val OPTION_TYPE_ALL = "all"
 
         fun get(fragmentManager: FragmentManager): StoriesSettingsFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? StoriesSettingsFragment
