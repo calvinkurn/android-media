@@ -89,7 +89,6 @@ dependencies {
     implementation files(project.rootDir.absolutePath + '/aars/lazydata.aar')
     implementation files(project.rootDir.absolutePath + '/aars/btm-impl.aar')
 
-    testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.mockk
