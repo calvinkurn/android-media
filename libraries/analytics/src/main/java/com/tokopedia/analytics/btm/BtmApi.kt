@@ -29,8 +29,25 @@ object BtmApi {
 
     @JvmStatic
     fun registerBtmPageOnCreate(page: Fragment, pageBtm: Site.Page, sourceBtmToken: String? = null) {
+        page.context?.let {
+            val isBtmEnabled = BtmLibraFeatureFlag.isBtmEnabled()
+            if (isBtmEnabled) {
+                registerBtmPage(page, pageBtm, sourceBtmToken)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun registerBtmPageOnCreate(page: Activity, pageBtm: Site.Page, sourceBtmToken: String? = null) {
+        val isBtmEnabled = BtmLibraFeatureFlag.isBtmEnabled()
+        if (isBtmEnabled) {
+            registerBtmPage(page, pageBtm, sourceBtmToken)
+        }
+    }
+
+    private fun registerBtmPage(page: Fragment, pageBtm: Site.Page, sourceBtmToken: String? = null) {
         val token = sourceBtmToken ?: findSourceBtmToken(page)
-        Timber.d("[registerBtmPageOnCreate] pageBtm:$pageBtm(${pageBtm.str}),Page:${page::class.java.name} SourceBtmToken:$token")
+        Timber.d("[registerBtmPage] pageBtm:$pageBtm(${pageBtm.str}),Page:${page::class.java.name} SourceBtmToken:$token")
         BtmSDK.registerBtmPageOnCreate(
             FragmentPageInstance(
                 page,
@@ -40,10 +57,9 @@ object BtmApi {
         )
     }
 
-    @JvmStatic
-    fun registerBtmPageOnCreate(page: Activity, pageBtm: Site.Page, sourceBtmToken: String? = null) {
+    private fun registerBtmPage(page: Activity, pageBtm: Site.Page, sourceBtmToken: String? = null) {
         val token = sourceBtmToken ?: findSourceBtmToken(page)
-        Timber.d("[registerBtmPageOnCreate] pageBtm:$pageBtm(${pageBtm.str}),Page:${page::class.java.name} SourceBtmToken:$token")
+        Timber.d("[registerBtmPage] pageBtm:$pageBtm(${pageBtm.str}),Page:${page::class.java.name} SourceBtmToken:$token")
         BtmSDK.registerBtmPageOnCreate(
             ActivityPageInstance(
                 page,
