@@ -14,6 +14,7 @@ import com.tokopedia.stories.widget.settings.di.DaggerStoriesSettingsComponent
 import com.tokopedia.stories.widget.settings.tracking.StoriesSettingsTracking
 import javax.inject.Inject
 
+@Suppress("LateinitUsage")
 class StoriesSettingsActivity : AppCompatActivity() {
 
     @Inject
