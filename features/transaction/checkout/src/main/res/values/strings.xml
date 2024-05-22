@@ -169,5 +169,6 @@
 
     <string name="checkout_max_quantity_error">Maks. beli %d</string>
     <string name="checkout_min_quantity_error">Min. beli %d</string>
-
+    <string name="checkout_popup_primary_btn">Bayar</string>
+    <string name="checkout_popup_secondary_btn">Cek Lagi</string>
 </resources>
