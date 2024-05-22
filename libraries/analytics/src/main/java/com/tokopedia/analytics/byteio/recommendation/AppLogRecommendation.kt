@@ -30,7 +30,7 @@ object AppLogRecommendation {
         if (shouldSendRecTrigger(model.entranceForm, model.isEligibleForRecTrigger)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun sendCardShowAppLog(model: AppLogRecommendationCardModel) {
@@ -42,7 +42,7 @@ object AppLogRecommendation {
         if (shouldSendRecTrigger(model.entranceForm)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun sendEnterPageAppLog() {
@@ -56,7 +56,7 @@ object AppLogRecommendation {
         )
     }
 
-    private fun AppLogRecommendationProductModel.setGlobalParams() {
+    private fun AppLogRecommendationProductModel.setGlobalParamOnClick() {
         AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
             sourceModule = sourceModule,
@@ -68,7 +68,7 @@ object AppLogRecommendation {
         additionalParam.setAdditionalToGlobalParam()
     }
 
-    private fun AppLogRecommendationCardModel.setGlobalParams() {
+    private fun AppLogRecommendationCardModel.setGlobalParamOnClick() {
         AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
             sourceModule = sourceModule,

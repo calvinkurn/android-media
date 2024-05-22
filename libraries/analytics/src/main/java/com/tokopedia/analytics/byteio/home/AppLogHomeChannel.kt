@@ -17,7 +17,7 @@ object AppLogHomeChannel {
     fun sendProductClick(model: HomeChannelProductModel) {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toShowClickJson())
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun sendCardShow(model: HomeChannelCardModel) {
@@ -26,15 +26,15 @@ object AppLogHomeChannel {
 
     fun sendCardClick(model: HomeChannelCardModel) {
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toShowClickJson())
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun getEnterMethod(type: String, recomPageName: String, index: Int): String {
         return "${PageName.HOME}_${type}_${recomPageName}_${index + 1}"
     }
 
-    private fun HomeChannelProductModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+    private fun HomeChannelProductModel.setGlobalParamOnClick() {
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
             sourceModule = sourceModule,
             isAd = isAd,
@@ -44,8 +44,8 @@ object AppLogHomeChannel {
         )
     }
 
-    private fun HomeChannelCardModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+    private fun HomeChannelCardModel.setGlobalParamOnClick() {
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
             sourceModule = sourceModule,
             isAd = isAd,

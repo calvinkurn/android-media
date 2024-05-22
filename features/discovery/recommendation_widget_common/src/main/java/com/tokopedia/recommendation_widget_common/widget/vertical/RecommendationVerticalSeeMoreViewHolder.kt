@@ -48,7 +48,7 @@ class RecommendationVerticalSeeMoreViewHolder(
     }
 
     private fun onSeeMoreClicked(element: RecommendationVerticalSeeMoreModel) {
-        AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(element.recomWidget.pageName))
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(element.recomWidget.pageName))
         element.widgetTracking?.sendEventSeeMoreClick()
         RouteManager.route(binding.root.context, element.recomWidget.seeMoreAppLink)
     }
