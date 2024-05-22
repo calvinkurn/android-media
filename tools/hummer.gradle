@@ -55,6 +55,8 @@ println("Tier: $tier")
 println("Gradle Version: $gradleVersion")
 println("Job Name: $jobName")
 
+ext.isCollectBuild = true
+
 if (project.extensions.findByName("buildCollectConfig") != null) {
     def projectName = project.projectDir
     println("-----Project Name: $projectName -----")
