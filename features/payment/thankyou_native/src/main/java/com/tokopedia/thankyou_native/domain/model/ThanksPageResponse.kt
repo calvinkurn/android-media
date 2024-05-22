@@ -624,13 +624,15 @@ data class CustomDataOtherV2(
     var summaryInfo: String = ""
 ) : Parcelable
 
+@Parcelize
 data class CtaDataThanksPage(
     @SerializedName("primary")
     val primary: CtaDetails = CtaDetails(),
     @SerializedName("secondary")
     val secondary: CtaDetails = CtaDetails(),
-)
+) : Parcelable
 
+@Parcelize
 data class CtaDetails(
     @SerializedName("type")
     val type: String = "",
@@ -642,4 +644,5 @@ data class CtaDetails(
     val applink: String = "",
     @SerializedName("hide_button")
     val hideButton: Boolean = true,
-)
+) : Parcelable
+
