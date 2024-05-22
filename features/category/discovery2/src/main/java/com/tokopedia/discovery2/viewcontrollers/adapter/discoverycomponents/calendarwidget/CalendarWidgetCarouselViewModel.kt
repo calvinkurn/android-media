@@ -127,10 +127,12 @@ class CalendarWidgetCarouselViewModel(
                 calendarCardModelArray.add(dataItem)
             }
         }
+        val prop = list.firstOrNull()?.properties
         return calendarCardModelArray.getMaxHeightForCarouselView(
             application.applicationContext,
             Dispatchers.Default,
-            list.firstOrNull()?.properties?.calendarLayout
+            prop?.calendarLayout,
+            prop?.calendarType
         )
     }
 

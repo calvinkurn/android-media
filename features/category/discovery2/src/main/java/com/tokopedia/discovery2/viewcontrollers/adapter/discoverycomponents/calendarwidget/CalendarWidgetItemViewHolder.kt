@@ -167,7 +167,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             Calendar.CAROUSEL -> {
                 layoutParams.width = (width / CAROUSEL_WIDTH_RATIO).roundToInt()
                 layoutParams.height =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_300)
                 imageLayoutParams.height =
                     (layoutParams.height / CAROUSEL_HEIGHT_RATIO).roundToInt()
                 imageLayoutParams.width = imageLayoutParams.height
@@ -184,7 +184,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                         unifyprinciplesR.dimen.spacing_lvl8
                     )
                 layoutParams.height =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_300)
                 imageLayoutParams.height =
                     ((imageLayoutParams.width * DOUBLE_ASPECT_RATIO_NUM) / DOUBLE_ASPECT_RATIO_DENOM)
                 calendarImage.layoutParams = imageLayoutParams
@@ -557,6 +557,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                         }
                     }
                 }
+            }, onError = {
+                calendarFullImage.setImageBitmap(null)
             })
         })
     }
