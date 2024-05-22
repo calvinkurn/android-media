@@ -30,7 +30,7 @@ suspend fun List<DataItem>?.getMaxHeightForCarouselView(
             } else if (calendarLayout == TRIPLE) {
                 calendarCardHeightList.add(context.resources.getDimensionPixelSize(R.dimen.dp_250))
             } else if (calendarLayout == CAROUSEL && calendarType != DYNAMIC) {
-                calendarCardHeightList.add(context.resources.getDimensionPixelSize(R.dimen.dp_300))
+                calendarCardHeightList.add(context.resources.getDimensionPixelSize(R.dimen.dp_280))
             } else if (calendarLayout == GRID && calendarType != DYNAMIC) {
                 calendarCardHeightList.add(context.resources.getDimensionPixelSize(R.dimen.dp_300))
             } else {

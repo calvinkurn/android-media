@@ -167,7 +167,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             Calendar.CAROUSEL -> {
                 layoutParams.width = (width / CAROUSEL_WIDTH_RATIO).roundToInt()
                 layoutParams.height =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_300)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
                 imageLayoutParams.height =
                     (layoutParams.height / CAROUSEL_HEIGHT_RATIO).roundToInt()
                 imageLayoutParams.width = imageLayoutParams.height
@@ -276,7 +276,11 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarTitle.hide()
                 calendarTitleImage.hide()
 
+                itemView.minimumHeight = 150.toPx()
+
             } else { // no full image, do logic as usual
+                itemView.minimumHeight = 0
+
                 calendarFullImage.gone()
                 if (imageUrl.isNullOrEmpty()) {
                     calendarImage.gone()
@@ -513,38 +517,23 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                             val layoutParams = calendarCardUnify.layoutParams
                             layoutParams.height = maxHeight
 
-                            when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
-                                Calendar.DOUBLE, Calendar.CAROUSEL -> {
+                            /* when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
+                                Calendar.DOUBLE -> {
                                     calendarFullImage.scaleType = ImageView.ScaleType.FIT_CENTER
                                 }
                                 else -> {
                                     calendarFullImage.scaleType = ImageView.ScaleType.CENTER_CROP
                                 }
-                            }
-                            /*
-                            * in case we want to adjust width
+                            } */
+
+                            // in case we want to adjust width
                             val bitmapWidth = bitmap.width
                             when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
-                                Calendar.DOUBLE -> {
-                                    val width = Resources.getSystem().displayMetrics.widthPixels
-                                    layoutParams.width =
-                                        (width / 2 - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16))
-                                }
-                                Calendar.GRID -> {
-                                    val width = Resources.getSystem().displayMetrics.widthPixels
-                                    layoutParams.width =
-                                        (width / 2 - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8))
-                                }
-                                Calendar.TRIPLE -> {
-                                    val width = Resources.getSystem().displayMetrics.widthPixels
-                                    layoutParams.width =
-                                        ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)) / TRIPLE_WIDTH_RATIO)
-                                }
-                                else -> {
+                                Calendar.CAROUSEL -> {
                                     // scale the layout to keep ratio
-                                    layoutParams.width = (maxHeight * bitmapWidth / bitmap.height)
+                                    layoutParams.width = (maxHeight * bitmapWidth / bitmap.height) + 8.toPx()
                                 }
-                            } */
+                            }
                             calendarCardUnify.layoutParams = layoutParams
                             calendarFullImage.setImageBitmap(bitmap)
                         } else {
