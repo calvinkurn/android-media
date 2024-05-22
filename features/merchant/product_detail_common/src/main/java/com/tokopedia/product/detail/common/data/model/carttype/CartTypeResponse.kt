@@ -90,10 +90,11 @@ data class AvailableButton(
         return cartType == ProductDetailCommonConstant.KEY_DEFAULT_OOS || cartType == ProductDetailCommonConstant.KEY_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST
     }
 
-    val atcKey = ProductCartHelper.generateButtonAction(
-        cartType = cartType,
-        atcButton = showRecommendation
-    )
+    val atcKey: Int
+        get() = ProductCartHelper.generateButtonAction(
+            cartType = cartType,
+            atcButton = showRecommendation
+        )
 
     companion object {
         val AvailableButton?.buttonText: String
