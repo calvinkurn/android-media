@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
-import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
@@ -250,7 +249,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setDriverInfo(trackingDataModel)
         initialHistoryView()
         setHistoryView(model)
-        setEmptyHistoryView(model)
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
@@ -558,7 +556,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun initialHistoryView() {
         binding?.trackingHistory?.visibility = View.GONE
-        binding?.emptyUpdateNotification?.visibility = View.GONE
         binding?.liveTrackingButton?.visibility = View.GONE
     }
 
@@ -595,24 +592,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             )
 
             loadAndShow(param)
-        }
-    }
-
-    private fun setEmptyHistoryView(model: TrackOrderModel) {
-        if (model.invalid) {
-            binding?.emptyUpdateNotification?.visibility = View.VISIBLE
-            binding?.notificationText?.text = getString(R.string.warning_courier_invalid)
-            binding?.notificationHelpStep?.visibility = View.VISIBLE
-            binding?.notificationHelpStep?.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding?.notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
-        } else if (model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
-            binding?.emptyUpdateNotification?.visibility = View.VISIBLE
-            binding?.notificationText?.text = getString(R.string.warning_no_courier_change)
-            binding?.notificationHelpStep?.visibility = View.GONE
-        } else {
-            binding?.emptyUpdateNotification?.visibility = View.GONE
-            binding?.notificationHelpStep?.visibility = View.GONE
         }
     }
 

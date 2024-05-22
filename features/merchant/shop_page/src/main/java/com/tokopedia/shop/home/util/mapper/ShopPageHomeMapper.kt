@@ -1661,6 +1661,7 @@ object ShopPageHomeMapper {
                     title = badge.title
                 )
             },
+            countSoldRating = rating,
             colorMode = productCardColorHelper.determineProductCardColorMode(
                 isFestivity = isFestivity,
                 shouldOverrideTheme = isOverrideTheme,

@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
@@ -30,8 +31,10 @@ class ShippingDurationViewModel @Inject constructor(
     private val stateConverter: RatesResponseStateConverter
 ) : BaseViewModel(Dispatchers.Main) {
     companion object {
-        private const val DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
+        private const val DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE =
+            "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
     }
+
     var shippingData: ShippingRecommendationData? = null
 
     private val _loading = MutableLiveData<Boolean>()
@@ -79,10 +82,12 @@ class ShippingDurationViewModel @Inject constructor(
                             model.shippingDurationUiModels,
                             model.listLogisticPromo,
                             model.productShipmentDetailModel,
+                            model.paidSectionInfoUiModel,
                             isOcc
                         )
                     )
-                    _shipmentAnalytic.value = ShippingDurationAnalyticState.AnalyticShippingDuration(model.shippingDurationUiModels)
+                    _shipmentAnalytic.value =
+                        ShippingDurationAnalyticState.AnalyticShippingDuration(model.shippingDurationUiModels)
                     val hasCourierPromo = checkHasCourierPromo(model.shippingDurationUiModels)
                     if (hasCourierPromo) {
                         _shipmentAnalytic.value =
@@ -92,7 +97,9 @@ class ShippingDurationViewModel @Inject constructor(
                         ShippingDurationAnalyticState.AnalyticPromoLogistic(model.listLogisticPromo)
                 } else {
                     _shipmentData.value =
-                        ShippingDurationListState.NoShipmentAvailable(DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE)
+                        ShippingDurationListState.NoShipmentAvailable(
+                            DEFAULT_ERROR_NO_SHIPMENT_AVAILABLE
+                        )
                 }
             } catch (e: Exception) {
                 _loading.value = false
@@ -215,25 +222,32 @@ class ShippingDurationViewModel @Inject constructor(
         shippingDurationUiModels: List<ShippingDurationUiModel>,
         promoUiModel: List<LogisticPromoUiModel>,
         productShipmentDetailModel: ProductShipmentDetailModel?,
+        paidSectionInfoUiModel: PaidSectionInfoUiModel,
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
         val eligibleServices = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }
-        if (!isOcc && promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
-            initiateShowcase(eligibleServices)
-        }
-        val uiModelList: MutableList<RatesViewModelType> =
-            mutableListOf<RatesViewModelType>().apply {
-                addAll(eligibleServices)
+        val uiModelList: MutableList<RatesViewModelType> = mutableListOf()
+
+        // paid shipping
+        if (paidSectionInfoUiModel.title.isNotEmpty()) {
+            if (paidSectionInfoUiModel.isCollapsed) {
+                uiModelList.addAll(eligibleServices)
             }
+            uiModelList.add(0, paidSectionInfoUiModel)
+        } else {
+            uiModelList.addAll(eligibleServices)
+        }
 
         if (promoUiModel.isNotEmpty()) {
             uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
         }
 
+        // notifier
         if (!isOcc && !eligibleServices.any { it.etaErrorCode == 0 }) {
             uiModelList.add(0, NotifierModel())
         }
 
+        // shipment info
         productShipmentDetailModel?.let {
             uiModelList.add(0, it)
         }
@@ -241,7 +255,18 @@ class ShippingDurationViewModel @Inject constructor(
         return uiModelList
     }
 
-    private fun initiateShowcase(services: List<ShippingDurationUiModel>) {
-        services.firstOrNull()?.isShowShowCase = true
+    fun onCollapseClicked(collapsed: Boolean, isOcc: Boolean) {
+        shippingData?.let { model ->
+            model.paidSectionInfoUiModel.isCollapsed = collapsed
+            _shipmentData.value = ShippingDurationListState.ShowList(
+                convertServiceListToUiModel(
+                    model.shippingDurationUiModels,
+                    model.listLogisticPromo,
+                    model.productShipmentDetailModel,
+                    model.paidSectionInfoUiModel,
+                    isOcc
+                )
+            )
+        }
     }
 }

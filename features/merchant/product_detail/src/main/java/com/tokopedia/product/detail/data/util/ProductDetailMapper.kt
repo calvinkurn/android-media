@@ -43,7 +43,6 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
-import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
@@ -63,7 +62,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
@@ -242,19 +240,6 @@ object ProductDetailMapper {
                             thematicId = componentData?.thematicId.orEmpty()
                         )
                     )
-                }
-
-                ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
-                    val componentData = component.componentData.firstOrNull()
-                    listOfComponent.add(
-                        ProductRecommendationVerticalPlaceholderDataModel(
-                            type = component.type,
-                            name = component.componentName,
-                            queryParam = componentData?.queryParam.orEmpty(),
-                            thematicId = componentData?.thematicId.orEmpty()
-                        )
-                    )
-                    listOfComponent.add(LoadingDataModel())
                 }
 
                 ProductDetailConstant.VARIANT -> {

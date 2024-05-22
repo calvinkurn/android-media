@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.databinding.ItemShopHomeReimagineTerlarisProductRankBinding
@@ -60,6 +61,8 @@ class ShopHomeReimagineTerlarisAdapter(
         }
 
         private fun renderProductCard(product: ShopHomeProductUiModel) {
+            val withoutBadgeList = listOf<ProductCardModel.ShopBadge>()
+
             val productCardModel = ShopPageHomeMapper.mapToProductCardModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
@@ -72,7 +75,7 @@ class ShopHomeReimagineTerlarisAdapter(
                 isFestivity = element.isFestivity,
                 makeProductCardTransparent = true,
                 atcVariantButtonText = binding.productCard.context?.getString(R.string.shop_atc).orEmpty()
-            )
+            ).copy(shopBadgeList = withoutBadgeList)
 
             binding.productCard.setProductModel(productCardModel)
 

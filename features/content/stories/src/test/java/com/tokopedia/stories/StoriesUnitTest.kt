@@ -2,6 +2,7 @@ package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.data.mock.mockContentTaggedProductUiModel
@@ -433,6 +434,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -454,6 +457,7 @@ class StoriesUnitTest {
                 actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -472,6 +476,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -483,7 +489,6 @@ class StoriesUnitTest {
 
         coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
-
         getStoriesRobot().use { robot ->
             robot.setTrackActivity(selectedGroup)
 

@@ -7,11 +7,11 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewCard
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 class ReviewUiModel private constructor(
     builder: Builder
-) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), Visitable<TopChatRoomTypeFactory>, DeferredAttachment {
 
     var reply: Reply = builder.reply
         private set
@@ -41,7 +41,7 @@ class ReviewUiModel private constructor(
         trackId = split.getOrNull(1)
     }
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Tracking</string>
-    <string name="empty_notes_1">Penjual keliru menginput nomor resi atau tanggal pengiriman.</string>
-    <string name="empty_notes_2">Penjual menggunakan kurir yang berbeda dari pilihan pembeli.</string>
-    <string name="empty_notes_3">Pihak logistik tidak memberikan informasi nama penerima ketika pesanan tiba.</string>
     <string name="label_tracking_status">Status</string>
     <string name="label_delivery_date">Tanggal Pengiriman</string>
     <string name="label_service_code">Service Code</string>
@@ -10,9 +7,6 @@
     <string name="label_seller_courier_tracking">Penjual</string>
     <string name="label_live_tracking">Live Tracking</string>
     <string name="label_reference_number">Nomor Resi</string>
-    <string name="warning_no_courier_change">Belum ada update pengiriman dari kurir. Silakan lacak kembali secara berkala maksimal 3 x 24 jam.</string>
-    <string name="warning_courier_invalid">Apabila masih tidak ada update status pengiriman
-setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="label_tracking_activity">Lacak</string>
     <string name="find_new_driver">Cari Driver Baru</string>
     <string name="retry_dateline_info"><![CDATA[Tunggu <b>%s</b> untuk mencari driver baru]]></string>

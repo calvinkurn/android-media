@@ -6,7 +6,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopScoreTest
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
@@ -46,24 +45,6 @@ open class ShopScoreCassavaTest : BaseShopScoreTest() {
         activityRule.finishActivity()
         Thread.sleep(3000)
         MatcherAssert.assertThat(cassavaTestRule.validate(fileName), hasAllSuccess())
-    }
-
-    protected fun clickMerchantToolsRecommendation() {
-        activityRule.activity.scrollTo<SectionShopRecommendationUiModel>()
-        onIdView(R.id.rvShopScoreCreation).isViewDisplayed()
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<SectionShopFeatureRecommendationViewHolder>(
-                    0,
-                    CommonActions.clickChildViewWithId(R.id.cardPromoCreation)
-                )
-            )
-        validate(CLICK_MERCHANT_TOOLS_RECOMMENDATION_PATH)
-    }
-
-    protected fun clickPowerMerchantSection() {
-        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
-        onIdView(R.id.potentialPowerMerchantWidget).isViewDisplayed().onClick()
-        validate(CLICK_POWER_MERCHANT_SECTION_PATH)
     }
 
     protected fun clickTickerPenalty() {

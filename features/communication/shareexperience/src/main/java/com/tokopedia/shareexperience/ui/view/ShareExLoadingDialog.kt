@@ -129,6 +129,12 @@ class ShareExLoadingDialog(
                     attachmentId = arg.attachmentId
                 )
             }
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                ShareExProductBottomSheetRequest(
+                    pageType = arg.pageTypeEnum.valueInt,
+                    productId = arg.productId
+                )
+            }
             else -> {
                 // Default params, if all BU specific data only need to be passed through metadata
                 ShareExDefaultBottomSheetRequest(
