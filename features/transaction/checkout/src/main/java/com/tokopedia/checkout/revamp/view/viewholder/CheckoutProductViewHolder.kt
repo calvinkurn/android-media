@@ -255,7 +255,12 @@ class CheckoutProductViewHolder(
         val priceInRp =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
                 .removeDecimalSuffix()
-        productBinding.tvProductPrice.text = priceInRp
+        if (product.isCartTypeOcc) {
+            productBinding.tvProductPrice.text = priceInRp
+        } else {
+            val qty = product.quantity
+            productBinding.tvProductPrice.text = "$qty x $priceInRp"
+        }
         productBinding.tvProductPrice.isVisible = true
 
         if (product.noteToSeller.isNotEmpty()) {
@@ -272,27 +277,27 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderNotes(product: CheckoutProductModel) {
-        // if (product.enableNoteEdit) {
-        productBinding.buttonChangeNote.show()
-        if (product.shouldShowLottieNotes) {
-            productBinding.buttonChangeNoteLottie.visible()
-            listener.onShowLottieNotes(
-                productBinding.buttonChangeNote,
-                productBinding.buttonChangeNoteLottie,
-                bindingAdapterPosition
-            )
-        } else {
-            productBinding.buttonChangeNoteLottie.gone()
+        if (product.enableNoteEdit) {
+            productBinding.buttonChangeNote.show()
+            if (product.shouldShowLottieNotes) {
+                productBinding.buttonChangeNoteLottie.visible()
+                listener.onShowLottieNotes(
+                    productBinding.buttonChangeNote,
+                    productBinding.buttonChangeNoteLottie,
+                    bindingAdapterPosition
+                )
+            } else {
+                productBinding.buttonChangeNoteLottie.gone()
+            }
+            productBinding.buttonChangeNote.setOnClickListener {
+                listener.onNoteClicked(product, bindingAdapterPosition)
+            }
+            if (product.noteToSeller.isNotBlank()) {
+                renderNotesFilled(productBinding)
+            } else {
+                renderNotesEmpty(productBinding)
+            }
         }
-        productBinding.buttonChangeNote.setOnClickListener {
-            listener.onNoteClicked(product, bindingAdapterPosition)
-        }
-        if (product.noteToSeller.isNotBlank()) {
-            renderNotesFilled(productBinding)
-        } else {
-            renderNotesEmpty(productBinding)
-        }
-        // }
     }
 
     private fun renderQuantity(product: CheckoutProductModel) {

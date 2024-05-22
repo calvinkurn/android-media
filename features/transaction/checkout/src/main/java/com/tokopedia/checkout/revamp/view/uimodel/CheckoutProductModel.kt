@@ -134,7 +134,8 @@ data class CheckoutProductModel(
     val minOrder: Int = 0,
     val maxOrder: Int = 0,
     val invenageValue: Int = 0,
-    val switchInvenage: Int = 0
+    val switchInvenage: Int = 0,
+    val isCartTypeOcc: Boolean = true
 ) : CheckoutItem {
 
     val shouldShowBmgmInfoIcon: Boolean

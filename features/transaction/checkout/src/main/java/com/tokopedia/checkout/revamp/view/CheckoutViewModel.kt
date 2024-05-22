@@ -289,7 +289,8 @@ class CheckoutViewModel @Inject constructor(
                         val items = dataConverter.getCheckoutItems(
                             saf.cartShipmentAddressFormData,
                             address.recipientAddressModel.locationDataModel != null,
-                            userSessionInterface.name
+                            userSessionInterface.name,
+                            saf.cartShipmentAddressFormData.cartType == OCC
                         )
 
                         var uploadPrescriptionUiModel = UploadPrescriptionUiModel()
@@ -3718,6 +3719,7 @@ class CheckoutViewModel @Inject constructor(
 
         const val CART_TYPE_OCC = "buy now"
         const val CART_TYPE_ATC = "add to cart"
+        const val OCC = "occ"
     }
 }
 

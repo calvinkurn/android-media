@@ -159,7 +159,8 @@ class CheckoutDataConverter @Inject constructor() {
     fun getCheckoutItems(
         cartShipmentAddressFormData: CartShipmentAddressFormData,
         hasTradeInDropOffAddress: Boolean,
-        username: String
+        username: String,
+        isCartTypeOcc: Boolean
     ): List<CheckoutItem> {
         val checkoutItems: MutableList<CheckoutItem> = ArrayList()
         if (cartShipmentAddressFormData.groupAddress.isEmpty()) {
@@ -191,7 +192,8 @@ class CheckoutDataConverter @Inject constructor() {
                     username,
                     receiverName,
                     addOnWordingModel,
-                    cartShipmentAddressFormData.additionalFeature
+                    cartShipmentAddressFormData.additionalFeature,
+                    isCartTypeOcc
                 )
                 products.addAll(productList)
                 cartItemIndex += productList.size
@@ -363,7 +365,8 @@ class CheckoutDataConverter @Inject constructor() {
         username: String,
         receiverName: String,
         addOnOrderLevelModel: AddOnGiftingWordingModel,
-        additionalFeature: AdditionalFeature
+        additionalFeature: AdditionalFeature,
+        isCartTypeOcc: Boolean
     ): List<CheckoutProductModel> {
         var counterIndex = index
         return groupShopV2.products.map { product ->
@@ -376,7 +379,8 @@ class CheckoutDataConverter @Inject constructor() {
                 receiverName,
                 addOnOrderLevelModel,
                 groupShopV2,
-                additionalFeature
+                additionalFeature,
+                isCartTypeOcc
             )
             counterIndex += 1
             cartItem
@@ -392,7 +396,8 @@ class CheckoutDataConverter @Inject constructor() {
         receiverName: String,
         addOnWordingModel: AddOnGiftingWordingModel,
         groupShopV2: GroupShopV2,
-        additionalFeature: AdditionalFeature
+        additionalFeature: AdditionalFeature,
+        isCartTypeOcc: Boolean
     ): CheckoutProductModel {
         val ppp = product.purchaseProtectionPlanData
         return CheckoutProductModel(
@@ -502,7 +507,8 @@ class CheckoutDataConverter @Inject constructor() {
             minOrder = product.productMinOrder,
             maxOrder = product.productMaxOrder,
             invenageValue = product.productInvenageValue,
-            switchInvenage = product.productSwitchInvenage
+            switchInvenage = product.productSwitchInvenage,
+            isCartTypeOcc = isCartTypeOcc
         )
     }
 
