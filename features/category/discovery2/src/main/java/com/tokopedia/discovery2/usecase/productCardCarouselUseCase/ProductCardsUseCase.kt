@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.RefreshType
 import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.discovery2.ComponentNames
@@ -307,7 +308,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     }
 
     private fun MutableMap<String, Any>.appendAppLogFilterParams(): MutableMap<String, Any> {
-        put(PARAM_ENTER_FROM, AppLogAnalytics.getEnterFrom().orEmpty())
+        val enterFrom = AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM).toString()
+        put(PARAM_ENTER_FROM, enterFrom)
         put(PARAM_SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
 
         return this
