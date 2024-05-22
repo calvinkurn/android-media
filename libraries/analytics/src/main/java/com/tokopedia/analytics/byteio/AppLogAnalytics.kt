@@ -211,12 +211,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        val enterMethod = if (pageDataList.size > 1) {
-            getDataBeforeCurrent(ENTER_METHOD)
-        } else {
-            getCurrentData(ENTER_METHOD)
-        }
-        put(ENTER_METHOD, enterMethod)
+        put(ENTER_METHOD, getDataBeforeCurrent(ENTER_METHOD)?.toString().orEmpty())
     }
 
     internal fun JSONObject.addSourceContentId() {
