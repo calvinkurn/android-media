@@ -205,7 +205,6 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.accompanistFlowLayout
 
-    implementation files(project.rootDir.absolutePath + '/aars/btm-api.aar')
 }
 
 project.ext {
