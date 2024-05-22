@@ -16,7 +16,8 @@ class ProductCardGridViewHolder(
     itemView: View,
     private var listener: ProductCardListener? = null,
     private val isOverrideWidgetTheme: Boolean,
-    private val thematicWidgetUiModel: ThematicWidgetUiModel
+    private val thematicWidgetUiModel: ThematicWidgetUiModel,
+    private val isFestivity: Boolean
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
 
     companion object {
@@ -37,7 +38,11 @@ class ProductCardGridViewHolder(
                     shopHomeProductViewModel = element,
                     widgetName = thematicWidgetUiModel.name,
                     statusCampaign = thematicWidgetUiModel.statusCampaign,
-                    forceLightModeColor = isOverrideWidgetTheme
+                    isOverrideTheme = isOverrideWidgetTheme,
+                    patternColorType = listener?.getPatternColorType().orEmpty(),
+                    backgroundColor = listener?.getBackgroundColor().orEmpty(),
+                    isFestivity = isFestivity,
+                    atcVariantButtonText = context?.getString(R.string.shop_atc).orEmpty()
                 )
             )
             setImageProductViewHintListener(
@@ -58,5 +63,7 @@ class ProductCardGridViewHolder(
     interface ProductCardListener {
         fun onProductCardClickListener(product: ShopHomeProductUiModel)
         fun onProductCardImpressListener(product: ShopHomeProductUiModel)
+        fun getPatternColorType(): String
+        fun getBackgroundColor(): String
     }
 }

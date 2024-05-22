@@ -57,7 +57,7 @@ object AppLogRecommendation {
     }
 
     private fun AppLogRecommendationProductModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
             sourceModule = sourceModule,
             isAd = isAd,
@@ -69,7 +69,7 @@ object AppLogRecommendation {
     }
 
     private fun AppLogRecommendationCardModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
             sourceModule = sourceModule,
             isAd = isAd,

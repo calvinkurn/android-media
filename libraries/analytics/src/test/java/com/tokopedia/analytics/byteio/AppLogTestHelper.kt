@@ -16,6 +16,14 @@ internal val ActivityBasicThree = object : AppLogInterface {
     override fun getPageName(): String = "Page Three"
 }
 
+internal val ActivityPdpOne = object : AppLogInterface {
+    override fun getPageName(): String = PageName.PDP
+}
+
+internal val ActivityPdpTwo = object : AppLogInterface {
+    override fun getPageName(): String = PageName.PDP
+}
+
 
 internal val ActivityEnterFrom = object : AppLogInterface {
     override fun getPageName(): String = "Page EnterFrom"
