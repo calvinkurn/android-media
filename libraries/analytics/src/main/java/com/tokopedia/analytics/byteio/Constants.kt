@@ -276,7 +276,7 @@ object AppLogParam {
     const val FIRST_TRACK_ID = "first_track_id"
     const val FIRST_SOURCE_PAGE = "first_source_page"
     val ENTER_METHOD_FMT_PAGENAME
-        get() = "${AppLogAnalytics.getPageName()}_%s"
+        get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"
     const val SOURCE_CONTENT_ID = "source_content_id"
 }

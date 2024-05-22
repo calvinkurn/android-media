@@ -106,16 +106,8 @@ object AppLogAnalytics {
         get() = if (this) 1 else 0
 
     internal fun JSONObject.addPage() {
-        put(PREVIOUS_PAGE, getPreviousPage().orEmpty())
-        put(PAGE_NAME, getPageName())
-    }
-
-    fun getPreviousPage(): String? {
-        return getLastDataBeforeCurrent(PAGE_NAME)?.toString()
-    }
-
-    fun getPageName(): String? {
-        return getLastData(PAGE_NAME)?.toString()
+        put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty())
+        put(PAGE_NAME, getLastData(PAGE_NAME))
     }
 
     internal fun JSONObject.addEntranceForm() {
