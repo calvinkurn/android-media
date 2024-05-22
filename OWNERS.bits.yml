@@ -211,33 +211,6 @@ code_review_rule:
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/user/fcm_common/.*
-      reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
-      required_approvals: 1
-    - pattern: /libraries/cm_push_notifications/.*
-      reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
-      required_approvals: 1
-    - pattern: /features/user/notif-troubleshooter/.*
-      reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
-      required_approvals: 1
-    - pattern: /features/user/settingnotif/.*
-      reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
     - pattern: /libraries/libra/.*
       reviewers:
         - zulfikar.rahman
@@ -698,6 +671,34 @@ code_review_rule:
         - yusuf.hendrawan
       required_approvals: 1
     - pattern: /libraries/poc_new_relic/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
+    - pattern: /features/user/fcm_common/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
+    - pattern: /libraries/cm_push_notifications/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
+    - pattern: /features/user/notif-troubleshooter/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
+    - pattern: /features/user/settingnotif/.*
       reviewers:
         - yehezkiel
         - ilham.i
