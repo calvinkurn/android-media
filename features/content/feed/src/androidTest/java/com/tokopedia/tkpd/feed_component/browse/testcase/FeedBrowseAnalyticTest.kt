@@ -30,7 +30,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
  * Created by Jonathan Darwin on 01 April 2024
  */
 @CassavaTest
-class FeedBrowseTest {
+class FeedBrowseAnalyticTest {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)

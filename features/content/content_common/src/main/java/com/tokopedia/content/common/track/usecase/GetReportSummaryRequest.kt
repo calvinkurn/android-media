@@ -1,9 +1,8 @@
-package com.tokopedia.play.broadcaster.domain.model.report.live
+package com.tokopedia.content.common.track.usecase
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
-import com.tokopedia.play.broadcaster.domain.model.ContentType
 
 /**
  * Created by Jonathan Darwin on 08 March 2024

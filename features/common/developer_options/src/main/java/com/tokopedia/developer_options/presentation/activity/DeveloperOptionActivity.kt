@@ -135,6 +135,8 @@ class DeveloperOptionActivity :
         const val DEPRECATED_API_SWITCHER_TOASTER_SP_NAME = "deprecated_switcher_toggle"
         const val DEPRECATED_API_SWITCHER_TOASTER_KEY = "deprecated_switcher_key"
         const val PREF_KEY_FPI_MONITORING_POPUP = "fpi_monitoring_popup"
+        const val PREF_KEY_OK_HTTP_TIMEOUT = "shared_pref_ok_http_timeout"
+        const val PREF_KEY_OK_HTTP_TIMEOUT_VALUE = "shared_pref_ok_http_timeout_value"
     }
 
     private var userSession: UserSession? = null
