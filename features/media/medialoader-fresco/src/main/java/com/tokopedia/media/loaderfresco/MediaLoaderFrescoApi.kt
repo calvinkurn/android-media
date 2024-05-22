@@ -1,11 +1,17 @@
 package com.tokopedia.media.loaderfresco
 
+import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
+import com.facebook.common.references.CloseableReference
+import com.facebook.datasource.DataSource
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
+import com.facebook.imagepipeline.image.CloseableImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loaderfresco.data.Properties
 import com.tokopedia.media.loaderfresco.tracker.FrescoLogger
+import com.tokopedia.media.loaderfresco.utils.FrescoDataSourceRequest
 import com.tokopedia.media.loaderfresco.utils.Hierarchy.generateHierarchy
 import com.tokopedia.media.loaderfresco.utils.generateFrescoUrl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -37,9 +43,25 @@ internal object MediaLoaderFrescoApi {
                 return
             }
 
-            val draweeView = SimpleDraweeView(context, generateHierarchy(context, properties))
-            imageView.setImageDrawable(draweeView.drawable)
-            draweeView.setImageURI(properties.generateFrescoUrl())
+            val dataSource = FrescoDataSourceRequest.frescoDataSourceBuilder(properties, context)
+            dataSource.subscribe(object : BaseBitmapDataSubscriber() {
+                override fun onNewResultImpl(bitmap: Bitmap?) {
+                    if (bitmap != null && !bitmap.isRecycled) {
+                        imageView.setImageBitmap(bitmap)
+                    }
+                }
+
+                override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>?) {
+                    imageView.setImageDrawable(
+                        AppCompatResources.getDrawable(
+                            context,
+                            properties.error
+                        )
+                    )
+                }
+            }) { command ->
+                command.run()
+            }
 
             FrescoLogger.loggerSlardarFresco()
         } else {
