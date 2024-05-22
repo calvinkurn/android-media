@@ -45,7 +45,6 @@ object BtmApi {
         }
     }
 
-    @JvmStatic
     private fun registerBtmPage(page: Fragment, pageBtm: Site.Page, sourceBtmToken: String? = null) {
         val token = sourceBtmToken ?: findSourceBtmToken(page)
         Timber.d("[registerBtmPage] pageBtm:$pageBtm(${pageBtm.str}),Page:${page::class.java.name} SourceBtmToken:$token")
