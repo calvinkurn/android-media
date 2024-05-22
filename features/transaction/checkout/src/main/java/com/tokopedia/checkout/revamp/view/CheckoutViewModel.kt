@@ -3640,7 +3640,8 @@ class CheckoutViewModel @Inject constructor(
             val newProduct = product.copy(
                 shouldShowMaxQtyError = showMaxQtyError,
                 shouldShowMinQtyError = showMinQtyError,
-                quantity = newQty
+                quantity = newQty,
+                prevQuantity = newQty
             )
             checkoutItems[itemIndex] = newProduct
             listData.value = checkoutItems
