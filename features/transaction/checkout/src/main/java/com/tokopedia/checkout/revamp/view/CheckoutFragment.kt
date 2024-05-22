@@ -567,7 +567,6 @@ class CheckoutFragment :
                 }
 
                 is CheckoutPageState.Success -> {
-
                     val appID = MSSDK_APPID
                     val mgr = MSManagerUtils.get(appID)
                     mgr?.let {
@@ -2350,7 +2349,6 @@ class CheckoutFragment :
     private fun onSuccessCheckout(checkoutResult: CheckoutResult) {
         if (checkoutResult.checkoutData?.consent?.show == true) {
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
-
                 setImageDrawable(R.drawable.checkout_popup_confirmation)
                 setPrimaryCTAText(getString(R.string.checkout_popup_primary_btn))
                 setSecondaryCTAText(getString(R.string.checkout_popup_secondary_btn))
@@ -2359,31 +2357,38 @@ class CheckoutFragment :
                 setOverlayClose(false)
 
                 setPrimaryCTAClickListener {
+                    continueToPaymentPage(checkoutResult)
+                }
+                setSecondaryCTAClickListener {
                     dismiss()
                 }
             }.show()
         } else {
-            activity?.let { _ ->
-                val paymentPassData = PaymentPassData()
-                paymentPassData.redirectUrl = checkoutResult.checkoutData!!.redirectUrl
-                paymentPassData.transactionId = checkoutResult.checkoutData.transactionId
-                paymentPassData.paymentId = checkoutResult.checkoutData.paymentId
-                paymentPassData.callbackSuccessUrl = checkoutResult.checkoutData.callbackSuccessUrl
-                paymentPassData.callbackFailedUrl = checkoutResult.checkoutData.callbackFailedUrl
-                paymentPassData.queryString = checkoutResult.checkoutData.queryString
-                paymentPassData.method = checkoutResult.checkoutData.method
-                val intent =
-                    RouteManager.getIntent(
-                        activity,
-                        ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-                    )
-                intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-                intent.putExtra(
-                    PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
-                    checkoutResult.hasClearPromoBeforeCheckout
+            continueToPaymentPage(checkoutResult)
+        }
+    }
+
+    private fun continueToPaymentPage(checkoutResult: CheckoutResult) {
+        activity?.let { _ ->
+            val paymentPassData = PaymentPassData()
+            paymentPassData.redirectUrl = checkoutResult.checkoutData!!.redirectUrl
+            paymentPassData.transactionId = checkoutResult.checkoutData.transactionId
+            paymentPassData.paymentId = checkoutResult.checkoutData.paymentId
+            paymentPassData.callbackSuccessUrl = checkoutResult.checkoutData.callbackSuccessUrl
+            paymentPassData.callbackFailedUrl = checkoutResult.checkoutData.callbackFailedUrl
+            paymentPassData.queryString = checkoutResult.checkoutData.queryString
+            paymentPassData.method = checkoutResult.checkoutData.method
+            val intent =
+                RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                 )
-                startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
-            }
+            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+            intent.putExtra(
+                PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                checkoutResult.hasClearPromoBeforeCheckout
+            )
+            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
         }
     }
 
