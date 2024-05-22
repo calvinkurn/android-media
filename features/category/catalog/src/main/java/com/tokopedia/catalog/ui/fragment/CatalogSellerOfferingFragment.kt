@@ -236,6 +236,7 @@ class CatalogSellerOfferingFragment :
         }
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
             viewModel.refreshNotification()
+            goToCart()
         }
     }
 
