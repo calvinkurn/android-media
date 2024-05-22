@@ -20,7 +20,6 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
 
     fun productView(data: ProductWidgetUiModel, userId: String, position: Int): Map<String, Any> {
         val model = data.channelModel
-
         val atLeastGetFirstProductData = data.data.firstOrNull() ?: return mapOf()
 
         return BaseTrackerBuilder()
@@ -29,36 +28,38 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventLabel = generateEventLabel(model.id, model.channelHeader.name),
                 eventAction = "impression on $ITEM_TYPE $TWO_SQUARE_TYPE",
-                list = generateParentItemList(
-                    position = position,
-                    topAds = IsTopAds(atLeastGetFirstProductData.tracker.isTopAds),
-                    carousel = IsCarousel(atLeastGetFirstProductData.tracker.isCarousel),
-                    tracker = atLeastGetFirstProductData.tracker,
-                    headerName = model.channelHeader.name
-                ),
-                products = data.data.take(LIMIT_PRODUCT_TO_TRACK).mapIndexed { index, item ->
-                        val channelGrid = data.channelModel.channelGrids[index]
+                list = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - %s - %s - %s - %s - %s - %s"
+                    .format(
+                        IsTopAds(atLeastGetFirstProductData.tracker.isTopAds),
+                        IsCarousel(atLeastGetFirstProductData.tracker.isCarousel),
+                        atLeastGetFirstProductData.tracker.recommendationType,
+                        atLeastGetFirstProductData.tracker.recomPageName,
+                        atLeastGetFirstProductData.tracker.buType,
+                        model.channelHeader.name
+                    ),
+                products = data.data.mapIndexed { index, item ->
+                    val channelGrid = data.channelModel.channelGrids[index]
 
-                        Product(
-                            name = item.tracker.productName,
-                            id = item.tracker.productId,
-                            productPrice = convertRupiahToInt(channelGrid.price).toString(),
-                            brand = Value.NONE_OTHER,
-                            category = Value.NONE_OTHER,
-                            variant = Value.NONE_OTHER,
-                            productPosition = (index + 1).toString(),
-                            channelId = model.id,
-                            isFreeOngkir = channelGrid.isFreeOngkirActive && !channelGrid.labelGroup.hasLabelGroupFulfillment(),
-                            isFreeOngkirExtra = channelGrid.isFreeOngkirActive && channelGrid.labelGroup.hasLabelGroupFulfillment(),
-                            persoType = model.trackingAttributionModel.persoType,
-                            categoryId = model.trackingAttributionModel.categoryId,
-                            isTopAds = channelGrid.isTopads,
-                            isCarousel = false,
-                            headerName = model.channelHeader.name,
-                            recommendationType = channelGrid.recommendationType,
-                            pageName = model.pageName
-                        )
-                    }
+                    Product(
+                        name = item.tracker.productName,
+                        id = item.tracker.productId,
+                        productPrice = convertRupiahToInt(channelGrid.price).toString(),
+                        brand = Value.NONE_OTHER,
+                        category = Value.NONE_OTHER,
+                        variant = Value.NONE_OTHER,
+                        productPosition = (index + 1).toString(),
+                        channelId = model.id,
+                        isFreeOngkir = channelGrid.isFreeOngkirActive && !channelGrid.labelGroup.hasLabelGroupFulfillment(),
+                        isFreeOngkirExtra = channelGrid.isFreeOngkirActive && channelGrid.labelGroup.hasLabelGroupFulfillment(),
+                        persoType = model.trackingAttributionModel.persoType,
+                        categoryId = model.trackingAttributionModel.categoryId,
+                        isTopAds = channelGrid.isTopads,
+                        isCarousel = false,
+                        headerName = model.channelHeader.name,
+                        recommendationType = channelGrid.recommendationType,
+                        pageName = model.pageName
+                    )
+                }.take(LIMIT_PRODUCT_TO_TRACK)
             )
             .appendChannelId(model.id)
             .appendUserId(userId)
@@ -82,13 +83,15 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventLabel = generateEventLabel(model.id, model.channelHeader.name),
                 eventAction = "click on $ITEM_TYPE $TWO_SQUARE_TYPE",
-                list = generateParentItemList(
-                    position = position,
-                    topAds = IsTopAds(attribute.isTopAds),
-                    carousel = IsCarousel(attribute.isCarousel),
-                    tracker = attribute,
-                    headerName = model.channelHeader.name
-                ),
+                list = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - %s - %s - %s - %s - %s - %s"
+                    .format(
+                        IsTopAds(attribute.isTopAds),
+                        IsCarousel(attribute.isCarousel),
+                        attribute.recommendationType,
+                        attribute.recomPageName,
+                        attribute.buType,
+                        model.channelHeader.name
+                    ),
                 products = listOf(
                     Product(
                         id = attribute.productId,
@@ -123,14 +126,6 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
     private fun generateEventLabel(channelId: String, headerName: String): String {
         return "%s - %s".format(channelId, headerName)
     }
-
-    private fun generateParentItemList(
-        position: Int,
-        topAds: IsTopAds,
-        carousel: IsCarousel,
-        tracker: ChannelTracker,
-        headerName: String
-    ) = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - $topAds - $carousel - ${tracker.recommendationType} - ${tracker.recomPageName} - ${tracker.buType} - $headerName"
 
     @JvmInline
     value class IsTopAds(val value: Boolean) {

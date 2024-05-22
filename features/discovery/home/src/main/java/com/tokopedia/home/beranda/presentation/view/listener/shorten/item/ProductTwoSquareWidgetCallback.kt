@@ -19,6 +19,7 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
 
     override fun productChannelHeaderClicked(data: ProductWidgetUiModel) {
         listener.onDynamicChannelClicked(data.header.applink)
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Kd2BannerSquareTracker.channelHeaderClicked(
                 data.channelModel
@@ -30,8 +31,7 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
         // Used in the [itemProductClicked] method.
         channelModel = data.channelModel
 
-        // indicates a product list if all items are contains productId in their [ChannelTracker].
-        val isProduct = data.data.map { it.tracker }.all { it.isProduct() }
+        val isProduct = data.data.first().tracker.isProduct()
 
         if (isProduct) {
             listener.getTrackingQueueObj()?.putEETracking(
