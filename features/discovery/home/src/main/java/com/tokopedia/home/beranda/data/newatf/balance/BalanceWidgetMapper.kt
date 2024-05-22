@@ -63,7 +63,7 @@ class BalanceWidgetMapper @Inject constructor() {
             url = data.redirectUrl,
             imageUrl = data.iconUrl,
             text = balanceTitle,
-            state = DataStatus.SUCCESS,
+            state = BalanceItemModel.STATE_SUCCESS,
             isLinked = data.isLinked
         )
     }
@@ -79,7 +79,7 @@ class BalanceWidgetMapper @Inject constructor() {
             url = data.redirectURL,
             imageUrl = "https://images.tokopedia.net/img/tokopoints/benefit/kupon.png",
             text = text,
-            state = DataStatus.SUCCESS
+            state = BalanceItemModel.STATE_SUCCESS
         )
     }
 
@@ -90,7 +90,7 @@ class BalanceWidgetMapper @Inject constructor() {
         return BalanceItemModel(
             type = type,
             text = data.convertToLocationParams(),
-            state = DataStatus.SUCCESS
+            state = BalanceItemModel.STATE_SUCCESS
         )
     }
 
@@ -124,9 +124,9 @@ class BalanceWidgetMapper @Inject constructor() {
             else -> return null
         }
         return when(state) {
-            DataStatus.LOADING -> BalanceItemLoadingUiModel(contentType, position)
-            DataStatus.ERROR -> BalanceItemErrorUiModel(contentType, position)
-            DataStatus.SUCCESS -> mapToBalanceItemUiModel(contentType, position)
+            BalanceItemModel.STATE_LOADING -> BalanceItemLoadingUiModel(contentType, position)
+            BalanceItemModel.STATE_ERROR -> BalanceItemErrorUiModel(contentType, position)
+            BalanceItemModel.STATE_SUCCESS -> mapToBalanceItemUiModel(contentType, position)
             else -> null
         }
     }
