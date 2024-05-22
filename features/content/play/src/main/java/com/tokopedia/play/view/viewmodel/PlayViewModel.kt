@@ -11,6 +11,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
+import com.tokopedia.content.common.track.usecase.ContentType
+import com.tokopedia.content.common.track.usecase.GetReportSummaryRequest
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -103,7 +107,7 @@ class PlayViewModel @AssistedInject constructor(
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    private val getReportSummariesUseCase: GetReportSummaryUseCase,
     private val playSocketToModelMapper: PlaySocketToModelMapper,
     private val playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -550,9 +554,6 @@ class PlayViewModel @AssistedInject constructor(
     // Explore Widget
     val selectedChips: String
         get() = _exploreWidget.value.chips.items.find { it.isSelected }?.text ?: ""
-
-    val exploreWidgetConfig: PlayWidgetConfigUiModel
-        get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
     val widgetInfo: PlayChannelRecommendationConfig
         get() = _channelDetail.value.channelRecomConfig
@@ -1090,7 +1091,7 @@ class PlayViewModel @AssistedInject constructor(
                 // Resetting
                 setExploreWidgetParam(_channelDetail.value.channelRecomConfig)
                 _categoryWidget.update { it.copy(data = emptyList()) }
-                _exploreWidget.update { it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty) }
+                _exploreWidget.update { it.copy(data = emptyList(), chips = TabMenuUiModel.Empty) }
                 _isBottomSheetsShown.update { false }
             }
             is EmptyPageWidget -> handleEmptyExplore(action.type)
@@ -1339,10 +1340,15 @@ class PlayViewModel @AssistedInject constructor(
      * by getting the product ids of the given products
      * @param productList the product list which tracker will be sent to bro
      */
+    private val trackedProductIds = mutableListOf<String>()
     private fun sendProductTrackerToBro(productList: List<PlayProductUiModel.Product>) {
+        val hasChanged = productList.filterNot { trackedProductIds.contains(it.id) }.isNotEmpty()
+        if (hasChanged) {
+            trackedProductIds.clear()
+            productList.map { trackedProductIds.add(it.id) }
+        } else { return }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val productIds = productList.map(PlayProductUiModel.Product::id)
-            repo.trackProducts(channelId, productIds)
+            repo.trackProducts(channelId, trackedProductIds)
         }) {}
     }
 
@@ -1572,12 +1578,12 @@ class PlayViewModel @AssistedInject constructor(
                 }
 
                 try {
-                    val report = deferredReportSummaries.await().data.first().channel.metrics
+                    val report = deferredReportSummaries.await().data.reportData.first().content.metrics
                     _channelReport.setValue {
                         copy(
-                            totalViewFmt = report.totalViewFmt,
-                            totalLike = report.totalLike.toLongOrZero(),
-                            totalLikeFmt = report.totalLikeFmt
+                            totalViewFmt = report.visitContent,
+                            totalLike = report.totalLikeRaw.toLongOrZero(),
+                            totalLikeFmt = report.totalLike
                         )
                     }
                     _isChannelReportLoaded.setValue { true }
@@ -1607,9 +1613,8 @@ class PlayViewModel @AssistedInject constructor(
         chatManager.addChat(chat)
     }
 
-    private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
-        getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
-        getReportSummariesUseCase.executeOnBackground()
+    private suspend fun getReportSummaries(channelId: String): GetReportSummaryResponse = withContext(dispatchers.io) {
+        getReportSummariesUseCase(GetReportSummaryRequest.create(channelId, ContentType.Play))
     }
 
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
@@ -1857,6 +1862,12 @@ class PlayViewModel @AssistedInject constructor(
                         resultState = mappedData.resultState
                     )
                 }
+
+                sendProductTrackerToBro(
+                    productList = newProduct.productSectionList
+                        .filterIsInstance<ProductSectionUiModel.Section>()
+                        .flatMap { it.productList }
+                )
             }
             is MerchantVoucher -> {
                 val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result, _partnerInfo.value.name)
@@ -2262,7 +2273,6 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
-            REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             REQUEST_CODE_LOGIN_CART -> openPage(ApplinkConstInternalMarketplace.CART)
             else -> {}
         }
@@ -2784,7 +2794,7 @@ class PlayViewModel @AssistedInject constructor(
                 param.group == _channelDetail.value.channelRecomConfig.exploreWidgetConfig.group -> {
                     _exploreWidget.update { widget -> widget.copy(chips = widget.chips.copy(state = ResultState.Loading)) }
                 }
-                _exploreWidget.value.widgets.isEmpty() -> {
+                _exploreWidget.value.data.isEmpty() -> {
                     _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
                 }
                 !_exploreWidget.value.state.hasNextPage -> return@launchCatchError
@@ -2798,7 +2808,7 @@ class PlayViewModel @AssistedInject constructor(
             )
 
             val chips = response.getChips
-            val widgets = response.getChannelBlocks
+            val widgets = response.getChannelBlocks.getChannelCards
 
             when {
                 chips.items.isNotEmpty() -> {
@@ -2809,7 +2819,7 @@ class PlayViewModel @AssistedInject constructor(
                     onChipAction(chips.items.first())
                 }
                 widgets.isNotEmpty() -> {
-                    _exploreWidget.update { widget -> widget.copy(widgets = widget.widgets + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
+                    _exploreWidget.update { widget -> widget.copy(data = widget.data + widgets, state = ExploreWidgetState.Success(response.getConfig.cursor.isNotBlank())) }
                     widgetQuery.update { query ->
                         query.mapValues {
                             if (it.key == ExploreWidgetType.Default) {
@@ -2821,7 +2831,7 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
                 else -> {
-                    if (_exploreWidget.value.widgets.isEmpty()) {
+                    if (_exploreWidget.value.data.isEmpty()) {
                         _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Empty) }
                     }
                 }
@@ -2911,7 +2921,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onChipAction(element: ChipWidgetUiModel) {
         _exploreWidget.update { widget ->
             widget.copy(
-                widgets = emptyList(),
+                data = emptyList(),
                 chips = widget.chips.copy(
                     items = widget.chips.items.map { chip ->
                         if (element.group == chip.group) {
@@ -2932,6 +2942,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
         }
+        _channelDetail.update { detail -> detail.copy(channelRecomConfig = detail.channelRecomConfig.copy(exploreWidgetConfig = detail.channelRecomConfig.exploreWidgetConfig.copy(categoryName = element.text))) }
     }
     private fun refreshWidget(widget: ExploreWidgetType) {
         widgetQuery.value = widgetQuery.value.mapValues {
@@ -2949,23 +2960,13 @@ class PlayViewModel @AssistedInject constructor(
                 val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
                 _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
-                    _exploreWidget.update {
-                        it.copy(
-                            widgets = it.widgets.map {
-                                it.copy(
-                                    item = it.item.copy(
-                                        items = it.item.items.map { widget ->
-                                            if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
-                                                widget.copy(reminderType = reminderType)
-                                            } else {
-                                                widget
-                                            }
-                                        }
-                                    )
-                                )
-                            }
-                        )
-                    }
+                    _exploreWidget.update { exploreWidget -> exploreWidget.copy(data = exploreWidget.data.map {
+                        widget -> if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
+                            widget.copy(reminderType = reminderType)
+                        } else {
+                            widget
+                        }
+                    }) }
                 } else {
                     throw MessageErrorException()
                 }

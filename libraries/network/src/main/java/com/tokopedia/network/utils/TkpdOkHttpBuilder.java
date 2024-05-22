@@ -1,6 +1,7 @@
 package com.tokopedia.network.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.config.GlobalConfig;
@@ -28,6 +29,9 @@ public class TkpdOkHttpBuilder {
     private OkHttpClient.Builder builder;
     private Context context;
     private int MAX_REQUEST_PER_HOST = 10;
+    private int TIMEOUT_DEFAULT_VALUE = 10;
+    private final String SHARED_PREF_OK_HTTP_TIMEOUT = "shared_pref_ok_http_timeout";
+    private final String SHARED_PREF_OK_HTTP_TIMEOUT_VALUE = "shared_pref_ok_http_timeout_value";
 
     public TkpdOkHttpBuilder(Context context, OkHttpClient.Builder builder) {
         this.builder = builder;
@@ -64,9 +68,11 @@ public class TkpdOkHttpBuilder {
     }
 
     public TkpdOkHttpBuilder setOkHttpRetryPolicy() {
-        builder.readTimeout(10, TimeUnit.SECONDS);
-        builder.connectTimeout(10, TimeUnit.SECONDS);
-        builder.writeTimeout(10, TimeUnit.SECONDS);
+        SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREF_OK_HTTP_TIMEOUT, Context.MODE_PRIVATE);
+        long timeout = sharedPref.getLong(SHARED_PREF_OK_HTTP_TIMEOUT_VALUE, TIMEOUT_DEFAULT_VALUE);
+        builder.readTimeout(timeout, TimeUnit.SECONDS);
+        builder.connectTimeout(timeout, TimeUnit.SECONDS);
+        builder.writeTimeout(timeout, TimeUnit.SECONDS);
 
         return this;
     }

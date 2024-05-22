@@ -6,17 +6,18 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
-import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.shop.databinding.ItemProductCardListBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCardListViewHolder(
     itemView: View,
     private var listener: ProductCardListener? = null,
     private val isOverrideWidgetTheme: Boolean,
-    private val thematicWidgetUiModel: ThematicWidgetUiModel
+    private val thematicWidgetUiModel: ThematicWidgetUiModel,
+    private val isFestivity: Boolean
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
 
     companion object {
@@ -37,7 +38,11 @@ class ProductCardListViewHolder(
                     shopHomeProductViewModel = element,
                     widgetName = thematicWidgetUiModel.name,
                     statusCampaign = thematicWidgetUiModel.statusCampaign,
-                    forceLightModeColor = isOverrideWidgetTheme
+                    isOverrideTheme = isOverrideWidgetTheme,
+                    patternColorType = listener?.getPatternColorType().orEmpty(),
+                    backgroundColor = listener?.getBackgroundColor().orEmpty(),
+                    isFestivity = isFestivity,
+                    atcVariantButtonText = context?.getString(R.string.shop_atc).orEmpty()
                 )
             )
             setImageProductViewHintListener(
@@ -58,5 +63,7 @@ class ProductCardListViewHolder(
     interface ProductCardListener {
         fun onProductCardClickListener(product: ShopHomeProductUiModel)
         fun onProductCardImpressListener(product: ShopHomeProductUiModel)
+        fun getPatternColorType(): String
+        fun getBackgroundColor(): String
     }
 }

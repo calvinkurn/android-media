@@ -1,6 +1,7 @@
 package com.tokopedia.stories.data.repository
 
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.view.model.StoriesDetail
@@ -63,4 +64,10 @@ interface StoriesRepository {
         timestamp: Long,
         reportDesc: String
     ): Boolean
+
+    suspend fun trackContent(
+        storyId: String,
+        productIds: List<String>,
+        event: BroadcasterReportTrackViewerUseCase.Companion.Event
+    )
 }

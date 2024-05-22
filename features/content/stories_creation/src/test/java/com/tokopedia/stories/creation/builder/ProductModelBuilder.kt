@@ -12,12 +12,15 @@ import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 class ProductModelBuilder {
 
     fun buildProductTagSectionList(
-        size: Int = 2,
+        size: Int = 2
     ): List<ProductTagSectionUiModel> {
         return List(1) {
-            ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(size) { productCounter ->
-                ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "")
-            })
+            ProductTagSectionUiModel(
+                "", CampaignStatus.Ongoing,
+                List(size) { productCounter ->
+                    ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false, "", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "", "", "", "", "")
+                }
+            )
         }
     }
 }

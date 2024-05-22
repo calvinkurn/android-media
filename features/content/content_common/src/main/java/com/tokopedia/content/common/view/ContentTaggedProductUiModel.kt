@@ -91,7 +91,7 @@ data class ContentTaggedProductUiModel(
     }
 
     enum class SourceType {
-        Organic, NonOrganic
+        Organic, NonOrganic, Unknown;
     }
 
     enum class ProductFormatPriority {

@@ -1,0 +1,4 @@
+code_review:
+  mode: strict
+  reviewers_required_amount: 1
+  pick_strategy: pick_first

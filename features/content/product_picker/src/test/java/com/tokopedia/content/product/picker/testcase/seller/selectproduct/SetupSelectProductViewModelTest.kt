@@ -37,7 +37,23 @@ class SetupSelectProductViewModelTest {
 
     @Test
     fun `when user select product, it should emit uiState with new selected products`() {
-        val mockAddedProduct = ProductUiModel("100", "Product 100", false, "", 0, false, "", 10, OriginalPrice("Rp 12.000", 12000.0), PinProductUiModel.Empty, "")
+        val mockAddedProduct = ProductUiModel(
+            "100",
+            "Product 100",
+            false,
+            "",
+            0,
+            false,
+            "",
+            10,
+            OriginalPrice("Rp 12.000", 12000.0),
+            PinProductUiModel.Empty,
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
 
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
         expectedSelectedProducts.add(mockAddedProduct)
@@ -60,7 +76,23 @@ class SetupSelectProductViewModelTest {
 
     @Test
     fun `when user select product but exceed the max product allowed, it shouldnt change the selected products`() {
-        val mockAddedProduct = ProductUiModel("100", "Product 100", false, "", 0, false,"", 10, OriginalPrice("Rp 12.000", 12000.0), PinProductUiModel.Empty, "")
+        val mockAddedProduct = ProductUiModel(
+            "100",
+            "Product 100",
+            false,
+            "",
+            0,
+            false,
+            "",
+            10,
+            OriginalPrice("Rp 12.000", 12000.0),
+            PinProductUiModel.Empty,
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
 
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
 
@@ -107,7 +139,23 @@ class SetupSelectProductViewModelTest {
 
     @Test
     fun `when user select product, it should emit saveState with canSave is true`() {
-        val mockAddedProduct = ProductUiModel("100", "Product 100", false, "", 0, false,"", 10, OriginalPrice("Rp 12.000", 12000.0), PinProductUiModel.Empty, "")
+        val mockAddedProduct = ProductUiModel(
+            "100",
+            "Product 100",
+            false,
+            "",
+            0,
+            false,
+            "",
+            10,
+            OriginalPrice("Rp 12.000", 12000.0),
+            PinProductUiModel.Empty,
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
         val mockNewProductTagSectionList = mockProductTagSectionList.toMutableList()
         val mockNewProductList = mockNewProductTagSectionList.last().products.toMutableList()
         val mockSection = mockNewProductTagSectionList.last()
@@ -133,7 +181,23 @@ class SetupSelectProductViewModelTest {
 
     @Test
     fun `when user unselect all product, it should emit saveState with canSave is false`() {
-        val mockProduct = ProductUiModel("1", "", false, "", 0, false,"", 1, OriginalPrice("Rp 12.000", 12_000.0), PinProductUiModel.Empty, "")
+        val mockProduct = ProductUiModel(
+            "1",
+            "",
+            false,
+            "",
+            0,
+            false,
+            "",
+            1,
+            OriginalPrice("Rp 12.000", 12_000.0),
+            PinProductUiModel.Empty,
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
         val mockInitialProductTagSectionList = listOf(
             ProductTagSectionUiModel(
                 name = "Test 1",
@@ -172,6 +236,10 @@ class SetupSelectProductViewModelTest {
                 1,
                 OriginalPrice("Rp 12.000", 12_000.0),
                 PinProductUiModel.Empty,
+                "",
+                "",
+                "",
+                "",
                 ""
             )
         }
@@ -209,6 +277,10 @@ class SetupSelectProductViewModelTest {
                 OriginalPrice("Rp 12.000", 12_000.0),
                 PinProductUiModel.Empty,
                 "",
+                "",
+                "",
+                "",
+                ""
             )
         }
         val mockInitialProductTagSectionList = listOf(
@@ -217,7 +289,7 @@ class SetupSelectProductViewModelTest {
                 campaignStatus = CampaignStatus.Ongoing,
                 products = List(10) {
                     ProductUiModel(
-                        (it*5001).toString(),
+                        (it * 5001).toString(),
                         "",
                         false,
                         "",
@@ -227,6 +299,10 @@ class SetupSelectProductViewModelTest {
                         1,
                         OriginalPrice("Rp 12.000", 12_000.0),
                         PinProductUiModel.Empty,
+                        "",
+                        "",
+                        "",
+                        "",
                         ""
                     )
                 }
@@ -264,6 +340,10 @@ class SetupSelectProductViewModelTest {
                 1,
                 OriginalPrice("Rp 12.000", 12_000.0),
                 PinProductUiModel.Empty,
+                "",
+                "",
+                "",
+                "",
                 ""
             )
         }

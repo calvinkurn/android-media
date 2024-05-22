@@ -45,7 +45,7 @@ open class GetRecommendationUseCase @Inject constructor(
 
         return graphqlUseCase.executeOnBackground()
             .productRecommendationWidget.data
-            .mappingToRecommendationModel()
+            .mappingToRecommendationModel(inputParameter.totalData)
             .also {
                 byteIoUseCase.updateSessionId(
                     inputParameter.pageName,
