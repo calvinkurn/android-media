@@ -21,7 +21,8 @@ object InitBtmSdk {
     private const val TAG = "InitBtmSDK"
 
     fun init(context: Context) {
-        if (!BtmRemoteConfig.isBtmEnabled(context)) return
+        val isBtmDisabled = !BtmLibraFeatureFlag.isBtmEnabled()
+        if (isBtmDisabled) return
 
         Timber.tag(TAG).i("-------init-------")
         BtmSDK.init(

@@ -308,7 +308,7 @@ public class RouteManager {
             return false;
         }
         // inject sourceBtmToken in deeplink
-        uriString = appendSourceBtmToken(context, uriString, btmModel);
+        uriString = appendSourceBtmToken(uriString, btmModel);
 
         showAndCopyApplink(context, uriString);
 
@@ -443,7 +443,7 @@ public class RouteManager {
     public static Intent getIntentWithBtmModel(Context context,BtmModel btmModel, String deeplinkPattern, String... parameter) {
         String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
         // inject sourceBtmToken in deeplink
-        deeplink = appendSourceBtmToken(context, deeplink, btmModel);
+        deeplink = appendSourceBtmToken(deeplink, btmModel);
         Intent intent = getIntentNoFallback(context, RouteManagerKt.trimDoubleSchemeDeeplink(deeplink));
         // set fallback for implicit intent
 
@@ -499,7 +499,7 @@ public class RouteManager {
         }
         String deeplink = RouteManagerKt.trimDoubleSchemeDeeplink(UriUtil.buildUri(deeplinkPattern, parameter));
         // inject sourceBtmToken in deeplink
-        deeplink = appendSourceBtmToken(context, deeplink, btmModel);
+        deeplink = appendSourceBtmToken(deeplink, btmModel);
         showAndCopyApplink(context, deeplink);
 
         ApplinkLogger.getInstance(context).startTrace(deeplink);
@@ -614,8 +614,8 @@ public class RouteManager {
         return builder.build();
     }
 
-    private static String appendSourceBtmToken(Context context, @Nullable String link, @Nullable BtmModel model) {
-        boolean isBtmDisabled = !RouteManagerRemoteConfig.isBtmEnabled(context);
+    private static String appendSourceBtmToken(@Nullable String link, @Nullable BtmModel model) {
+        boolean isBtmDisabled = !RouteManagerFeatureFlag.isBtmEnabled();
         if (link == null || link.isEmpty() || isBtmDisabled) return link;
         Uri uri = appendSourceBtmToken(Uri.parse(link), model);
         return uri.toString();
