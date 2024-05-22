@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager

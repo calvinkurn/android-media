@@ -97,7 +97,6 @@ object TrackDiscoveryRecommendationMapper {
     }
 
 
-
     private fun DataItem.getProductType(): ProductType {
         val productType = if (isActiveProductCard == true) {
             ProductType.AVAILABLE
@@ -119,12 +118,13 @@ object TrackDiscoveryRecommendationMapper {
         }
     }
 
-    private fun String.isTrackAsHorizontalSourceModule() : Boolean{
-        return when(this){
+    private fun String.isTrackAsHorizontalSourceModule(): Boolean {
+        return when (this) {
             ComponentNames.ProductCardSingle.componentName,
             ComponentNames.ProductCardSingleReimagine.componentName,
             ComponentNames.ProductCardSingleItem.componentName,
             ComponentNames.ProductCardSingleItemReimagine.componentName -> true
+
             else -> false
         }
     }
@@ -139,16 +139,19 @@ object TrackDiscoveryRecommendationMapper {
             ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
             ComponentNames.ProductCardColumnList.componentName,
             ComponentNames.ShopOfferHeroBrandProductItem.componentName,
-            ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName-> EntranceForm.HORIZONTAL_GOODS_CARD
+            ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName -> EntranceForm.HORIZONTAL_GOODS_CARD
+
             ComponentNames.ProductCardRevampItem.componentName,
             ComponentNames.MasterProductCardItemReimagine.componentName,
             ComponentNames.ProductCardSprintSaleItemReimagine.componentName -> EntranceForm.PURE_GOODS_CARD
+
             ComponentNames.MasterProductCardItemList.componentName,
             ComponentNames.MasterProductCardItemListReimagine.componentName,
             ComponentNames.ProductCardSingleItem.componentName,
             ComponentNames.ProductCardSingleItemReimagine.componentName,
             ComponentNames.ProductCardSingle.componentName,
-            ComponentNames.ProductCardSingleReimagine.componentName-> EntranceForm.DETAIL_GOODS_CARD
+            ComponentNames.ProductCardSingleReimagine.componentName -> EntranceForm.DETAIL_GOODS_CARD
+
             else -> EntranceForm.HORIZONTAL_GOODS_CARD
         }
     }
@@ -158,7 +161,7 @@ object TrackDiscoveryRecommendationMapper {
     }
 
     fun DataItem.isEligibleToTrackRecTrigger(componentNames: String): Boolean {
-        if(componentNames == ComponentNames.ProductCardSingleItem.componentName ||
+        if (componentNames == ComponentNames.ProductCardSingleItem.componentName ||
             componentNames == ComponentNames.ProductCardSingleItemReimagine.componentName) {
             return isEligibleToTrack() &&
                 (getAppLog()?.pageName?.contains("best_seller") == true ||
@@ -171,7 +174,7 @@ object TrackDiscoveryRecommendationMapper {
         return getSource() == ComponentSourceData.Recommendation
     }
 
-    private fun  String?.cleanUpCurrencyValue(): Double {
+    private fun String?.cleanUpCurrencyValue(): Double {
         return CurrencyFormatHelper
             .convertRupiahToDouble(this.orEmpty())
     }

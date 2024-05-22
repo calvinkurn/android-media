@@ -325,15 +325,15 @@ data class ButtonClickCompletedAnalyticData(
 }
 
 enum class ClickAreaType(val value: String) {
-    PRODUCT ("product"),
-    ATC ("add_to_cart_button"),
-    UNDEFINED ("undefined")
+    PRODUCT("product"),
+    ATC("add_to_cart_button"),
+    UNDEFINED("undefined")
 }
 
 enum class RefreshType(val value: Int) {
-    UNKNOWN (-1),
-    OPEN (0),
-    REFRESH (1),
-    LOAD_MORE (2),
-    PUSH (3)
+    UNKNOWN(-1),
+    OPEN(0),
+    REFRESH(1),
+    LOAD_MORE(2),
+    PUSH(3)
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.byteio.recommendation
 
+import android.annotation.SuppressLint
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 
@@ -34,8 +35,9 @@ interface AppLogAdditionalParam {
     }
 
     data class DiscoveryWithAnchorProduct(
+        @SuppressLint("ParamFieldAnnotation")
         val productId: String = "",
-    ): AppLogAdditionalParam {
+    ) : AppLogAdditionalParam {
 
         override val parameters: Map<String, Any>
             get() = hashMapOf(
