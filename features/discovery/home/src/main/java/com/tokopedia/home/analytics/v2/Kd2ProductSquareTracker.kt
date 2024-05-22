@@ -130,15 +130,7 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
         carousel: IsCarousel,
         tracker: ChannelTracker,
         headerName: String
-    ) = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - %s - %s - %s - %s - %s - %s"
-        .format(
-            topAds.toString(),
-            carousel.toString(),
-            tracker.recommendationType,
-            tracker.recomPageName,
-            tracker.buType,
-            headerName
-        )
+    ) = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - $topAds - $carousel - ${tracker.recommendationType} - ${tracker.recomPageName} - ${tracker.buType} - $headerName"
 
     @JvmInline
     value class IsTopAds(val value: Boolean) {
