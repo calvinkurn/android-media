@@ -3207,7 +3207,7 @@ open class ProductDetailFragment :
                 if (hasInfinite) {
                     it.requestParam = GetRecommendationRequestParam(
                         pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
-                        productIds = listOf(),
+                        productIds = listOf(productId.orEmpty()),
                         queryParam = viewModel.getP1()?.infiniteRecommendationQueryParam.orEmpty()
                     )
                 }
