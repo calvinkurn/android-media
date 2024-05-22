@@ -6,15 +6,12 @@ import com.tokopedia.home_component.visitable.shorten.ItemThumbnailWidgetUiModel
 
 object TwoThumbnailSquareTrackingMapper {
 
-    fun ItemThumbnailWidgetUiModel.asProductModel(
-        enterMethod: String = "",
-    ): HomeChannelProductModel {
+    fun ItemThumbnailWidgetUiModel.asProductModel(): HomeChannelProductModel {
         return HomeChannelProductModel(
             listName = tracker.listName,
             listNum = tracker.listNum,
             entranceForm = tracker.entranceForm,
             sourceModule = tracker.sourceModule(),
-            enterMethod = enterMethod,
             productId = tracker.productId.ifEmpty { "0" },
             isAd = tracker.isAdsAsInt(),
             isUseCache = tracker.alwaysOnRemote(),
@@ -28,9 +25,7 @@ object TwoThumbnailSquareTrackingMapper {
         )
     }
 
-    fun ItemThumbnailWidgetUiModel.asCardModel(
-        enterMethod: String = "",
-    ): HomeChannelCardModel {
+    fun ItemThumbnailWidgetUiModel.asCardModel(): HomeChannelCardModel {
         return HomeChannelCardModel(
             listName = "",
             listNum = "",
@@ -46,7 +41,6 @@ object TwoThumbnailSquareTrackingMapper {
             shopId = tracker.getProperShopId(),
             itemOrder = tracker.itemOrder,
             entranceForm = tracker.entranceForm,
-            enterMethod = enterMethod,
         )
     }
 }
