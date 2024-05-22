@@ -1,6 +1,7 @@
 package com.tokopedia.navigation_common.ui
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
@@ -12,7 +13,7 @@ import com.tokopedia.unifyprinciples.UnifyMotion
 
 class BottomNavBarItemRippleTouchListener(
     rootView: View,
-    private val rippleView: View,
+    private val rippleView: View
 ) : View.OnTouchListener {
 
     private val longPressHandler = Handler(Looper.getMainLooper())
@@ -29,6 +30,7 @@ class BottomNavBarItemRippleTouchListener(
     private val interpolatorEnter = UnifyMotion.EASE_OVERSHOOT
     private val interpolatorExit = UnifyMotion.EASE_IN_OUT
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View, event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
@@ -63,7 +65,7 @@ class BottomNavBarItemRippleTouchListener(
                             )
                         }
                     },
-                    0L,
+                    0L
                 )
             }
 

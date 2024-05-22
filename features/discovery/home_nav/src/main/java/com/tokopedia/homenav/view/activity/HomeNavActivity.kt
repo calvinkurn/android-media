@@ -10,6 +10,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.ActivityMainNavBinding
 import com.tokopedia.homenav.view.fragment.HomeNavFragment
 
+@Suppress("LateinitUsage")
 class HomeNavActivity : AppCompatActivity(), HomeNavPerformanceInterface {
 
     private lateinit var binding: ActivityMainNavBinding

@@ -126,6 +126,7 @@ import com.tokopedia.resources.common.R as resourcescommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("DeprecatedMethod")
+@Suppress("LateinitUsage")
 class NewMainParentActivity :
     BaseActivity(),
     CartNotifyListener,
