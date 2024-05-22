@@ -22,7 +22,6 @@ data class HomeChannelCardModel(
     val shopId: String,
     val itemOrder: String,
     val entranceForm: String,
-    val enterMethod: String?,
 ) {
 
     fun toShowClickJson() = JSONObject().apply {

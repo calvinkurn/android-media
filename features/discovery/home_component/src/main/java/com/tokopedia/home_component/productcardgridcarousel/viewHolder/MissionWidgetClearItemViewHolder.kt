@@ -81,7 +81,7 @@ class MissionWidgetClearItemViewHolder(
                 } else {
                     AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
                 }
-                AppLogAnalytics.setGlobalParams(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${element.data.pageName}_${element.cardPosition + 1}"))
+                AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${element.data.pageName}_${element.cardPosition + 1}"))
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             containerMissionWidget.addOnImpressionListener(element) {
