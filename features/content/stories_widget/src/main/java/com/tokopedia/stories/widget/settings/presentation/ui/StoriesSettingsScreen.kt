@@ -1,5 +1,6 @@
 package com.tokopedia.stories.widget.settings.presentation.ui
 
+import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -12,9 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +39,6 @@ import com.tokopedia.stories.widget.settings.presentation.viewmodel.StoriesSetti
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.net.UnknownHostException
 import com.tokopedia.globalerror.R as globalerrorR
 
@@ -73,7 +70,6 @@ private fun StoriesSettingsSuccess(
 ) {
     val isEligible = pageInfo.config.isEligible
     val itemFirst = pageInfo.options.firstOrNull() ?: StoriesSettingOpt("", "", false)
-    var dismissed by remember { mutableStateOf(false) }
     val textColor = if (isEligible) NestTheme.colors.NN._950 else NestTheme.colors.NN._400
     val ctx = LocalContext.current
 
@@ -84,7 +80,7 @@ private fun StoriesSettingsSuccess(
             .padding(16.dp)
     ) {
         val (tickerEligible, tvHeader, ivIconHeader, switchHeader, tvDescription, tvAll, tvCategory, rvOptions) = createRefs()
-        if (isEligible.not() && dismissed.not()) {
+        if (isEligible.not()) {
             AndroidView(modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
@@ -96,14 +92,8 @@ private fun StoriesSettingsSuccess(
                     tickerType = Ticker.TYPE_ANNOUNCEMENT
                     tickerShape = Ticker.SHAPE_LOOSE
                     tickerTitle = ""
+                    closeButtonVisibility = View.GONE
                     setTextDescription(ctx.getString(R.string.stories_ticker_title))
-                    setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDismiss() {
-                            dismissed = true
-                        }
-
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-                    })
                 }
             })
         }
