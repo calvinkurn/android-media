@@ -1264,7 +1264,7 @@ class ChatbotFragment2 :
                     pageSource(PageSource.ChatBot)
                     modeType(ModeType.IMAGE_ONLY)
                     maxMediaItem(MAX_IMAGE_COUNT)
-                    multipleSelectionMode()
+                    singleSelectionMode()
                 }
             }
             startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)

@@ -3,7 +3,7 @@ package com.tokopedia.filter.newdynamicfilter.helper;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.tokopedia.design.R;
+import com.tokopedia.filter.R;
 
 /**
  * Created by henrypriyono on 9/7/17.
@@ -32,7 +32,7 @@ public class KeyboardHelper {
     private static boolean isKeyboardShown(View mainLayout) {
         int heightDiff = mainLayout.getRootView().getHeight() - mainLayout.getHeight();
         int keyboardMinHeight = mainLayout.getContext().getResources()
-                .getDimensionPixelSize(R.dimen.keyboard_min_height);
+                .getDimensionPixelSize(com.tokopedia.filter.R.dimen.keyboard_min_height);
 
         return heightDiff > keyboardMinHeight;
     }

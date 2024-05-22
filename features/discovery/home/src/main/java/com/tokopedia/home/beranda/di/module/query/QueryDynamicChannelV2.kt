@@ -17,6 +17,7 @@ internal object QueryDynamicChannelV2 {
         "      origami\n" +
         "      grids {\n" +
         "        id\n" +
+        "        trackerJson\n" +
         "        url\n" +
         "        name\n" +
         "        shop {\n" +

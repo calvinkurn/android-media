@@ -19,5 +19,8 @@ data class WidgetIdList(
     val isFestivity: Boolean = false,
 
     @SerializedName("header")
-    val header: Header = Header()
+    val header: Header = Header(),
+
+    @SerializedName("options")
+    val options: List<Options> = emptyList()
 )

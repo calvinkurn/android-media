@@ -1,6 +1,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="lihat_semua">Lihat Semua</string>
     <string name="home_global_component_buy_again">Beli Langsung</string>
+    <string name="home_global_component_retry_button">Update</string>
 
     <string name="home_reminder_button_label">Bayar Sekarang</string>
     <string name="home_reminder_title">Yuk, segara bayar tagihanmu!</string>
@@ -12,6 +13,7 @@
     <string name="content_desc_lego_image">image lego item</string>
 
     <string name="content_desc_icon_image">Image Icon</string>
+    <string name="content_desc_icon_campaign_small_card">Icon Campaign</string>
     <string name="content_desc_reminder">reminder image</string>
 
     <string name="content_desc_mix_left">Image</string>
@@ -56,4 +58,11 @@
     <string name="content_desc_coupon_component_background">Background Coupon Widget</string>
 
     <string name="content_desc_small_product_card_image">Small Banner Product Card</string>
+    <string name="content_desc_small_product_card_net_price">Net Price</string>
+    <string name="content_desc_small_product_card_stockbar_fire">Stockbar Fire Icon</string>
+
+    <string name="count_down_timer_day_title">%d Hari</string>
+
+    <string name="error_state_title">Konten gagal ditampilkan</string>
+    <string name="error_state_description">Klik ikon di samping buat coba lagi.</string>
 </resources>

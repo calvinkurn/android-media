@@ -2,6 +2,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import com.google.gson.Gson
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PaidSectionInfo
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
@@ -10,6 +11,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Rates
 import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -23,6 +25,11 @@ import javax.inject.Inject
 class ShippingDurationConverter @Inject constructor() {
     companion object {
         private const val COD_TRUE_VAL = 1
+        private const val TICKER_INFO_TYPE = "info"
+        private const val TICKER_WARNING_TYPE = "warning"
+        private const val TICKER_ERROR_TYPE = "danger"
+        private const val TICKER_ACTION_WEB = "link"
+        private const val TICKER_ACTION_APPLINK = "applink"
     }
 
     fun convertModel(ratesData: RatesData?): ShippingRecommendationData {
@@ -46,7 +53,11 @@ class ShippingDurationConverter @Inject constructor() {
 
                 // Setting up for List of Logistic Promo
                 shippingRecommendationData.listLogisticPromo =
-                    ratesData.ratesDetailData.listPromoStacking.mapNotNull { convertToPromoModel(it) }
+                    ratesData.ratesDetailData.listPromoStacking.mapIndexedNotNull { index, promo ->
+                        convertToPromoModel(
+                            promo
+                        )
+                    }
 
                 // Setting up for Logistic Pre Order
                 shippingRecommendationData.productShipmentDetailModel =
@@ -55,9 +66,20 @@ class ShippingDurationConverter @Inject constructor() {
                 // Has service / duration list
                 shippingRecommendationData.shippingDurationUiModels =
                     convertShippingDuration(ratesData.ratesDetailData)
+
+                // paid section title section
+                shippingRecommendationData.paidSectionInfoUiModel = convertPaidSectionModel(ratesData.ratesDetailData.paidSectionInfo)
             }
         }
         return shippingRecommendationData
+    }
+
+    private fun convertPaidSectionModel(paidSectionInfo: PaidSectionInfo): PaidSectionInfoUiModel {
+        return PaidSectionInfoUiModel(
+            showCollapsableIcon = paidSectionInfo.isCollapsed,
+            isCollapsed = !paidSectionInfo.isCollapsed,
+            title = paidSectionInfo.labelText
+        )
     }
 
     private fun convertShipmentDetailData(ratesDetailData: RatesDetailData): ProductShipmentDetailModel? {

@@ -168,6 +168,15 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         type
                         title
                         url
+                        styles {
+                           key
+                           value
+                        }
+                      }
+                      badge {
+                        title
+                        imageUrl
+                        show
                       }
                       warehouseID
                       minimumOrder
@@ -277,6 +286,10 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           type
                           title
                           url
+                          styles {
+                            key
+                            value
+                          }
                         }
                         minimumOrder
                         maximumOrder
@@ -355,6 +368,10 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           type
                           title
                           url
+                          styles {
+                            key
+                            value
+                          }
                         }
                         minimumOrder
                         maximumOrder

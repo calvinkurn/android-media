@@ -2,8 +2,6 @@ package com.tokopedia.people.testcase
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -14,7 +12,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
@@ -84,28 +81,19 @@ class UserProfileSettingsUiTest {
         )
     }
 
+    @Test
+    fun userProfileSettings_toggleReviewSettings() {
+        Thread.sleep(1000)
 
-    /** Note: need to comment NestHeader first because
-     * Compose UI Test is failing due to this error within NestHeader:
-     *
-     * No static method weight$default(Landroidx/compose/foundation/layout/RowScope;Landroidx/compose/ui/Modifier;FZILjava/lang/Object;)
-     * Landroidx/compose/ui/Modifier; in class Landroidx/compose/foundation/layout/RowScope
-     *
-     * So for now, the test is commented
-     */
-//    @Test
-//    fun userProfileSettings_toggleReviewSettings() {
-//        Thread.sleep(1000)
-//
-//        composeActivityTestRule.onNodeWithText(mockProfileSettings.getReviewSettings().title).assertExists()
-//
-//        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
-//
-//        Thread.sleep(1000)
-//
-//        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
-//
-//        onView(withText(context.getString(R.string.up_error_unknown)))
-//            .check(matches(isDisplayed()))
-//    }
+        composeActivityTestRule.onNodeWithText(mockProfileSettings.getReviewSettings().title).assertExists()
+
+        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
+
+        Thread.sleep(1000)
+
+        composeActivityTestRule.onNodeWithTag("review_toggle").performClick()
+
+        onView(withText(context.getString(R.string.up_error_unknown)))
+            .check(matches(isDisplayed()))
+    }
 }

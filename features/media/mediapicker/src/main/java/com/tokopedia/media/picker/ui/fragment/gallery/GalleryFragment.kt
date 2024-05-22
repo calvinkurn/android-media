@@ -70,7 +70,7 @@ open class GalleryFragment @Inject constructor(
             parent = it,
             param = param,
             eventBus = eventBus,
-            analytics = galleryAnalytics,
+            analytics = galleryAnalytics
         )
     }
 
@@ -191,7 +191,12 @@ open class GalleryFragment @Inject constructor(
     }
 
     override fun isMediaSelected(data: MediaUiModel): Boolean {
-        return featureAdapter.isMediaSelected(data)
+        // single selection mode didn't need to show selected icon
+        return if (!param.get().isMultipleSelectionType()) {
+            false
+        } else {
+            featureAdapter.isMediaSelected(data)
+        }
     }
 
     override fun onAlbumSelectorClicked() {

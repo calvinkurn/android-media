@@ -8,7 +8,8 @@ import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.design.R;
+import com.tokopedia.filter.R;
+
 
 /**
  * Created by henrypriyono on 8/15/17.
@@ -39,9 +40,9 @@ public class DynamicBackgroundSeekBar extends View {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DynamicBackgroundSeekBar, 0, 0);
-        foreColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_foreground_color, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G700));
-        backColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_background_color, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N300));
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FilterDynamicBackgroundSeekBar, 0, 0);
+        foreColor = typedArray.getColor(R.styleable.FilterDynamicBackgroundSeekBar_dbsb_foreground_color, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_GN700));
+        backColor = typedArray.getColor(R.styleable.FilterDynamicBackgroundSeekBar_dbsb_background_color, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN500));
         typedArray.recycle();
 
         init();

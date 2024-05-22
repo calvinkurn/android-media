@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+android {
+    namespace 'com.tokopedia.libra'
+    testNamespace 'com.tokopedia.libra.test'
+}
+
+dependencies {
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
+    implementation rootProject.ext.miscDependencies.coroutineCore
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+
+    debugImplementation rootProject.ext.supportLibDependencies.appCompactV7
+    debugImplementation rootProject.ext.unifyDependencies.principles
+    debugImplementation rootProject.ext.unifyDependencies.components
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+}
+
+project.ext {
+    artifactId = 'libra'
+    groupId = 'com.tokopedia.libra'
+    versionName = "0.0.2"
+    artifactName = "libra-release"
+}
+
+apply from: '../../publish_local.gradle'

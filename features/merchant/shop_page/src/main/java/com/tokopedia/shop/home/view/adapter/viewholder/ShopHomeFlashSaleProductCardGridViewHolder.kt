@@ -17,6 +17,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeFlashSaleProductCardGridViewHolder(
     itemView: View,
@@ -24,7 +25,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
     private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
-    companion object{
+    companion object {
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
@@ -58,8 +59,11 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
         if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
             stockBarLabelColor = ShopUtil.getColorHexString(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                unifyprinciplesR.color.Unify_RN600
             )
+        }
+        val shopBadges = uiModel.shopBadgeList.map {
+            ProductCardModel.ShopBadge(imageUrl = it.imageUrl, title = it.title)
         }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
@@ -67,9 +71,16 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
-            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
+            isOverrideTheme = listener.isOverrideTheme(),
+            patternColorType = listener.getPatternColorType(),
+            backgroundColor = listener.getBackgroundColor(),
+            isFestivity = fsUiModel?.isFestivity.orFalse(),
+            makeProductCardTransparent = false,
+            atcVariantButtonText = productCardGrid?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
-            stockBarLabelColor = stockBarLabelColor
+            stockBarLabelColor = stockBarLabelColor,
+            isInBackground = true,
+            shopBadgeList = shopBadges
         )
         productCardGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
@@ -81,12 +92,12 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
         val viewTreeObserver: ViewTreeObserver? = productImageView?.viewTreeObserver
         if (viewTreeObserver?.isAlive.orFalse()) {
             viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    action(productImageView.height + paddingOffset.toInt())
-                }
-            })
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        action(productImageView.height + paddingOffset.toInt())
+                    }
+                })
         }
     }
 

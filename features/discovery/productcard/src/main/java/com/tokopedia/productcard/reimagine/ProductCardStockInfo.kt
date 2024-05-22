@@ -1,11 +1,14 @@
 package com.tokopedia.productcard.reimagine
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toDp
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.ProductCardModel.StockInfo
 import com.tokopedia.productcard.utils.FIRE_HEIGHT
 import com.tokopedia.productcard.utils.FIRE_WIDTH
@@ -25,6 +28,7 @@ internal class ProductCardStockInfo(view: View) {
     private val background by view.lazyView<View?>(R.id.productCardStockInfoBackground)
     private val label by view.lazyView<Typography?>(R.id.productCardStockInfoLabel)
     private val progressBar by view.lazyView<ProgressBarUnify?>(R.id.productCardStockInfoBar)
+    private val stockBarCornerRadius by lazy { 12f.toPx() }
 
     fun render(productModel: ProductCardModel) {
         val stockInfo = productModel.stockInfo()
@@ -39,6 +43,7 @@ internal class ProductCardStockInfo(view: View) {
         label?.shouldShowWithAction(hasStockInfo) {
             renderLabel(it, stockInfo)
         }
+        overrideColor(productModel.colorMode, stockInfo)
     }
 
     private fun renderProgressBar(progressBarStock: ProgressBarUnify?, stockInfo: StockInfo?) {
@@ -105,6 +110,45 @@ internal class ProductCardStockInfo(view: View) {
             ContextCompat.getColor(context, productcardR.color.dms_stock_info_label_color)
     }
     private fun labelColor() = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
+
+    private fun overrideColor(colorMode: ProductCardColor?, stockInfo: StockInfo?) {
+        if (colorMode == null) return
+
+        colorMode.stockBarColor?.backgroundColor?.let { stockBarBackgroundColor ->
+            val gradientDrawable = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                setColor(ContextCompat.getColor(context, stockBarBackgroundColor))
+                cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, stockBarCornerRadius, stockBarCornerRadius, stockBarCornerRadius, stockBarCornerRadius)
+            }
+            background?.background = gradientDrawable
+        }
+
+        colorMode.stockBarColor?.stockTextColor?.let { stockTextColor ->
+            label?.setTextColor(ContextCompat.getColor(context, stockTextColor))
+        }
+
+        colorMode.stockBarColor?.progressBarTrackColor?.let { stockBarTrackColor ->
+            progressBar?.trackDrawable?.setColor(ContextCompat.getColor(context, stockBarTrackColor))
+        }
+
+        val progressBarColor = ContextCompat.getColor(context, progressBarColor(stockInfo, colorMode))
+        progressBar?.progressBarColor = intArrayOf(progressBarColor, progressBarColor)
+    }
+
+    private fun progressBarColor(stockInfo: StockInfo?, colorMode: ProductCardColor): Int {
+        val defaultProgressbarColorResId = unifyprinciplesR.color.Unify_RN500
+
+        val nearlyOutOfStockColor = colorMode.stockBarColor?.progressBarColorIsNearlyOutOfStock ?: defaultProgressbarColorResId
+        val isInDemandColor = colorMode.stockBarColor?.progressBarColorIsInDemand ?: defaultProgressbarColorResId
+        val isAvailableColor = colorMode.stockBarColor?.progressBarColorIsAvailable ?: defaultProgressbarColorResId
+
+        return when (stockInfo?.label) {
+            WORDING_SEGERA_HABIS -> nearlyOutOfStockColor
+            WORDING_LAGI_DIMINATI -> isInDemandColor
+            WORDING_TERSEDIA -> isAvailableColor
+            else -> defaultProgressbarColorResId
+        }
+    }
 
     companion object {
         private const val PROGRESS_BAR_RADIUS_CLIP = 16f

@@ -20,7 +20,8 @@ class ShopHomeThematicWidgetTypeFactoryImpl(
         private val productCardSeeAllListener: ProductCardSeeAllViewHolder.ProductCardSeeAllListener,
         private val totalProductSize: Int,
         private val isOverrideWidgetTheme: Boolean,
-        private val thematicWidgetUiModel: ThematicWidgetUiModel
+        private val thematicWidgetUiModel: ThematicWidgetUiModel,
+        private val isFestivity: Boolean
 ) : BaseAdapterTypeFactory(), ShopHomeThematicWidgetTypeFactory {
     override fun type(uiModel: ShopHomeProductUiModel): Int {
         return when (totalProductSize) {
@@ -39,8 +40,8 @@ class ShopHomeThematicWidgetTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ProductCardListViewHolder.LAYOUT -> ProductCardListViewHolder(itemView = view, listener = productCardListListener, isOverrideWidgetTheme = isOverrideWidgetTheme, thematicWidgetUiModel = thematicWidgetUiModel)
-            ProductCardGridViewHolder.LAYOUT -> ProductCardGridViewHolder(itemView = view, listener = productCardGridListener, isOverrideWidgetTheme = isOverrideWidgetTheme, thematicWidgetUiModel = thematicWidgetUiModel)
+            ProductCardListViewHolder.LAYOUT -> ProductCardListViewHolder(itemView = view, listener = productCardListListener, isOverrideWidgetTheme = isOverrideWidgetTheme, thematicWidgetUiModel = thematicWidgetUiModel, isFestivity = isFestivity)
+            ProductCardGridViewHolder.LAYOUT -> ProductCardGridViewHolder(itemView = view, listener = productCardGridListener, isOverrideWidgetTheme = isOverrideWidgetTheme, thematicWidgetUiModel = thematicWidgetUiModel, isFestivity = isFestivity)
             ProductCardSeeAllViewHolder.LAYOUT -> ProductCardSeeAllViewHolder(view, productCardSeeAllListener)
             ProductCardSpaceViewHolder.LAYOUT -> ProductCardSpaceViewHolder(view)
             else -> super.createViewHolder(view, type)

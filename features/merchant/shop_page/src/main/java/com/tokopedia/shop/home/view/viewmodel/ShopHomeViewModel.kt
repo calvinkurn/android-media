@@ -42,6 +42,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -63,6 +64,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortU
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageExperiment
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.setElement
@@ -83,6 +85,7 @@ import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -90,7 +93,6 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -281,7 +283,11 @@ class ShopHomeViewModel @Inject constructor(
                     shopProductFilterParameter,
                     widgetUserAddressLocalData,
                     isEnableDirectPurchase,
-                    useCase = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+                    useCase = if (ProductCardExperiment.isReimagine()) {
+                        ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+                    } else {
+                        ""
+                    }
                 )
             }
             _productListData.postValue(Success(listProductData))
@@ -479,7 +485,7 @@ class ShopHomeViewModel @Inject constructor(
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                 it,
                 ShopUtil.isMyShop(shopId, userSessionShopId),
-                isEnableDirectPurchase,
+                isEnableDirectPurchase
 
             )
         }
@@ -969,7 +975,7 @@ class ShopHomeViewModel @Inject constructor(
                         shopProductFilterParameter,
                         widgetUserAddressLocalData,
                         isEnableDirectPurchase,
-                        useCase = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+                        useCase = ShopPageExperiment.determineProductCardUseCaseParam()
                     )
                 },
                 onError = { null }
