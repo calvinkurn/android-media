@@ -18,6 +18,10 @@ allprojects {
         }
         google()
         mavenCentral()
+        maven {
+            name = "bytedance"
+            url = "https://maven-hansel.tokopedia.com/maven/android_public"
+        }
         mavenLocal()
         maven {
             url "${gcp_artifactory_url}" + "/libs-release-local";
