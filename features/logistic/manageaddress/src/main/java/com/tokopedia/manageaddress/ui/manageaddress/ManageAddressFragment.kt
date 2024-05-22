@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -26,6 +27,7 @@ import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragm
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -144,10 +146,18 @@ class ManageAddressFragment :
                             true
                         )
                     }
+                    showToaster(it.throwable)
                     bindView()
                 }
             }
             showLoading(false)
+        }
+    }
+
+    private fun showToaster(throwable: Throwable) {
+        if (throwable is MessageErrorException) {
+            val message = throwable.message
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
         }
     }
 
