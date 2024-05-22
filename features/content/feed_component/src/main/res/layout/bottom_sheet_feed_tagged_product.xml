@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="16dp">
+    android:paddingTop="12dp"
+    android:orientation="vertical">
 
     <com.tokopedia.mvcwidget.views.MvcView
         android:id="@+id/mvc_tagged_product"
         android:layout_width="match_parent"
         android:layout_height="64dp"
+        android:layout_marginHorizontal="16dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:visibility="gone"
@@ -21,27 +22,37 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/feed_product_load_more"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <include
+        android:id="@+id/layout_error_load_more"
+        layout="@layout/layout_feed_product_reload"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mvc_tagged_product"
-        app:loader_type="decorative" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_tagged_product" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tagged_product"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
         android:clipToPadding="false"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/feed_product_load_more"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mvc_tagged_product"

@@ -66,6 +66,7 @@
             android:id="@+id/image_shimmer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 

@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.lazyView
@@ -50,6 +51,8 @@ internal class ProductCardGenericCtaExtension(
         productCardCtaSecondaryButton?.setOnClickListener {
             ctaSecondaryClickListener?.invoke(it)
         }
+
+        handleColorMode(productCardModel.colorMode)
     }
 
     private fun renderCtaButtonMain(item: ProductCardModel.ProductCardGenericCta) {
@@ -83,6 +86,12 @@ internal class ProductCardGenericCtaExtension(
                 addState(intArrayOf(android.R.attr.state_enabled), enableFillDrawable)
             }
             background = stateListDefaultDrawable
+        }
+    }
+
+    private fun handleColorMode(colorMode: ProductCardColor?) {
+        colorMode?.buttonColorMode?.let { buttonColorMode ->
+            productCardCtaButton?.applyColorMode(buttonColorMode)
         }
     }
 }

@@ -7,4 +7,6 @@ interface ShopBannerProductGroupWidgetTabDependencyProvider {
     val currentShopId: String
     val productCarouselHostFragmentManager: FragmentManager
     val productCarouselHostLifecycle: Lifecycle
+    fun getPatternColorType(): String
+    fun getBackgroundColor(): String
 }

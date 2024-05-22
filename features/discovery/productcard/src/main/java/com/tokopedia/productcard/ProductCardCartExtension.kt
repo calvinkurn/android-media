@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -57,6 +58,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         renderButtonAddToCart(productCardModel)
         renderCartEditorNonVariant(productCardModel)
         renderChooseVariant(productCardModel)
+        handleColorMode(productCardModel.forceLightModeColor)
     }
 
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
@@ -279,5 +281,15 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
     private interface QuantityEditorDebounce {
         fun onQuantityChanged(quantity: Int)
+    }
+
+    private fun handleColorMode(forceLightModeColor: Boolean) {
+        if (forceLightModeColor) {
+            textVariantQuantity?.setTextColor(
+                ContextCompat.getColor(
+                    textVariantQuantity?.context ?: return, R.color.dms_static_light_NN950_96
+                )
+            )
+        }
     }
 }

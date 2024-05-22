@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
+import com.tokopedia.libra.LibraInstance
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -90,4 +91,10 @@ class HomeModule {
     @HomeScope
     @Provides
     fun provideDeviceScreenHelper(@ApplicationContext context: Context) = DeviceScreenHelper(context)
+
+    @HomeScope
+    @Provides
+    fun provideLibraInstance(
+        @ApplicationContext context: Context
+    ): LibraInstance = LibraInstance.get(context)
 }

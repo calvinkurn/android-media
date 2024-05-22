@@ -25,5 +25,7 @@ interface ShopCampaignCarouselProductListener {
         position: Int,
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel
     )
+    fun getPatternColorType(): String
 
+    fun getBackgroundColor(): String
 }

@@ -46,5 +46,8 @@ interface ShopHomeFlashSaleWidgetListener {
         name: String
     )
 
-    fun isForceLightModeColorOnShopFlashSaleWidget() : Boolean
+    fun isOverrideTheme() : Boolean
+    fun getPatternColorType(): String
+
+    fun getBackgroundColor(): String
 }
