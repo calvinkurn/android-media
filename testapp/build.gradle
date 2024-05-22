@@ -184,7 +184,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.feed)
-	implementation project(rootProject.ext.features.customer_mid_app)
-	implementation project(rootProject.ext.features.productDetail)
 }
