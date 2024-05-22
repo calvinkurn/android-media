@@ -1,10 +1,10 @@
-package com.tokopedia.shop.common.util.productcard
+package com.tokopedia.shop.common.util.productcard.reimagine
 
 import com.tokopedia.shop.R
 import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.unifyprinciples.ColorMode
 
-data class LightThemedShopProductCard(
+data class TransparentBackgroundWithDarkTextProductCard(
     val labelBenefitCutoutFillColor: String
 ): ProductCardColor {
     override val cardBackgroundColor: Int = android.R.color.transparent
@@ -22,4 +22,16 @@ data class LightThemedShopProductCard(
         buttonDeleteCartColorDark = R.color.dms_static_light_NN900,
         quantityTextColor = R.color.dms_static_light_NN950
     )
+    override val stockBarColor = ProductCardColor.StockBarColor(
+        backgroundColor = R.color.dms_static_light_N50,
+        stockTextColor = R.color.dms_static_light_NN600,
+        progressBarColorIsNearlyOutOfStock = R.color.dms_static_light_RN500,
+        progressBarColorIsInDemand = R.color.dms_static_light_YN500,
+        progressBarColorIsAvailable = R.color.dms_static_light_YN300,
+        progressBarTrackColor = R.color.dms_static_light_N100
+    )
+    override val showOutlineView: Boolean
+        get() = false
+
+    override val ratingDotColor: Int = R.color.dms_static_light_NN400
 }
