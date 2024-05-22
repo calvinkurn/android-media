@@ -309,19 +309,23 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
             if (Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
                 renderExpiredImageView(true, calendarImage)
-                calendarDateAlpha.setBackgroundColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        R.color.discovery2_dms_header_expired
-                    )
-                )
-                calendarBody.apply {
-                    setBackgroundColor(
+                if (useFullImage) {
+                    renderExpiredImageView(true, calendarFullImage)
+                } else {
+                    calendarDateAlpha.setBackgroundColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            R.color.discovery2_dms_body_expired
+                            R.color.discovery2_dms_header_expired
                         )
                     )
+                    calendarBody.apply {
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                R.color.discovery2_dms_body_expired
+                            )
+                        )
+                    }
                 }
                 calendarTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
                 calendarDesc.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
@@ -334,6 +338,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             }  // end if sale over
             else {
                 renderExpiredImageView(false, calendarImage)
+                if (useFullImage) {
+                    renderExpiredImageView(false, calendarFullImage)
+                }
                 calendarButton.show()
                 calendarButton.isEnabled = true
                 val isDynamic =
@@ -556,7 +563,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                             when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
                                 Calendar.CAROUSEL -> {
                                     // scale the layout to keep ratio
-                                    layoutParams.width = (maxHeight * bitmapWidth / bitmap.height) + 8.toPx()
+                                    layoutParams.width =
+                                        (maxHeight * bitmapWidth / bitmap.height) + 8.toPx()
                                 }
                             }
                             calendarCardUnify.layoutParams = layoutParams
@@ -685,7 +693,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             matrix.setSaturation(0f)
             val cf = ColorMatrixColorFilter(matrix)
             imageView.colorFilter = cf
-            imageView.imageAlpha = 128
+            imageView.imageAlpha = 255
         } else {
             imageView.colorFilter = null;
             imageView.imageAlpha = 255;
