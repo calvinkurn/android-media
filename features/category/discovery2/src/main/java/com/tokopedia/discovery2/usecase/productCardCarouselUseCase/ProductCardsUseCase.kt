@@ -30,7 +30,10 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import javax.inject.Inject
 
-class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
+class ProductCardsUseCase @Inject constructor(
+    private val productCardsRepository: ProductCardsRepository,
+    private val appLogPageState: DiscoveryAppLogPageState
+) {
     companion object {
         const val NO_PRODUCT_PER_PAGE = -1
 
@@ -63,7 +66,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 pageEndPoint,
                 it.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
                 it.name,
-                DiscoveryAppLogPageState.getLastState()
+                appLogPageState.getLastState()
             )
 
             val (productListData, additionalInfo) = productCardsRepository.getProducts(

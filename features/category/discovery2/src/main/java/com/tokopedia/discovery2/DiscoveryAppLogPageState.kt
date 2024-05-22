@@ -5,12 +5,16 @@ import com.tokopedia.analytics.byteio.RefreshType
 /**
  * Record page state whether open or refresh
  */
-object DiscoveryAppLogPageState {
+class DiscoveryAppLogPageState {
 
     private var _lastState = RefreshType.OPEN
 
-    fun update(state: RefreshType) {
-        _lastState = state
+    fun initiate() {
+        _lastState = RefreshType.OPEN
+    }
+
+    fun onRefresh() {
+        _lastState = RefreshType.REFRESH
     }
 
     fun getLastState(): RefreshType {

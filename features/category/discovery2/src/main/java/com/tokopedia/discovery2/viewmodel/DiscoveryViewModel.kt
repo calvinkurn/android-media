@@ -28,6 +28,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
 import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
+import com.tokopedia.discovery2.DiscoveryAppLogPageState
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
@@ -113,7 +114,8 @@ class DiscoveryViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val trackingQueue: TrackingQueue,
     private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?,
-    private var affiliateCookieHelper: AffiliateCookieHelper
+    private var affiliateCookieHelper: AffiliateCookieHelper,
+    private val appLogPageState: DiscoveryAppLogPageState
 ) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
@@ -775,6 +777,14 @@ class DiscoveryViewModel @Inject constructor(
             randomUUIDAffiliate = Utils.generateRandomUUID()
         }
         return randomUUIDAffiliate ?: ""
+    }
+
+    fun initiateAppLogPageState() {
+        appLogPageState.initiate()
+    }
+
+    fun refreshAppLogPageState() {
+        appLogPageState.onRefresh()
     }
 
     override fun doOnStop() {
