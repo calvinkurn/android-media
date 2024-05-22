@@ -24,6 +24,9 @@ allprojects {
         }
         mavenLocal()
         maven {
+            url "$production_bits_artifactory_url" + "$android_public_bits_repo"
+        }
+        maven {
             url "${gcp_artifactory_url}" + "/libs-release-local";
             credentials {
                 username = "${gcp_artifactory_username}"
