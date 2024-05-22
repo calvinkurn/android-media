@@ -9,8 +9,6 @@
     <string name="seller_menu_product_cta">Tambah Produk</string>
     <string name="seller_menu_notifications">Notifications</string>
     <string name="seller_menu_inbox">Inbox</string>
-    <string name="seller_menu_header_content">KONTEN</string>
-    <string name="seller_menu_header_body">Atur konten toko</string>
 
     <string name="setting_menu_other_info">Bantuan dan info lainnya</string>
     <string name="setting_error_message">Data tidak dapat ditampilkan</string>

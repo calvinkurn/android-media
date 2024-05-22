@@ -51,7 +51,7 @@ class StoriesSettingsFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         observeEvent()
 
-        viewModel.onEvent(StoriesSettingsAction.FetchPageInfo)
+        viewModel.onAction(StoriesSettingsAction.FetchPageInfo)
         analytic.openScreen()
     }
 
@@ -79,7 +79,7 @@ class StoriesSettingsFragment @Inject constructor(
                     }
 
                     is StoriesSettingEvent.Navigate -> {
-                        if (event.appLink == REDIRECT_SETTINGS) {
+                        if (event.appLink == getString(R.string.stories_redirect_settings)) {
                             val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                             router.route(requireActivity(), intent)
                         } else {

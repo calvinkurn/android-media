@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.stories.widget.settings.StoriesSettingsChecker
 import com.tokopedia.stories.widget.settings.data.repository.StoriesSettingsRepository
+import com.tokopedia.stories.widget.settings.presentation.ui.CoolDownException
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingOpt
 import com.tokopedia.stories.widget.settings.presentation.ui.StoriesSettingsPageUiModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -36,7 +37,7 @@ class StoriesSettingsViewModel @Inject constructor(
     val uiEvent: Flow<StoriesSettingEvent>
         get() = _event
 
-    fun onEvent(action: StoriesSettingsAction) {
+    fun onAction(action: StoriesSettingsAction) {
         when (action) {
             StoriesSettingsAction.FetchPageInfo -> getList()
             is StoriesSettingsAction.SelectOption -> updateOption(action.option)
@@ -44,8 +45,8 @@ class StoriesSettingsViewModel @Inject constructor(
                 _event.emit(StoriesSettingEvent.Navigate(action.appLink))
             }
 
-            is StoriesSettingsAction.ShowCoolingDown -> viewModelScope.launch {
-                _event.emit(StoriesSettingEvent.ShowErrorToaster(action.throwable, {}))
+            StoriesSettingsAction.ShowCoolingDown -> viewModelScope.launch {
+                _event.emit(StoriesSettingEvent.ShowErrorToaster(CoolDownException()) {})
             }
 
             else -> {}
@@ -106,11 +107,7 @@ class StoriesSettingsViewModel @Inject constructor(
             })
         }.options.firstOrNull()?.lastClicked.orZero()
         if (!isAvailableForClick(lastClicked)) {
-            onEvent(
-                StoriesSettingsAction.ShowCoolingDown(
-                    MessageErrorException("Tunggu 5 detik dulu ya")
-                )
-            )
+            onAction(StoriesSettingsAction.ShowCoolingDown)
             return
         }
 

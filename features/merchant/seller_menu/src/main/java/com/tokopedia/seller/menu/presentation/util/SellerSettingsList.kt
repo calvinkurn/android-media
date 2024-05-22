@@ -130,9 +130,9 @@ object SellerSettingsList {
                 context.startActivity(intent)
             },
             DividerUiModel(DividerType.THICK),
-            IndentedSettingTitleUiModel(context.getString(sellermenuR.string.seller_menu_header_content)),
+            IndentedSettingTitleUiModel(context.getString(sellermenucommonR.string.seller_content_settings_header)),
             SellerMenuItemUiModel(
-                context.getString(sellermenuR.string.seller_menu_header_body),
+                context.getString(sellermenucommonR.string.seller_content_settings_body),
                 eventActionSuffix = SettingTrackingConstant.SETTINGS,
                 type = MenuItemType.CONTENT,
             ) {

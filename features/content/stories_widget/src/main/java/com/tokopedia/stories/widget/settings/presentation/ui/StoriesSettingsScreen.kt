@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.globalerror.compose.NestGlobalError
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
@@ -59,10 +60,6 @@ internal fun StoriesSettingsScreen(viewModel: StoriesSettingsViewModel) {
         }
     }
 }
-
-val finalText = "Selengkapnya"
-val tagLink = "{{Selengkapnya}}"
-val REDIRECT_SETTINGS = "settings"
 
 @Composable
 private fun StoriesSettingsSuccess(
@@ -148,7 +145,7 @@ private fun StoriesSettingsSuccess(
                         this.isEnabled = isEligible
                         this.setOnCheckedChangeListener { view, isActive ->
                             if (view.isPressed) {
-                                viewModel.onEvent(
+                                viewModel.onAction(
                                     StoriesSettingsAction.SelectOption(
                                         itemFirst.copy(
                                             isSelected = !isActive
@@ -167,14 +164,14 @@ private fun StoriesSettingsSuccess(
 
             // Text - Selengkapnya
             val text = buildAnnotatedString {
-                append(pageInfo.config.articleCopy.replace(tagLink, ""))
+                append(pageInfo.config.articleCopy.replace(stringResource(id = R.string.stories_settings_expand_tagLink), ""))
                 withStyle(
                     style = SpanStyle(
                         color = NestTheme.colors.GN._500, fontWeight = FontWeight.Bold
                     )
                 ) {
-                    pushStringAnnotation(tagLink, tagLink)
-                    append(finalText)
+                    pushStringAnnotation(stringResource(id = R.string.stories_settings_expand_tagLink), stringResource(id = R.string.stories_settings_expand_tagLink))
+                    append(stringResource(id = R.string.stories_settings_expand_finalText))
                 }
             }
             NestTypography(modifier = Modifier
@@ -188,7 +185,7 @@ private fun StoriesSettingsSuccess(
                 text = text,
                 textStyle = NestTheme.typography.display3.copy(color = textColor),
                 onClickText = {
-                    viewModel.onEvent(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
+                    viewModel.onAction(StoriesSettingsAction.Navigate(pageInfo.config.articleAppLink))
                 })
             // Text - Kategori update produk
             NestTypography(
@@ -212,7 +209,7 @@ private fun StoriesSettingsSuccess(
                 }) {
                 items(pageInfo.options.drop(1)) { item ->
                     SettingOptItem(item, isEligible, textColor, onOptionClicked = {
-                        viewModel.onEvent(StoriesSettingsAction.SelectOption(it))
+                        viewModel.onAction(StoriesSettingsAction.SelectOption(it))
                     })
                 }
             }
@@ -222,6 +219,7 @@ private fun StoriesSettingsSuccess(
 
 @Composable
 private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsViewModel) {
+    val ctx = LocalContext.current
     val (text, type) = when (error) {
         is UnknownHostException -> Pair(
             stringResource(id = globalerrorR.string.noConnectionSecondaryAction),
@@ -234,12 +232,12 @@ private fun StoriesSettingsError(error: Throwable, viewModel: StoriesSettingsVie
         actionText = stringResource(id = globalerrorR.string.noConnectionAction),
         secondaryActionText = text,
         onClickSecondaryAction = {
-           viewModel.onEvent(
-               StoriesSettingsAction.Navigate(REDIRECT_SETTINGS)
+           viewModel.onAction(
+               StoriesSettingsAction.Navigate(ctx.getString(R.string.stories_redirect_settings))
            )
         },
         onClickAction = {
-            viewModel.onEvent(
+            viewModel.onAction(
                 StoriesSettingsAction.FetchPageInfo
             )
         })
@@ -304,3 +302,5 @@ data class StoriesSettingsPageUiModel(
             )
     }
 }
+
+data class CoolDownException(override val message: String = "Tunggu 5 detik dulu ya"): MessageErrorException(message)
