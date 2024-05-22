@@ -40,6 +40,7 @@ import com.tokopedia.content.test.reflection.getPrivateField
 import com.tokopedia.content.test.util.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -51,6 +52,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on October 03, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class ContentProductTagConfigUiTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
