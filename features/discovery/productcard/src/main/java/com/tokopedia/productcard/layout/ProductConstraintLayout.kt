@@ -32,13 +32,6 @@ open class ProductConstraintLayout :
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
 
-    private val TOP = 1
-    private val BOTTOM = 3
-    private val RIGHT = 2
-    private val LEFT = 4
-    private val LEFT_AND_RIGHT = 5
-    private val TOP_AND_BOTTOM = 6
-    private val NOWHERE = 7
     private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context) {
@@ -294,5 +287,12 @@ open class ProductConstraintLayout :
     companion object {
         const val DEV_OPT_ON_PERCENT_VIEW_ENABLED = "DEV_OPT_ON_PERCENT_VIEW_ENABLED"
         const val IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED = "IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED"
+        private const val TOP = 1
+        private const val BOTTOM = 3
+        private const val RIGHT = 2
+        private const val LEFT = 4
+        private const val LEFT_AND_RIGHT = 5
+        private const val TOP_AND_BOTTOM = 6
+        private const val NOWHERE = 7
     }
 }
