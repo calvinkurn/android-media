@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.analytics.byteio.RefreshType
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -139,7 +140,9 @@ class ErrorLoadViewModelTest {
         viewModel.productCardUseCase = productCardUseCase
         coEvery { componentsItem.noOfPagesLoaded } returns 1
         coEvery { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
-        coEvery { viewModel.productCardUseCase?.getProductCardsUseCase(any(), any()) } returns true
+        coEvery {
+            viewModel.productCardUseCase?.getProductCardsUseCase(any(), any(), eq(RefreshType.OPEN))
+        } returns true
 
         viewModel.reloadComponentData()
 

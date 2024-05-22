@@ -10,6 +10,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -27,6 +28,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
 import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
+import com.tokopedia.discovery2.DiscoveryAppLogPageState
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
@@ -38,6 +40,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartDataModel
+import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartFailedModel
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryRemoveFromCartDataModel
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryUpdateCartDataModel
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
@@ -111,7 +114,8 @@ class DiscoveryViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val trackingQueue: TrackingQueue,
     private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?,
-    private var affiliateCookieHelper: AffiliateCookieHelper
+    private var affiliateCookieHelper: AffiliateCookieHelper,
+    private val appLogPageState: DiscoveryAppLogPageState
 ) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
@@ -139,9 +143,9 @@ class DiscoveryViewModel @Inject constructor(
         get() = _miniCartRemove
     private val _miniCartRemove = SingleLiveEvent<Result<DiscoveryRemoveFromCartDataModel>>()
 
-    val miniCartOperationFailed: LiveData<Pair<Int, Int>>
+    val miniCartOperationFailed: LiveData<DiscoveryAddToCartFailedModel>
         get() = _miniCartOperationFailed
-    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int, Int>>()
+    private val _miniCartOperationFailed = SingleLiveEvent<DiscoveryAddToCartFailedModel>()
 
     val addToCartActionNonVariant: LiveData<DiscoATCRequestParams>
         get() = _addToCartActionNonVariant
@@ -210,15 +214,16 @@ class DiscoveryViewModel @Inject constructor(
     private fun addItemToCart(
         discoATCRequestParams: DiscoATCRequestParams
     ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+        val addToCartRequestParams = AddToCartRequestParams(
             productId = discoATCRequestParams.productId,
-            shopId = discoATCRequestParams.shopId ?: "",
+            shopId = discoATCRequestParams.shopId.orEmpty(),
             quantity = discoATCRequestParams.quantity,
-            atcExternalSource = if (isAffiliateInitialized) {
+            atcFromExternalSource = if (isAffiliateInitialized) {
                 AtcFromExternalSource.ATC_FROM_DISCOVERY
             } else {
                 AtcFromExternalSource.ATC_FROM_OTHERS
-            }
+            },
+            trackerData = discoATCRequestParams.appLogParam
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
@@ -227,7 +232,8 @@ class DiscoveryViewModel @Inject constructor(
         }, {
             _miniCartAdd.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
-                Pair(
+                DiscoveryAddToCartFailedModel(
+                    it,
                     discoATCRequestParams.parentPosition,
                     discoATCRequestParams.position
                 )
@@ -298,7 +304,8 @@ class DiscoveryViewModel @Inject constructor(
         }, {
             _miniCartUpdate.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
-                Pair(
+                DiscoveryAddToCartFailedModel(
+                    it,
                     discoATCRequestParams.parentPosition,
                     discoATCRequestParams.position
                 )
@@ -399,7 +406,8 @@ class DiscoveryViewModel @Inject constructor(
         }, {
             _miniCartRemove.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
-                Pair(
+                DiscoveryAddToCartFailedModel(
+                    it,
                     discoATCRequestParams.parentPosition,
                     discoATCRequestParams.position
                 )
@@ -769,6 +777,14 @@ class DiscoveryViewModel @Inject constructor(
             randomUUIDAffiliate = Utils.generateRandomUUID()
         }
         return randomUUIDAffiliate ?: ""
+    }
+
+    fun initiateAppLogPageState() {
+        appLogPageState.initiate()
+    }
+
+    fun refreshAppLogPageState() {
+        appLogPageState.onRefresh()
     }
 
     override fun doOnStop() {

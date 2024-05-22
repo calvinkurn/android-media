@@ -15,14 +15,13 @@ import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
+import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
 
 @SuppressLint("Invalid Data Type")
 data class DataItem(
@@ -630,6 +629,9 @@ data class DataItem(
     @SerializedName("inactive_text_color")
     val inactiveFontColor: String? = "",
 
+    @SerializedName("anchor_product_id")
+    val anchorProductId: String? = "",
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
@@ -715,6 +717,16 @@ data class DataItem(
 
     fun getAppLog(): RecommendationAppLog? {
         return appLog
+    }
+
+    fun getAppLogSPUId(): String {
+        return parentProductId?.let {
+            if (it.isBlankOrZero()) {
+                productId.orEmpty()
+            } else {
+                it
+            }
+        } ?: productId.orEmpty()
     }
 
     private fun findLabelGroup(position: String): LabelsGroup? {

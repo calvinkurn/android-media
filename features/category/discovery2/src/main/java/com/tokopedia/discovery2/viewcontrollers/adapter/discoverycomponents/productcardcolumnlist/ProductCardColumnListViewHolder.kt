@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
@@ -108,9 +109,10 @@ class ProductCardColumnListViewHolder(
             val product = getProduct(itemPosition)?.also {
                 if(it.isEligibleToTrack()) {
                     AppLogRecommendation.sendProductClickAppLog(
-                        it.asProductTrackModel(
-                            it.parentComponentName.orEmpty()
-                        )
+                            it.asProductTrackModel(
+                                it.parentComponentName.orEmpty()
+                            ),
+                            ClickAreaType.PRODUCT
                     )
                 }
             }

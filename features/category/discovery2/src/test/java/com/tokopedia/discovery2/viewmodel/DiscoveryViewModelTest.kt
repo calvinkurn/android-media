@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
+import com.tokopedia.discovery2.DiscoveryAppLogPageState
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.Category
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -70,6 +71,7 @@ class DiscoveryViewModelTest {
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface
     private lateinit var affiliateCookieHelper: AffiliateCookieHelper
+    private lateinit var appLogPageState: DiscoveryAppLogPageState
 
     private lateinit var viewModel: DiscoveryViewModel
     private var context: Context = mockk()
@@ -92,6 +94,7 @@ class DiscoveryViewModelTest {
         trackingQueue = mockk(relaxed = true)
         pageLoadTimePerformanceInterface = mockk(relaxed = true)
         affiliateCookieHelper = mockk()
+        appLogPageState = mockk(relaxed = true)
 
         viewModel = spyk(
             DiscoveryViewModel(
@@ -103,7 +106,8 @@ class DiscoveryViewModelTest {
                 userSessionInterface,
                 trackingQueue,
                 pageLoadTimePerformanceInterface,
-                affiliateCookieHelper
+                affiliateCookieHelper,
+                appLogPageState
             )
         )
 
@@ -980,6 +984,18 @@ class DiscoveryViewModelTest {
         viewModel.checkForSamePageOpened(map)
         verify { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }
         verify { discoveryDataUseCase.clearPage(any()) }
+    }
+
+    @Test
+    fun `test for initiating App Log Page state`() {
+        viewModel.initiateAppLogPageState()
+        verify { appLogPageState.initiate() }
+    }
+
+    @Test
+    fun `test for refreshing App Log Page state`() {
+        viewModel.refreshAppLogPageState()
+        verify { appLogPageState.onRefresh() }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
