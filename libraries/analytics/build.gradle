@@ -82,12 +82,9 @@ dependencies {
     implementation rootProject.ext.ttnetDependencies.cppShared
 
     // btmsdk
-//    implementation 'com.bytedance.android.btm:btm-api:2.0.3.cn-rc.15'
-//    implementation 'com.bytedance.android.btm:btm-devtool:2.0.3.cn-rc.15'
-//    implementation 'com.bytedance.android.btm:btm-impl:2.0.3.cn-rc.15'
-    api files(project.rootDir.absolutePath + '/aars/btm-api.aar')
-    implementation files(project.rootDir.absolutePath + '/aars/lazydata.aar')
-    implementation files(project.rootDir.absolutePath + '/aars/btm-impl.aar')
+    api rootProject.ext.btmDependencies.btmApi
+    implementation rootProject.ext.btmDependencies.lazyData
+    implementation rootProject.ext.btmDependencies.btmImpl
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
