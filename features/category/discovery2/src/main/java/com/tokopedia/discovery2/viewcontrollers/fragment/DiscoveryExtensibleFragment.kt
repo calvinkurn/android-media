@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
+import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -35,9 +36,9 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    init {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.OfficialStore)
-    }
+//    init {
+//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.OfficialStore)
+//    }
 
     override fun provideAnalytics(): BaseDiscoveryAnalytics {
         return DiscoveryAnalytics(
@@ -92,5 +93,10 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface {
 
     override fun isEnterFromWhitelisted(): Boolean {
         return true
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.OfficialStore)
     }
 }

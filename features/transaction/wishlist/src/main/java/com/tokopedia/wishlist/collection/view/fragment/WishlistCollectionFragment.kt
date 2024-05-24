@@ -156,9 +156,9 @@ class WishlistCollectionFragment :
     private var hasTrackEnterPage: Boolean = false
     private var hasApplogScrollListener: Boolean = false
 
-    init {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Wishlist)
-    }
+//    init {
+//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Wishlist)
+//    }
 
     override fun getScreenName(): String = ""
 
@@ -204,6 +204,7 @@ class WishlistCollectionFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Wishlist)
         WishlistCollectionAnalytics.sendWishListHomePageOpenedEvent(userSession.isLoggedIn, userSession.userId)
         checkLogin()
         initTrackingQueue()

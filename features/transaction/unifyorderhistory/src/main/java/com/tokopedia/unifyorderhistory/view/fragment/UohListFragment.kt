@@ -397,12 +397,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val RESULT_CODE_SUCCESS = 1
     }
 
-    init {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Transaction)
-    }
+//    init {
+//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Transaction)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Transaction)
         userSession = UserSession(context)
         if (arguments?.getString(SOURCE_FILTER) != null) {
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()

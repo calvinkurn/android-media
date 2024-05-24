@@ -25,7 +25,6 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.btm.BtmApi
@@ -51,13 +50,13 @@ import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
-import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.common.comment.ContentCommentFactory
 import com.tokopedia.feed.common.comment.PageSource
 import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet
+import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -72,7 +71,6 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
-import com.tokopedia.feedplus.di.DaggerFeedMainComponent
 import com.tokopedia.feedplus.di.FeedInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
@@ -98,7 +96,6 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
-import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -229,9 +226,9 @@ class FeedFragment :
 
     private var mDataSource: DataSource? = null
 
-    init {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
-    }
+//    init {
+//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
+//    }
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = { parentFragment ?: this },
@@ -508,6 +505,7 @@ class FeedFragment :
         }
 
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
 
         childFragmentManager.addFragmentOnAttachListener(::onAttachChildFragment)
 
@@ -1933,7 +1931,7 @@ class FeedFragment :
             activityId,
             if (isTopAds) taggedProductList else emptyList(),
             sourceType,
-            trackerData?.mediaType.orEmpty(),
+            trackerData?.mediaType.orEmpty()
         )
 
         feedPostViewModel.fetchCartCount()
@@ -1952,12 +1950,12 @@ class FeedFragment :
         }
     }
 
-    override fun onFeedProductNextPage(activityId: String, sourceType : ContentTaggedProductUiModel.SourceType) {
+    override fun onFeedProductNextPage(activityId: String, sourceType: ContentTaggedProductUiModel.SourceType) {
         feedPostViewModel.fetchFeedProduct(
             activityId = activityId,
             sourceType = sourceType,
             isNextPage = true,
-            mediaType = currentTrackerData?.mediaType.orEmpty(),
+            mediaType = currentTrackerData?.mediaType.orEmpty()
         )
     }
 

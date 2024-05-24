@@ -651,7 +651,7 @@ public class MainParentActivity extends BaseActivity implements
     private void sendFragmentChangeEventToBtmSDK(Fragment fragment){
         PageShowParams params = new PageShowParams();
         params.setReuse(true);
-        BtmSDK.INSTANCE.onPageShow(this, true, params);
+        BtmSDK.INSTANCE.onPageShow(fragment, true, params);
     }
 
     private void openFragment(Fragment fragment) {
