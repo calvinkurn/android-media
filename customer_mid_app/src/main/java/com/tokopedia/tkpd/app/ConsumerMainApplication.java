@@ -355,7 +355,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initBTMSDK(){
-        InitBtmSdk.INSTANCE.init(this);
+        // must make sure byteIO init
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
+            InitBtmSdk.INSTANCE.init(this);
+        }
     }
 
     private void checkAppPackageNameAsync() {
