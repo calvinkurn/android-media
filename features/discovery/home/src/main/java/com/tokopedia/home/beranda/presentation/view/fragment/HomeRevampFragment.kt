@@ -2165,7 +2165,7 @@ open class HomeRevampFragment :
                         AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
                 },
                 searchBtnClickCallback = {
-                    val keyword = data.keyword.safeEncodeUtf8()
+                    val keyword = data.placeholder.safeEncodeUtf8()
                     if (keyword.isBlank()) {
                         navigateToInitialSearch(data)
                     } else {
