@@ -79,6 +79,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -148,6 +149,7 @@ class SearchActivity :
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
+        fetchRollence()
 
         setStatusBarColor()
         proceed()
@@ -157,6 +159,10 @@ class SearchActivity :
         SearchSessionId.update()
         AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance.value())
         handleSearchHeaderThematic()
+    }
+
+    private fun fetchRollence() {
+        SearchRollenceController.fetchInboxNotifTopNavValue()
     }
 
     private fun observeSearchState() {
@@ -231,6 +237,7 @@ class SearchActivity :
     private fun proceed() {
         findViews()
         prepareView()
+        configureSearchBox()
     }
 
     private fun findViews() {
@@ -698,5 +705,15 @@ class SearchActivity :
             }
             searchNavigationToolbar?.setBackgroundAlpha(0f)
         }
+    }
+
+    private fun configureSearchBox() {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        val searchStyle = if (enableSearchRedesign) {
+            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
+        } else {
+            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
+        }
+        searchNavigationToolbar?.setSearchStyle(searchStyle, showSearchBtn = false)
     }
 }

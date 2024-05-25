@@ -42,7 +42,7 @@ class NavSearchbarController(val view: View,
                              val editorActionCallback: ((hint: String)-> Unit)?,
                              val hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
                              val hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
-                             val searchBtnClickCallback: (() -> Unit)? = null
+                             val searchBtnClickCallback: ((isUsingDefaultHint: Boolean) -> Unit)? = null
 ) : CoroutineScope {
 
     companion object {
@@ -99,8 +99,11 @@ class NavSearchbarController(val view: View,
     }
 
     private fun setOnSearchCtaClicked() {
+        val hint = etSearch?.hint?.toString().orEmpty()
+        val defaultHint = view.context.getString(R.string.search_tokopedia)
+        val isUsingDefaultHint = hint.isBlank() || hint.equals(defaultHint, true)
         searchCta?.setOnClickListener {
-            searchBtnClickCallback?.invoke()
+            searchBtnClickCallback?.invoke(isUsingDefaultHint)
         }
     }
 

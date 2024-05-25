@@ -38,8 +38,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
@@ -262,11 +261,11 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         configureToolbarContentTypeBasedOnAttribute()
     }
 
-    fun setSearchStyle(style: SearchStyle) {
+    fun setSearchStyle(style: SearchStyle, showSearchBtn: Boolean = true) {
         this.searchStyle = style
         configureInvertedSearchBar()
         configureSearchIcon()
-        configureSearchCta()
+        btnSearch.showWithCondition(showSearchBtn)
     }
 
     /**
@@ -409,7 +408,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setupMicroInteraction(navToolbarMicroInteraction: NavToolbarMicroInteraction?) {
-        navToolbarMicroInteraction?.setNavToolbarComponents(layoutSearch, btnSearch)
+        navToolbarMicroInteraction?.setNavToolbarComponents(layoutSearch)
     }
 
     /**
@@ -436,7 +435,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         editorActionCallback: ((hint: String) -> Unit)? = null,
         hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
         hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
-        searchBtnClickCallback: (() -> Unit)? = null
+        searchBtnClickCallback: ((isUsingDefaultHint: Boolean) -> Unit)? = null
     ) {
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
@@ -1021,21 +1020,13 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
     }
 
-    private fun configureSearchCta() {
-        if (searchStyle == SearchStyle.SEARCH_REDESIGN) {
-            btnSearch.visible()
-        } else {
-            btnSearch.gone()
-        }
-    }
-
     private fun configureSearchIcon() {
         if (searchStyle == SearchStyle.SEARCH_REDESIGN) {
             val iconSize = context.dpToPx(20).toInt()
             iconSearchMagnify.layoutParams.width = iconSize
             iconSearchMagnify.layoutParams.height = iconSize
             iconSearchMagnify.requestLayout()
-            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN950)
+            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN600)
             iconSearchMagnify.setImage(
                 newIconId = IconUnify.SEARCH,
                 newLightEnable = iconColor,

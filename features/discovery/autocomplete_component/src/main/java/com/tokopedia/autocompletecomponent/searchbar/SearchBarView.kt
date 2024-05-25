@@ -16,7 +16,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
-import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -86,7 +85,8 @@ class SearchBarView(
     private var isTyping = false
     private var binding: AutocompleteSearchBarViewBinding? = null
 
-    private val isSearchBtnEnabled by lazy { SearchRollenceController.isSearchBtnEnabled() }
+    private val isSearchBtnEnabled
+        get() = SearchRollenceController.isSearchBtnEnabled()
     private var isMpsEnabled: Boolean = false
 
     private var viewListener: SearchBarViewListener? = null
@@ -254,7 +254,7 @@ class SearchBarView(
             binding.autocompleteSearchIcon.layoutParams.width = iconSize
             binding.autocompleteSearchIcon.layoutParams.height = iconSize
             binding.autocompleteSearchIcon.requestLayout()
-            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN950)
+            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN600)
             binding.autocompleteSearchIcon.setImage(
                 newIconId = IconUnify.SEARCH,
                 newLightEnable = iconColor,
@@ -304,8 +304,11 @@ class SearchBarView(
             }
             binding.autocompleteClearButton.setPadding(0)
             binding.autocompleteClearButton.setMargin(0, 0, 0, 0)
-            binding.autocompleteClearButton.layoutParams.width = context.dpToPx(16).toInt()
-            binding.autocompleteClearButton.layoutParams.height = context.dpToPx(16).toInt()
+            val clearIconSize = context.dpToPx(19).toInt()
+            binding.autocompleteClearButton.layoutParams.width = clearIconSize
+            binding.autocompleteClearButton.layoutParams.height = clearIconSize
+            val addIconMargin = context.dpToPx(4).toInt()
+            binding.autocompleteAddButton.setMargin(0, 0, addIconMargin, 0)
         } else {
             binding.searchTextView.background =
                 context.getResDrawable(R.drawable.autocomplete_bg_input)

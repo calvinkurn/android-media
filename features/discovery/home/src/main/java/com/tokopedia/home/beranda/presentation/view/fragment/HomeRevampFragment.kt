@@ -699,7 +699,10 @@ open class HomeRevampFragment :
             it.addOnImpression1pxListener(ImpressHolder()) {
                 AppLogSearch.eventShowSearch()
             }
-            it.setSearchStyle(getSearchStyle(shouldCombineInboxNotif))
+            it.setSearchStyle(
+                getSearchStyle(shouldCombineInboxNotif),
+                showSearchBtn = shouldCombineInboxNotif
+            )
             it.setupItemCoachMark(IconList.ID_MESSAGE) { inboxView ->
                 showInboxCoachMark(inboxView)
             }
@@ -2164,9 +2167,9 @@ open class HomeRevampFragment :
                     if (hintData.imprId.isNotBlank())
                         AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
                 },
-                searchBtnClickCallback = {
+                searchBtnClickCallback = { isUsingDefaultHint ->
                     val keyword = data.placeholder.safeEncodeUtf8()
-                    if (keyword.isBlank()) {
+                    if (keyword.isBlank() || isUsingDefaultHint) {
                         navigateToInitialSearch(data)
                     } else {
                         navigateToSRP(keyword)

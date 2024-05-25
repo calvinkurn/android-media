@@ -9,21 +9,17 @@ import java.lang.ref.WeakReference
 class NavToolbarMicroInteraction internal constructor() {
 
     private var searchBarViewRef: WeakReference<View?>? = null
-    private var searchBtnRef: WeakReference<View?>? = null
     private val searchBarView: View?
         get() = searchBarViewRef?.get()
-    private val searchBtn: View?
-        get() = searchBtnRef?.get()
 
-    fun setNavToolbarComponents(searchBarView: View?, searchBtn: View?) {
+    fun setNavToolbarComponents(searchBarView: View?) {
         this.searchBarViewRef = WeakReference(searchBarView)
-        this.searchBtnRef = WeakReference(searchBtn)
     }
 
     fun animate(autoCompleteIntent: Intent, onAnimationEnd: (Intent) -> Unit?) {
         autoCompleteIntent.putExtra(
             SEARCH_BAR_MICRO_INTERACTION_FLAG_BUNDLE,
-            SearchBarMicroInteractionAttributes.create(searchBarView, searchBtn)
+            SearchBarMicroInteractionAttributes.create(searchBarView)
         )
 
         onAnimationEnd(autoCompleteIntent)

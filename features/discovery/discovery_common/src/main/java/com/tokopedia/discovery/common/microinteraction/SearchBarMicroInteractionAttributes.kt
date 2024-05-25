@@ -7,17 +7,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class SearchBarMicroInteractionAttributes(
     val x: Float = 0f,
-    val width: Float = 0f,
-    val searchButtonX: Float = 0f,
+    val width: Float = 0f
 ): Parcelable {
 
     companion object {
 
-        fun create(searchBarView: View?, searchBtn: View?): SearchBarMicroInteractionAttributes {
+        fun create(searchBarView: View?): SearchBarMicroInteractionAttributes {
             return SearchBarMicroInteractionAttributes(
                 x = searchBarView?.x ?: 0f,
-                width = searchBarView?.width?.toFloat() ?: 0f,
-                searchButtonX = searchBtn?.x ?: 0f
+                width = searchBarView?.width?.toFloat() ?: 0f
             )
         }
     }
