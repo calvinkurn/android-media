@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.util
 
+import com.bytedance.dataplatform.remote_config.Experiments
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -17,7 +18,8 @@ object SearchRollenceController {
     }
 
     fun isSearchBtnEnabled(): Boolean {
-        return searchBtnRollence == RollenceKey.HOME_COMBINE_INBOX_NOTIF
+        val enabledByRemoteConfig = Experiments.getHomeCombineInboxNotifEnabled(false)
+        return searchBtnRollence == RollenceKey.HOME_COMBINE_INBOX_NOTIF && enabledByRemoteConfig
     }
 
     private fun fetchInboxNotifTopNavValue() {
