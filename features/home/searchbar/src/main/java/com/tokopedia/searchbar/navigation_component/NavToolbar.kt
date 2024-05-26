@@ -435,7 +435,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         editorActionCallback: ((hint: String) -> Unit)? = null,
         hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
         hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
-        searchBtnClickCallback: ((isUsingDefaultHint: Boolean) -> Unit)? = null
+        searchBtnClickCallback: ((hint: HintData, index: Int, isUsingDefaultHint: Boolean) -> Unit)? = null
     ) {
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE

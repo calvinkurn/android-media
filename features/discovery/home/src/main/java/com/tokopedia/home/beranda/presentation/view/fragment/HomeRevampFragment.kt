@@ -2167,13 +2167,15 @@ open class HomeRevampFragment :
                     if (hintData.imprId.isNotBlank())
                         AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
                 },
-                searchBtnClickCallback = { isUsingDefaultHint ->
+                searchBtnClickCallback = { hintData, index, isUsingDefaultHint ->
                     val keyword = data.placeholder.safeEncodeUtf8()
                     if (keyword.isBlank() || isUsingDefaultHint) {
                         navigateToInitialSearch(data)
                     } else {
                         navigateToSRP(keyword)
                     }
+                    if (hintData.imprId.isNotBlank())
+                        AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
                 }
             )
         }

@@ -10,7 +10,6 @@ import android.widget.EditText
 import androidx.core.widget.addTextChangedListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.R
@@ -42,7 +41,7 @@ class NavSearchbarController(val view: View,
                              val editorActionCallback: ((hint: String)-> Unit)?,
                              val hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
                              val hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
-                             val searchBtnClickCallback: ((isUsingDefaultHint: Boolean) -> Unit)? = null
+                             val searchBtnClickCallback: ((hint: HintData, index: Int, isUsingDefaultHint: Boolean) -> Unit)? = null
 ) : CoroutineScope {
 
     companion object {
@@ -55,6 +54,7 @@ class NavSearchbarController(val view: View,
         private const val DEFAULT_SCALE_DURATION = 150L
         private const val REPEAT_COUNT = 1
         private const val CLEAR_ICON_ANIM_DURATION = 200L
+        private const val SEARCH_BTN_WORD_SOURCE = "search_bar_button"
     }
 
     private lateinit var animationJob: Job
@@ -95,15 +95,15 @@ class NavSearchbarController(val view: View,
         }
         etSearch?.setSingleLine()
         etSearch?.ellipsize = TextUtils.TruncateAt.END
-        setOnSearchCtaClicked()
     }
 
-    private fun setOnSearchCtaClicked() {
-        val hint = etSearch?.hint?.toString().orEmpty()
+    private fun setOnSearchCtaClicked(hintData: HintData, index: Int) {
+        val hint = hintData.copy(wordsSource = SEARCH_BTN_WORD_SOURCE)
+        val placeholder = hint.placeholder
         val defaultHint = view.context.getString(R.string.search_tokopedia)
-        val isUsingDefaultHint = hint.isBlank() || hint.equals(defaultHint, true)
+        val isUsingDefaultHint = placeholder.isBlank() || placeholder.equals(defaultHint, true)
         searchCta?.setOnClickListener {
-            searchBtnClickCallback?.invoke(isUsingDefaultHint)
+            searchBtnClickCallback?.invoke(hint, index, isUsingDefaultHint)
         }
     }
 
@@ -205,6 +205,7 @@ class NavSearchbarController(val view: View,
                 searchbarClickCallback?.invoke(hint.keyword)
             }
         }
+        setOnSearchCtaClicked(hint, index)
     }
 
     private fun setHintAnimation(
@@ -264,6 +265,7 @@ class NavSearchbarController(val view: View,
                         searchbarClickCallback.invoke(keyword)
                     }
                 }
+                setOnSearchCtaClicked(hintData, index)
                 delay(durationAutoTransition)
             }
         }
