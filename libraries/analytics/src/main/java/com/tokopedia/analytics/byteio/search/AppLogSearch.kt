@@ -147,6 +147,7 @@ object AppLogSearch {
         const val PRODUCT_ID = "product_id"
         const val DEFAULT_SEARCH_KEYWORD = "default_search_keyword"
         const val START_TO_NOW = "start_to_now"
+        const val DEFAULT_SEARCH_KEYWORD_OUTER = "default_search_keyword_outer"
     }
 
     object ParamValue {
