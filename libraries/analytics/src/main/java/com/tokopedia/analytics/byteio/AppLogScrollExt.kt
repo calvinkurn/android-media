@@ -251,5 +251,7 @@ fun RecyclerView.addVerticalTrackListener(
  * Add track listener after success fetching data from BE.
  */
 fun RecyclerView.addHorizontalTrackListener(slideTrackObject: SlideTrackObject = SlideTrackObject()) {
-    this.addOnScrollListener(HorizontalTrackScrollListener(slideTrackObject))
+    addOneTimeGlobalLayoutListener {
+        this.addOnScrollListener(HorizontalTrackScrollListener(slideTrackObject))
+    }
 }
