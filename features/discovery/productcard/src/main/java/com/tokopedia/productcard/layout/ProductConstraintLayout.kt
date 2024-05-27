@@ -39,6 +39,7 @@ open class ProductConstraintLayout :
     private val LEFT_AND_RIGHT = 5
     private val TOP_AND_BOTTOM = 6
     private val NOWHERE = 7
+
     private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context) {
