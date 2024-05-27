@@ -162,13 +162,16 @@ class PartialRecommendationManager(
             when (result.layoutType) {
                 RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
                     pdpUiUpdater?.updateComparisonBpcDataModel(
+                        viewModel.getProductInfoP1,
                         result,
-                        viewModel.getProductInfoP1?.basic?.productID.orEmpty()
                     )
                 }
 
                 RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
-                    pdpUiUpdater?.updateComparisonDataModel(result)
+                    pdpUiUpdater?.updateComparisonDataModel(
+                        viewModel.getProductInfoP1,
+                        result
+                    )
                 }
 
                 RecommendationTypeConst.TYPE_VIEW_TO_VIEW -> {
