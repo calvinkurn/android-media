@@ -16,4 +16,6 @@ interface CreationUploader {
     suspend fun retry(removedNotificationId: Int)
 
     suspend fun deleteQueueAndChannel(data: CreationUploadData)
+
+    suspend fun removeFailedContentFromQueue(data: CreationUploadData)
 }
