@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailV
 import com.tokopedia.product.detail.view.widget.AnimatedImageAnchor
 import com.tokopedia.product.detail.view.widget.AnimationData
 import com.tokopedia.unifycomponents.toPx
+import timber.log.Timber
 
 class AtcAnimationManager(
     val mediator: PdpComponentCallbackMediator
@@ -60,6 +61,7 @@ class AtcAnimationManager(
                 image = drawable.toBitmap()
             )
         }.onFailure {
+            Timber.e(it)
             viewModel.onFinishAnimation()
         }
     }
