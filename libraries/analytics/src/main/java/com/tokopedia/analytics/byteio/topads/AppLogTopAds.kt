@@ -206,7 +206,15 @@ object AppLogTopAds {
     }
 
     private fun isSearchPage(currentPageName: Any?): Boolean {
-        val isPrevPageNonFindPage = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
+        //this logic to support find page journey
+        //find -> SRP = find search
+        //find -> SRP -> SRP = find search
+        //find -> SRP -> SRP > SRP = product search
+
+        val isTwoLastPageNonFindPage = AppLogAnalytics.getTwoLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
+        val isFirstLastPageNonFindPage = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
+
+        val isPrevPageNonFindPage = isTwoLastPageNonFindPage || isFirstLastPageNonFindPage
         return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH)
             && isSearchPageNonEmptyState && isPrevPageNonFindPage
     }
