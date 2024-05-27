@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXFollowers
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.feedrevamp.reversed
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.util.LimitGenerator
@@ -259,10 +261,27 @@ class ContentDetailViewModel @Inject constructor(
             })
     }
 
-    fun trackVisitChannel(channelId: String, rowNumber: Int) {
+    fun trackVisitChannel(channelId: String, rowNumber: Int, products: List<FeedXProduct>) {
+        trackPerformance(channelId, rowNumber, BroadcasterReportTrackViewerUseCase.Companion.Event.Visit, products.map(FeedXProduct::id))
+    }
+
+    fun trackProduct(channelId: String, rowNumber: Int, products: List<FeedXProduct>) {
+        trackPerformance(channelId, rowNumber, BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges, products.map(FeedXProduct::id))
+    }
+
+    private val trackedProductIds = mutableListOf<String>()
+    private fun trackPerformance(channelId: String, rowNumber: Int, event: BroadcasterReportTrackViewerUseCase.Companion.Event, ids: List<String>){
+        if (channelId.isBlank()) return
+
+        val hasChanged = ids.filterNot { trackedProductIds.contains(it) }.isNotEmpty()
+        if (hasChanged) {
+            trackedProductIds.clear()
+            ids.map { trackedProductIds.add(it) }
+        } else { return }
+
         _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            val response = repository.trackVisitChannel(channelId, rowNumber)
+            val response = repository.trackPerformance(channelId, rowNumber, trackedProductIds, event)
             _trackVodVisitContentData.value = ContentDetailResult.Success(response)
         }) {
             _trackVodVisitContentData.value = ContentDetailResult.Failure(it)

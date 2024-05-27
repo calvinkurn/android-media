@@ -152,6 +152,7 @@ object PageName {
     const val ORDER_SUBMIT = "order_submit"
     const val EXTERNAL_PROMO = "external_promo"
     const val RECOMMENDATION = "recommendation"
+    const val ACCOUNT = "account"
 }
 
 object QuitType {
@@ -171,6 +172,7 @@ enum class EntranceForm(val str: String) {
     CONTENT_GOODS_CARD("content_goods_card"),
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
     MISSION_HORIZONTAL_GOODS_CARD("mission_horizontal_goods_card"),
+    TWO_MISSION_HORIZONTAL_GOODS_CARD("2mission_horizontal_goods_card"),
     APPEND_GOODS_CARD("append_goods_card")
 }
 
@@ -256,6 +258,7 @@ object AppLogParam {
     const val SLIDE_TYPE = "slide_type"
     const val SOURCE_MODULE = "source_module"
     const val SOURCE_PAGE_TYPE = "source_page_type"
+    const val IS_ADDITIONAL = "is_additional"
     const val SOURCE_PREVIOUS_PAGE = "source_previous_page"
     const val TRACK_ID = "track_id"
     const val REC_PARAMS = "rec_params"
@@ -268,6 +271,11 @@ object AppLogParam {
     const val IS_SHADOW = "is_shadow"
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
     const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
+    const val PARENT_PRODUCT_ID = "parent_product_id"
+    const val PARENT_TRACK_ID = "parent_track_id"
+    const val PARENT_REQUEST_ID = "parent_request_id"
+    const val FIRST_TRACK_ID = "first_track_id"
+    const val FIRST_SOURCE_PAGE = "first_source_page"
     val ENTER_METHOD_SEE_MORE
         get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"

@@ -8,32 +8,32 @@ import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductU
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
+import com.tokopedia.shop.common.util.ShopPageExperiment
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.customview.directpurchase.Etalase
 import com.tokopedia.shop.home.view.customview.directpurchase.Title
 import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
-import com.tokopedia.shop.home.view.model.ShopBmsmWidgetGwpUiModel
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 
-//TODO need to migrate all other shop widget mapper on home mapper to this mapper
+// TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
 
     fun mapToBannerTimerWidget(
@@ -41,7 +41,7 @@ object ShopPageWidgetMapper {
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
-    )= ShopWidgetDisplayBannerTimerUiModel(
+    ) = ShopWidgetDisplayBannerTimerUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
@@ -52,7 +52,7 @@ object ShopPageWidgetMapper {
     )
 
     private fun mapToBannerItemWidget(
-        data: ShopLayoutWidget.Widget.Data?,
+        data: ShopLayoutWidget.Widget.Data?
     ): ShopWidgetDisplayBannerTimerUiModel.Data {
         val statusCampaign = data?.timeInfo?.status?.mapToStatusCampaign()
         val isUpcomingCampaign = statusCampaign == StatusCampaign.UPCOMING
@@ -62,9 +62,9 @@ object ShopPageWidgetMapper {
             null
         }
         return ShopWidgetDisplayBannerTimerUiModel.Data(
-            appLink =  data?.appLink.orEmpty(),
-            imageUrl =  data?.imageUrl.orEmpty(),
-            linkType =  data?.linkType.orEmpty(),
+            appLink = data?.appLink.orEmpty(),
+            imageUrl = data?.imageUrl.orEmpty(),
+            linkType = data?.linkType.orEmpty(),
             timeDescription = data?.timeInfo?.timeDescription.orEmpty(),
             timeCounter = data?.timeInfo?.timeCounter.orZero(),
             startDate = data?.timeInfo?.startDate.orEmpty(),
@@ -82,7 +82,7 @@ object ShopPageWidgetMapper {
     fun mapToSliderBannerHighlightWidget(
         widgetResponse: ShopLayoutWidget.Widget,
         widgetLayout: ShopPageWidgetUiModel?
-    )= ShopWidgetDisplaySliderBannerHighlightUiModel(
+    ) = ShopWidgetDisplaySliderBannerHighlightUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
@@ -96,7 +96,7 @@ object ShopPageWidgetMapper {
         return data.map {
             ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData(
                 appLink = it.appLink,
-                imageUrl = it.imageUrl,
+                imageUrl = it.imageUrl
             )
         }
     }
@@ -104,7 +104,7 @@ object ShopPageWidgetMapper {
     fun mapToCampaignProductCarouselWidgetUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
         widgetLayout: ShopPageWidgetUiModel?
-    ) =  ShopCampaignWidgetCarouselProductUiModel(
+    ) = ShopCampaignWidgetCarouselProductUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
@@ -150,9 +150,25 @@ object ShopPageWidgetMapper {
                             dataHeader.linkType
                         )
                     }
-                )
+                ),
+                handleOptions(it.options)
             )
         }
+    }
+
+    private fun handleOptions(options: List<ShopPageWidgetRequestModel.Option>): List<ShopPageWidgetRequestModel.Option> {
+        return if (ShopPageExperiment.isProductCardV5ExperimentActive()) {
+            options
+        } else {
+            options.useProductCardV4()
+        }
+    }
+
+    private fun List<ShopPageWidgetRequestModel.Option>.useProductCardV4(): List<ShopPageWidgetRequestModel.Option> {
+        val options = this
+        val modifiedOptions = options.toMutableList()
+        modifiedOptions.removeAll { option -> option.key == "product_card_ver" }
+        return modifiedOptions
     }
 
     fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule?): DynamicRule {
@@ -167,20 +183,19 @@ object ShopPageWidgetMapper {
         )
     }
 
-
-    fun mapToPlayWidgetTypeSellerApp(shopId: String): PlayWidgetUseCase.WidgetType.SellerApp{
+    fun mapToPlayWidgetTypeSellerApp(shopId: String): PlayWidgetUseCase.WidgetType.SellerApp {
         return PlayWidgetUseCase.WidgetType.SellerApp(
             shopId = shopId
         )
     }
 
-    fun mapToPlayWidgetTypeShopPage(shopId: String): PlayWidgetUseCase.WidgetType.ShopPage{
+    fun mapToPlayWidgetTypeShopPage(shopId: String): PlayWidgetUseCase.WidgetType.ShopPage {
         return PlayWidgetUseCase.WidgetType.ShopPage(
             shopId = shopId
         )
     }
 
-    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String, campaignId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch{
+    fun mapToPlayWidgetTypeExclusiveLaunch(shopId: String, campaignId: String): PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch {
         return PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch(
             shopId = shopId,
             campaignId = campaignId
@@ -230,7 +245,6 @@ object ShopPageWidgetMapper {
             }
             else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
         }
-
 
         return ShowcaseNavigationUiModel(
             appearance = appearance,
@@ -295,7 +309,8 @@ object ShopPageWidgetMapper {
             name = response.name,
             type = response.type,
             viewAllChevronAppLink = viewAllChevronAppLink,
-            widgetStyle = response.header.widgetStyle
+            widgetStyle = response.header.widgetStyle,
+            isFestivity = widgetLayout?.isFestivity.orFalse()
         )
     }
 
@@ -313,20 +328,20 @@ object ShopPageWidgetMapper {
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
-    )= ShopWidgetDisplayBannerProductHotspotUiModel(
+    ) = ShopWidgetDisplayBannerProductHotspotUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
         header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
-        data = mapToBannerProductHotspotItem(widgetResponse.data).toMutableList().apply {  }
+        data = mapToBannerProductHotspotItem(widgetResponse.data).toMutableList().apply { }
     )
 
     private fun mapToBannerProductHotspotItem(
         listData: List<ShopLayoutWidget.Widget.Data>
     ): List<ShopWidgetDisplayBannerProductHotspotUiModel.Data> {
-        return listData.map {data ->
+        return listData.map { data ->
             ShopWidgetDisplayBannerProductHotspotUiModel.Data(
                 appLink = data.appLink,
                 imageUrl = data.imageUrl,
@@ -372,7 +387,7 @@ object ShopPageWidgetMapper {
                 Title(
                     title = it.title,
                     imageUrl = it.banner,
-                    etalaseList = it.listEtalase.map {etalase ->
+                    etalaseList = it.listEtalase.map { etalase ->
                         Etalase(
                             etalaseId = etalase.link,
                             name = etalase.name,

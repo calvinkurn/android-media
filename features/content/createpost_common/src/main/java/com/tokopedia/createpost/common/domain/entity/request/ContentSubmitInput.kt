@@ -50,5 +50,5 @@ data class ContentSubmitInput(
 
         @SerializedName("media")
         @Expose
-        var media: List<SubmitPostMedium>? = null
+        var media: List<SubmitPostRequest>? = null
 )

@@ -326,6 +326,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             addEnterMethodAppLog();
             if (!keepActivityOn && context != null) {
                 sendCampaignGTM(activity, uriData.toString(), screenName, isAmp);
+                sendAuthenticated(uriData, isAmp);
                 context.finish();
             }
         }
@@ -613,6 +614,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     prepareOpenWebView(uriData);
                     sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
+                    sendAuthenticated(uriData, isAmp);
                 }
                 if (e instanceof ResponseV4ErrorException) {
                     Map<String, String> messageMap = new HashMap<>();
@@ -677,6 +679,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             context.startActivity(intent);
                         }
                         sendCampaignGTM(context, uriData.toString(), AppScreen.SCREEN_SHOP_INFO, isAmp);
+                        sendAuthenticated(uriData, isAmp);
                         context.finish();
                     } else {
                         Map<String, String> messageMap = new HashMap<>();
@@ -688,6 +691,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                         }
                         sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
+                        sendAuthenticated(uriData, isAmp);
+
                         prepareOpenWebView(uriData);
                     }
                 }
@@ -798,6 +803,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uriData.toString());
                     sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
+                    sendAuthenticated(uriData, isAmp);
                     context.finish();
                 }
                 if (e instanceof ResponseV4ErrorException) {
@@ -840,6 +846,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         productIntent.setData(uriData);
 
                         sendCampaignGTM(context, uriData.toString(), AppScreen.SCREEN_PRODUCT_INFO, isAmp);
+                        sendAuthenticated(uriData, isAmp);
                         context.startActivity(productIntent);
                     } else {
                         Map<String, String> messageMap = new HashMap<>();
@@ -853,12 +860,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                         }
                         sendCampaignGTM(context, uriData.toString(), uriData.getPath(), isAmp);
+                        sendAuthenticated(uriData, isAmp);
+
                         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uriData.toString());
                     }
                     context.finish();
                 }
             }
         };
+    }
+
+    private void sendAuthenticated(final Uri uriData, boolean isAmp) {
+        viewListener.sendAuthenticated(uriData, isAmp);
     }
 
     private String getApplinkWithUriQueryParams(Uri uri, String applink) {
