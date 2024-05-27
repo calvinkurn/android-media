@@ -246,5 +246,6 @@ fun buildLiveReportSummary() = GetLiveStatisticsResponse.ReportChannelSummary(
         channelId = "123",
         metrics = GetLiveStatisticsResponse.ReportSellerChannelMetric(),
         userMetrics = GetLiveStatisticsResponse.ReportUserChannelMetric()
-    )
+    ),
+    duration = "123",
 )

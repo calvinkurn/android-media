@@ -87,6 +87,13 @@ class HomeQuestWidgetViewHolder(
         }
     }
 
+    override fun bind(element: HomeQuestWidgetUiModel?, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && element != null) {
+            mAdapter.submitList(element.questList)
+            setupProgressBar(element)
+        }
+    }
+
     private fun setupProgressBar(element: HomeQuestWidgetUiModel) {
         binding?.apply {
             val listener = createProgressBarListener(element)
@@ -136,11 +143,16 @@ class HomeQuestWidgetViewHolder(
         listener?.onClickQuestCard()
     }
 
+    override fun onClickStartButton(channelId: String, questId: Int) {
+        listener?.onClickStartButton(channelId, questId)
+    }
+
     interface HomeQuestWidgetListener {
         fun onImpressQuestWidget()
         fun onClickSeeDetailsQuestWidget()
         fun onClickQuestCard()
         fun onClickProgressiveBar()
         fun onImpressQuestCardSwiped()
+        fun onClickStartButton(channelId: String, questId: Int)
     }
 }

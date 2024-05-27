@@ -186,7 +186,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 3`() {
-        val selectedGroup = 3
+        val selectedGroup = 5
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
@@ -597,7 +597,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when stories open and user tap next detail to close room`() {
-        val selectedGroup = 2
+        val selectedGroup = 4
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 

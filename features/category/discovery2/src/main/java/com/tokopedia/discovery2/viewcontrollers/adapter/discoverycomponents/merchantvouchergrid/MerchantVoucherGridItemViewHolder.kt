@@ -5,22 +5,25 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.analytics.merchantvoucher.DiscoMerchantAnalytics
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.analytics.merchantvoucher.MerchantVoucherTrackingMapper.dataToMvcTrackingProperties
+import com.tokopedia.discovery2.analytics.merchantvoucher.MvcTrackingProperties
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.CtaActionHandler
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.customview.MerchantVoucherViewCard
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponGridView
+import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
+import com.tokopedia.kotlin.extensions.view.orZero
 
 class MerchantVoucherGridItemViewHolder(
     itemView: View,
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val merchantVoucherGrid = itemView.findViewById<MerchantVoucherViewCard>(R.id.merchant_voucher_grid)
+    private val merchantVoucherGrid = itemView.findViewById<AutomateCouponGridView>(R.id.merchant_voucher_grid)
 
     private var viewModel: MerchantVoucherGridItemViewModel? = null
 
@@ -46,57 +49,94 @@ class MerchantVoucherGridItemViewHolder(
         lifecycleOwner?.let { viewModel?.getComponentData()?.removeObservers(it) }
     }
 
-    private fun renderVoucher(item: DataItem) {
+    private fun renderVoucher(model: MerchantVoucherGridModel) {
         merchantVoucherGrid.run {
-            setData(item)
-            handleClickAction(item)
+            setModel(model.automateCouponModel)
+
+            val handler = mapToCTAHandler(
+                AutomateCouponCtaState.Redirect(
+                    AutomateCouponCtaState.Properties(
+                        text = model.buttonText,
+                        appLink = model.appLink,
+                        url = model.url
+                    )
+                )
+            )
+            setState(handler)
+            setClickAction(model.appLink)
         }
     }
 
-    private fun MerchantVoucherViewCard.handleClickAction(item: DataItem) {
-        val appLink = item.shopInfo?.appLink ?: return
-
-        if (appLink.isBlank() || appLink.isEmpty()) return
-
+    private fun AutomateCouponGridView.setClickAction(redirectAppLink: String) {
+        if (redirectAppLink.isEmpty()) return
         onClick {
-            RouteManager.route(itemView.context, appLink)
-            trackClickEvent(item)
+            trackClickEvent()
+            RouteManager.route(itemView.context, redirectAppLink)
         }
     }
 
-    private fun trackClickEvent(item: DataItem) {
-        val discoveryAnalytics = getAnalytics() ?: return
+    private fun mapToCTAHandler(ctaState: AutomateCouponCtaState): ButtonState {
+        val handler = CtaActionHandler(
+            ctaState,
+            object : CtaActionHandler.Listener {
+                override fun claim() {
+                    val ctaText = (ctaState as? AutomateCouponCtaState.Claim)
+                        ?.properties?.text.orEmpty()
+                    trackClickCTAEvent(ctaText)
+                }
 
-        viewModel?.run {
-            val merchantAnalytics = DiscoMerchantAnalytics(
-                discoveryAnalytics,
-                component,
-                component.parentComponentPosition,
-                null,
-                position
-            )
+                override fun redirect(properties: AutomateCouponCtaState.Properties) {
+                    trackClickCTAEvent(properties.text)
+                    val target = properties.appLink.ifEmpty { properties.url }
+                    val intent = RouteManager.getIntent(itemView.context, target)
+                    itemView.context.startActivity(intent)
+                }
+            }
+        )
+        return handler
+    }
 
-            val shopName = item.shopInfo?.name.orEmpty()
-            val eventAction = "click shop name"
+    private fun trackClickEvent() {
+        val trackingProperties = viewModel?.components?.asImpressionClickProperties()
 
-            merchantAnalytics.mvcMultiShopCardClick(
-                shopName,
-                eventAction,
-                MvcSource.DISCO,
-                UserSession(fragment.context).userId,
-                0
-            )
+        trackingProperties?.run {
+            getAnalytics()?.trackMvcClickEvent(this, false)
+        }
+    }
+
+    private fun trackClickCTAEvent(ctaText: String) {
+        val trackingProperties = viewModel?.components?.asClickCTAProperties(ctaText)
+
+        trackingProperties?.run {
+            getAnalytics()?.trackMvcClickEvent(this, true)
         }
     }
 
     private fun trackImpression() {
-        viewModel?.run {
-            getAnalytics()?.trackMerchantVoucherMultipleImpression(
-                component,
-                UserSession(fragment.context).userId,
-                position
-            )
+        val trackingProperties = viewModel?.components?.asImpressionClickProperties()
+
+        trackingProperties?.run {
+            getAnalytics()?.trackMvcImpression(listOf(this))
         }
+    }
+
+    private fun ComponentsItem?.asClickCTAProperties(ctaText: String): MvcTrackingProperties? {
+        return this?.data?.firstOrNull()
+            ?.dataToMvcTrackingProperties(
+                ctaText = ctaText,
+                creativeName = creativeName.orEmpty(),
+                compId = parentComponentId,
+                position = position.orZero()
+            )
+    }
+
+    private fun ComponentsItem?.asImpressionClickProperties(): MvcTrackingProperties? {
+        return this?.data?.firstOrNull()
+            ?.dataToMvcTrackingProperties(
+                creativeName = creativeName.orEmpty(),
+                compId = parentComponentId,
+                position = position.orZero()
+            )
     }
 
     private fun getAnalytics() = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()

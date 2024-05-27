@@ -152,6 +152,7 @@ object PageName {
     const val ORDER_SUBMIT = "order_submit"
     const val EXTERNAL_PROMO = "external_promo"
     const val RECOMMENDATION = "recommendation"
+    const val ACCOUNT = "account"
 }
 
 object QuitType {

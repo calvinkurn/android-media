@@ -3,7 +3,7 @@ package com.tokopedia.createpost.common.domain.entity.request
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class SubmitPostMedium(
+data class SubmitPostRequest(
     @SerializedName("mediaURL")
     @Expose
     var mediaURL: String = "",

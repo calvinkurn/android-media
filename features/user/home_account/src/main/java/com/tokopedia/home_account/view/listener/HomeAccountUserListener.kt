@@ -25,6 +25,7 @@ interface HomeAccountUserListener {
     fun onIconWarningClicked(profile: ProfileDataView)
 
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
+    fun onProductRecommendation1pxImpression(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int)
     fun onAddPhoneClicked()

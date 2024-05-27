@@ -11,6 +11,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
 import com.tokopedia.analytics.byteio.util.underscoredParam
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import org.json.JSONObject
 
 /**
@@ -240,7 +241,9 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
 fun RecyclerView.addVerticalTrackListener(
     glidePageTrackCallback: () -> GlidePageTrackObject? = { null },
 ) {
-    this.addOnScrollListener(VerticalTrackScrollListener(glidePageTrackCallback))
+    addOneTimeGlobalLayoutListener {
+        this.addOnScrollListener(VerticalTrackScrollListener(glidePageTrackCallback))
+    }
 }
 
 /**
