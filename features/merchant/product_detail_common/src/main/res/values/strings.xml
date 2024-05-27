@@ -9,6 +9,8 @@
 
     <string name="buy_now">Beli Sekarang</string>
     <string name="plus_product_to_cart">+ Keranjang</string>
+    <string name="action_preorder">PreOrder</string>
+    <string name="buy">Beli</string>
     <string name="empty_stock_atc">Stok Habis</string>
 
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
@@ -24,6 +26,7 @@
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
     <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
     <string name="merchant_product_detail_success_atc_default">barang berhasil ditambahkan ke keranjang belanja.</string>
+    <string name="cta_text_atc_success">Lihat</string>
 
     <string name="atc_variant_promo">PROMO</string>
     <string name="atc_variant_empty">Habis</string>
