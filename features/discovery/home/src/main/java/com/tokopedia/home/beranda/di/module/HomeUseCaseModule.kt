@@ -46,8 +46,10 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddress
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeCloseChannelRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeHeadlineAdsRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeKeywordSearchRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePageBannerRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePopularKeywordRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeRechargeRecommendationRepository
@@ -56,6 +58,7 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendatio
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggestedRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeUserStatusRepository
