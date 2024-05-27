@@ -11,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingUiModel
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductUiModel
+import com.tokopedia.recommendation_widget_common.infinite.component.separator.InfiniteSeparatorUiModel
 import com.tokopedia.recommendation_widget_common.infinite.component.title.InfiniteTitleUiModel
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -32,14 +33,17 @@ class InfiniteRecommendationViewModel @Inject constructor(
 
     private var currentPage = DEFAULT_CURRENT_PAGE
     private var nextPage = DEFAULT_NEXT_PAGE
+    private var enableSeparator = false
     private var totalData: Int = 0
     private var appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None
 
     fun init(
         appLogAdditionalParam: AppLogAdditionalParam,
+        enableSeparator: Boolean
     ) {
         currentPage = DEFAULT_CURRENT_PAGE
         nextPage = DEFAULT_NEXT_PAGE
+        this.enableSeparator = enableSeparator
         totalData = 0
         _components.value = listOf(InfiniteLoadingUiModel)
         this.appLogAdditionalParam = appLogAdditionalParam
@@ -61,15 +65,23 @@ class InfiniteRecommendationViewModel @Inject constructor(
 
             totalData += recommendationWidget?.recommendationItemList?.size.orZero()
 
-            val components = recommendationWidget.toComponents()
+            val components = recommendationWidget.toComponents(enableSeparator)
             _components.postValue(components)
         }
     }
 
-    private fun RecommendationWidget?.toComponents(): List<InfiniteRecommendationUiModel> {
+    private fun RecommendationWidget?.toComponents(enableSeparator: Boolean):
+        List<InfiniteRecommendationUiModel> {
         val components = _components.value?.toMutableList() ?: mutableListOf()
 
-        if (this == null) {
+        if ((this == null || recommendationItemList.isEmpty()) &&
+            currentPage == 1 &&
+            enableSeparator
+        ) {
+            components.remove(InfiniteSeparatorUiModel)
+        }
+
+        if (this == null || recommendationItemList.isEmpty()) {
             components.remove(InfiniteLoadingUiModel)
         } else {
             /**
@@ -77,6 +89,9 @@ class InfiniteRecommendationViewModel @Inject constructor(
              */
             if (currentPage == DEFAULT_NEXT_PAGE) {
                 components.add(0, InfiniteTitleUiModel(this))
+                if (enableSeparator) {
+                    components.add(0, InfiniteSeparatorUiModel)
+                }
             }
 
             val products = recommendationItemList.map {
