@@ -208,6 +208,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 }
               }
               partnerLabel
+              shopCredibility {
+                  stats {
+                    icon
+                    value
+                  }
+              }
             }
             nearestWarehouse {
               product_id

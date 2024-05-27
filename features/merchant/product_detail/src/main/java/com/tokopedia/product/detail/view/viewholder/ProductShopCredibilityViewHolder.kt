@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,14 +14,17 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShopCredibilityUiData
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE
 import com.tokopedia.product.detail.databinding.ItemShopCredibilityBinding
 import com.tokopedia.product.detail.databinding.ViewCredibilityTickerBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityShimmeringBinding
+import com.tokopedia.product.detail.databinding.ViewShopCredibilityStatsBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.inflateWithBinding
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -280,51 +284,20 @@ class ProductShopCredibilityViewHolder(
     private fun setupInfoRegion(
         element: ProductShopCredibilityDataModel,
         binding: ViewShopCredibilityBinding
-    ) = with(binding) {
-        val infoShopData = element.infoShopData
+    ) = with(binding.shopCredibilityStatsContainer) {
+        removeAllViews()
 
-        val data1 = infoShopData.getOrNull(0)
-        val title1 = data1?.value
-        if (title1?.isEmpty() == true) {
-            shopCredibilityIcon1.hide()
-            shopCredibilityInfoTitle1.hide()
-            shopCredibilityInfoDesc1.hide()
-        } else {
-            shopCredibilityInfoTitle1.show()
-            shopCredibilityInfoTitle1.text = title1.orEmpty()
-
-            shopCredibilityInfoDesc1.show()
-            shopCredibilityInfoDesc1.text = data1?.desc.orEmpty()
-
-            if (data1?.iconIsNotEmpty() == true) {
-                shopCredibilityIcon1.show()
-                shopCredibilityIcon1.setImage(data1.icon)
-            } else {
-                shopCredibilityIcon1.hide()
-            }
-        }
-
-        val data2 = infoShopData.getOrNull(1)
-        val title2 = data2?.value
-        if (title2?.isEmpty() == true) {
-            shopCredibilityIcon2.hide()
-            shopCredibilityInfoTitle2.hide()
-            shopCredibilityInfoDesc2.hide()
-        } else {
-            shopCredibilityInfoTitle2.show()
-            shopCredibilityInfoTitle2.text = title2
-
-            shopCredibilityInfoDesc2.show()
-            shopCredibilityInfoDesc2.text = data2?.desc.orEmpty()
-
-            if (data2?.iconIsNotEmpty() == true) {
-                shopCredibilityIcon2.show()
-                shopCredibilityIcon2.setImage(data2.icon)
-            } else {
-                shopCredibilityIcon2.hide()
-            }
+        element.infoShopData.forEach {
+            val child = createStatView(data = it)
+            addView(child)
         }
     }
+
+    private fun createStatView(data: ShopCredibilityUiData) =
+        ViewShopCredibilityStatsBinding.inflate(LayoutInflater.from(context)).apply {
+            shopCredibilityStatsIcon.loadImage(data.icon)
+            shopCredibilityStatsText.text = data.value.parseAsHtmlLink(context)
+        }.root
 
     private fun setupBadgeAndImage(
         element: ProductShopCredibilityDataModel,
