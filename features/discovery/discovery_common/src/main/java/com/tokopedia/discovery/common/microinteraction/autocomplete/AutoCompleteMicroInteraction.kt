@@ -170,7 +170,15 @@ class AutoCompleteMicroInteraction internal constructor(
             )
 
             if (searchBtnId != null && useSearchBtn) {
-                connect(searchBtnId, ConstraintSet.START, searchBarViewId, ConstraintSet.END)
+                val marginStart = 16.toPx()
+                connect(
+                    searchBtnId,
+                    ConstraintSet.START,
+                    searchBarViewId,
+                    ConstraintSet.END,
+                    marginStart
+                )
+                clear(searchBtnId, ConstraintSet.END)
             }
 
             var previousViewStartId = searchBarViewId
@@ -216,11 +224,7 @@ class AutoCompleteMicroInteraction internal constructor(
         val initialMarginStart = searchBarMicroInteractionAttributes.x.toInt()
         val initialWidth = searchBarMicroInteractionAttributes.width.toInt()
 
-        val fullWidthIncrement = if (useSearchBtn) {
-            searchBarView.width
-        } else {
-            getSearchBarFinalWidth() - initialWidth
-        }
+        val fullWidthIncrement = getSearchBarFinalWidth() - initialWidth
         val fullMarginStartIncrement = SEARCH_BAR_MARGIN_START_PARENT_DP.toPx() - initialMarginStart
 
         return searchBarMicroInteractionAnimator(
@@ -228,7 +232,11 @@ class AutoCompleteMicroInteraction internal constructor(
             SEARCH_BAR_ANIMATOR_END_VALUE,
             SEARCH_BAR_ANIMATOR_DURATION
         ) { valuePercentage ->
-            val widthIncrement = valuePercentage * fullWidthIncrement
+            val widthIncrement = if (useSearchBtn) {
+                valuePercentage
+            } else {
+                valuePercentage * fullWidthIncrement
+            }
             val marginIncrement = valuePercentage * fullMarginStartIncrement
 
             searchBarLayoutParams.width = initialWidth + widthIncrement.toInt()
