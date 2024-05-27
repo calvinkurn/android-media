@@ -302,12 +302,13 @@ class SearchBarView(
             binding.tvSearchCta.setOnClickListener {
                 onSubmitQuery(clickSearch = true)
             }
+            val clearIconMargin = context.dpToPx(2).toInt()
             binding.autocompleteClearButton.setPadding(0)
-            binding.autocompleteClearButton.setMargin(0, 0, 0, 0)
+            binding.autocompleteClearButton.setMargin(0, 0, clearIconMargin, 0)
             val clearIconSize = context.dpToPx(19).toInt()
             binding.autocompleteClearButton.layoutParams.width = clearIconSize
             binding.autocompleteClearButton.layoutParams.height = clearIconSize
-            val addIconMargin = context.dpToPx(4).toInt()
+            val addIconMargin = context.dpToPx(6).toInt()
             binding.autocompleteAddButton.setMargin(0, 0, addIconMargin, 0)
         } else {
             binding.searchTextView.background =
