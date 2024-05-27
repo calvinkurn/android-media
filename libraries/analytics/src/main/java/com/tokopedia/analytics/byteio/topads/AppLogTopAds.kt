@@ -211,12 +211,12 @@ object AppLogTopAds {
         //find -> SRP -> SRP = find search
         //find -> SRP -> SRP > SRP = product search
 
-        val isTwoLastPageNonFindPage = AppLogAnalytics.getTwoLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
-        val isFirstLastPageNonFindPage = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
+        val isTwoLastPageNotFindPage = AppLogAnalytics.getTwoLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
+        val isFirstLastPageNotFindPage = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
 
-        val isPrevPageNonFindPage = isTwoLastPageNonFindPage || isFirstLastPageNonFindPage
+        val isPrevPageNotFindPage = isTwoLastPageNotFindPage || isFirstLastPageNotFindPage
         return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH)
-            && isSearchPageNonEmptyState && isPrevPageNonFindPage
+            && isSearchPageNonEmptyState && isPrevPageNotFindPage
     }
 
     private fun JSONObject.putNetworkType(context: Context) {
