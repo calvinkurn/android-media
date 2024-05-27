@@ -45,6 +45,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 import kotlin.math.roundToInt
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -315,20 +316,46 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarDateAlpha.setBackgroundColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            R.color.discovery2_dms_header_expired
+                            if (itemView.context.isDarkMode()) {
+                                R.color.discovery2_dms_header_expired_dark
+                            } else {
+                                R.color.discovery2_dms_header_expired
+                            }
                         )
                     )
                     calendarBody.apply {
                         setBackgroundColor(
                             ContextCompat.getColor(
                                 itemView.context,
-                                R.color.discovery2_dms_body_expired
+                                if (itemView.context.isDarkMode()) {
+                                    R.color.discovery2_dms_body_expired_dark
+                                } else {
+                                    R.color.discovery2_dms_body_expired
+                                }
                             )
                         )
                     }
                 }
-                calendarTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
-                calendarDesc.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                calendarTitle.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        if (itemView.context.isDarkMode()) {
+                            R.color.discovery2_dms_copy_header_expired_dark
+                        } else {
+                            R.color.discovery2_dms_copy_header_expired
+                        }
+                    )
+                )
+                calendarDesc.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        if (itemView.context.isDarkMode()) {
+                            R.color.discovery2_dms_copy_body_expired_dark
+                        } else {
+                            R.color.discovery2_dms_copy_body_expired
+                        }
+                    )
+                )
                 calendarButton.show()
                 calendarButton.isEnabled = false
                 calendarButton.text =
@@ -683,17 +710,13 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
-    private fun renderExpiredLayout() {
-
-    }
-
     private fun renderExpiredImageView(isExpired: Boolean, imageView: ImageView) {
         if (isExpired) {
             val matrix = ColorMatrix()
             matrix.setSaturation(0f)
             val cf = ColorMatrixColorFilter(matrix)
             imageView.colorFilter = cf
-            imageView.imageAlpha = 255
+            imageView.imageAlpha = if (itemView.context.isDarkMode()) 255 else 125
         } else {
             imageView.colorFilter = null;
             imageView.imageAlpha = 255;
