@@ -29,11 +29,9 @@ object BtmApi {
 
     @JvmStatic
     fun registerBtmPageOnCreate(page: Fragment, pageBtm: Site.Page, sourceBtmToken: String? = null) {
-        page.context?.let {
-            val isBtmEnabled = BtmLibraFeatureFlag.isBtmEnabled()
-            if (isBtmEnabled) {
-                registerBtmPage(page, pageBtm, sourceBtmToken)
-            }
+        val isBtmEnabled = BtmLibraFeatureFlag.isBtmEnabled()
+        if (isBtmEnabled) {
+            registerBtmPage(page, pageBtm, sourceBtmToken)
         }
     }
 
