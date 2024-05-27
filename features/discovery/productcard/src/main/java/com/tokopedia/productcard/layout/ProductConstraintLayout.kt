@@ -50,7 +50,7 @@ open class ProductConstraintLayout :
         inflateView()
     }
 
-    private fun calculateVisibility() {
+    private fun calculateVisibility(isFromGlobal: Boolean) {
         getLocalVisibleRect(rectf)
         val alignment: Int
         val top = rectf.top
@@ -91,7 +91,7 @@ open class ProductConstraintLayout :
             widthPercentage = 0
         }
         if (isBetweenHorizontalPercentageLimits(widthPercentage) && isBetweenVerticalPercentageLimits(heightPercentage)) {
-            if (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage) {
+            if (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage || isFromGlobal) {
                 lastPercentageHeight = heightPercentage
                 lastPercentageWidht = widthPercentage
                 val areaPercentage = (lastPercentageHeight * lastPercentageWidht) / 100
@@ -117,7 +117,6 @@ open class ProductConstraintLayout :
             onShow()
         } else {
             onShowOver()
-            maxAreaPercentage = 0
         }
     }
 
@@ -216,11 +215,11 @@ open class ProductConstraintLayout :
     }
 
     override fun onScrollChanged() {
-        calculateVisibility()
+        calculateVisibility(isFromGlobal = false)
     }
 
     override fun onGlobalLayout() {
-        calculateVisibility()
+        calculateVisibility(isFromGlobal = true)
         removeOnGlobalLayoutListener()
     }
 
@@ -258,6 +257,7 @@ open class ProductConstraintLayout :
             mPercentageListener?.onShowOver(maxAreaPercentage)
             viewDetachedFromWindows = true
         }
+        maxAreaPercentage = 0
     }
 
     private fun inflateView() {
