@@ -15,11 +15,17 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.CLIENT_ID
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.PACKAGE_NAME
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.REDIRECT_URI
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.SIGN_CERT
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_API
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_UNKNOWN
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.loginregister.R as loginregisterR
 
 class LoginSdkFragment: LoginEmailPhoneFragment() {
 
@@ -27,7 +33,7 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        redirectUrl = arguments?.getString("redirect_uri") ?: ""
+        redirectUrl = arguments?.getString(REDIRECT_URI) ?: ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,16 +42,16 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         prepareLoginTiktokView()
         showLoadingLogin()
         viewModel.validateClient(
-            clientId = arguments?.getString("client_id") ?: "",
-            signature = arguments?.getString("sign_cert") ?: "",
-            packageName = arguments?.getString("package_name") ?: "",
+            clientId = arguments?.getString(CLIENT_ID) ?: "",
+            signature = arguments?.getString(SIGN_CERT) ?: "",
+            packageName = arguments?.getString(PACKAGE_NAME) ?: "",
             redirectUri = redirectUrl
         )
     }
 
     private fun prepareLoginTiktokView() {
         viewBinding?.apply {
-            loginOptionTitle.text = "atau"
+            loginOptionTitle.text = getString(loginregisterR.string.login_sdk_or_text)
             socmedBtn.showWithCondition(false)
             registerButton.showWithCondition(false)
             btnLoginGoogle.showWithCondition(true)
@@ -75,7 +81,7 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
                     }
                 }
                 is Fail -> {
-                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error", errorCode = ERR_CODE_API)
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: ERR_CODE_UNKNOWN, errorCode = ERR_CODE_API)
                 }
             }
         }
@@ -92,7 +98,7 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
     override fun setupToolbar() {
         super.setupToolbar()
         activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
-            headerTitle = "Masuk ke Tokopedia"
+            headerTitle = getString(loginregisterR.string.login_sdk_toolbar_login_title)
         }
     }
 

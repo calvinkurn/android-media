@@ -7,6 +7,10 @@ object LoginSdkAnalytics {
     private const val BUSSINESS_UNIT = "user platform"
     private const val CURRENT_SITE = "tokopediamarketplace"
 
+    const val LABEL_SUCCESS = "success"
+    const val LABEL_FAILED = "failed"
+
+
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/4572
     // Tracker ID: 50774
     fun sendViewTokopediaSsoPageEvent (eventLabel: String) {
@@ -105,4 +109,5 @@ object LoginSdkAnalytics {
             .build()
             .send()
     }
+
 }

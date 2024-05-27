@@ -1,11 +1,11 @@
 package com.tokopedia.loginregister.login_sdk
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.REDIRECT_URI
 import com.tokopedia.sessioncommon.util.LoginSdkUtils
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CLIENT_CANCELLED
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_CLIENT
@@ -47,21 +47,11 @@ class LoginSdkActivity : LoginActivity() {
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        intent?.let {
-            if(it.hasExtra("from_reset_password")) {
-                if (it.getBooleanExtra("from_reset_password", false)) {
-                }
-            }
-        }
-    }
-
     override fun onBackPressed() {
         LoginSdkAnalytics.sendClickOnButtonBackEvent(getClientName())
         LoginSdkUtils.redirectToTargetUri(
             activity = this,
-            redirectUrl = intent?.extras?.getString("redirect_uri") ?: "",
+            redirectUrl = intent?.extras?.getString(REDIRECT_URI) ?: "",
             authCode = "",
             errorCode = ERR_CODE_CLIENT,
             error = ERR_CLIENT_CANCELLED

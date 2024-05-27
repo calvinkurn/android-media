@@ -28,10 +28,18 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentConsentLayoutBinding
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.login_sdk.LoginSdkAnalytics.LABEL_FAILED
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.CLIENT_ID
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.CODE_VERIFIER
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.PACKAGE_NAME
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.REDIRECT_URI
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.SCOPES
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.SIGN_CERT
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_API
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.ERR_CODE_UNKNOWN
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientName
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.redirectToTargetUri
 import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
@@ -39,6 +47,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.loginregister.R as loginregisterR
 
 class LoginSdkConsentFragment: BaseDaggerFragment() {
 
@@ -55,8 +64,8 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        redirectUrl = arguments?.getString("redirect_uri") ?: ""
-        callerCert = arguments?.getString("sign_cert") ?: ""
+        redirectUrl = arguments?.getString(REDIRECT_URI) ?: ""
+        callerCert = arguments?.getString(SIGN_CERT) ?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,18 +85,18 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             viewBinding?.btnLoginConsent?.isLoading = true
             LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("click")
             viewModel.authorizeSdk(
-                clientId = arguments?.getString("client_id") ?: "",
+                clientId = arguments?.getString(CLIENT_ID) ?: "",
                 redirectUri = redirectUrl,
-                codeChallenge = arguments?.getString("code_verifier") ?: ""
+                codeChallenge = arguments?.getString(CODE_VERIFIER) ?: ""
             )
         }
 
         setupObserver()
 
         viewModel.validateClient(
-            clientId = arguments?.getString("client_id") ?: "",
+            clientId = arguments?.getString(CLIENT_ID) ?: "",
             signature = callerCert,
-            packageName = arguments?.getString("package_name") ?: "",
+            packageName = arguments?.getString(PACKAGE_NAME) ?: "",
             redirectUri = redirectUrl
         )
         setupToolbar()
@@ -95,7 +104,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
 
     fun setupToolbar() {
         activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
-            headerTitle = "Masuk ke Tokopedia"
+            headerTitle = getString(loginregisterR.string.login_sdk_toolbar_login_title)
             actionTextView?.hide()
             isShowShadow = false
         }
@@ -121,9 +130,9 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                         } else {
                             LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("click")
                             viewModel.authorizeSdk(
-                                clientId = arguments?.getString("client_id") ?: "",
+                                clientId = arguments?.getString(CLIENT_ID) ?: "",
                                 redirectUri = redirectUrl,
-                                codeChallenge = arguments?.getString("code_verifier") ?: ""
+                                codeChallenge = arguments?.getString(CODE_VERIFIER) ?: ""
                             )
                         }
                     } else {
@@ -140,12 +149,12 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             viewBinding?.btnLoginConsent?.isLoading = false
             when (it) {
                 is Success -> {
-                    LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("success")
+                    LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent(LoginSdkAnalytics.LABEL_SUCCESS)
                     redirectToTargetUri(requireActivity(), it.data.redirectUri, it.data.code)
                 }
                 is Fail -> {
-                    LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("failed - ${it.throwable.message}")
-                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error", errorCode = ERR_CODE_API)
+                    LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("$LABEL_FAILED - ${it.throwable.message}")
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: ERR_CODE_UNKNOWN, errorCode = ERR_CODE_API)
                 }
             }
         }
@@ -156,8 +165,8 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                     if (it.data.status) {
                         requireContext().setAsLoginSdkFlow(it.data.appName)
                         viewModel.getConsent(
-                            clientId = arguments?.getString("client_id") ?: "",
-                            scopes = arguments?.getString("scopes") ?: ""
+                            clientId = arguments?.getString(CLIENT_ID) ?: "",
+                            scopes = arguments?.getString(SCOPES) ?: ""
                         )
                         LoginSdkAnalytics.sendViewTokopediaSsoPageEvent(it.data.appName)
                     } else {
@@ -165,7 +174,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: "Error", errorCode = ERR_CODE_API)
+                    redirectToTargetUri(requireActivity(), redirectUrl, authCode = "", it.throwable.message ?: ERR_CODE_UNKNOWN, errorCode = ERR_CODE_API)
                 }
             }
         }
@@ -215,32 +224,33 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
     private fun setUI(consentData: SdkConsentData) {
         showLoading(shouldShow = false)
         viewBinding?.run {
-            txtHeader.text = "Izinkan ${consentData.clientInfo.appName} untuk mengakses data dari akun berikut"
+            txtHeader.text = String.format(getString(loginregisterR.string.login_sdk_header_text), consentData.clientInfo.appName)
             consentData.consents.forEach {
                 txtDataList.append(" •  $it\n")
             }
             // Remove last newline from text
             txtDataList.text = txtDataList.text.substring(0, txtDataList.text.length - 1)
 
-            txtConsentInfo.text = "Dengan klik Izinkan, kamu setuju pembagian data untuk ${consentData.termPrivacy.purpose}."
+            txtConsentInfo.text = String.format(getString(loginregisterR.string.login_sdk_consent_text), consentData.termPrivacy.purpose)
             txtFullName.text = consentData.userInfo.fullName
             txtPhoneNumber.text = consentData.userInfo.email.ifEmpty { consentData.userInfo.phone }
             imgProfile.loadImageCircle(consentData.userInfo.profilePicture)
 
             imgPartnerLogo.loadImage(consentData.clientInfo.imageUrl)
 
-            txtTncPrivPartner.text = "Syarat dan ketentuan serta Kebijakan Privasi ${consentData.clientInfo.appName}."
+
+            txtTncPrivPartner.text = String.format(getString(loginregisterR.string.login_sdk_terms_privacy_txt), consentData.clientInfo.appName)
 
             txtTncPrivPartner.clickableText(
                 requireContext(),
-                listOf("Syarat dan ketentuan", "Kebijakan Privasi"),
+                listOf(getString(R.string.phone_shop_tnc_title), getString(R.string.login_sdk_privacy_txt)),
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             ) {
-                if (it == "Syarat dan ketentuan") {
+                if (it == getString(loginregisterR.string.phone_shop_tnc_title)) {
                     RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.url))
                     LoginSdkAnalytics.sendClickOnButtonSyaratDanKetentuanEvent(requireContext().getClientName())
                 }
-                if (it == "Kebijakan Privasi") {
+                if (it == getString(loginregisterR.string.login_sdk_privacy_txt)) {
                     RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.privacyUrl))
                     LoginSdkAnalytics.sendClickOnButtonKebijakanPrivasiEvent(requireContext().getClientName())
                 }

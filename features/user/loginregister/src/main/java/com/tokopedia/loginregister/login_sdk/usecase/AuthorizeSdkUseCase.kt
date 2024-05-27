@@ -37,13 +37,6 @@ class AuthorizeSdkUseCase @Inject constructor(
                 }
             }""".trimIndent()
 
-
-        //                    input: {
-//                        client_id:${'$'}client_id,
-//                        response_type:${'$'}response_type,
-//                        redirect_uri:${'$'}redirect_uri,
-//                        state:${'$'}state
-//                    }
         override fun getTopOperationName(): String = ""
     }
 }
