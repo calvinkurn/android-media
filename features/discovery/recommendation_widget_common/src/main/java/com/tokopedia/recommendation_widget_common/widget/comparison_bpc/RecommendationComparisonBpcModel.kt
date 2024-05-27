@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison_bpc
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
@@ -25,11 +26,12 @@ data class RecommendationComparisonBpcModel(
             metadata: RecommendationWidgetMetadata,
             trackingModel: RecommendationWidgetTrackingModel,
             recommendationWidget: RecommendationWidget,
+            appLogAdditionalParam: AppLogAdditionalParam,
             listener: RecommendationWidgetListener?,
             userId: String
         ): RecommendationComparisonBpcModel =
             RecommendationComparisonBpcModel(
-                RecommendationVisitable.create(metadata, trackingModel, userId, recommendationWidget.appLog),
+                RecommendationVisitable.create(metadata, trackingModel, userId, recommendationWidget.appLog, appLogAdditionalParam),
                 recommendationWidget,
                 listener
             )

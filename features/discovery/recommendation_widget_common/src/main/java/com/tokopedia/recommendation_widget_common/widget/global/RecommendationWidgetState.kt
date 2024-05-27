@@ -70,6 +70,7 @@ data class RecommendationWidgetState(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
+                appLogAdditionalParam = model.appLogAdditionalParam,
                 listener = model.listener,
                 userId = userId
             )
