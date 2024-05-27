@@ -72,7 +72,8 @@ class ShopHomePersoProductComparisonViewHolder(
                 ),
                 shopHomeListener.getFragmentTrackingQueue(),
                 null,
-                colorConfig
+                colorConfig,
+                shopId = uiModel.shopId,
             )
         }
     }

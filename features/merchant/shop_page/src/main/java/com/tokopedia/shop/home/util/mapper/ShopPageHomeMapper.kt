@@ -632,7 +632,8 @@ object ShopPageHomeMapper {
                             widgetResponse,
                             widgetLayout,
                             isOverrideTheme,
-                            colorSchema
+                            colorSchema,
+                            shopId
                         )
                     }
 
@@ -747,14 +748,16 @@ object ShopPageHomeMapper {
         widgetResponse: ShopLayoutWidget.Widget,
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        shopId: String
     ) = ShopHomePersoProductComparisonUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
-        isFestivity = widgetLayout?.isFestivity.orFalse()
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
+        shopId = shopId,
     )
 
     private fun mapToShowcaseListUiModel(
