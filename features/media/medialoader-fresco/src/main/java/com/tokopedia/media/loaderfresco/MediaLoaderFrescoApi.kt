@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loaderfresco.data.Properties
 import com.tokopedia.media.loaderfresco.tracker.FrescoLogger
 import com.tokopedia.media.loaderfresco.utils.FrescoDataSourceRequest
+import com.tokopedia.media.loaderfresco.utils.RoundingImage.roundingImage
 import com.tokopedia.media.loaderfresco.utils.generateFrescoUrl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -55,7 +56,8 @@ internal object MediaLoaderFrescoApi {
                                 bitmap = closeableImage.underlyingBitmap.copy(Bitmap.Config.ARGB_8888, true)
                                 if (!bitmap.isRecycled) {
                                     runOnUiThread{
-                                        imageView.setImageBitmap(bitmap)
+                                        val processedImage = bitmap.roundingImage(imageView.context, properties)
+                                        imageView.setImageDrawable(processedImage)
                                     }
                                 }
                             }
