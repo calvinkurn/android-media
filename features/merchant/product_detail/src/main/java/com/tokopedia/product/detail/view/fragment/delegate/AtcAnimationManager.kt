@@ -44,23 +44,23 @@ class AtcAnimationManager(
             return
         }
 
-        if (mSourceImageView == null) {
+        val drawable = mSourceImageView?.drawable ?: run {
+            viewModel.onFinishAnimation()
+            return
+        }
+        val cartViewMenu = binding.pdpNavtoolbar.getCartIconPosition() ?: run {
             viewModel.onFinishAnimation()
             return
         }
 
-        val toolbar = binding.pdpNavtoolbar
-
-        val cartViewMenu = toolbar.getCartIconPosition()
-
-        cartViewMenu?.apply {
-            post {
-                renderAnimatedImage(
-                    binding = binding,
-                    target = this,
-                    image = mSourceImageView?.drawable!!.toBitmap()
-                )
-            }
+        runCatching {
+            renderAnimatedImage(
+                binding = binding,
+                target = cartViewMenu,
+                image = drawable.toBitmap()
+            )
+        }.onFailure {
+            viewModel.onFinishAnimation()
         }
     }
 
