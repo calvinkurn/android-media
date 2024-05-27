@@ -265,6 +265,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         this.searchStyle = style
         configureInvertedSearchBar()
         configureSearchIcon()
+        configureSearchBox()
         btnSearch.showWithCondition(showSearchBtn)
     }
 
@@ -1044,6 +1045,15 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                 newDarkEnable = iconColor
             )
         }
+    }
+
+    private fun configureSearchBox() {
+        val hintTextColor = if (searchStyle == SearchStyle.SEARCH_REDESIGN) {
+            unifyprinciplesR.color.Unify_NN950_96
+        } else {
+            R.color.searchbar_dms_text_color
+        }
+        etSearch.setHintTextColor(context.getResColor(hintTextColor))
     }
 
     fun setupItemCoachMark(iconId: Int, onReady: (View) -> Unit) {
