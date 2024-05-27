@@ -1,22 +1,34 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.data.createHomeLayoutListForQuestOnly
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.Progress
 import com.tokopedia.tokopedianow.home.domain.model.QuestList
 import com.tokopedia.tokopedianow.home.domain.model.QuestUser
 import com.tokopedia.tokopedianow.home.domain.model.Task
+import com.tokopedia.tokopedianow.home.mapper.QuestWidgetMapper.createHomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.QuestWidgetMapper.createQuestListResponse
+import com.tokopedia.tokopedianow.home.mapper.QuestWidgetMapper.createStartQuestResponse
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
+class TokoNowHomeViewModelTestQuestWidget : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given empty quest list response when get quest list should remove widget item from visitable list`() {
@@ -43,10 +55,12 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
         val finishedWidgetContentDescription = "120rb"
 
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly(
-            subtitle = finishedWidgetTitle,
-            widgetParam = finishedWidgetContentDescription
-        ))
+        onGetHomeLayoutData_thenReturn(
+            createHomeLayoutListForQuestOnly(
+                subtitle = finishedWidgetTitle,
+                widgetParam = finishedWidgetContentDescription
+            )
+        )
         onGetQuestWidgetList_thenReturn(createQuestWidgetListEmpty(code = errorCode))
 
         viewModel.getHomeLayout(
@@ -94,14 +108,18 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
         )
 
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly(
-            subtitle = finishedWidgetTitle,
-            widgetParam = finishedWidgetContentDescription
-        ))
-        onGetQuestWidgetList_thenReturn(createQuestWidgetList(
-            code = successCode,
-            questWidgetList = questWidgetList
-        ))
+        onGetHomeLayoutData_thenReturn(
+            createHomeLayoutListForQuestOnly(
+                subtitle = finishedWidgetTitle,
+                widgetParam = finishedWidgetContentDescription
+            )
+        )
+        onGetQuestWidgetList_thenReturn(
+            createQuestWidgetList(
+                code = successCode,
+                questWidgetList = questWidgetList
+            )
+        )
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
@@ -162,7 +180,8 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
                         title = "Task 1",
                         progress = Progress(current = 1f, target = 1f)
                     )
-                )
+                ),
+                sequenceQuestIDs = listOf(1234)
             ),
             QuestList(
                 id = "1234",
@@ -182,7 +201,8 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
                         title = "Task 1",
                         progress = Progress(current = 0f, target = 1f)
                     )
-                )
+                ),
+                sequenceQuestIDs = listOf(1235)
             ),
             QuestList(
                 id = "1235",
@@ -202,15 +222,18 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
                         title = "Task 1",
                         progress = Progress(current = 0f, target = 1f)
                     )
-                )
+                ),
+                sequenceQuestIDs = listOf(1235)
             )
         )
 
         onGetQuestWidgetAbTest_thenReturn(EXPERIMENT_VARIANT)
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForQuestOnly(
-            subtitle = finishedWidgetTitle,
-            widgetParam = finishedWidgetContentDescription
-        ))
+        onGetHomeLayoutData_thenReturn(
+            createHomeLayoutListForQuestOnly(
+                subtitle = finishedWidgetTitle,
+                widgetParam = finishedWidgetContentDescription
+            )
+        )
         onGetQuestWidgetList_thenReturn(createQuestWidgetList(code))
 
         viewModel.getHomeLayout(
@@ -220,10 +243,12 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         code = "200"
-        onGetQuestWidgetList_thenReturn(createQuestWidgetList(
-            code = code,
-            questWidgetList = questWidgetList
-        ))
+        onGetQuestWidgetList_thenReturn(
+            createQuestWidgetList(
+                code = code,
+                questWidgetList = questWidgetList
+            )
+        )
 
         viewModel.refreshQuestWidget()
 
@@ -233,30 +258,43 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
             questList = listOf(
                 HomeQuestCardItemUiModel(
                     id = "1233",
+                    channelId = "55678",
                     title = "Beli 2 beras 50kg dapat cashback 50rb",
                     description = "Expired tanggal 15/02/2025",
                     isLockedShown = false,
+                    showStartBtn = false,
+                    isLoading = false,
                     currentProgress = 1f,
-                    totalProgress = 1f
+                    totalProgress = 1f,
+                    isIdle = false
                 ),
                 HomeQuestCardItemUiModel(
                     id = "1234",
+                    channelId = "55678",
                     title = "Beli 3 beras 50kg dapat cashback 50rb",
                     description = "Expired tanggal 16/02/2025",
                     isLockedShown = false,
+                    showStartBtn = false,
+                    isLoading = false,
                     currentProgress = 0f,
-                    totalProgress = 1f
+                    totalProgress = 1f,
+                    isIdle = false
                 ),
                 HomeQuestCardItemUiModel(
                     id = "1235",
+                    channelId = "55678",
                     title = "Beli 4 beras 50kg dapat cashback 50rb",
                     description = "Expired tanggal 17/02/2025",
                     isLockedShown = true,
+                    showStartBtn = false,
+                    isLoading = false,
                     currentProgress = 0f,
-                    totalProgress = 1f
+                    totalProgress = 1f,
+                    isIdle = true
                 )
             ),
-            currentProgressPosition = 1
+            currentProgressPosition = 1,
+            isStarted = true
         )
 
         verifyGetHomeLayoutDataUseCaseCalled()
@@ -313,5 +351,141 @@ class TokoNowHomeViewModelTestQuestWidget: TokoNowHomeViewModelTestFixture() {
         viewModel.refreshQuestWidget()
 
         verifyGetQuestWidgetListUseCaseNotCalled()
+    }
+
+    @Test
+    fun `given start quest response success when startQuest then should set start quest live data success`() {
+        val questId = 155
+        val channelId = "34923"
+        val abTestValue = "experiment_variant"
+
+        val startQuestResponse = createStartQuestResponse(code = "200")
+        val getHomeLayoutResponse = createHomeLayoutResponse()
+        val questListResponse = createQuestListResponse()
+
+        onGetQuestWidgetAbTest_thenReturn(abTestValue)
+        onGetHomeLayoutData_thenReturn(getHomeLayoutResponse)
+        onGetQuestWidgetList_thenReturn(questListResponse)
+        onStartQuest_thenReturn(questId, startQuestResponse)
+
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList())
+        viewModel.getLayoutComponentData(LocalCacheModel())
+        viewModel.startQuest(channelId, questId)
+
+        val homeLayoutListLiveData = HomeLayoutListUiModel(
+            items = listOf(
+                HomeHeaderUiModel(
+                    id = "9",
+                    state = HomeLayoutItemState.ERROR
+                ),
+                HomeQuestWidgetUiModel(
+                    id = channelId,
+                    title = "Quest Widget",
+                    questList = listOf(
+                        HomeQuestCardItemUiModel(
+                            id = "155",
+                            channelId = channelId,
+                            title = "TokopediaNOW! Quest",
+                            description = "4.4 Quest Campaign",
+                            isLockedShown = false,
+                            showStartBtn = false,
+                            isLoading = false,
+                            currentProgress = 0f,
+                            totalProgress = 100f,
+                            isIdle = false
+                        ),
+                        HomeQuestCardItemUiModel(
+                            id = "255",
+                            channelId = channelId,
+                            title = "TokopediaNOW! Quest 2",
+                            description = "12.12 Quest Campaign",
+                            isLockedShown = false,
+                            showStartBtn = true,
+                            isLoading = false,
+                            currentProgress = 0f,
+                            totalProgress = 100f,
+                            isIdle = true
+                        )
+                    ),
+                    currentProgressPosition = 0,
+                    isStarted = true
+                )
+            ),
+            state = TokoNowLayoutState.UPDATE
+        )
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(Success(homeLayoutListLiveData))
+
+        viewModel.startQuestResult
+            .verifySuccessEquals(Success(startQuestResponse))
+    }
+
+    @Test
+    fun `given start quest response error when startQuest then should set start quest live data fail`() {
+        val questId = 255
+        val channelId = "34923"
+        val abTestValue = "experiment_variant"
+        val error = MessageErrorException()
+
+        val getHomeLayoutResponse = createHomeLayoutResponse()
+        val questListResponse = createQuestListResponse()
+
+        onGetQuestWidgetAbTest_thenReturn(abTestValue)
+        onGetHomeLayoutData_thenReturn(getHomeLayoutResponse)
+        onGetQuestWidgetList_thenReturn(questListResponse)
+        onStartQuest_thenReturn(questId, error)
+
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList())
+        viewModel.getLayoutComponentData(LocalCacheModel())
+        viewModel.startQuest(channelId, questId)
+
+        val homeLayoutListLiveData = HomeLayoutListUiModel(
+            items = listOf(
+                HomeHeaderUiModel(
+                    id = "9",
+                    state = HomeLayoutItemState.ERROR
+                ),
+                HomeQuestWidgetUiModel(
+                    id = channelId,
+                    title = "Quest Widget",
+                    questList = listOf(
+                        HomeQuestCardItemUiModel(
+                            id = "155",
+                            channelId = channelId,
+                            title = "TokopediaNOW! Quest",
+                            description = "4.4 Quest Campaign",
+                            isLockedShown = false,
+                            showStartBtn = false,
+                            isLoading = false,
+                            currentProgress = 0f,
+                            totalProgress = 100f,
+                            isIdle = false
+                        ),
+                        HomeQuestCardItemUiModel(
+                            id = "255",
+                            channelId = channelId,
+                            title = "TokopediaNOW! Quest 2",
+                            description = "12.12 Quest Campaign",
+                            isLockedShown = false,
+                            showStartBtn = true,
+                            isLoading = false,
+                            currentProgress = 0f,
+                            totalProgress = 100f,
+                            isIdle = true
+                        )
+                    ),
+                    currentProgressPosition = 0,
+                    isStarted = true
+                )
+            ),
+            state = TokoNowLayoutState.UPDATE
+        )
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(Success(homeLayoutListLiveData))
+
+        viewModel.startQuestResult
+            .verifyErrorEquals(Fail(MessageErrorException()))
     }
 }
