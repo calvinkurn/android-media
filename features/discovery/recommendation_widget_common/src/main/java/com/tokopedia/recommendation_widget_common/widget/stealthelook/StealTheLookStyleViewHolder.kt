@@ -5,12 +5,17 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.LIST_NAME_STEAL_THE_LOOK_FORMAT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationImageReloadBinding
 import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetStealTheLookPageBinding
@@ -34,6 +39,7 @@ class StealTheLookStyleViewHolder(
         renderTopRightGrid(model)
         renderBottomRightGrid(model)
         sendViewportImpression(model)
+        sendByteIoView(model)
     }
 
     private fun StealTheLookStyleModel.getGridAtPos(gridPosition: RecommendationItem.GridPosition): StealTheLookGridModel? {
@@ -50,7 +56,7 @@ class StealTheLookStyleViewHolder(
         val reloadLayout = binding.stlItemLeftGrid.stlReload
         renderGrid(grid, imageView, ribbonArchTopView, ribbonArchBottomView, ribbonContentView, ribbonTextView, reloadLayout)
         adjustLeftPadding()
-        imageView.setGridClickListener(grid, model.tracking)
+        imageView.setGridClickListener(grid, model.tracking, model.appLogAdditionalParam)
     }
 
     private fun renderTopRightGrid(model: StealTheLookStyleModel) {
@@ -62,7 +68,7 @@ class StealTheLookStyleViewHolder(
         val ribbonTextView = binding.stlItemTopRightGrid.stlItemRibbonText
         val reloadLayout = binding.stlItemTopRightGrid.stlReload
         renderGrid(grid, imageView, ribbonArchTopView, ribbonArchBottomView, ribbonContentView, ribbonTextView, reloadLayout)
-        imageView.setGridClickListener(grid, model.tracking)
+        imageView.setGridClickListener(grid, model.tracking, model.appLogAdditionalParam)
     }
 
     private fun renderBottomRightGrid(model: StealTheLookStyleModel) {
@@ -74,7 +80,7 @@ class StealTheLookStyleViewHolder(
         val ribbonTextView = binding.stlItemBottomRightGrid.stlItemRibbonText
         val reloadLayout = binding.stlItemBottomRightGrid.stlReload
         renderGrid(grid, imageView, ribbonArchTopView, ribbonArchBottomView, ribbonContentView, ribbonTextView, reloadLayout)
-        imageView.setGridClickListener(grid, model.tracking)
+        imageView.setGridClickListener(grid, model.tracking, model.appLogAdditionalParam)
     }
 
     private fun adjustLeftPadding() {
@@ -161,7 +167,8 @@ class StealTheLookStyleViewHolder(
 
     private fun View.setGridClickListener(
         model: StealTheLookGridModel?,
-        tracking: StealTheLookTracking?
+        tracking: StealTheLookTracking?,
+        appLogAdditionalParam: AppLogAdditionalParam,
     ) {
         if(model == null) return
         if(model.recommendationItem.appUrl.isBlank()) return
@@ -170,6 +177,7 @@ class StealTheLookStyleViewHolder(
             if(model.recommendationItem.appUrl.isNotEmpty()) {
                 sendTopAdsClickTracker(model.recommendationItem)
                 tracking?.sendEventItemClick(model)
+                sendByteIoClick(model, appLogAdditionalParam)
                 RouteManager.route(context, model.recommendationItem.appUrl)
             }
         }
@@ -205,6 +213,33 @@ class StealTheLookStyleViewHolder(
                 recommendationItem.productId.toString(),
                 recommendationItem.name,
                 recommendationItem.imageUrl
+            )
+        }
+    }
+
+    private fun sendByteIoClick(
+        model: StealTheLookGridModel,
+        appLogAdditionalParam: AppLogAdditionalParam
+    ) {
+        AppLogRecommendation.sendProductClickAppLog(
+            model.recommendationItem.asProductTrackModel(
+                entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                additionalParam = appLogAdditionalParam,
+                tabPosition = model.stylePosition,
+                tabName = LIST_NAME_STEAL_THE_LOOK_FORMAT.format(model.stylePosition)
+            )
+        )
+    }
+
+    private fun sendByteIoView(model: StealTheLookStyleModel) {
+        model.grids.forEach {
+            AppLogRecommendation.sendProductShowAppLog(
+                it.recommendationItem.asProductTrackModel(
+                    entranceForm = EntranceForm.APPEND_GOODS_CARD,
+                    additionalParam = model.appLogAdditionalParam,
+                    tabPosition = model.stylePosition,
+                    tabName = LIST_NAME_STEAL_THE_LOOK_FORMAT.format(model.stylePosition)
+                )
             )
         }
     }

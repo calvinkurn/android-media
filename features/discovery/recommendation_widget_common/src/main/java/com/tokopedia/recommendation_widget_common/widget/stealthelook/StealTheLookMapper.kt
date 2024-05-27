@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.stealthelook
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
@@ -11,19 +12,21 @@ object StealTheLookMapper {
 
     fun RecommendationWidgetModel.asStealTheLookModel(
         data: RecommendationWidget,
+        appLogAdditionalParam: AppLogAdditionalParam,
         userId: String
     ): StealTheLookWidgetModel {
         val tracking = getTracking(data, source, userId)
         return StealTheLookWidgetModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel, userId, data.appLog),
+            visitable = RecommendationVisitable.create(metadata, trackingModel, userId, data.appLog, appLogAdditionalParam),
             widget = data,
-            itemList = mapStealTheLookItem(data, tracking),
+            itemList = mapStealTheLookItem(data, tracking, appLogAdditionalParam),
         )
     }
 
     private fun mapStealTheLookItem(
         recommendationWidget: RecommendationWidget,
         tracking: StealTheLookTracking?,
+        appLogAdditionalParam: AppLogAdditionalParam,
     ): List<StealTheLookStyleModel> {
         return recommendationWidget.recommendationItemList.chunked(StealTheLookStyleModel.GRID_COUNT)
             .filter { it.size == StealTheLookStyleModel.GRID_COUNT }
@@ -32,6 +35,7 @@ object StealTheLookMapper {
                     stylePosition = index,
                     recommendationItems = recommendationItems,
                     tracking = tracking,
+                    appLogAdditionalParam = appLogAdditionalParam,
                 )
             }
     }
@@ -39,7 +43,8 @@ object StealTheLookMapper {
     private fun mapToStyleModel(
         stylePosition: Int,
         recommendationItems: List<RecommendationItem>,
-        tracking: StealTheLookTracking?
+        tracking: StealTheLookTracking?,
+        appLogAdditionalParam: AppLogAdditionalParam,
     ): StealTheLookStyleModel {
         return StealTheLookStyleModel(
             stylePosition = stylePosition,
@@ -49,7 +54,8 @@ object StealTheLookMapper {
                     it,
                 )
             },
-            tracking = tracking
+            tracking = tracking,
+            appLogAdditionalParam = appLogAdditionalParam,
         )
     }
 

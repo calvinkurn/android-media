@@ -87,6 +87,7 @@ data class RecommendationWidgetState(
         } else if (widget.pageName.contains(PAGENAME_STEAL_THE_LOOK)) {
             model.asStealTheLookModel(
                 data = widget,
+                appLogAdditionalParam = model.appLogAdditionalParam,
                 userId = userId
             )
         } else {
