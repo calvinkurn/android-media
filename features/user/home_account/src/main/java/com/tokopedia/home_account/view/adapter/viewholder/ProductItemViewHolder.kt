@@ -31,7 +31,7 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
                 }
             })
 
-        binding?.productCardView?.addOnImpression1pxListener(element) {
+        binding?.productCardView?.addOnImpression1pxListener(element.appLogImpressHolder) {
             listener.onProductRecommendation1pxImpression(element, adapterPosition)
         }
 
