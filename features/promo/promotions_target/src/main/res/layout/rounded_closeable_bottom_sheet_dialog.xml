@@ -9,18 +9,18 @@
         android:id="@+id/header_rounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/header_bottom_sheet_rounded_white"
+        android:background="@drawable/t_header_bottom_sheet_rounded_white"
         android:gravity="center"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tray_close"
             android:layout_width="@dimen/dp_28"
             android:layout_height="4dp"
-            android:background="@drawable/close_button_bottom_sheet" />
+            android:background="@drawable/t_close_button_bottom_sheet" />
 
     </RelativeLayout>
 
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_rounded"
-        android:background="@color/Unify_N0"
-        tools:background="@color/Unify_G500"
+        android:background="@color/Unify_NN0"
+        tools:background="@color/Unify_GN500"
         tools:layout_height="40dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,7 @@ import com.tokopedia.promotionstarget.R;
  * @author by nisie on 2/23/18.
  */
 
-public class CloseableBottomSheetDialog extends BottomSheetDialog {
+public class PromotionCloseableBottomSheetDialog extends BottomSheetDialog {
 
     Context context;
     private CloseClickedListener closeListener;
@@ -34,23 +34,23 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         void onBackHardwareClicked();
     }
 
-    private CloseableBottomSheetDialog(@NonNull Context context) {
+    private PromotionCloseableBottomSheetDialog(@NonNull Context context) {
         super(context);
         init(context);
     }
 
-    private CloseableBottomSheetDialog(@NonNull Context context, int theme) {
+    private PromotionCloseableBottomSheetDialog(@NonNull Context context, int theme) {
         super(context, theme);
         init(context);
     }
 
-    protected CloseableBottomSheetDialog(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
+    protected PromotionCloseableBottomSheetDialog(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         init(context);
     }
 
-    public static CloseableBottomSheetDialog createInstance(Context context) {
-        final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
+    public static PromotionCloseableBottomSheetDialog createInstance(Context context) {
+        final PromotionCloseableBottomSheetDialog closeableBottomSheetDialog = new PromotionCloseableBottomSheetDialog
                 (context, R.style.TransparentBottomSheetDialogTheme);
         closeableBottomSheetDialog.isRounded = false;
         closeableBottomSheetDialog.setListener(new CloseClickedListener() {
@@ -62,8 +62,8 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         return closeableBottomSheetDialog;
     }
 
-    public static CloseableBottomSheetDialog createInstanceRounded(Context context) {
-        final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
+    public static PromotionCloseableBottomSheetDialog createInstanceRounded(Context context) {
+        final PromotionCloseableBottomSheetDialog closeableBottomSheetDialog = new PromotionCloseableBottomSheetDialog
                 (context, R.style.TransparentBottomSheetDialogTheme);
         closeableBottomSheetDialog.isRounded = true;
         closeableBottomSheetDialog.setListener(new CloseClickedListener() {
@@ -75,20 +75,20 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         return closeableBottomSheetDialog;
     }
 
-    public static CloseableBottomSheetDialog createInstanceCloseableRounded(Context context,
+    public static PromotionCloseableBottomSheetDialog createInstanceCloseableRounded(Context context,
                                                                             CloseClickedListener closeListener) {
-        final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
+        final PromotionCloseableBottomSheetDialog closeableBottomSheetDialog = new PromotionCloseableBottomSheetDialog
                 (context, R.style.TransparentBottomSheetDialogTheme);
         closeableBottomSheetDialog.isRoundedAndCloseable = true;
         closeableBottomSheetDialog.setListener(closeListener);
         return closeableBottomSheetDialog;
     }
 
-    public static CloseableBottomSheetDialog createInstance(Context context,
+    public static PromotionCloseableBottomSheetDialog createInstance(Context context,
                                                             CloseClickedListener closeListener,
                                                             BackHardwareClickedListener backHardwareClickedListener) {
-        CloseableBottomSheetDialog closeableBottomSheetDialog =
-                new CloseableBottomSheetDialog(context){
+        PromotionCloseableBottomSheetDialog closeableBottomSheetDialog =
+                new PromotionCloseableBottomSheetDialog(context){
                     @Override
                     public void onBackPressed() {
                         super.onBackPressed();

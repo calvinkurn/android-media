@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@drawable/header_bottom_sheet_rounded_white"
+        android:background="@drawable/t_header_bottom_sheet_rounded_white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -18,10 +18,11 @@
             android:id="@+id/close_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_close_thin"
+            android:contentDescription="@string/app_name"
+            app:srcCompat="@drawable/t_ic_close_thin"
             android:padding="16dp"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_closeable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +31,7 @@
             android:fontFamily="sans-serif-medium"
             android:paddingLeft="8dp"
             android:paddingStart="8dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:textSize="@dimen/sp_18"
             android:textStyle="normal"
             tools:text="@string/app_name"/>
@@ -41,7 +42,7 @@
         android:id="@+id/view_separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N100"/>
+        android:background="@color/Unify_NN200"/>
 
     <FrameLayout
         android:id="@+id/container"

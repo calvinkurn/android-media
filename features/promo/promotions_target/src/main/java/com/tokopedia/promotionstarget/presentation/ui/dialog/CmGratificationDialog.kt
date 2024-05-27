@@ -40,7 +40,7 @@ import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
 import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
-import com.tokopedia.promotionstarget.presentation.ui.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.promotionstarget.presentation.ui.bottomsheet.PromotionCloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.CmGratificationViewModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -113,7 +113,7 @@ class CmGratificationDialog {
     }
 
     private fun prepareBottomSheet(activityContext: Context, onShowListener: DialogInterface.OnShowListener): Pair<View, BottomSheetDialog> {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
+        val bottomSheet = PromotionCloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
         val view = LayoutInflater.from(activityContext).inflate(getLayout(), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.setOnShowListener(onShowListener)

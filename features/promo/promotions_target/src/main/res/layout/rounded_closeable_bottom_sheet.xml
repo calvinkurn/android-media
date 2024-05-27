@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:background="@drawable/bg_header_rounded_closeable_bs"
+        android:background="@drawable/t_bg_header_rounded_closeable_bs"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,18 +21,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:contentDescription="@string/app_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_close_thin" />
+            app:srcCompat="@drawable/t_ic_close_thin" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_closeable_rounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:layout_toEndOf="@+id/close_button_rounded"
             android:layout_toRightOf="@+id/close_button_rounded"
             android:layout_centerVertical="true"
@@ -49,7 +50,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

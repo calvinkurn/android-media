@@ -58,7 +58,7 @@ import com.tokopedia.promotionstarget.presentation.loadImageWithNoPlaceholder
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
-import com.tokopedia.promotionstarget.presentation.ui.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.promotionstarget.presentation.ui.bottomsheet.PromotionCloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.DISMISS
 import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.EMPTY
 import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.REDIRECT
@@ -349,7 +349,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun prepareBottomSheet(activityContext: Context, couponUiType: TargetPromotionsCouponType): Pair<View, BottomSheetDialog> {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
+        val bottomSheet = PromotionCloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
         val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
