@@ -6,11 +6,16 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 internal object GetHomeRecommendationCard {
     const val NAME = "GetHomeRecommendationCardQuery"
     const val QUERY = """
-        query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!, , ${'$'}productCardVersion: String!) {
-            getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location, productCardVersion: ${'$'}productCardVersion) {
-                pageNamee
+        query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!, , ${'$'}productCardVersion: String!, ${'$'}bytedanceSessionID: String!, ${'$'}refreshType: Int!) {
+            getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location, productCardVersion: ${'$'}productCardVersion, bytedanceSessionID: ${'$'}bytedanceSessionID, refreshType: ${'$'}refreshType) {
+                pageName
                 layoutName
                 hasNextPage
+                appLog {
+                    bytedanceSessionID
+                    requestID
+                    logID
+                }
                 cards {
                   id
                   categoryID
@@ -75,6 +80,9 @@ internal object GetHomeRecommendationCard {
                      value
                     }
                   }
+                  recParam
+                  countSold
+                  parentProductID
                 }
           }
         }
