@@ -21,6 +21,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.RefreshType
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -92,7 +93,6 @@ class Utils {
         const val DEVICE_VALUE = "Android"
         const val FILTERS = "filters"
         const val REFRESH_TYPE = "refresh_type"
-        const val REFRESH_TYPE_VALUE = "-1"
         const val SESSION_ID = "current_session_id"
         const val VERSION = "version"
         const val SRE_IDENTIFIER = "l_name"
@@ -221,7 +221,8 @@ class Utils {
             componentId: String,
             pageIdentifier: String,
             queryString: String,
-            sessionId: String = String.EMPTY
+            sessionId: String = String.EMPTY,
+            refreshType: RefreshType = RefreshType.UNKNOWN
         ): MutableMap<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
@@ -229,7 +230,7 @@ class Utils {
             queryParameterMap[COMPONENT_ID] = componentId
             if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString
             queryParameterMap[SESSION_ID] = sessionId
-            queryParameterMap[REFRESH_TYPE] = REFRESH_TYPE_VALUE
+            queryParameterMap[REFRESH_TYPE] = refreshType.value.toString()
             return queryParameterMap
         }
 

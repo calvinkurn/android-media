@@ -21,4 +21,10 @@ data class DiscoveryUpdateCartDataModel(
     val cartId: String
 )
 
+data class DiscoveryAddToCartFailedModel(
+    val throwable: Throwable,
+    val position: Int,
+    val parentPosition: Int
+)
+
 

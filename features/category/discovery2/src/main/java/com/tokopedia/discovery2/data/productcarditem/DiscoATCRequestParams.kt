@@ -9,5 +9,6 @@ data class DiscoATCRequestParams(
     val quantity: Int,
     var shopId: String? = null,
     val isGeneralCartATC: Boolean,
-    val requestingComponent: ComponentsItem
+    val requestingComponent: ComponentsItem,
+    val appLogParam: String
 )

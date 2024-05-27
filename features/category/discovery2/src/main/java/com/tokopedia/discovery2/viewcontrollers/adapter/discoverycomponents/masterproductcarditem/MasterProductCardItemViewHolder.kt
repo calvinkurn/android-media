@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
@@ -17,6 +20,7 @@ import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCart
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
 import com.tokopedia.discovery2.data.DataItem
@@ -416,7 +420,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem?.let {
             if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(productCardName)
+                    it.asProductTrackModel(productCardName),
+                    ClickAreaType.PRODUCT
                 )
             }
         }
@@ -513,9 +518,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                     quantity = quantity,
                                     shopId = if (isGeneralCartATC) productItem.shopId else null,
                                     isGeneralCartATC = isGeneralCartATC,
-                                    requestingComponent = masterProductCardItemViewModel.components
+                                    requestingComponent = masterProductCardItemViewModel.components,
+                                    appLogParam = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
                                 )
                             )
+
+                            if (productItem.isEligibleToTrack()) {
+                                productItem.trackConfirmCartAppLog()
+                            }
                         }
                     }
                 }
@@ -524,6 +534,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 (fragment as DiscoveryFragment).openLoginScreen()
             }
         }
+    }
+
+    private fun DataItem.trackConfirmCartAppLog() {
+        val productTrackModel = asProductTrackModel(productCardName)
+        AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, asTrackConfirmCart())
     }
 
     companion object {

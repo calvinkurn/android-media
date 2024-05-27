@@ -1,8 +1,13 @@
 package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.RefreshType
+import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
+import com.tokopedia.discovery2.DiscoveryAppLogPageState
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMapWithWareHouse
 import com.tokopedia.discovery2.analytics.TrackingMapper.updatePaginatedPosition
@@ -25,7 +30,10 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import javax.inject.Inject
 
-class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
+class ProductCardsUseCase @Inject constructor(
+    private val productCardsRepository: ProductCardsRepository,
+    private val appLogPageState: DiscoveryAppLogPageState
+) {
     companion object {
         const val NO_PRODUCT_PER_PAGE = -1
 
@@ -38,6 +46,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_WAREHOUSE_TCO = "rpc_warehouse_tco"
         private const val PARAM_L_NAME = "l_name"
         private const val VALUE_L_NAME_SRE = "sre"
+        private const val PARAM_ENTER_FROM = "enterFrom"
+        private const val PARAM_SOURCE_PAGE_TYPE = "sourcePageType"
     }
 
     suspend fun loadFirstPageComponents(
@@ -55,7 +65,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 it.getComponentId(),
                 pageEndPoint,
                 it.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
-                it.name
+                it.name,
+                appLogPageState.getLastState()
             )
 
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
@@ -105,6 +116,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     suspend fun getProductCardsUseCase(
         componentId: String,
         pageEndPoint: String,
+        refreshType: RefreshType,
         productsLimit: Int = PRODUCT_PER_PAGE
     ): Boolean {
         val component = getComponent(componentId, pageEndPoint)
@@ -117,7 +129,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 component1.getComponentId(),
                 pageEndPoint,
                 component1.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
-                component1.name
+                component1.name,
+                refreshType
             )
 
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
@@ -175,7 +188,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 it.getComponentId(),
                 pageEndPoint,
                 it.compAdditionalInfo?.tracker?.sessionId.orEmpty(),
-                it.name
+                it.name,
+                RefreshType.LOAD_MORE
             )
 
             val (productListData, additionalInfo) = productCardsRepository.getProducts(
@@ -290,7 +304,18 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         if (ProductCardExperiment.isReimagine()) {
         queryParameterMap[PARAM_L_NAME] = VALUE_L_NAME_SRE
         }
+
+        queryParameterMap.appendAppLogFilterParams()
+
         return queryParameterMap
+    }
+
+    private fun MutableMap<String, Any>.appendAppLogFilterParams(): MutableMap<String, Any> {
+        val enterFrom = AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM).toString()
+        put(PARAM_ENTER_FROM, enterFrom)
+        put(PARAM_SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+
+        return this
     }
 
     private fun updatePaginatedData(
