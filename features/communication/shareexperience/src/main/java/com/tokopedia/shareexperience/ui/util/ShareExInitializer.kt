@@ -19,6 +19,7 @@ import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffil
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.ui.DismissListener
 import com.tokopedia.shareexperience.ui.ShareExBottomSheet
 import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
@@ -46,6 +47,7 @@ class ShareExInitializer(
     private var dialog: ShareExLoadingDialog? = null
     private var bottomSheet: ShareExBottomSheet? = null
     private var bottomSheetArg: ShareExBottomSheetArg? = null
+    var dismissListener: DismissListener? = null
 
     init {
         addObserver(context)
@@ -202,6 +204,9 @@ class ShareExInitializer(
             bottomSheet = ShareExBottomSheet.newInstance(it, result)
             bottomSheet?.setListener(this)
             bottomSheet?.show(fragmentManager, TAG)
+            bottomSheet?.setOnDismissListener {
+                dismissListener?.onDismiss()
+            }
             trackClickIconShare(result)
         }
     }
@@ -210,6 +215,7 @@ class ShareExInitializer(
         bottomSheetArg?.let {
             analytics.trackActionClickIconShare(
                 productId = it.productId,
+                shopId = it.shopId,
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = result.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
                 label = it.trackerArg.labelActionClickShareIcon
@@ -245,6 +251,7 @@ class ShareExInitializer(
     }
 
     override fun onSuccessCopyLink() {
+        dismissListener?.onSuccessCopyLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->
@@ -264,6 +271,7 @@ class ShareExInitializer(
     }
 
     override fun onFailGenerateAffiliateLink(shortLink: String) {
+        dismissListener?.onFailGenerateAffiliateLink()
         weakContext.get()?.let { context ->
             val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
             contentView?.let { view ->

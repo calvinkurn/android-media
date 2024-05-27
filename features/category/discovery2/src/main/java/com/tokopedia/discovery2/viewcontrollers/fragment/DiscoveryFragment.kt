@@ -45,6 +45,7 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -125,6 +126,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sect
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -291,6 +294,7 @@ open class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
+
     // current index of navigation tab in the page.
     private var currentTabPosition: Int? = null
     var isAffiliateInitialized = false
@@ -352,6 +356,10 @@ open class DiscoveryFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // WORKAROUND for gtm tab name
+        CURRENT_TAB_NAME = ""
+        CURRENT_TAB_INDEX = 0
+
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
@@ -747,6 +755,7 @@ open class DiscoveryFragment :
                         ComponentNames.ProductCardSingleItem.componentName,
                         ComponentNames.ProductCardSingleItemReimagine.componentName,
                         ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                        ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName,
                         ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
 
                         else -> 2
@@ -1730,8 +1739,18 @@ open class DiscoveryFragment :
         refreshPage()
     }
 
+    // workaround to store singleton value into fragment
+    // to retain the value when the fragment is paused/resumed
+    private var currentTabName = ""
+    private var currentTabIndex = 0
+
     override fun onPause() {
         super.onPause()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        currentTabName = CURRENT_TAB_NAME
+        currentTabIndex = CURRENT_TAB_INDEX
+
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
@@ -1753,7 +1772,14 @@ open class DiscoveryFragment :
 
     private fun checkTabPositionBeforeRefresh() {
         if (!isFromCategory && currentTabPosition != null) {
-            this.arguments?.putString(ACTIVE_TAB, (currentTabPosition).toString())
+            this.arguments?.putString(
+                QUERY_PARENT,
+                Utils.upsertQueryParam(
+                    this.arguments?.getString(QUERY_PARENT) ?: "",
+                    ACTIVE_TAB,
+                    (currentTabPosition).toString()
+                )
+            )
         }
     }
 
@@ -2022,6 +2048,11 @@ open class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        CURRENT_TAB_NAME = currentTabName
+        CURRENT_TAB_INDEX = currentTabIndex
+
         discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner) {
             if (!openScreenStatus) {
                 when (it) {

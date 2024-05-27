@@ -1,0 +1,204 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1593320444778",
+    "maxReplyTime": "1593320444778",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "replyIDsAttachment": "8367013659,8367013660,8367013661,8367013662",
+    "attachmentIDs": "77000001,77000002,77000003,77000004",
+    "contacts": [
+      {
+        "role": "Shop Owner",
+        "userId": 7977933,
+        "shopId": 5665147,
+        "interlocutor": true,
+        "name": "Seller Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/7977933/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "User",
+        "userId": 29240564,
+        "shopId": 5665147,
+        "interlocutor": false,
+        "name": "Buyer Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5665147/shop_xs_thumbnail/desktop",
+        "domain": "lorealparis",
+        "isOfficial": true,
+        "isGold": true,
+        "badge": "https://images.tokopedia.net/chat/tc_os_icon.png",
+        "status": {
+          "timestamp": 1607337686,
+          "timestampStr": "1607337686",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "28 Jun 2020",
+        "chats": [
+          {
+            "time": "12:00",
+            "replies": [
+              {
+                "msgId": 932022280,
+                "replyId": "8367013655",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778964000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "label": "",
+                "parentReply": null,
+                "messageType": "flash_sale_v2",
+                "attachment": {
+                  "id": 439318912,
+                  "type": 1,
+                  "attributes": "{\"url\":\"https://chat.tokopedia.com/tc/v1/redirect/\",\"image_url\":\"https://images.tokopedia.net/img/generator/WrPnaN/e8b9dd92690aeb5a4650329f679d4815.jpg\",\"url_2\":\"https://chat.tokopedia.com/tc/v1/redirect/\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/generator/WrPnaN/e8b9dd92690aeb5a4650329f679d4815.jpg\"}",
+                  "fallback": {
+                    "message": "Tokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.",
+                    "html": "\u003cdiv\u003eTokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.\u003c/div\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013660",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel\u003d\"nofollow\" target\u003d\"_blank\" href\u003d\"https://chat.tokopedia.com/tc/v1/redirect/7cf15f888b59d33f3502f4c1c6a5388dddf27c63557248559e7cf6dfc00d590e53ef880584bec69547c9845cf9ede4904ced50cd73b19553ca7556cfa32481f87998883c6e462fd97fda47d78e6c970b6ddbae3a030aa230fd00a4675d80552db8d8249417865b40aa2b44194203626423c912061be30943606790014c73e5cc81606149174c32c6b16c85b899fe78f4d131d26df17397567a3f48a5123dca865ee3fca755a8c76eb774ea2e0f69e1c28c44a5c1ed690374f9db0c690356bf7067bee8320ee86f5ba21f056d75572ac707f8dfedd84b6d1c3e651560df67432556d315441d4a7c1cbff557a5b3ba76cda2d0323198607e16c0ac325c9207afc3b3185d330f5eb905f33a9461af691ce27f94cc4f5500ab8de18cd7c6e41fd9e2ce9a7db9e0f7c978e0f24ad0d706fa3a13c143122352276ff001064f9c201733c3592b99f778b2411c131592923f54b13633b4c92195b66a0cf7635f6a4d847c61447f60457b45074bc8e2a05fb92ce0668524cf509ea496fe1af05e850bdf91ea7ec86e6f1b9c77e26b69619b2de10eda193dd6e33143a7c7f0f5ecdd5568e960a1e38a574c6a4de50e116d2d5d68b10ccd8f4326e935fbad5f43d8f75db40d61a24a33ce2f7876aa8b5ff79f1f7509301f9452c49c9ed72a6bcc3c4e3d3a2d6129365ca1c62e272bce7da99031a5082c4fc452fa66f359b9e2e79a140721b126a9b315290d9d15d6939e15a9bb815444ee06b558d97335dec3e73475ceec43bf605c8e56a0742b40925a22a42dad49fbdbfcdbf44059219f601439ccf3ea1d507c006094e69b26ed50044a4b2639e67f2b72a6fdd1ed6a5c3c8769d918d262e96a1b07a594b380768ea77f784f2123fe3943bc9e362ff4f12fc49ecb08151264ff0db0463ba0ace702156ad705e8afd43e9155ca3924e8acbb217ef765630b274288e82229348b110e243106f35c80039797c4e03868a6633946d68ee83250380051bd9e1b99f0233444a2999e7a6975e56d96af3b43efb694002d31c765d26d9c8f1ddaa10c6f6c5459ac5c5b20a65a056d94be18a74d0bd5b65406014dc742e1ae9c1cf40c26a63e7ff4750bc8681cd90ca6251385d8954113be02f74191f037806bf48a9cac81554afe23d87a21007c0921fa2bad9be08ade2d0a4c48eb10465b2bb16e1a0174695627df2f313671e71ce6\"\u003ehttps://chat.tokopedia.com/tc/v1/redirect/cef6dcf6d2e87849694b624ed91096ff86b367cbe77841bfd7dff02e965371c3eb938d5b23012f6cfa625f10c3d6a40253fe7035e1479436b143bd80e1cccc9aa1dce82f1a713f8f42d6691a35048be7bad0a013993bce84d566e8bff48db3b5a587755e04520a67ebb814135851af2e6705e41b060fa46f6bf91338f7a3ab19c29b976330ff75ca743b9e75477ad72359e925db8acc58a23405c8c843983a2d9499623fdea3d7533b0dd2c76eda88276a859a42cfe6cf7cc03f001518d063c6614f6bf9c2ff73d38a431730c8265b91db053bd91ba3caf589bd25acc7fc8463a60beac3\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778967000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 77000002,
+                  "type": 3,
+                  "attributes": "{\"product_id\":215100002,\"product_profile\":{\"name\":\"Product 2\",\"price\":\"Rp 494.000\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/product-1/2020/4/21/29240564/29240564_15a0bab2-b3c8-4e31-9b60-409bd9cae920_1300_1300\",\"url\":\"https://chat.tokopedia.com/tc/v1/redirect/cef6dcf6d2e87849694b624ed91096ff86b367cbe77841bfd7dff02e965371c3eb938d5b23012f6cfa625f10c3d6a40253fe7035e1479436b143bd80e1cccc9aa1dce82f1a713f8f42d6691a35048be7bad0a013993bce84d566e8bff48db3b5a587755e04520a67ebb814135851af2e6705e41b060fa46f6bf91338f7a3ab19c29b976330ff75ca743b9e75477ad72359e925db8acc58a23405c8c843983a2d9499623fdea3d7533b0dd2c76eda88276a859a42cfe6cf7cc03f001518d063c6614f6bf9c2ff73d38a431730c8265b91db053bd91ba3caf589bd25acc7fc8463a60beac3\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":5665147,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold-crystal-essence-65ml-free-scarf"
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013662",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "Test Promo Broadcast. \uD83D\uDCE2 PROMO spesial buat {{.Name}}, hanya di toko kami. Yuk, belanja pakai promo ini sebelum periodenya berakhir!",
+                "fraudStatus": 0,
+                "replyTime": "1593320444778969000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "label": "",
+                "parentReply": null,
+                "messageType": "flash_sale_v2",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013662",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "\"\"\n",
+                "fraudStatus": 0,
+                "replyTime": "1713939134797987000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "label": "",
+                "parentReply": null,
+                "messageType": "flash_sale_v2",
+                "attachment": {
+                  "id": 772376,
+                  "type": 11,
+                  "attributes": "{\"voucher\":{\"voucher_id\":173716,\"voucher_code\":\"COMM6BSTXQ\",\"voucher_name\":\"Kupon Cashback\",\"minimum_spend\":250000,\"valid_thru\":1716440400,\"valid_thru_str\":\"2024-05-23 12:00:00 +0700 WIB\",\"desktop_url\":\"https://images.tokopedia.net/img/generator/ZmygOT/1d2a856da4e7790eee2cd03c5812e928.jpg\",\"mobile_url\":\"https://images.tokopedia.net/img/generator/ZmygOT/1d2a856da4e7790eee2cd03c5812e928.jpg\",\"amount\":50000,\"amount_type\":1,\"identifier\":\"cashback\",\"voucher_type\":3,\"merchant_voucher_id\":149757,\"status\":2,\"is_quota_available\":0,\"is_public\":1,\"is_lock_to_product\":0,\"applink\":\"\",\"weblink\":\"\",\"voucher_amount_string\":\"Rp50 rb\",\"voucher_type_color\":\"#0094CF\",\"voucher_type_color_dark\":\"#57A3E5\",\"voucher_type_string\":\"Cashback\",\"voucher_minimum_string\":\"Min. belanja Rp250 rb\",\"voucher_icon_url\":\"https://images.tokopedia.net/img/topchat/broadcast/bc_voucher_icon_cashback.png\",\"voucher_background_url\":\"https://images.tokopedia.net/img/topchat/broadcast/bc_voucher_supergraphic_blue.png\",\"voucher_header\":\"Makin hemat pakai kupon ini\",\"voucher_description\":\"Kupon bisa dipilih lewat keranjang, tanpa perlu salin kode.\"}}\n",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              },
+              {
+                "msgId": 932022280,
+                "replyId": "8367013662",
+                "senderId": 29240564,
+                "senderName": "Nisaa",
+                "role": "Shop Owner",
+                "msg": "\"\"\n",
+                "fraudStatus": 0,
+                "replyTime": "1713939134797987000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 151610,
+                "source": "blast_seller",
+                "label": "",
+                "parentReply": null,
+                "messageType": "flash_sale_v2",
+                "attachment": {
+                  "id": 772377,
+                  "type": 11,
+                  "attributes": "{\"voucher\":{\"voucher_id\":173717,\"voucher_code\":\"ASKBC1TQ23\",\"voucher_name\":\"Kupon Bebas Ongkir\",\"minimum_spend\":50000,\"valid_thru\":1716440400,\"valid_thru_str\":\"2024-05-23 12:00:00 +0700 WIB\",\"desktop_url\":\"https://images.tokopedia.net/img/generator/ZmygOT/1d2a856da4e7790eee2cd03c5812e928.jpg\",\"mobile_url\":\"https://images.tokopedia.net/img/generator/ZmygOT/1d2a856da4e7790eee2cd03c5812e928.jpg\",\"amount\":50000,\"amount_type\":1,\"identifier\":\"cashback\",\"voucher_type\":3,\"merchant_voucher_id\":149757,\"status\":2,\"is_quota_available\":0,\"is_public\":1,\"is_lock_to_product\":0,\"applink\":\"\",\"weblink\":\"\",\"voucher_amount_string\":\"Rp20 rb\",\"voucher_type_color\":\"#00AA5B\",\"voucher_type_color_dark\":\"#00A958\",\"voucher_type_string\":\"Bebas Ongkir\",\"voucher_minimum_string\":\"Min. belanja Rp50 rb\",\"voucher_icon_url\":\"https://images.tokopedia.net/img/topchat/broadcast/bc_voucher_icon_free_shipping.png\",\"voucher_background_url\":\"https://images.tokopedia.net/img/topchat/broadcast/bc_voucher_supergraphic_green.png\",\"voucher_header\":\"Makin hemat pakai kupon ini\",\"voucher_description\":\"Kupon bisa dipilih lewat keranjang, tanpa perlu salin kode.\"}}\n",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -9,12 +9,12 @@ import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.cardview.widget.CardView
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography

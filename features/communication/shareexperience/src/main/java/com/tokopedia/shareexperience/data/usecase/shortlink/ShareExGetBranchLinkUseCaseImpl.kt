@@ -10,15 +10,15 @@ import com.tokopedia.shareexperience.domain.util.ShareExConstants.ShortLinkValue
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.util.LinkProperties
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -55,24 +55,41 @@ class ShareExGetBranchLinkUseCaseImpl @Inject constructor(
     private suspend fun generateShortLink(
         scope: ProducerScope<ShareExResult<String>>,
         branchUniversalObject: BranchUniversalObject,
-        linkProperties: LinkProperties,
+        linkProperties: LinkProperties
     ) {
         try {
-            withTimeout(getTimeoutLimit()) {
-                branchUniversalObject.generateShortUrl(
-                    context,
-                    linkProperties,
-                    branchRepository.getBranchListener(scope)
-                )
-            }
-        } catch (e: TimeoutCancellationException) {
+            branchUniversalObject.generateShortUrl(
+                context,
+                linkProperties,
+                branchRepository.getBranchListener(scope)
+            )
+            forceTimeout(scope)
+        } catch (e: Throwable) {
             Timber.d(e)
             scope.send(ShareExResult.Error(e))
             scope.close()
         }
     }
 
+    private suspend fun forceTimeout(
+        scope: ProducerScope<ShareExResult<String>>
+    ) {
+        var duration = getTimeoutLimit()
+        while (scope.isActive) {
+            delay(ONE_SECOND)
+            duration -= ONE_SECOND
+            if (duration < 0) {
+                throw Throwable(ERROR_TIMEOUT)
+            }
+        }
+    }
+
     private fun getTimeoutLimit(): Long {
         return TIMEOUT_LIMIT
+    }
+
+    companion object {
+        private const val ONE_SECOND = 1000L
+        private const val ERROR_TIMEOUT = "Timeout link generation after time interval"
     }
 }

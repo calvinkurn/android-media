@@ -27,6 +27,8 @@ import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -71,7 +73,9 @@ class PlayBroadcastTestModule(
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase,
     private val mockValueWrapper: PlayBroadcastValueWrapper,
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase,
+    private val  mockGetInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
     private val mockGetSellerLeaderboardUseCase: GetSellerLeaderboardUseCase,
+    private val mockGetRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
     private val mockBroadcasterErrorLogger: BroadcasterErrorLogger,
 ) {
 
@@ -117,7 +121,15 @@ class PlayBroadcastTestModule(
 
     @ActivityRetainedScope
     @Provides
+    fun provideGetInteractiveSummaryLivestreamUseCase(): GetInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
+
+    @ActivityRetainedScope
+    @Provides
     fun provideGetSellerLeaderboardUseCase(): GetSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideGetRecommendedChannelTagsUseCase(): GetRecommendedChannelTagsUseCase = mockGetRecommendedChannelTagsUseCase
 
     @ActivityRetainedScope
     @Provides

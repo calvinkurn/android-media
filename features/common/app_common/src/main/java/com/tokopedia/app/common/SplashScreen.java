@@ -231,6 +231,12 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
         return "";
     }
 
+    @NonNull
+    @Override
+    public String getEnterFrom() {
+        return getPageName();
+    }
+
     @Override
     public boolean isEnterFromWhitelisted() {
         return false;

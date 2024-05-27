@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object GetQuestList: GqlQueryInterface {
+internal object GetQuestList : GqlQueryInterface {
 
     const val CHANNEL_SLUG = "channelSlug"
 
@@ -14,8 +14,8 @@ internal object GetQuestList: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-        query $OPERATION_NAME(${'$'}${CHANNEL_SLUG}: String){
-          $OPERATION_NAME(input: {limit: 0, nextQuestID: 0, channel: 0, channelSlug: ${'$'}${CHANNEL_SLUG}}) {
+        query $OPERATION_NAME(${'$'}$CHANNEL_SLUG: String){
+          $OPERATION_NAME(input: {limit: 0, nextQuestID: 0, channel: 0, channelSlug: ${'$'}$CHANNEL_SLUG}) {
             questList {
               id
               title
@@ -33,6 +33,7 @@ internal object GetQuestList: GqlQueryInterface {
                   target
                 }
               }
+              sequenceQuestIDs
             }
             resultStatus {
               code

@@ -48,6 +48,8 @@ object ShopPageConstant {
     const val HACHIKO_VOUCHER_GRAPHQL_API_VERSION = "2.0.0"
     const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "terjual"
     const val FORMAT_CONVERT_PERCENTAGE_TO_HEX = "%02X"
+    const val SHARED_PREF_NAME = "SHARED_PREF_SHOP_PAGE_MOCK_WIDGET"
+    const val SHARED_PREF_MOCK_LOTTIE_URL_DATA = "SHARED_PREF_MOCK_LOTTIE_URL_DATA"
     object ShopLayoutFeatures {
         const val DIRECT_PURCHASE = "direct_purchase"
     }

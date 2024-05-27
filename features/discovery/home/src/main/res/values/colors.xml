@@ -8,4 +8,7 @@
     <color name="home_dms_header_background_top">#1BB56D</color>
     <color name="home_dms_header_background_bottom">#089855</color>
     <color name="home_dms_color_transparent">#00000000</color>
+
+    <color name="home_dms_login_widget_background">#EBEDF2</color>
+    <color name="home_dms_balance_shimmering">#E4EBF5</color>
 </resources>

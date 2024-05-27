@@ -145,6 +145,7 @@ class ShareExBottomSheet :
             viewModel.bottomSheetArg = arg
             analytics.trackImpressionBottomSheet(
                 productId = it.productId,
+                shopId = it.shopId,
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
                 label = arg.trackerArg.labelImpressionBottomSheet
@@ -152,6 +153,7 @@ class ShareExBottomSheet :
             setCloseClickListener { _ ->
                 analytics.trackActionClickClose(
                     productId = it.productId,
+                    shopId = it.shopId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     label = it.trackerArg.labelActionCloseIcon
@@ -238,15 +240,15 @@ class ShareExBottomSheet :
                 ShareExLogger.logExceptionToServerLogger(
                     it.error,
                     userSession.deviceId,
-                    it.errorHistory.joinToString { enum-> enum.name }
+                    it.errorHistory.joinToString { enum -> enum.name }
                 )
             }
 
             if (it.errorHistory.contains(ShareExIntentErrorEnum.AFFILIATE_ERROR) &&
                 it.shortLink.isNotBlank()
             ) {
-                dismiss()
                 listener?.onFailGenerateAffiliateLink(it.shortLink)
+                dismiss()
                 return@collect
             }
 
@@ -264,7 +266,7 @@ class ShareExBottomSheet :
                     ShareExChannelEnum.OTHERS -> it.intent?.let { intent -> openIntentChooser(intent) }
                     else -> {
                         it.intent?.let { intent ->
-                            when(intent.type) {
+                            when (intent.type) {
                                 // Mime Type intent need additional steps
                                 ShareExMimeTypeEnum.IMAGE.textType -> {
                                     handleImageIntent(it)
@@ -289,6 +291,7 @@ class ShareExBottomSheet :
             if (channelEnum != null) {
                 analytics.trackActionClickChannel(
                     productId = it.productId,
+                    shopId = it.shopId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     channel = channelEnum.label,
@@ -361,8 +364,8 @@ class ShareExBottomSheet :
     private fun handleCopyLinkIntent(intentUiState: ShareExChannelIntentUiState) {
         val isSuccessCopy = context?.copyTextToClipboard(intentUiState.shortLink)
         if (isSuccessCopy == true) {
-            dismiss()
             listener?.onSuccessCopyLink()
+            dismiss()
         }
     }
 
@@ -384,7 +387,7 @@ class ShareExBottomSheet :
 
     private fun openIntentChooser(intent: Intent) {
         val intentChooser = Intent.createChooser(intent, DEFAULT_TITLE)
-         navigateWithIntent(intentChooser)
+        navigateWithIntent(intentChooser)
         dismiss()
     }
 

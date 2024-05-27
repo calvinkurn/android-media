@@ -13,7 +13,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.orFalse
 
-class CircularSliderBannerViewModel(application: Application, val components: ComponentsItem,private val position: Int) : DiscoveryBaseViewModel() {
+class CircularSliderBannerViewModel(application: Application, components: ComponentsItem,private val position: Int) : DiscoveryBaseViewModel(components) {
     private val title: MutableLiveData<String> = MutableLiveData()
     init {
         title.value = components.title

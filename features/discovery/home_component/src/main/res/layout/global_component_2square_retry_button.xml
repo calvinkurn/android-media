@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btn_retry"
+    android:background="@color/Unify_Static_Black"
+    android:alpha="0.7"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_centerInParent="true"
+    android:animateLayoutChanges="true"
+    tools:visibility="visible">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="RELOAD"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_global_component_retry_button"
+        android:layout_marginTop="4dp"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_Static_White" />
+
+</LinearLayout>

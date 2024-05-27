@@ -67,7 +67,6 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -284,7 +283,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
                 imgShopBadge.loadImage(uiState.info.shopBadgeUrl)
             }
 
-            tpgShopName.text = uiState.info.shopName
+            tpgShopName.text = MethodChecker.fromHtml(uiState.info.shopName)
             tpgLicensedPharmacy.isVisible = hasPharmacyLicenseBadge
 
             val shopDynamicUsp = uiState.info.shopUsp.joinToString(separator = " • ") { it }

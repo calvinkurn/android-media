@@ -70,6 +70,8 @@ class BeautificationRobot {
         mockValueWrapper = mockValueWrapper,
         mockGetLiveStatisticsUseCase = mockk(relaxed = true),
         mockGetSellerLeaderboardUseCase = mockk(relaxed = true),
+        mockGetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true),
+        mockGetRecommendedChannelTagsUseCase = mockk(relaxed = true),
         mockBroadcasterErrorLogger = mockk(relaxed = true),
     )
 

@@ -2,6 +2,7 @@ package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.data.mock.mockContentTaggedProductUiModel
@@ -61,13 +62,19 @@ class StoriesUnitTest {
         source = "shop-entrypoint",
         sourceId = "1234"
     )
+    private val argsWidget = StoriesArgsModel(
+        authorId = "123",
+        authorType = "shop",
+        source = "browse_widget",
+        sourceId = "1234"
+    )
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
     private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
-    private fun getStoriesRobot() = StoriesViewModelRobot(
+    private fun getStoriesRobot(isWidget: Boolean = false) = StoriesViewModelRobot(
         dispatchers = testDispatcher,
-        args = args,
+        args = if (isWidget) argsWidget else args,
         repository = mockRepository,
         userSession = mockUserSession,
         sharedPref = mockSharedPref
@@ -179,7 +186,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 3`() {
-        val selectedGroup = 3
+        val selectedGroup = 5
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
@@ -427,6 +434,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -448,6 +457,7 @@ class StoriesUnitTest {
                 actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -466,6 +476,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -477,7 +489,6 @@ class StoriesUnitTest {
 
         coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
-
         getStoriesRobot().use { robot ->
             robot.setTrackActivity(selectedGroup)
 
@@ -586,7 +597,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when stories open and user tap next detail to close room`() {
-        val selectedGroup = 2
+        val selectedGroup = 4
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
@@ -715,6 +726,22 @@ class StoriesUnitTest {
 
             val actualEvent = robot.getViewModel().mDetail.event
             actualEvent.assertEqualTo(StoriesDetailItemUiEvent.PAUSE)
+        }
+    }
+
+    @Test
+    fun `when user back to stories and video should resume to play`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.forceResumeStories(selectedGroup)
+
+            val actualEvent = robot.getViewModel().mDetail.event
+            actualEvent.assertEqualTo(StoriesDetailItemUiEvent.RESUME)
         }
     }
 
@@ -1396,6 +1423,39 @@ class StoriesUnitTest {
             robot.hasSeenTimestampCoachMark()
 
             coVerify(exactly = 1) { mockRepository.setHasSeenManualStoriesDurationCoachmark() }
+        }
+    }
+
+    @Test
+    fun `when user trigger variant sheet, events should contains UiEvent ShowVariantSheet`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            val events = robot.recordEvent {
+                robot.entryPointTestCase(selectedGroup)
+                robot.testShowVariantSheet(product)
+            }
+
+            events.last().assertType<StoriesUiEvent.ShowVariantSheet> {}
+        }
+    }
+
+    @Test
+    fun `when stories source request coming from browse widget, group show cannot be shown`() {
+        coEvery { mockRepository.getStoriesDetailData(any(), any(), any(), any(), any(), any(), any()) } returns StoriesDetail()
+        coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns StoriesUiModel()
+
+        getStoriesRobot(true).use { robot ->
+            val state = robot.recordState {
+                mainDataTestCase(0)
+            }
+
+            state.canShowGroup.assertFalse()
         }
     }
 }

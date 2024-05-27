@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationPlaceholderBi
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.addImpressionListener
 
 /**
@@ -24,6 +25,7 @@ internal class InspirationCardViewHolder private constructor() {
         fun bind(item: FeedBrowseItemListModel.InspirationCard.Item) {
             binding.tvTitle.text = item.item.title
             binding.totalView.setTotalWatch(item.item.totalView.totalViewFmt)
+            binding.viewLive.showWithCondition(item.item.channelType == PlayWidgetChannelType.Live)
 
             binding.imgCover.loadImage(item.item.video.coverUrl) {
                 centerCrop()

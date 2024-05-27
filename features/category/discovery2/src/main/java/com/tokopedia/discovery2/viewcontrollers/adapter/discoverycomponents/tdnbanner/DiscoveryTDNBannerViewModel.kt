@@ -8,9 +8,9 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class DiscoveryTDNBannerViewModel(
     application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
 
     private val componentMutableLiveData : MutableLiveData<ComponentsItem> = MutableLiveData<ComponentsItem>()
     val componentLiveData:LiveData<ComponentsItem> = componentMutableLiveData

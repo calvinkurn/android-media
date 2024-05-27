@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase.Companion.isVisit
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -219,11 +221,11 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
             is StoriesUiAction.OpenBottomSheet -> handleOpenBottomSheet(action.type)
             is StoriesUiAction.SelectReportReason -> handleSelectReportReason(action.reason)
+            is StoriesUiAction.ResumeStories -> handleOnResumeStories(action.forceResume)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
-            StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
             StoriesUiAction.TapSharing -> handleSharing()
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
@@ -356,9 +358,17 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = PAUSE, isSameContent = true)
     }
 
-    private fun handleOnResumeStories() {
+    private fun handleOnResumeStories(forceResume: Boolean) {
+        val event = if (forceResume) {
+            RESUME
+        } else if (mDetail.isContentLoaded && mIsPageSelected) {
+            RESUME
+        } else {
+            PAUSE
+        }
+
         updateDetailData(
-            event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE,
+            event = event,
             isSameContent = true
         )
     }
@@ -593,6 +603,10 @@ class StoriesViewModel @AssistedInject constructor(
                     mGroup.groupName
                 )
             _productsState.value = productList
+            trackVisitContent(
+                ids = productList.products.map(ContentTaggedProductUiModel::id),
+                event = BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges
+            )
         }) { exception ->
             _productsState.update { product -> product.copy(resultState = ResultState.Fail(exception)) }
         }
@@ -766,9 +780,20 @@ class StoriesViewModel @AssistedInject constructor(
             mLatestTrackPosition = mDetailPos
             val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker
             requestSetStoriesTrackActivity(trackerId)
+            trackVisitContent(event = BroadcasterReportTrackViewerUseCase.Companion.Event.Visit)
         }) { exception ->
             _storiesEvent.emit(StoriesUiEvent.ErrorSetTracking(exception))
         }
+    }
+
+    private val trackedProductIds = mutableListOf<String>()
+    private fun trackVisitContent(ids: List<String> = emptyList(), event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
+        val hasChanged = ids.filterNot { trackedProductIds.contains(it) }.isNotEmpty()
+        if (hasChanged || event.isVisit) {
+            trackedProductIds.clear()
+            ids.map { trackedProductIds.add(it) }
+        } else { return }
+        viewModelScope.launchCatchError(block = { repository.trackContent(storyId, ids, event)}) {}
     }
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {

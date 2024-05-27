@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
+import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
@@ -19,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PRODUCT_PER_PAGE = 10
 
-class CategoryBestSellerViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class CategoryBestSellerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
@@ -91,13 +93,20 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         dataItem,
                         components.name,
-                        components.properties?.cardType
+                        components.properties.isReimagineProductCardInBackground()
                     )
                 )
             }
         }
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-        maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
+        val maxHeightForGridView = productCardModelArray.getMaxHeightForGridView(
+            context = application.applicationContext,
+            coroutineDispatcher = Dispatchers.Default,
+            productImageWidth = productImageWidth,
+            isReimagine = !components.properties.isOldProductCardType(),
+            useCompatPadding = true
+        )
+        maxHeightProductCard.postValue(maxHeightForGridView)
     }
 
     private fun getProductList(): ArrayList<ComponentsItem>? {
