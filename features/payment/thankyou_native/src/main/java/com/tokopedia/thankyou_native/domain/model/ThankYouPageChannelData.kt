@@ -184,6 +184,10 @@ data class DynamicHomeChannel(
         @Expose
         @SerializedName("price")
         val price: String = "0",
+        @SerializedName("logExtra")
+        val logExtra: String = "",
+        @SerializedName("creativeID")
+        val creativeID: String = "",
         @Expose
         @SerializedName("imageUrl")
         val imageUrl: String = "",

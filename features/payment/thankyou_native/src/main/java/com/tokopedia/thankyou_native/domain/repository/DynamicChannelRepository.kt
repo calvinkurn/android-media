@@ -128,6 +128,8 @@ internal object QueryDynamicChannelV2 {
         "        price\n" +
         "        label\n" +
         "        stock\n" +
+        "        creativeID\n" +
+        "        logExtra\n" +
         "        param\n" +
         "        rating\n" +
         "        badges {\n" +
