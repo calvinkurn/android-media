@@ -2184,7 +2184,8 @@ open class HomeRevampFragment :
     private fun navigateToSRP(keyword: String) {
         val params = mapOf(
             SearchApiConst.Q to keyword,
-            SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_PRODUCT
+            SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_PRODUCT,
+            SearchApiConst.ENTER_METHOD to AppLogSearch.ParamKey.DEFAULT_SEARCH_KEYWORD_OUTER
         )
         val srpAppLink = UriUtil.buildUriAppendParam(ApplinkConstInternalDiscovery.SEARCH_RESULT, params)
         RouteManager.route(context, srpAppLink)
