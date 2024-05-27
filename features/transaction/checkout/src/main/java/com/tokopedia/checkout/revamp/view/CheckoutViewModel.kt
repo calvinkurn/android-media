@@ -2098,6 +2098,7 @@ class CheckoutViewModel @Inject constructor(
     // endregion
 
     fun checkout(
+        isPopupConfirmed: Boolean? = false,
         fingerprintPublicKey: String?,
         triggerEpharmacyTracker: (Boolean) -> Unit,
         onSuccessCheckout: (CheckoutResult) -> Unit
@@ -2353,7 +2354,8 @@ class CheckoutViewModel @Inject constructor(
                             validateUsePromoRevampUiModel,
                             fingerprintPublicKey,
                             onSuccessCheckout,
-                            true
+                            true,
+                            isPopupConfirmed
                         )
                     } else {
                         commonToaster.emit(
@@ -2370,7 +2372,8 @@ class CheckoutViewModel @Inject constructor(
                         validateUsePromoRevampUiModel,
                         fingerprintPublicKey,
                         onSuccessCheckout,
-                        false
+                        false,
+                        isPopupConfirmed
                     )
                 }
             } else {
@@ -2390,7 +2393,8 @@ class CheckoutViewModel @Inject constructor(
         validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
         fingerprintPublicKey: String?,
         onSuccessCheckout: (CheckoutResult) -> Unit,
-        hasClearPromoBeforeCheckout: Boolean
+        hasClearPromoBeforeCheckout: Boolean,
+        isPopupConfirmed: Boolean? = false
     ) {
         cartProcessor.processSaveShipmentState(listData.value, recipientAddressModel)
         if (isPaymentEnable()) {
@@ -2423,7 +2427,8 @@ class CheckoutViewModel @Inject constructor(
             checkoutLeasingId,
             fingerprintPublicKey,
             hasClearPromoBeforeCheckout,
-            cartType
+            cartType,
+            isPopupConfirmed
         )
         if (checkoutResult.success) {
             sendEEStep4(

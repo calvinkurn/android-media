@@ -62,7 +62,8 @@ class CheckoutProcessor @Inject constructor(
         checkoutLeasingId: String,
         fingerprintPublicKey: String?,
         hasClearPromoBeforeCheckout: Boolean,
-        cartType: String
+        cartType: String,
+        isPopupConfirmed: Boolean? = false
     ): CheckoutResult {
         val checkoutRequest = generateCheckoutRequest(
             listData,
@@ -96,7 +97,8 @@ class CheckoutProcessor @Inject constructor(
                 "",
                 fingerprintPublicKey,
                 paymentParam,
-                cartType
+                cartType,
+                isPopupConfirmed
             )
             try {
                 val checkoutData = withContext(dispatchers.io) {
@@ -363,7 +365,8 @@ class CheckoutProcessor @Inject constructor(
         dynamicData: String,
         fingerprintPublicKey: String?,
         payment: Payment,
-        cartType: String
+        cartType: String,
+        isPopupConfirmed: Boolean? = false
     ): CheckoutRequest {
         val atcBuyType = when {
             isOneClickShipment -> AtcBuyType.OCS
@@ -386,7 +389,11 @@ class CheckoutProcessor @Inject constructor(
             fingerprintPublickey = fingerprintPublicKey ?: "",
             payment = payment,
             tracker = AppLogAnalytics.getEntranceInfoForCheckout(atcBuyType, carts.cartIds),
-            consent = if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) 1 else 0
+            consent = if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+                if (isPopupConfirmed == true) 2 else 1
+            } else {
+                0
+            }
         )
     }
 

@@ -2316,6 +2316,10 @@ class CheckoutFragment :
     }
 
     override fun onProcessToPayment() {
+        processingToPayment()
+    }
+
+    private fun processingToPayment(isPopupConfirmed: Boolean = false) {
         if (!viewModel.isLoading()) {
             var publicKey: String? = null
             if (CheckoutFingerprintUtil.getEnableFingerprintPayment(activity)) {
@@ -2326,7 +2330,7 @@ class CheckoutFragment :
                     publicKey = FingerprintUtil.getPublicKey(fpk)
                 }
             }
-            viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {
+            viewModel.checkout(isPopupConfirmed, publicKey, { onTriggerEpharmacyTracker(it) }) {
                 onSuccessCheckout(it)
             }
             sendProcessToPaymentAnalytic()
@@ -2357,7 +2361,7 @@ class CheckoutFragment :
                 setOverlayClose(false)
 
                 setPrimaryCTAClickListener {
-                    continueToPaymentPage(checkoutResult)
+                    processingToPayment(true)
                 }
                 setSecondaryCTAClickListener {
                     dismiss()
