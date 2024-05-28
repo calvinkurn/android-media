@@ -629,7 +629,32 @@ data class CtaDataThanksPage(
     val primary: CtaDetails = CtaDetails(),
     @SerializedName("secondary")
     val secondary: CtaDetails = CtaDetails(),
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readParcelable<CtaDetails>(CtaDetails::class.java.classLoader) ?: CtaDetails(),
+        parcel.readParcelable<CtaDetails>(CtaDetails::class.java.classLoader) ?: CtaDetails(),
+    )
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    override fun writeToParcel(parcel: Parcel, p1: Int) {
+        parcel.writeParcelable(primary, p1)
+        parcel.writeParcelable(secondary, p1)
+    }
+
+    companion object CREATOR : Parcelable.Creator<CtaDataThanksPage> {
+        override fun createFromParcel(parcel: Parcel): CtaDataThanksPage {
+            return CtaDataThanksPage(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CtaDataThanksPage?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 
 data class CtaDetails(
     @SerializedName("type")
@@ -642,4 +667,36 @@ data class CtaDetails(
     val applink: String = "",
     @SerializedName("hide_button")
     val hideButton: Boolean = true,
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty(),
+        parcel.readByte() != 0.toByte()
+    ) {
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    override fun writeToParcel(parcel: Parcel, p1: Int) {
+        parcel.writeString(type)
+        parcel.writeString(text)
+        parcel.writeString(url)
+        parcel.writeString(applink)
+        parcel.writeByte(if (hideButton) 1 else 0)
+    }
+
+    companion object CREATOR : Parcelable.Creator<CtaDetails> {
+        override fun createFromParcel(parcel: Parcel): CtaDetails {
+            return CtaDetails(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CtaDetails?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}

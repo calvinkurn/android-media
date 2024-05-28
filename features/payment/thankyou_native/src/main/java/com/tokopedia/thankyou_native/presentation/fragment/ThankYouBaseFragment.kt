@@ -223,18 +223,13 @@ open class ThankYouBaseFragment :
             getBottomContentRecyclerView()?.adapter = bottomContentAdapter
             if (isV2Enabled) {
                 getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
+            } else {
+                bindThanksPageDataToUI(thanksPageData)
             }
 
             startAnimate()
             observeViewModel()
             addHeader()
-
-            Handler().postDelayed({
-
-
-//                showOnBoardingShare()
-            }, 5000)
-
             getFeatureRecommendationData()
             addRecommendation(getRecommendationContainer())
             getTopTickerData()
