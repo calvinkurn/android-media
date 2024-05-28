@@ -1713,6 +1713,9 @@ class ProductListFragment :
         AppLogAnalytics.removePageData(ECOM_FILTER_TYPE)
     }
 
+    /**
+     * Enter method that should have new_sug_session id sent in ByteIo Tracker
+     */
     private fun enterMethodShouldHaveSug(enterMethod: String)
         = AppLogSearch.sugEnterMethod.contains(enterMethod)
 

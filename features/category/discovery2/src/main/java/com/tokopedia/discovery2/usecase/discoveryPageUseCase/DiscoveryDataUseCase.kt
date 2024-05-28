@@ -20,24 +20,27 @@ import javax.inject.Inject
 
 class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository,@ApplicationContext private val  context: Context) {
 
-    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String,
-                                            queryParameterMap: MutableMap<String, String?>,
-                                            queryParameterMapWithRpc: MutableMap<String, String>,
-                                            queryParameterMapWithoutRpc: MutableMap<String, String>,
-                                            userAddressData: LocalCacheModel?): DiscoveryPageData {
+    suspend fun getDiscoveryPageDataUseCase(
+        pageIdentifier: String,
+        queryParameterMap: MutableMap<String, String?>,
+        queryParameterMapWithRpc: MutableMap<String, String>,
+        queryParameterMapWithoutRpc: MutableMap<String, String>,
+        userAddressData: LocalCacheModel?,
+        additionalQueryParamsString: String,
+    ): DiscoveryPageData {
         var userAddressDataCopy = userAddressData
-        val paramMap :MutableMap<String,Any> = mutableMapOf()
-        val localCacheModel = userAddressData?:ChooseAddressUtils.getLocalizingAddressData(context)
-        localCacheModel?.let {
-            paramMap[USER_ADDRESS_KEY] = it
-        }
+        val paramMap = mutableMapOf<String, Any>()
+        val localCacheModel = userAddressData ?: ChooseAddressUtils.getLocalizingAddressData(context)
+
+        paramMap[USER_ADDRESS_KEY] = localCacheModel
         paramMap[QUERY_PARAMS_KEY] = Utils.addQueryParamMap(queryParameterMap)
+
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
 
         return mapDiscoveryResponseToPageData(
             discoveryPageData[pageIdentifier]?.let {
                 it
-            } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier, paramMap).apply {
+            } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier, paramMap, additionalQueryParamsString).apply {
                 discoveryPageData[pageIdentifier] = this
                 this.queryParamMap = queryParameterMap
                 this.queryParamMapWithRpc = queryParameterMapWithRpc

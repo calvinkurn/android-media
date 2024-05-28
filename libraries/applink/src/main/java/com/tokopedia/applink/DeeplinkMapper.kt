@@ -25,6 +25,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.model.DLPLogic
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getRegisteredNavigationPromoFromHttp
@@ -192,6 +193,9 @@ object DeeplinkMapper {
         ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
+
+        val appLinkHomeNav = DeeplinkMapperMainNavigation.getNavFromHttp(uri)
+        if (appLinkHomeNav.isNotBlank()) return appLinkHomeNav
 
         val appLinkContent = DeeplinkMapperContent.getNavContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
