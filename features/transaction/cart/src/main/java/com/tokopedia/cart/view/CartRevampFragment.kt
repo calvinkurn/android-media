@@ -2788,7 +2788,8 @@ class CartRevampFragment :
     }
 
     private fun loadRecommendation() {
-        viewModel.processGetRecommendationData()
+        val pageName = if (FLAG_IS_CART_EMPTY) CartViewModel.PAGE_NAME_RECOMMENDATION_EMPTY else CartViewModel.PAGE_NAME_RECOMMENDATION
+        viewModel.processGetRecommendationData(pageName)
     }
 
     private fun navigateToPromoRecommendation() {
