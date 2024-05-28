@@ -498,13 +498,6 @@ class HomeGlobalRecommendationFragment :
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(model.asCardTrackModel())
         AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${model.pageName}_${position + 1}"))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageUiModel,
-                tabIndex,
-                position
-            )
-        )
 
         HomeRecommendationTracking.sendClickBannerTopAdsTracking(
             model,
@@ -522,16 +515,7 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
-        sendCardShowAppLog(
-            model.asCardTrackModel()
-        )
-        trackingQueue.putEETracking(
-            HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageUiModel,
-                tabIndex,
-                position
-            ) as HashMap<String, Any>
-        )
+        sendCardShowAppLog(model.asCardTrackModel())
 
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressBannerTopAdsTracking(
