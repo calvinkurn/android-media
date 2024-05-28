@@ -37,8 +37,6 @@ object RollenceKey {
     const val ICON_JUMPER_DEFAULT = "control_variant"
     const val ICON_JUMPER_EXP = "VariantA"
     const val ICON_JUMPER = "IconJumper"
-    const val ICON_JUMPER_SRE_KEY = "SREbottomnav"
-    const val ICON_JUMPER_SRE_VALUE = "GetIcon"
 
     // Auto Complete
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
