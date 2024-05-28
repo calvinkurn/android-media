@@ -1,8 +1,11 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -41,6 +45,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 import kotlin.math.roundToInt
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -135,7 +140,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             }
 
             Calendar.GRID -> {
-                layoutParams.width = ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_24)) / 2)
+                layoutParams.width =
+                    ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_24)) / 2)
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_300)
             }
@@ -205,7 +211,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             }
             // CALENDAR.SINGLE
             else -> {
-                layoutParams.width = width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
+                layoutParams.width =
+                    width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
                 imageLayoutParams.width = 150.toPx()
                 calendarImage.layoutParams = imageLayoutParams
             }
@@ -253,9 +260,10 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setUpCalendarForMultipleView(dataItem: DataItem) {
         val calendarParent: ConstraintLayout = itemView.findViewById(R.id.calendar_parent)
-        val calendarExpiredAlpha: View = itemView.findViewById(R.id.calendar_expired_alpha)
+        val calendarBody: View = itemView.findViewById(R.id.container_body)
         val calendarDateAlpha: View = itemView.findViewById(R.id.calendar_date_alpha)
         val calendarDate: Typography = itemView.findViewById(R.id.calendar_date)
         val calendarTitleImage: ImageUnify = itemView.findViewById(R.id.calendar_title_image)
@@ -301,7 +309,53 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             } // end if no full image
 
             if (Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
-                calendarExpiredAlpha.show()
+                renderExpiredImageView(true, calendarImage)
+                if (useFullImage) {
+                    renderExpiredImageView(true, calendarFullImage)
+                } else {
+                    calendarDateAlpha.setBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            if (itemView.context.isDarkMode()) {
+                                R.color.discovery2_dms_header_expired_dark
+                            } else {
+                                R.color.discovery2_dms_header_expired
+                            }
+                        )
+                    )
+                    calendarBody.apply {
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                if (itemView.context.isDarkMode()) {
+                                    R.color.discovery2_dms_body_expired_dark
+                                } else {
+                                    R.color.discovery2_dms_body_expired
+                                }
+                            )
+                        )
+                    }
+                }
+                calendarTitle.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        if (itemView.context.isDarkMode()) {
+                            R.color.discovery2_dms_copy_header_expired_dark
+                        } else {
+                            R.color.discovery2_dms_copy_header_expired
+                        }
+                    )
+                )
+                calendarDesc.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        if (itemView.context.isDarkMode()) {
+                            R.color.discovery2_dms_copy_body_expired_dark
+                        } else {
+                            R.color.discovery2_dms_copy_body_expired
+                        }
+                    )
+                )
                 calendarButton.show()
                 calendarButton.isEnabled = false
                 calendarButton.text =
@@ -310,8 +364,11 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarButton.buttonVariant = UnifyButton.Variant.GHOST
             }  // end if sale over
             else {
+                renderExpiredImageView(false, calendarImage)
+                if (useFullImage) {
+                    renderExpiredImageView(false, calendarFullImage)
+                }
                 calendarButton.show()
-                calendarExpiredAlpha.hide()
                 calendarButton.isEnabled = true
                 val isDynamic =
                     calendarWidgetItemViewModel?.components?.properties?.calendarType?.let { it == Calendar.DYNAMIC }
@@ -435,6 +492,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 Calendar.TRIPLE -> {
                     calendarDate.setType(Typography.SMALL)
                 }
+
                 else -> {
                     calendarDate.setType(Typography.BODY_3)
                 }
@@ -521,6 +579,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                                 Calendar.DOUBLE -> {
                                     calendarFullImage.scaleType = ImageView.ScaleType.FIT_CENTER
                                 }
+
                                 else -> {
                                     calendarFullImage.scaleType = ImageView.ScaleType.CENTER_CROP
                                 }
@@ -531,7 +590,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                             when (calendarWidgetItemViewModel?.components?.properties?.calendarLayout) {
                                 Calendar.CAROUSEL -> {
                                     // scale the layout to keep ratio
-                                    layoutParams.width = (maxHeight * bitmapWidth / bitmap.height) + 8.toPx()
+                                    layoutParams.width =
+                                        (maxHeight * bitmapWidth / bitmap.height) + 8.toPx()
                                 }
                             }
                             calendarCardUnify.layoutParams = layoutParams
@@ -647,6 +707,19 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             calendarWidgetItemViewModel?.unSubscribeUserForPushNotification(mNotifyCampaignId)
         } else {
             calendarWidgetItemViewModel?.subscribeUserForPushNotification(mNotifyCampaignId)
+        }
+    }
+
+    private fun renderExpiredImageView(isExpired: Boolean, imageView: ImageView) {
+        if (isExpired) {
+            val matrix = ColorMatrix()
+            matrix.setSaturation(0f)
+            val cf = ColorMatrixColorFilter(matrix)
+            imageView.colorFilter = cf
+            imageView.imageAlpha = if (itemView.context.isDarkMode()) 255 else 125
+        } else {
+            imageView.colorFilter = null;
+            imageView.imageAlpha = 255;
         }
     }
 
