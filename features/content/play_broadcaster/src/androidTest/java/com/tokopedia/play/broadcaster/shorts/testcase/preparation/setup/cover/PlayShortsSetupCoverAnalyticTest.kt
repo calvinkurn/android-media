@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
+import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
@@ -16,6 +18,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -28,6 +31,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 15, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSetupCoverAnalyticTest {
 
     @get:Rule
@@ -47,6 +51,7 @@ class PlayShortsSetupCoverAnalyticTest {
     private val mockContentProductPickerSGCCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
@@ -58,6 +63,8 @@ class PlayShortsSetupCoverAnalyticTest {
     private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
 
     init {
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any(), any()) } returns true
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         coEvery { mockAccountManager.switchAccount(any(), any()) } returns mockAccountUser
@@ -86,6 +93,7 @@ class PlayShortsSetupCoverAnalyticTest {
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
+                        mockCoachMarkSharedPref = mockCoachMarkSharedPref,
                     )
                 )
                 .build()
@@ -102,22 +110,14 @@ class PlayShortsSetupCoverAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickCloseOnCoverForm() {
-
-        clickBackCoverForm()
-
-        cassavaValidator.verify("click - close cover page")
-    }
-
-    @Test
-    fun testAnalytic_clickSelectCoverOnCoverForm() {
-        clickSelectCover()
-
-        cassavaValidator.verify("click - edit cover")
-    }
-
-    @Test
-    fun testAnalytic_openScreenCoverForm() {
+    fun testAnalytic_shorts_setupCover() {
         cassavaValidator.verifyOpenScreen("/play broadcast short - cover page - ${mockAccountShop.id} - seller")
+
+        clickSelectCover()
+        cassavaValidator.verify("click - edit cover")
+
+        pressBack()
+        clickBackCoverForm()
+        cassavaValidator.verify("click - close cover page")
     }
 }

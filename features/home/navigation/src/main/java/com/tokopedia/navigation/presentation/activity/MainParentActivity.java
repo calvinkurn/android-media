@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
@@ -81,6 +80,7 @@ import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
+import com.tokopedia.home.beranda.di.module.ViewModelFactory;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -98,10 +98,8 @@ import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
-import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
-import com.tokopedia.navigation.util.FeedCoachMark;
 import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -231,6 +229,8 @@ public class MainParentActivity extends BaseActivity implements
     @Inject
     Lazy<MainParentPresenter> presenter;
     @Inject
+    Lazy<ViewModelFactory> vmFactory;
+    @Inject
     Lazy<GlobalNavAnalytics> globalNavAnalytics;
     @Inject
     Lazy<RemoteConfig> remoteConfig;
@@ -267,11 +267,13 @@ public class MainParentActivity extends BaseActivity implements
 
     private AppDownloadManagerHelper appDownloadManagerHelper;
 
+    //MIGRATED
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
+    //MIGRATED
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();
         WindowManager.LayoutParams winParams = win.getAttributes();
@@ -283,6 +285,7 @@ public class MainParentActivity extends BaseActivity implements
         win.setAttributes(winParams);
     }
 
+    // MIGRATED
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -334,9 +337,9 @@ public class MainParentActivity extends BaseActivity implements
         }
         sendNotificationUserSetting();
         showDarkModeIntroBottomSheet();
-
     }
 
+    //MIGRATED
     private void initDownloadManagerDialog() {
         if (appDownloadManagerHelper == null) {
             appDownloadManagerHelper = new AppDownloadManagerHelper(new WeakReference(this));
@@ -344,17 +347,20 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void sendNotificationUserSetting() {
         if (userSession.get().isLoggedIn()) {
             new NotificationUserSettingsTracker(getApplicationContext()).sendNotificationUserSettings();
         }
     }
 
+    //MIGRATED
     private void runRiskWorker() {
         // Most of workers do nothing if it has already succeed previously.
         SubmitDeviceWorker.Companion.scheduleWorker(getApplicationContext(), false);
     }
 
+    //MIGRATED
     private void installDFonBackground() {
         List<String> moduleNameList = new ArrayList<>();
         if (userSession.get().isLoggedIn()) {
@@ -379,6 +385,7 @@ public class MainParentActivity extends BaseActivity implements
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
+    //MIGRATED
     @NotNull
     private boolean sendOpenHomeEvent() {
         UserSessionInterface userSession = new UserSession(this);
@@ -389,6 +396,7 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
+    //MIGRATED
     @Override
     protected void onStart() {
         super.onStart();
@@ -406,29 +414,34 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void routeOnboarding() {
         RouteManager.route(this, ApplinkConstInternalMarketplace.ONBOARDING);
         finish();
     }
 
+    //MIGRATED
     private void setDefaultShakeEnable() {
         cacheManager.edit()
                 .putBoolean(getString(R.string.pref_receive_shake_nav), true)
                 .apply();
     }
 
+    //MIGRATED
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
         saveInstanceState(outState);
     }
 
+    //MIGRATED
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveInstanceState(outState);
     }
 
+    //MIGRATED
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         try {
@@ -438,10 +451,12 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //NO NEED?
     public boolean isFirstTimeUser() {
         return userSession.get().isFirstTimeUser();
     }
 
+    //MIGRATED
     private void createView(Bundle savedInstanceState) {
         isFirstNavigationImpression = true;
         setContentView(R.layout.activity_main_parent);
@@ -469,6 +484,7 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation.setHomeForYouMenuClickListener(this);
     }
 
+    //MIGRATED
     @NotNull
     private boolean executeFirstTimeEvent() {
         if (isFirstTime()) {
@@ -477,6 +493,7 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
+    //MIGRATED
     private void showSelectedPage() {
         int tabPosition = getTabPositionFromIntent();
         if (tabPosition > fragmentList.size() - 1) {
@@ -503,6 +520,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private int getTabPositionFromIntent() {
         if (getIntent() != null && getIntent().getExtras() != null) {
             int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
@@ -533,6 +551,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void startSelectedPagePerformanceMonitoring() {
         int tabPosition = HOME_MENU;
         tabPosition = getTabPositionFromIntent();
@@ -543,6 +562,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    // MIGRATED
     private void handleAppLinkBottomNavigation(boolean isFirstInit) {
 
         if (bottomNavigation == null) return;
@@ -569,6 +589,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    // MIGRATED
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -581,14 +602,14 @@ public class MainParentActivity extends BaseActivity implements
         handleAppLinkBottomNavigation(false);
     }
 
+    //MIGRATED
     private void initInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(getApplicationComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
+        DaggerGlobalNavComponent.factory()
+                .create(getApplicationComponent(), this)
                 .inject(this);
     }
 
+    //NO NEED?
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void reInitInjector(GlobalNavComponent globalNavComponent) {
         globalNavComponent.inject(this);
@@ -596,6 +617,7 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().setView(this);
     }
 
+    //MIGRATED
     private int getPositionFragmentByMenu(int i) {
         int position = HOME_MENU;
         if (i == FEED_MENU) {
@@ -610,6 +632,7 @@ public class MainParentActivity extends BaseActivity implements
         return position;
     }
 
+    //MIGRATED
     private void checkAgeVerificationExtra(Intent intent) {
         if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS) && !isFinishing()) {
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
@@ -620,6 +643,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void setupStatusBar() {
         //apply inset to allow recyclerview scrolling behind status bar
         fragmentContainer.setFitsSystemWindows(false);
@@ -638,6 +662,7 @@ public class MainParentActivity extends BaseActivity implements
         getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
+    //MIGRATED
     private void selectFragment(Fragment fragment) {
         configureStatusBarBasedOnFragment(fragment);
         configureNavigationBarBasedOnFragment(fragment);
@@ -645,6 +670,7 @@ public class MainParentActivity extends BaseActivity implements
         setBadgeNotifCounter(fragment);
     }
 
+    // MIGRATED
     private void openFragment(Fragment fragment) {
         handler.post(() -> {
             String backStateName = fragment.getClass().getName();
@@ -665,6 +691,7 @@ public class MainParentActivity extends BaseActivity implements
         });
     }
 
+    // MIGRATED
     private void showSelectedFragment(Fragment fragment, FragmentManager manager, FragmentTransaction ft) {
         for (int i = 0; i < manager.getFragments().size(); i++) {
             Fragment frag = manager.getFragments().get(i);
@@ -681,6 +708,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void configureStatusBarBasedOnFragment(Fragment fragment) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setupStatusBarInMarshmallowAbove(fragment);
@@ -689,6 +717,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void configureNavigationBarBasedOnFragment(Fragment fragment) {
         boolean isForceDarkMode = getIsFragmentForceDarkModeNavigationBar(fragment);
         bottomNavigation.forceDarkMode(isForceDarkMode);
@@ -697,24 +726,28 @@ public class MainParentActivity extends BaseActivity implements
         lineBottomNav.setBackgroundResource(lineColorRes);
     }
 
+    // MIGRATED
     private void scrollToTop(Fragment fragment) {
         if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
 
+    //MIGRATED
     private void scrollToHomeHeader(Fragment fragment) {
         if (fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
     }
 
+    //MIGRATED
     private void scrollToHomeForYou(Fragment fragment) {
         if (fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
     }
 
+    //MIGRATED
     private Integer getRecommendationForYouIndex(Fragment fragment) {
         if (fragment instanceof HomeScrollViewListener) {
             return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
@@ -722,6 +755,7 @@ public class MainParentActivity extends BaseActivity implements
         return null;
     }
 
+    //MIGRATED
     private void setupStatusBarInMarshmallowAbove(Fragment fragment) {
         if (getIsFragmentLightStatusBar(fragment)) {
             requestStatusBarLight();
@@ -730,6 +764,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private boolean getIsFragmentLightStatusBar(Fragment fragment) {
         if (fragment instanceof FragmentListener) {
             return ((FragmentListener) fragment).isLightThemeStatusBar();
@@ -737,6 +772,7 @@ public class MainParentActivity extends BaseActivity implements
         return false;
     }
 
+    //MIGRATED
     private boolean getIsFragmentForceDarkModeNavigationBar(Fragment fragment) {
         if (fragment instanceof FragmentListener) {
             return ((FragmentListener) fragment).isForceDarkModeNavigationBar();
@@ -744,17 +780,20 @@ public class MainParentActivity extends BaseActivity implements
         return false;
     }
 
+    //NOT NEEDED?
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setUserSession(UserSessionInterface userSession) {
         this.userSession = (Lazy<UserSessionInterface>) userSession;
     }
 
 
+    //MIGRATED
     @Override
     public BaseAppComponent getComponent() {
         return getApplicationComponent();
     }
 
+    //MIGRATED
     @Override
     protected void onResume() {
         super.onResume();
@@ -794,6 +833,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
@@ -817,12 +857,14 @@ public class MainParentActivity extends BaseActivity implements
      * <p>This is important, so the app doesn't forget about downloaded updates even if it gets killed
      * during the download or misses some notifications.
      */
+    //MIGRATED
     private void checkForInAppUpdateInProgressOrCompleted() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this);
         }
     }
 
+    //MIGRATED
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -834,12 +876,14 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().onDestroy();
     }
 
+    //MIGRATED
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         checkWritePermissionResultAndInstallApk(requestCode, grantResults);
     }
 
+    //MIGRATED
     private void checkWritePermissionResultAndInstallApk(int requestCode, @NonNull int[] grantResults) {
         if (GlobalConfig.IS_NAKAMA_VERSION) {
             AppDownloadManagerPermission.checkRequestPermissionResult(grantResults, requestCode, hasPermission -> {
@@ -853,12 +897,14 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void showDownloadManagerBottomSheet() {
         if (appDownloadManagerHelper != null) {
             appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
         }
     }
 
+    //MIGRATED
     private void setDownloadManagerParameter() {
         if (appDownloadManagerHelper != null) {
             appDownloadManagerHelper.setIsTriggeredViaApplink(checkApplinkShowDownloadManager());
@@ -866,6 +912,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
 
+    //MIGRATED
     private boolean checkApplinkShowDownloadManager() {
         Uri uri = getIntent().getData();
         if (uri != null) {
@@ -875,6 +922,7 @@ public class MainParentActivity extends BaseActivity implements
         return false;
     }
 
+    //MIGRATED
     private void reloadPage(int position, boolean isJustLoggedIn) {
         boolean isPositionFeed = position == FEED_MENU;
         Intent intent = getIntent()
@@ -890,11 +938,12 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //NOT NEEDED?
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
 
         if (getSupportFragmentManager().findFragmentByTag(FragmentConst.HOME_REVAMP_FRAGMENT) == null) {
-            fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
+            fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false), true));
         } else {
             fragmentList.add(getSupportFragmentManager().findFragmentByTag(FragmentConst.HOME_REVAMP_FRAGMENT));
         }
@@ -944,11 +993,13 @@ public class MainParentActivity extends BaseActivity implements
         return fragmentList;
     }
 
+    //NOT NEEDED?
     @RestrictTo(RestrictTo.Scope.TESTS)
     public Fragment getFragment(int index) {
         return getSupportFragmentManager().findFragmentById(R.id.container);
     }
 
+    //MIGRATED
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
@@ -956,27 +1007,33 @@ public class MainParentActivity extends BaseActivity implements
             setBadgeNotifCounter(currentFragment);
     }
 
+    //NOT NEEDED?
     @Override
     public void onStartLoading() {
     }
 
+    //NOT NEEDED?
     @Override
     public void onError(String message) {
     }
 
+    //NOT NEEDED?
     @Override
     public void onHideLoading() {
     }
 
+    //NOT NEEDED?
     @Override
     public Context getContext() {
         return this;
     }
 
+    //MIGRATED
     public BaseAppComponent getApplicationComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
+    //MIGRATED
     @Override
     public void onBackPressed() {
         doubleTapExit();
@@ -1001,6 +1058,7 @@ public class MainParentActivity extends BaseActivity implements
     /**
      * Notification
      */
+    //MIGRATED
     private void setBadgeNotifCounter(Fragment fragment) {
         handler.post(() -> {
             if (fragment == null)
@@ -1022,12 +1080,14 @@ public class MainParentActivity extends BaseActivity implements
         });
     }
 
+    //MIGRATED
     @Override
     public void onNotifyCart() {
         if (presenter != null)
             this.presenter.get().getNotificationData();
     }
 
+    //MIGRATED
     private void saveInstanceState(Bundle outState) {
         if (getIntent() != null) {
             outState.putBoolean(IS_RECURRING_APPLINK, presenter.get().isRecurringApplink());
@@ -1043,11 +1103,13 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private Boolean isFirstTime() {
         LocalCacheHandler cache = new LocalCacheHandler(this, GlobalNavConstant.Cache.KEY_FIRST_TIME);
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
+    //NOT NEEDED
     protected InAppCallback getInAppCallback() {
         return new InAppCallback() {
             @Override
@@ -1072,6 +1134,7 @@ public class MainParentActivity extends BaseActivity implements
         };
     }
 
+    //MIGRATED
     private void checkApplinkCouponCode(Intent intent) {
         if (!presenter.get().isRecurringApplink() && !TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
@@ -1099,16 +1162,19 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //NOT NEEDED
     @RestrictTo(RestrictTo.Scope.TESTS)
     public MainParentPresenter getPresenter() {
         return (MainParentPresenter) presenter;
     }
 
+    //NOT NEEDED
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setPresenter(MainParentPresenter presenter) {
         this.presenter = (Lazy<MainParentPresenter>) presenter;
     }
 
+    //MIGRATED
     private void addShortcutsAsync() {
         WeaveInterface mainDaggerWeave = () -> {
             addShortcuts();
@@ -1117,6 +1183,7 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineNow(mainDaggerWeave);
     }
 
+    //MIGRATED
     private void addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
@@ -1206,15 +1273,18 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public void onRefreshNotification() {
         presenter.get().getNotificationData();
     }
 
+    //MIGRATED
     private void startMainParentPerformanceMonitoring() {
         mainParentPerformanceMonitoring = PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
     }
 
+    //MIGRATED
     @Override
     public void startHomePerformanceMonitoring() {
         pageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
@@ -1232,6 +1302,7 @@ public class MainParentActivity extends BaseActivity implements
         getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
     }
 
+    //MIGRATED
     @Override
     public void stopHomePerformanceMonitoring(boolean isCache) {
         if (getPageLoadTimePerformanceInterface() != null) {
@@ -1249,16 +1320,19 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public PageLoadTimePerformanceInterface getPageLoadTimePerformanceInterface() {
         return pageLoadTimePerformanceCallback;
     }
 
+    //MIGRATED
     @Override
     public BlocksPerformanceTrace getBlocksPerformanceMonitoring() {
         return performanceTrace;
     }
 
+    //MIGRATED
     @Override
     public void requestStatusBarDark() {
         //for tokopedia lightmode, triggered when in top page
@@ -1271,6 +1345,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public void requestStatusBarLight() {
         //for tokopedia lightmode, triggered when not in top page
@@ -1287,6 +1362,7 @@ public class MainParentActivity extends BaseActivity implements
      * Force status bar texts to dark without UI mode checking.
      * For safe request dark status bar, use requestStatusBarDark()
      */
+    //MIGRATED
     @Override
     public void forceRequestStatusBarDark() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1299,6 +1375,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public boolean menuClicked(int index, int id) {
         int position = getPositionFragmentByMenu(index);
@@ -1371,6 +1448,7 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
+    // MIGRATED
     private void handleAppLogEnterMethod(AppLogInterface appLogInterface, boolean isFirstTimeInit) {
         if (isFirstTimeInit) {
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
@@ -1385,6 +1463,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
         if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
@@ -1398,6 +1477,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    // MIGRATED
     private void sendEnterPage(int position) {
         Fragment fragment = fragmentList.get(position);
         if (!isFirstTimeUser() && fragment instanceof AppLogInterface appLogInterface &&
@@ -1406,12 +1486,14 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }
 
+    //MIGRATED
     @Override
     public void homeForYouMenuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
@@ -1430,11 +1512,13 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //MIGRATED
     @Override
     public String currentVisibleFragment() {
         return embracePageName;
     }
 
+    // MIGRATED
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
             updateAppLogPageData(homePosition, true);
@@ -1443,6 +1527,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    //NOT NEEDED
     public void populateBottomNavigationView() {
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), getIconJumper(), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), null, R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
@@ -1453,18 +1538,16 @@ public class MainParentActivity extends BaseActivity implements
         handleAppLinkBottomNavigation(true);
     }
 
+    //MIGRATED
     private IconJumper getIconJumper() {
         if (HomeRollenceController.isIconJumper()) {
-            if (HomeRollenceController.isIconJumperSRE()) {
-                return getSREIconJumper();
-            } else {
-                return getForYouIconJumper();
-            }
+            return getForYouIconJumper();
         } else {
             return null;
         }
     }
 
+    //MIGRATED
     private IconJumper getForYouIconJumper() {
         return new IconJumper(
                 getResources().getString(R.string.for_you),
@@ -1475,16 +1558,7 @@ public class MainParentActivity extends BaseActivity implements
         );
     }
 
-    private IconJumper getSREIconJumper() {
-        return new IconJumper(
-                getResources().getString(R.string.for_you),
-                R.drawable.ic_bottom_nav_home_sre,
-                R.raw.bottom_nav_home_to_sre,
-                R.raw.bottom_nav_sre_idle,
-                R.raw.bottom_nav_sre_to_home
-        );
-    }
-
+    //MIGRATED
     private void gotoNewUserZonePage() {
         Intent intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER);
         Intent intentHome = RouteManager.getIntent(this, ApplinkConst.HOME);
@@ -1494,49 +1568,56 @@ public class MainParentActivity extends BaseActivity implements
         finish();
     }
 
+    //MIGRATED
     private void showDarkModeIntroBottomSheet() {
         DarkModeIntroductionLauncher
                 .withToaster(getIntent(), getWindow().getDecorView())
                 .launch(this, getSupportFragmentManager(), userSession.get().isLoggedIn());
     }
 
+    //MIGRATED
     @NonNull
     @Override
     public String getTelemetrySectionName() {
         return "home";
     }
 
+    //MIGRATED
     @Override
     public void onPositiveButtonInAppClicked(DetailUpdate detailUpdate) {
         globalNavAnalytics.get().eventClickAppUpdate(detailUpdate.isForceUpdate());
     }
 
+    //MIGRATED
     @Override
     public void onNegativeButtonInAppClicked(DetailUpdate detailUpdate) {
         globalNavAnalytics.get().eventClickCancelAppUpdate(detailUpdate.isForceUpdate());
     }
 
+    //MIGRATED
     @Override
     public void onNotNeedUpdateInApp() {
         //noop
     }
 
+    //MIGRATED
     @Override
     public void onNeedUpdateInApp(DetailUpdate detailUpdate) {
         globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
     }
 
+    //MIGRATED
     @Override
     public void onHomeCoachMarkFinished() {
-        View feedIconView = bottomNavigation.findViewById(R.id.menu_feed);
-        new FeedCoachMark(this).show(feedIconView);
     }
 
+    //MIGRATED
     @Override
     public boolean isIconJumperEnabled() {
         return HomeRollenceController.isIconJumper();
     }
 
+    //MIGRATED
     @Override
     public void setHomeToForYouTabSelected() {
         boolean isForYouToHomeMenu = false;
@@ -1546,6 +1627,7 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
 
+    //MIGRATED
     @Override
     public void setForYouToHomeMenuTabSelected() {
         boolean isForYouToHomeMenu = true;

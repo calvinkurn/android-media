@@ -13,6 +13,7 @@ public interface ApplinkConst {
     String APPLINK_CUSTOMER_SCHEME = "tokopedia";
     String HOME_NAVIGATION = "tokopedia://navigation/main";
     String HOME = "tokopedia://home";
+    String HOME_OLD = "tokopedia://home/old";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
     String HOME_ACCOUNT_SELLER = "tokopedia://home/account/seller";

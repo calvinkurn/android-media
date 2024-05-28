@@ -17,7 +17,7 @@ fun mockInitialDataModel(
     isCached: Boolean = true,
     isProductCountEmpty: Boolean = false,
     productCount: Int = 0,
-    duration: Int = 500,
+    duration: Int = 1000,
     storiesCategory: StoriesDetailItem.StoryCategory = StoriesDetailItem.StoryCategory.ASGC,
 ): StoriesUiModel {
     return StoriesUiModel(
@@ -37,10 +37,22 @@ fun mockInitialDataModel(
                 isSelected = 1 == selectedGroup,
             ),
             StoriesGroupHeader(
+                groupId = "groupId 2",
+                groupName = "Group Name 2",
+                image = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                isSelected = 2 == selectedGroup,
+            ),
+            StoriesGroupHeader(
                 groupId = "groupId 3",
                 groupName = "Group Name 3",
                 image = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
-                isSelected = 2 == selectedGroup,
+                isSelected = 3 == selectedGroup,
+            ),
+            StoriesGroupHeader(
+                groupId = "groupId 4",
+                groupName = "Group Name 4",
+                image = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                isSelected = 4 == selectedGroup,
             ),
         ),
         groupItems = listOf(
@@ -223,6 +235,182 @@ fun mockInitialDataModel(
             StoriesGroupItem(
                 groupId = if (isCached) "groupId 2" else "",
                 groupName = "Group Name 2",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                    duration = duration
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
+                            ),
+                            StoriesDetailItem(
+                                id = "1",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                    duration = duration
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
+                            ),
+                            StoriesDetailItem(
+                                id = "2",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                    duration = duration
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
+                            ),
+                        ),
+                    )
+                } else StoriesDetail(),
+            ),
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 3" else "",
+                groupName = "Group Name 3",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
+                                    duration = duration
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
+                            ),
+                            StoriesDetailItem(
+                                id = "1",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
+                                    duration = duration
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
+                            ),
+                            StoriesDetailItem(
+                                id = "2",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                category = storiesCategory,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
+                                    duration = duration
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                author = StoryAuthor.Shop(
+                                    shopName = "Joe Shop",
+                                    shopId = "123",
+                                    avatarUrl = "",
+                                    badgeUrl = "",
+                                    appLink = "",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
+                            ),
+                        ),
+                    )
+                } else StoriesDetail(),
+            ),
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 4" else "",
+                groupName = "Group Name 4",
                 detail = if (isCached) {
                     StoriesDetail(
                         selectedGroupId = "groupId $selectedGroup",

@@ -35,9 +35,11 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
         setTypeClass(ShopPageGetDynamicTabResponse::class.java)
     }
 
-    private fun setCacheStrategy(){
-        setCacheStrategy(GraphqlCacheStrategy
-            .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+    private fun setCacheStrategy() {
+        setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build()
+        )
     }
 
     override suspend fun executeOnBackground(): ShopPageGetDynamicTabResponse {
@@ -148,6 +150,10 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                                 linkType
                                 link
                             }
+                          }
+                          options {
+                            key
+                            value
                           }
                         }
                       }
