@@ -13,6 +13,10 @@ import java.util.HashMap
 
 class ThumbnailTwoSquareWidgetCallback(val listener: HomeCategoryListener) : ThumbnailWidgetListener {
 
+    override fun thumbnailChannelHeaderClicked(appLink: String) {
+        listener.onDynamicChannelClicked(appLink)
+    }
+
     override fun thumbnailClicked(data: ItemThumbnailWidgetUiModel, position: Int) {
         listener.onDynamicChannelClicked(data.appLink)
         TwoSquareWidgetTracking.clickCardDeals(data, position, listener.userId)
@@ -25,7 +29,8 @@ class ThumbnailTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Thu
 
         AppLogAnalytics.putPageData(
             key = AppLogParam.ENTER_METHOD,
-            value = AppLogHomeChannel.dealsEnterMethod(
+            value = AppLogHomeChannel.getEnterMethod(
+                data.tracker.layoutTrackerType,
                 data.tracker.recomPageName,
                 position
             )

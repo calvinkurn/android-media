@@ -9,7 +9,10 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.WidgetSmallProductCardBinding
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
@@ -20,22 +23,53 @@ class SmallProductCard @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
-    private val binding = WidgetSmallProductCardBinding.inflate(
-        LayoutInflater.from(context)
-    )
+    private val binding = WidgetSmallProductCardBinding
+        .inflate(LayoutInflater.from(context))
+
+    private var stockBar: ProductStockBar?
 
     init {
         addView(binding.root)
+        stockBar = ProductStockBar(this)
     }
 
     fun setData(model: SmallProductModel) {
-        setupRibbon(model.ribbon)
-        useCompatPadding(model.ribbon)
-        renderCardContainer(model.ribbon)
+        // mandatory
+        useCompatPadding(model.ribbon())
+
+        setupRibbon(model.ribbon())
+        renderStockBar(model.stockBar)
+        renderCardContainer(model.ribbon())
         setupProductBannerImage(model.bannerImageUrl)
 
-        binding.txtTitle.shouldTypographyStyleApplied(model.title)
-        binding.txtSubtitle.shouldTypographyStyleApplied(model.subtitle)
+        shouldHandleTitleStyle(model)
+        shouldHandleSubtitleStyle(model)
+    }
+
+    private fun shouldHandleTitleStyle(model: SmallProductModel) {
+        val (text, style) = model.title()
+        basicTextStyle(binding.txtTitle, text, style)
+
+        if (style.url.isEmpty()) {
+            hideCampaignIcon()
+        }
+
+        binding.icCampaign.shouldShowWithAction(style.url.isNotEmpty()) {
+            binding.icCampaign.loadImage(style.url)
+            binding.txtTitle.setCustomMargin(MarginArea.Start(2.toPx()))
+        }
+    }
+
+    private fun shouldHandleSubtitleStyle(model: SmallProductModel) {
+        val (text, style) = model.subtitle()
+        basicTextStyle(binding.txtSubtitle, text, style)
+    }
+
+    private fun renderStockBar(data: SmallProductModel.StockBar) {
+        val value = if (data.isEnabled && data.percentageOnFireRange()) 4.toPx() else 2.toPx()
+        binding.txtTitle.setCustomMargin(MarginArea.Top(value))
+
+        stockBar?.shouldShowStockBar(data.isEnabled, data)
     }
 
     private fun setupProductBannerImage(url: String) {
@@ -61,12 +95,8 @@ class SmallProductCard @JvmOverloads constructor(
     }
 
     private fun renderCardContainer(ribbon: SmallProductModel.Ribbon?) {
-        val marginStart = if (ribbon != null) 4.toPx() else 0
-
-        binding.cardContainer.layoutParams = binding.cardContainer.layoutParams.apply {
-            val marginLayoutParams = this as? MarginLayoutParams
-            marginLayoutParams?.marginStart = marginStart
-        }
+        val value = if (ribbon != null) 4.toPx() else 0
+        binding.cardContainer.setCustomMargin(MarginArea.Start(value))
     }
 
     private fun setupRibbon(ribbon: SmallProductModel.Ribbon?) {
@@ -86,16 +116,21 @@ class SmallProductCard @JvmOverloads constructor(
         )
     }
 
-    private fun Typography?.shouldTypographyStyleApplied(
-        content: Pair<String, SmallProductModel.TextStyle>
-    ) {
-        val (title, style) = content
+    private fun basicTextStyle(typography: Typography?, text: String, style: SmallProductModel.TextStyle) {
+        typography?.text = if (style.shouldRenderHtmlFormat.not()) text else HtmlUtil.fromHtml(text)
+        if (style.textColor.isNotEmpty()) typography?.setTextColor(Color.parseColor(style.textColor))
 
-        this?.text = if (style.shouldRenderHtmlFormat) HtmlUtil.fromHtml(title) else title
-        this?.setWeight(if (style.isBold) Typography.BOLD else Typography.REGULAR)
+        val weight = if (style.isBold) Typography.BOLD else Typography.REGULAR
+        typography?.setWeight(weight)
 
-        if (style.textColor.isNotEmpty()) {
-            this?.setTextColor(Color.parseColor(style.textColor))
+        if (style.isTextStrikethrough) {
+            typography?.strikethrough()
+            typography?.requestLayout()
         }
+    }
+
+    private fun hideCampaignIcon() {
+        binding.icCampaign.hide()
+        binding.txtTitle.setCustomMargin(MarginArea.Start(0))
     }
 }

@@ -20,12 +20,14 @@ data class MissionWidgetUiModel(
     override fun type(typeFactory: ShortenViewFactory) = typeFactory.type(this)
     override fun visitableId() = this.hashCode()
     override fun equalsWith(o: Any?) = o == this
+
+    override fun itemCount() = data.size
 }
 
 data class ItemMissionWidgetUiModel(
     val id: String,
     val card: SmallProductModel,
-    val tracker: ChannelTracker,
+    val tracker: ChannelTracker = ChannelTracker(),
     val verticalPosition: Int,
     val cardPosition: Int,
     val url: String,

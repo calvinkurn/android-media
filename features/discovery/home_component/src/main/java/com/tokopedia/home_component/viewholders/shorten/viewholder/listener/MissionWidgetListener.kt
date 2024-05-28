@@ -5,6 +5,7 @@ import com.tokopedia.home_component.visitable.shorten.MissionWidgetUiModel
 
 interface MissionWidgetListener {
     // container
+    fun missionChannelHeaderClicked(appLink: String)
     // fun missionContainerImpressed(data: MissionWidgetUiModel)
 
     // items

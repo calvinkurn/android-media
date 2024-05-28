@@ -8,6 +8,8 @@ import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
 import org.json.JSONObject
 
 data class HomeChannelCardModel(
+    val listName: String,
+    val listNum: String,
     val cardName: String,
     val sourceModule: String,
     val productId: String,
@@ -26,10 +28,12 @@ data class HomeChannelCardModel(
     fun toShowClickJson() = JSONObject().apply {
         addPage()
         put(AppLogParam.CARD_NAME, cardName)
+        put(AppLogParam.LIST_NAME, listName)
+        put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
         put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
-        put(AppLogParam.PRODUCT_ID, productId.zeroAsEmpty())
+        put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
         put(AppLogParam.TRACK_ID, trackId)
@@ -37,6 +41,6 @@ data class HomeChannelCardModel(
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.SHOP_ID, shopId)
-        put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.ITEM_ORDER, itemOrder.toInt())
     }
 }

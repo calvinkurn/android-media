@@ -8,8 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareListener
 import com.tokopedia.home_component.viewholders.shorten.viewholder.ThumbnailWidgetViewHolder
 import com.tokopedia.home_component.viewholders.shorten.viewholder.MissionWidgetViewHolder
+import com.tokopedia.home_component.viewholders.shorten.viewholder.ProductWidgetViewHolder
 import com.tokopedia.home_component.visitable.shorten.ThumbnailWidgetUiModel
 import com.tokopedia.home_component.visitable.shorten.MissionWidgetUiModel
+import com.tokopedia.home_component.visitable.shorten.ProductWidgetUiModel
 
 class ShortenViewFactoryImpl(
     private val pool: RecyclerView.RecycledViewPool?,
@@ -20,10 +22,13 @@ class ShortenViewFactoryImpl(
 
     override fun type(model: ThumbnailWidgetUiModel) = ThumbnailWidgetViewHolder.LAYOUT
 
+    override fun type(model: ProductWidgetUiModel) = ProductWidgetViewHolder.LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ThumbnailWidgetViewHolder.LAYOUT -> ThumbnailWidgetViewHolder(parent, pool, listener)
             MissionWidgetViewHolder.LAYOUT -> MissionWidgetViewHolder(parent, pool, listener)
+            ProductWidgetViewHolder.LAYOUT -> ProductWidgetViewHolder(parent, pool, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

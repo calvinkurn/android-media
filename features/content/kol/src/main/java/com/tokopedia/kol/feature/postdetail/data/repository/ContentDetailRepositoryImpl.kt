@@ -3,7 +3,8 @@ package com.tokopedia.kol.feature.postdetail.data.repository
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
+import com.tokopedia.content.common.types.TrackContentType
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
@@ -47,7 +48,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val submitReportContentUseCase: SubmitReportContentUseCase,
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
+    private val trackPerformanceUseCase: BroadcasterReportTrackViewerUseCase,
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
@@ -143,7 +144,10 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun followUnfollowUser(isFollow: Boolean, encryptedUserId: String): MutationUiModel {
+    override suspend fun followUnfollowUser(
+        isFollow: Boolean,
+        encryptedUserId: String
+    ): MutationUiModel {
         return withContext(dispatcher.io) {
             if (isFollow) {
                 profileMutationMapper.mapUnfollow(
@@ -191,14 +195,19 @@ class ContentDetailRepositoryImpl @Inject constructor(
             mapper.mapWishlistData(rowNumber, productId)
         }
 
-    override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel = withContext(dispatcher.io) {
-        submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId))
-        val response = submitActionContentUseCase.executeOnBackground()
-        if (TextUtils.isEmpty(response.content.error).not()) {
-            throw MessageErrorException(response.content.error)
+    override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel =
+        withContext(dispatcher.io) {
+            submitActionContentUseCase.setRequestParams(
+                SubmitActionContentUseCase.paramToDeleteContent(
+                    contentId
+                )
+            )
+            val response = submitActionContentUseCase.executeOnBackground()
+            if (TextUtils.isEmpty(response.content.error).not()) {
+                throw MessageErrorException(response.content.error)
+            }
+            mapper.mapDeleteContent(rowNumber)
         }
-        mapper.mapDeleteContent(rowNumber)
-    }
 
     override suspend fun reportContent(
         contentId: String,
@@ -216,15 +225,21 @@ class ContentDetailRepositoryImpl @Inject constructor(
         mapper.mapReportContent(rowNumber)
     }
 
-    override suspend fun trackVisitChannel(channelId: String, rowNumber: Int): VisitContentModel {
+    override suspend fun trackPerformance(
+        channelId: String,
+        rowNumber: Int,
+        productIds: List<String>,
+        event: BroadcasterReportTrackViewerUseCase.Companion.Event
+    ): VisitContentModel {
         return withContext(dispatcher.io) {
-            trackVisitChannelUseCase.setRequestParams(
-                TrackVisitChannelBroadcasterUseCase.createParams(
-                    channelId,
-                    TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
+            trackPerformanceUseCase.apply {
+                params = BroadcasterReportTrackViewerUseCase.createParams(
+                    channelId = channelId,
+                    productIds = productIds,
+                    event = event,
+                    type = TrackContentType.Play
                 )
-            )
-            trackVisitChannelUseCase.executeOnBackground()
+            }.executeOnBackground()
             mapper.mapVisitChannel(rowNumber)
         }
     }
@@ -248,12 +263,23 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: FeedASGCUpcomingReminderStatus): Pair<Boolean, String> {
+    override suspend fun subscribeUpcomingCampaign(
+        campaignId: Long,
+        reminderType: FeedASGCUpcomingReminderStatus
+    ): Pair<Boolean, String> {
         return withContext(dispatcher.io) {
             val response = postUpcomingCampaignReminderUseCase.apply {
-                setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
+                setRequestParams(
+                    PostUpcomingCampaignReminderUseCase.createParam(
+                        campaignId,
+                        reminderType
+                    ).parameters
+                )
             }.executeOnBackground()
-            return@withContext Pair(response.response.success, if (response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
+            return@withContext Pair(
+                response.response.success,
+                if (response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message
+            )
         }
     }
 }

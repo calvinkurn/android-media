@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.common.domain.entity
 
-import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostRequest
 
 /**
  * Created By : Jonathan Darwin on October 13, 2022
@@ -19,7 +19,7 @@ data class UploadMediaDataModel(
 
     sealed interface Media {
         object Unknown : Media
-        data class Success(val mediumList : List<SubmitPostMedium>) : Media
+        data class Success(val mediumList : List<SubmitPostRequest>) : Media
         data class Fail(val throwable: Throwable) : Media
     }
 }

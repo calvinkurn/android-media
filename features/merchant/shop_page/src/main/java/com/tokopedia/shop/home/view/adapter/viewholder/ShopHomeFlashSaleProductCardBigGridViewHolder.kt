@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeFlashSaleProductCardBigGridViewHolder(
     itemView: View,
@@ -95,8 +96,11 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
             stockBarLabelColor = ShopUtil.getColorHexString(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                unifyprinciplesR.color.Unify_RN600
             )
+        }
+        val shopBadges = uiModel.shopBadgeList.map {
+            ProductCardModel.ShopBadge(imageUrl = it.imageUrl, title = it.title)
         }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
@@ -104,26 +108,32 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
-            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
+            isOverrideTheme = listener.isOverrideTheme(),
+            patternColorType = listener.getPatternColorType(),
+            backgroundColor = listener.getBackgroundColor(),
+            isFestivity = fsUiModel?.isFestivity.orFalse(),
+            atcVariantButtonText = productCardBigGrid?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
-            stockBarLabelColor = stockBarLabelColor
+            stockBarLabelColor = stockBarLabelColor,
+            isInBackground = true,
+            shopBadgeList = shopBadges
         )
         productCardBigGrid?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)
     }
 
-    fun getHeightOfImageProduct(action: (Int) -> Unit){
+    fun getHeightOfImageProduct(action: (Int) -> Unit) {
         val productImageView = productCardBigGrid?.getProductImageView()
         val viewTreeObserver: ViewTreeObserver? = productImageView?.viewTreeObserver
         if (viewTreeObserver?.isAlive.orFalse()) {
             viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    action(productImageView.height + paddingOffset.toInt())
-                }
-            })
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        productImageView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        action(productImageView.height + paddingOffset.toInt())
+                    }
+                })
         }
     }
 
@@ -166,9 +176,9 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     private fun adjustProductCardWidth() {
         val productCardBigGrid = productCardBigGrid ?: return
-        val productCardWidth = if(isFestivity){
+        val productCardWidth = if (isFestivity) {
             (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO
-        }else {
+        } else {
             (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO - SHOP_PAGE_RE_IMAGINED_MARGIN
         }
         val layoutParams = productCardBigGrid.layoutParams

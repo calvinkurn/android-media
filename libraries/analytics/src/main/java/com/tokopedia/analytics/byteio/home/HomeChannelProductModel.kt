@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import org.json.JSONObject
 
 data class HomeChannelProductModel(
@@ -28,6 +29,8 @@ data class HomeChannelProductModel(
 
     fun asCardModel(): HomeChannelCardModel {
         return HomeChannelCardModel(
+            listName = listName,
+            listNum = listNum,
             cardName = cardName,
             sourceModule = sourceModule,
             productId = productId.zeroAsEmpty(),
@@ -61,6 +64,6 @@ data class HomeChannelProductModel(
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
-        put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.ITEM_ORDER, itemOrder.toIntOrZero())
     }
 }

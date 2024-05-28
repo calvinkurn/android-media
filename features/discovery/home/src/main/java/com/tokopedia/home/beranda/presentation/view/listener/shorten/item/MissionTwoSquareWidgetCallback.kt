@@ -15,6 +15,10 @@ import java.util.HashMap
 
 class MissionTwoSquareWidgetCallback(val listener: HomeCategoryListener) : MissionWidgetListener {
 
+    override fun missionChannelHeaderClicked(appLink: String) {
+        listener.onDynamicChannelClicked(appLink)
+    }
+
     override fun missionClicked(data: ItemMissionWidgetUiModel, position: Int) {
         listener.onDynamicChannelClicked(data.appLink)
 
@@ -28,7 +32,8 @@ class MissionTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Missi
 
         AppLogAnalytics.putPageData(
             key = AppLogParam.ENTER_METHOD,
-            value = AppLogHomeChannel.missionEnterMethod(
+            value = AppLogHomeChannel.getEnterMethod(
+                data.tracker.layoutTrackerType,
                 data.tracker.recomPageName,
                 position
             )

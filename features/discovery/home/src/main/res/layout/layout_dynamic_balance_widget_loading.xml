@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containerLoadingBalance"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:layout_marginVertical="8dp"
+    android:paddingStart="12dp">
+
+    <include
+        android:id="@+id/loadingBalance1"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="4dp"
+        layout="@layout/layout_dynamic_balance_item_loading"/>
+
+    <include
+        android:id="@+id/loadingBalance2"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="4dp"
+        layout="@layout/layout_dynamic_balance_item_loading"/>
+
+    <include
+        android:id="@+id/loadingBalance3"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="4dp"
+        layout="@layout/layout_dynamic_balance_item_loading"/>
+
+</LinearLayout>
