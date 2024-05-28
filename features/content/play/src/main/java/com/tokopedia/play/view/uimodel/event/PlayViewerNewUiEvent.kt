@@ -62,7 +62,14 @@ data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEv
 /**
  * Sharing Experience
  */
-data class OpenSharingOptionEvent(val title: String, val coverUrl: String, val userId: String, val channelId: String) : PlayViewerNewUiEvent()
+data class OpenSharingOptionEvent(
+    val title: String,
+    val coverUrl: String,
+    val userId: String,
+    val channelId: String,
+    val partnerId: String,
+    val channelType: String
+) : PlayViewerNewUiEvent()
 data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String) : PlayViewerNewUiEvent()
 object CloseShareExperienceBottomSheet : PlayViewerNewUiEvent()
 object ErrorGenerateShareLink : PlayViewerNewUiEvent()
@@ -127,13 +134,13 @@ data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiE
  * Follow
  */
 
-object FailedFollow: PlayViewerNewUiEvent()
-data class CommentVisibilityEvent(val isOpen: Boolean): PlayViewerNewUiEvent()
+object FailedFollow : PlayViewerNewUiEvent()
+data class CommentVisibilityEvent(val isOpen: Boolean) : PlayViewerNewUiEvent()
 
 /**
  * Explore Widget
  */
 
-object ExploreWidgetNextTab: PlayViewerNewUiEvent()
+object ExploreWidgetNextTab : PlayViewerNewUiEvent()
 
-data class ShowVariantSheet(val product: PlayProductUiModel.Product, val forcePushTop: Boolean): PlayViewerNewUiEvent()
+data class ShowVariantSheet(val product: PlayProductUiModel.Product, val forcePushTop: Boolean) : PlayViewerNewUiEvent()

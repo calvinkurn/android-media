@@ -206,6 +206,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.SHARE_ID_KEY
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -1131,16 +1132,17 @@ class PlayUserInteractionFragment @Inject constructor(
                             if (shareExInitializer == null) {
                                 shareExInitializer = ShareExInitializer(requireContext())
                             }
+                            val label = "$SHARE_ID_KEY - ${event.channelId} - ${event.partnerId} - ${event.channelType}"
                             shareExInitializer?.openShareBottomSheet(
                                 bottomSheetArg = ShareExBottomSheetArg.Builder(
                                     pageTypeEnum = ShareExPageTypeEnum.PLAY,
                                     defaultUrl = "tokopedia://play/$channelId",
                                     trackerArg = ShareExTrackerArg(
                                         utmCampaign = "",
-                                        labelActionClickShareIcon = "",
-                                        labelActionCloseIcon = "",
-                                        labelActionClickChannel = "",
-                                        labelImpressionBottomSheet = ""
+                                        labelActionClickShareIcon = label,
+                                        labelActionCloseIcon = label,
+                                        labelActionClickChannel = label,
+                                        labelImpressionBottomSheet = label
                                     )
                                 )
                                     .withContentId(event.channelId)

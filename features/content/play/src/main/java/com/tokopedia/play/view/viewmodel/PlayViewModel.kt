@@ -64,7 +64,6 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
@@ -2437,7 +2436,9 @@ class PlayViewModel @AssistedInject constructor(
                         title = _channelDetail.value.channelInfo.title,
                         coverUrl = _channelDetail.value.channelInfo.coverUrl,
                         userId = userId,
-                        channelId = channelId
+                        channelId = channelId,
+                        partnerId = partnerId.toString(),
+                        channelType = channelType.value
                     )
                 )
             } else if (!isScreenshot) {
@@ -2960,13 +2961,18 @@ class PlayViewModel @AssistedInject constructor(
                 val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
                 _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
-                    _exploreWidget.update { exploreWidget -> exploreWidget.copy(data = exploreWidget.data.map {
-                        widget -> if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
-                            widget.copy(reminderType = reminderType)
-                        } else {
-                            widget
-                        }
-                    }) }
+                    _exploreWidget.update { exploreWidget ->
+                        exploreWidget.copy(
+                            data = exploreWidget.data.map {
+                                    widget ->
+                                if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
+                                    widget.copy(reminderType = reminderType)
+                                } else {
+                                    widget
+                                }
+                            }
+                        )
+                    }
                 } else {
                     throw MessageErrorException()
                 }

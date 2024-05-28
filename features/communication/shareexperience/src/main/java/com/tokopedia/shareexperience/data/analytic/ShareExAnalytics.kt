@@ -55,6 +55,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
                 map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
             }
+            ShareExPageTypeEnum.PLAY -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10455
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GROUP_CHAT_ROOM
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -100,6 +104,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45654
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
                 map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
+            }
+            ShareExPageTypeEnum.PLAY -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10456
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GROUP_CHAT_ROOM
             }
             else -> Unit
         }
@@ -151,6 +159,10 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
                 map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
             }
+            ShareExPageTypeEnum.PLAY -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10457
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GROUP_CHAT_ROOM
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -196,6 +208,9 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45656
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
                 map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
+            }
+            ShareExPageTypeEnum.PLAY -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10458
             }
             else -> Unit
         }
