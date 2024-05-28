@@ -223,7 +223,7 @@ class StealTheLookStyleViewHolder(
     ) {
         AppLogRecommendation.sendProductClickAppLog(
             model.recommendationItem.asProductTrackModel(
-                entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                entranceForm = EntranceForm.HORIZONTAL_PUZZLE_GOODS_CARD,
                 additionalParam = appLogAdditionalParam,
                 tabPosition = model.stylePosition,
                 tabName = LIST_NAME_STEAL_THE_LOOK_FORMAT.format(model.stylePosition)
@@ -235,7 +235,7 @@ class StealTheLookStyleViewHolder(
         model.grids.forEach {
             AppLogRecommendation.sendProductShowAppLog(
                 it.recommendationItem.asProductTrackModel(
-                    entranceForm = EntranceForm.APPEND_GOODS_CARD,
+                    entranceForm = EntranceForm.HORIZONTAL_PUZZLE_GOODS_CARD,
                     additionalParam = model.appLogAdditionalParam,
                     tabPosition = model.stylePosition,
                     tabName = LIST_NAME_STEAL_THE_LOOK_FORMAT.format(model.stylePosition)
