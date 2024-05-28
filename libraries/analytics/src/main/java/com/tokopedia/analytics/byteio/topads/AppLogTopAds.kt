@@ -165,8 +165,16 @@ object AppLogTopAds {
     }
 
     private fun getChannel(): String {
-        val prevPageName = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
-        return mapPrevPageNameToChannelName(prevPageName)
+        //Find -> SRP = Find Search
+        //Find -> SRP -> SRP -> SRP = Product Search
+        val prevLastPageName = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
+
+        //Find -> SRP -> SRP = Find Search
+        val prevTwoLastPageName = AppLogAnalytics.getTwoLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
+
+        if (prevTwoLastPageName == PageName.FIND_PAGE) return AdsLogConst.Channel.FIND_SEARCH
+
+        return mapPrevPageNameToChannelName(prevLastPageName)
     }
 
     private fun mapPrevPageNameToChannelName(prevPageName: String): String {
@@ -206,15 +214,7 @@ object AppLogTopAds {
     }
 
     private fun isSearchPage(currentPageName: Any?): Boolean {
-        //this logic to support find page journey
-        //find -> SRP = find search
-        //find -> SRP -> SRP = find search
-        //find -> SRP -> SRP > SRP = product search
-
-        val isTwoLastPageNotFindPage = AppLogAnalytics.getTwoLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
-        val isFirstLastPageNotFindPage = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
-
-        val isPrevPageNotFindPage = isTwoLastPageNotFindPage || isFirstLastPageNotFindPage
+        val isPrevPageNotFindPage = AppLogAnalytics.getLastAdsDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty() != PageName.FIND_PAGE
         return currentPageName in listOf(PageName.SEARCH_RESULT, AppLogSearch.ParamValue.GOODS_SEARCH)
             && isSearchPageNonEmptyState && isPrevPageNotFindPage
     }
