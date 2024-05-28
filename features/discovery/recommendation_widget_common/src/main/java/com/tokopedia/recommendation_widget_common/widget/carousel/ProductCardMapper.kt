@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselProductCardDataModel
@@ -9,12 +10,17 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.common.Reco
  * Created by yfsx on 5/3/21.
  */
 
-fun List<RecommendationItem>.toRecomCarouselItems(hasThreeDots: Boolean = false,
-                                                  listener: RecomCommonProductCardListener): List<RecomCarouselProductCardDataModel>{
+fun List<RecommendationItem>.toRecomCarouselItems(
+    hasThreeDots: Boolean = false,
+    listener: RecomCommonProductCardListener,
+    appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None
+): List<RecomCarouselProductCardDataModel>{
     return map {
         RecomCarouselProductCardDataModel(
-                productModel = it.toProductCardModel(hasThreeDots = hasThreeDots),
-                recomItem = it,
-                listener = listener)
+            productModel = it.toProductCardModel(hasThreeDots = hasThreeDots),
+            recomItem = it,
+            listener = listener,
+            appLogAdditionalParam = appLogAdditionalParam
+        )
     }
 }
