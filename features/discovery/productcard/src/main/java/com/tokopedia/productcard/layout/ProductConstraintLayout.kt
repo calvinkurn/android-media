@@ -32,13 +32,6 @@ open class ProductConstraintLayout :
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
 
-    private val TOP = 1
-    private val BOTTOM = 3
-    private val RIGHT = 2
-    private val LEFT = 4
-    private val LEFT_AND_RIGHT = 5
-    private val TOP_AND_BOTTOM = 6
-    private val NOWHERE = 7
     private val rectf: Rect by lazy { Rect() }
 
     constructor(context: Context) : super(context) {
@@ -57,7 +50,7 @@ open class ProductConstraintLayout :
         inflateView()
     }
 
-    private fun calculateVisibility() {
+    private fun calculateVisibility(isFromGlobal: Boolean) {
         getLocalVisibleRect(rectf)
         val alignment: Int
         val top = rectf.top
@@ -98,7 +91,7 @@ open class ProductConstraintLayout :
             widthPercentage = 0
         }
         if (isBetweenHorizontalPercentageLimits(widthPercentage) && isBetweenVerticalPercentageLimits(heightPercentage)) {
-            if (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage) {
+            if (lastPercentageHeight != heightPercentage || lastPercentageWidht != widthPercentage || isFromGlobal) {
                 lastPercentageHeight = heightPercentage
                 lastPercentageWidht = widthPercentage
                 val areaPercentage = (lastPercentageHeight * lastPercentageWidht) / 100
@@ -124,7 +117,6 @@ open class ProductConstraintLayout :
             onShow()
         } else {
             onShowOver()
-            maxAreaPercentage = 0
         }
     }
 
@@ -223,11 +215,11 @@ open class ProductConstraintLayout :
     }
 
     override fun onScrollChanged() {
-        calculateVisibility()
+        calculateVisibility(isFromGlobal = false)
     }
 
     override fun onGlobalLayout() {
-        calculateVisibility()
+        calculateVisibility(isFromGlobal = true)
         removeOnGlobalLayoutListener()
     }
 
@@ -265,6 +257,7 @@ open class ProductConstraintLayout :
             mPercentageListener?.onShowOver(maxAreaPercentage)
             viewDetachedFromWindows = true
         }
+        maxAreaPercentage = 0
     }
 
     private fun inflateView() {
@@ -294,5 +287,12 @@ open class ProductConstraintLayout :
     companion object {
         const val DEV_OPT_ON_PERCENT_VIEW_ENABLED = "DEV_OPT_ON_PERCENT_VIEW_ENABLED"
         const val IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED = "IS_DEV_OPT_ON_PERCENT_VIEW_ENABLED"
+        private const val TOP = 1
+        private const val BOTTOM = 3
+        private const val RIGHT = 2
+        private const val LEFT = 4
+        private const val LEFT_AND_RIGHT = 5
+        private const val TOP_AND_BOTTOM = 6
+        private const val NOWHERE = 7
     }
 }
