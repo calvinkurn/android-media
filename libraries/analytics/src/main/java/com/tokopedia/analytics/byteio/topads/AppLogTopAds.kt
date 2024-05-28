@@ -18,7 +18,7 @@ import org.json.JSONObject
  */
 object AppLogTopAds {
 
-    private const val EXTERNAL_SEARCH = "external search"
+    private const val EXTERNAL_SEARCH = "external%20search"
     var isSearchPageNonEmptyState = true
 
     /**
