@@ -38,6 +38,7 @@ import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
+import com.tokopedia.play_common.websocket.SocketDebounce
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -96,7 +97,8 @@ class PlayBroadcastModule(
         userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers,
         localCacheHandler: LocalCacheHandler,
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        socketDebounce: SocketDebounce,
     ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
@@ -104,6 +106,7 @@ class PlayBroadcastModule(
             dispatchers,
             context,
             localCacheHandler,
+            socketDebounce,
         )
     }
 

@@ -44,6 +44,7 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.play_common.websocket.SocketDebounce
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -158,14 +159,16 @@ class PlayModule {
         @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers,
-        localCacheHandler: LocalCacheHandler
+        localCacheHandler: LocalCacheHandler,
+        socketDebounce: SocketDebounce,
     ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
             dispatchers,
             context,
-            localCacheHandler
+            localCacheHandler,
+            socketDebounce,
         )
     }
 

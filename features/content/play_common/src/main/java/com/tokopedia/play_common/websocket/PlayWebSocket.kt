@@ -11,7 +11,13 @@ interface PlayWebSocket {
 
     fun send(message: String)
 
-    fun connect(channelId: String, warehouseId: String, gcToken: String, source: String)
+    fun connect(
+        channelId: String,
+        warehouseId: String,
+        gcToken: String,
+        source: String,
+        isRetry: Boolean,
+    )
 
     fun close()
 }
