@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
@@ -41,7 +40,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 class FeedMainViewModel @AssistedInject constructor(
     @Assisted val activeTabSource: ActiveTabSource,
     private val repository: FeedRepository,
-    private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val onBoardingPreferences: OnBoardingPreferences,
     private val userSession: UserSessionInterface,
     private val uiEventManager: UiEventManager<FeedMainEvent>,
@@ -210,12 +208,6 @@ class FeedMainViewModel @AssistedInject constructor(
 
     fun setHasShownTooltip() {
         tooltipManager.setHasShownTooltip()
-    }
-
-    fun deletePostCache() {
-        viewModelScope.launch {
-            deletePostCacheUseCase(Unit)
-        }
     }
 
     fun updateUserInfo() {

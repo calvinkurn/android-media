@@ -486,7 +486,7 @@ class DiscoveryViewModelTest {
         coEvery { pageInfo.showChooseAddress } returns true
         coEvery { discoveryPageData.pageInfo } returns pageInfo
         coEvery {
-            discoveryDataUseCase.getDiscoveryPageDataUseCase(any(), any(), any(), any(), any())
+            discoveryDataUseCase.getDiscoveryPageDataUseCase(any(), any(), any(), any(), any(), any())
         } returns discoveryPageData
 
         viewModel.getDiscoveryData(mutableMapOf(), localCacheModel)
@@ -509,7 +509,7 @@ class DiscoveryViewModelTest {
         coEvery { pageInfo.identifier } returns "xyz"
         coEvery { discoveryPageData.pageInfo } returns pageInfo
         coEvery {
-            discoveryDataUseCase.getDiscoveryPageDataUseCase(any(), any(), any(), any(), any())
+            discoveryDataUseCase.getDiscoveryPageDataUseCase(any(), any(), any(), any(), any(), any())
         } returns discoveryPageData
 
         viewModel.getDiscoveryData(mutableMapOf(), localCacheModel)
@@ -524,7 +524,7 @@ class DiscoveryViewModelTest {
     fun `test for getDiscoveryData when getDiscoveryPageDataUseCase throws error`() {
         val localCacheModel: LocalCacheModel = mockk(relaxed = true)
         coEvery {
-            discoveryDataUseCase.getDiscoveryPageDataUseCase(any(), any(), any(), any(), any())
+            discoveryDataUseCase.getDiscoveryPageDataUseCase(any(), any(), any(), any(), any(), any())
         } throws Exception("error")
 
         viewModel.getDiscoveryData(mutableMapOf(), localCacheModel)
@@ -735,6 +735,7 @@ class DiscoveryViewModelTest {
     ) {
         coEvery {
             discoveryDataUseCase.getDiscoveryPageDataUseCase(
+                any(),
                 any(),
                 any(),
                 any(),

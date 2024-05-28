@@ -155,6 +155,7 @@ class DiscoveryViewModel @Inject constructor(
     val scrollState: LiveData<ScrollData> = _scrollState
 
     var pageIdentifier: String = ""
+    var additionalQueryParamsString: String = ""
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
@@ -438,7 +439,8 @@ class DiscoveryViewModel @Inject constructor(
                     queryParameterMap,
                     queryParameterMapWithRpc,
                     queryParameterMapWithoutRpc,
-                    userAddressData
+                    userAddressData,
+                    additionalQueryParamsString,
                 )
                 pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                 pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()

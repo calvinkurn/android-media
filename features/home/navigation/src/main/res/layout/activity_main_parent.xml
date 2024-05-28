@@ -36,4 +36,5 @@
         app:viewPagerBackground="@color/Unify_Background"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools" />
+
 </LinearLayout>

@@ -2,7 +2,7 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.creation.common.upload.domain.usecase.post.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.data.FeedTabsModelBuilder
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
@@ -44,7 +44,6 @@ class FeedMainViewModelTest {
     private val activeTabSource = ActiveTabSource(null, 0)
 
     private val repository: FeedRepository = mockk()
-    private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = coroutineTestRule.dispatchers
@@ -72,7 +71,6 @@ class FeedMainViewModelTest {
         viewModel = FeedMainViewModel(
             activeTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
             uiEventManager,
@@ -93,7 +91,6 @@ class FeedMainViewModelTest {
         val mViewModel = FeedMainViewModel(
             activeTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
             uiEventManager,
@@ -285,13 +282,6 @@ class FeedMainViewModelTest {
     }
 
     @Test
-    fun onDeletePostCache() {
-        viewModel.deletePostCache()
-
-        coVerify(exactly = 1) { deletePostCacheUseCase(Unit) }
-    }
-
-    @Test
     fun onUpdateUserInfo_whenUserNotLoggedIn_shouldEmitEvent() {
         // given
         coEvery { userSession.isLoggedIn } returns false
@@ -480,7 +470,6 @@ class FeedMainViewModelTest {
         coEvery { factory.create(mActiveTabSource) } returns FeedMainViewModel(
             mActiveTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
             uiEventManager,
