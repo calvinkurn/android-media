@@ -213,20 +213,27 @@ private fun EvaluateNavigation(
     navigate: AutoCompleteNavigate?,
     listener: AutoCompleteListener?,
 ) {
-    if (navigate != null) {
-        LocalContext.current.apply {
-            val modifiedApplink = getModifiedApplink(
-                navigate.applink,
-                viewModel.stateValue.parameter,
-                enterMethod(navigate.featureId),
-            )
+    if(navigate == null) return
+    handlePageDataBeforeNavigated(viewModel)
+    LocalContext.current.apply {
+        val modifiedApplink = getModifiedApplink(
+            navigate.applink,
+            viewModel.stateValue.parameter,
+            enterMethod(navigate.featureId),
+        )
 
-            AppLogAnalytics.putPageData(AppLogParam.IS_SHADOW, true)
+        AppLogAnalytics.putPageData(AppLogParam.IS_SHADOW, true)
 
-            listener?.finish()
-            RouteManager.route(this, modifiedApplink)
-        }
-        viewModel.onNavigated()
+        listener?.finish()
+        RouteManager.route(this, modifiedApplink)
+    }
+    viewModel.onNavigated()
+
+}
+
+private fun handlePageDataBeforeNavigated(viewModel: AutoCompleteViewModel){
+    if(viewModel.isInitialState) {
+        AppLogAnalytics.removePageData(NEW_SUG_SESSION_ID)
     }
 }
 

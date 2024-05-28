@@ -14,6 +14,7 @@ import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.navigation.DeeplinkNavigationUtil;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
@@ -25,6 +26,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.NewMainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
@@ -49,6 +51,8 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private SharedPreferences preferences;
     private SharedPreferences.OnSharedPreferenceChangeListener deepLinkListener;
+
+    private DeeplinkNavigationUtil deeplinkNavigationUtil = new DeeplinkNavigationUtil();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,10 +147,14 @@ public class ConsumerSplashScreen extends SplashScreen {
         // if this SplashScreenActivity is the root means this open first time, so open Home
         // if this is not root, this SplashScreen might be triggered from opening branch link.
         if (isTaskRoot()) {
-            Intent homeIntent = new Intent(this, MainParentActivity.class);
+            Intent homeIntent;
+            if (deeplinkNavigationUtil.newHomeNavEnabled()) {
+                homeIntent = new Intent(this, NewMainParentActivity.class);
+            } else {
+                homeIntent = new Intent(this, MainParentActivity.class);
+            }
             startActivity(homeIntent);
         }
         finish();
     }
-
 }

@@ -3,11 +3,13 @@
 
     <string name="main_nav_args_source_key">pageSource</string>
     <string name="main_nav_args_source_path_key">pageSourcePath</string>
+    <string name="main_nav_args_is_acting_as_account_page_key">isActingAsAccountPage</string>
 
     <string name="content_desc_review">review star</string>
     <string name="content_desc_product_image">product image</string>
 
     <string name="title_main_nav">Menu Utama</string>
+    <string name="title_main_nav_account_page">Akun</string>
 
     <string name="btn_login">Masuk</string>
     <string name="btn_register">Daftar</string>
