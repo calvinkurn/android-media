@@ -211,6 +211,7 @@ class ShareExAnalytics @Inject constructor(
             }
             ShareExPageTypeEnum.PLAY -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_10458
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GROUP_CHAT_ROOM
             }
             else -> Unit
         }
