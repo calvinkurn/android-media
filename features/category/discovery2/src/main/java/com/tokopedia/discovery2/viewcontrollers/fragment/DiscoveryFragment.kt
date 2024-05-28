@@ -176,6 +176,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -353,6 +354,11 @@ open class DiscoveryFragment :
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        SearchRollenceController.fetchInboxNotifTopNavValue()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -448,7 +454,18 @@ open class DiscoveryFragment :
                         )
                     }
             )
+            configureSearchStyle()
         }
+    }
+
+    private fun configureSearchStyle() {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        val searchStyle = if (enableSearchRedesign) {
+            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
+        } else {
+            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
+        }
+        navToolbar.setSearchStyle(searchStyle, showSearchBtn = false)
     }
 
     @SuppressLint("RestrictedApi")
