@@ -650,7 +650,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
                     tools:visibility="visible" />
 
-                <com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
+                <com.tokopedia.cart.view.customview.CartQuantityEditorView
                     android:id="@+id/qty_editor_product"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
