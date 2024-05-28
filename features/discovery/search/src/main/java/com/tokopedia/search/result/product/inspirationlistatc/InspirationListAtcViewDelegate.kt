@@ -85,7 +85,11 @@ class InspirationListAtcViewDelegate @Inject constructor(
         product: InspirationCarouselDataView.Option.Product,
     ) {
         InspirationCarouselTracking.trackCarouselClickAtc(trackingData)
+    }
 
+    override fun trackAtcClicked(
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
         AppLogSearch.eventSearchResultClick(product.asByteIOSearchResult(CLICK_ADD_TO_CART))
     }
 
