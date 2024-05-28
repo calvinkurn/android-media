@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.viewmodel
 
 import com.google.gson.Gson
+import com.tokopedia.cart.view.CartViewModel
 import com.tokopedia.cart.view.uimodel.LoadRecommendationState
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import io.mockk.coEvery
@@ -32,7 +33,7 @@ class GetRecommendationTest : BaseCartViewModelTest() {
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
         // WHEN
-        cartViewModel.processGetRecommendationData()
+        cartViewModel.processGetRecommendationData(CartViewModel.PAGE_NAME_RECOMMENDATION)
 
         // THEN
         assertEquals(
@@ -47,7 +48,7 @@ class GetRecommendationTest : BaseCartViewModelTest() {
         coEvery { getRecommendationUseCase.getData(any()) } throws IllegalStateException()
 
         // WHEN
-        cartViewModel.processGetRecommendationData()
+        cartViewModel.processGetRecommendationData(CartViewModel.PAGE_NAME_RECOMMENDATION)
 
         // THEN
         // THEN

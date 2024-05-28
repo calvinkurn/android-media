@@ -301,6 +301,7 @@ class CartViewModel @Inject constructor(
         const val RECENT_VIEW_XSOURCE = "recentview"
         const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
         const val PAGE_NAME_RECOMMENDATION = "cart"
+        const val PAGE_NAME_RECOMMENDATION_EMPTY = "empty_cart"
         const val RECOMMENDATION_XSOURCE = "recom_widget"
         const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
         const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
@@ -1145,7 +1146,7 @@ class CartViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun processGetRecommendationData() {
+    fun processGetRecommendationData(pageName: String) {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
         viewModelScope.launchCatchError(
             context = dispatchers.io,
@@ -1154,7 +1155,7 @@ class CartViewModel @Inject constructor(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
                         xSource = RECOMMENDATION_XSOURCE,
-                        pageName = PAGE_NAME_RECOMMENDATION,
+                        pageName = pageName,
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true
