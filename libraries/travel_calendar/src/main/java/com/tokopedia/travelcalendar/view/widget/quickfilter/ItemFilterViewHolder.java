@@ -6,7 +6,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
+import com.tokopedia.travelcalendar.R;
+
 
 /**
  * Created by nabillasabbaha on 1/9/18.
@@ -48,12 +49,12 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
         GradientDrawable drawableInside = (GradientDrawable) layoutInside.getBackground().getCurrent().mutate();
         GradientDrawable drawableBorder = (GradientDrawable) layoutBorder.getBackground().getCurrent().mutate();
         if (selected) {
-            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
-            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G100));
-            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
+            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500));
+            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN50));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500));
         } else {
-            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N100));
-            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN200));
+            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0));
             filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
     }

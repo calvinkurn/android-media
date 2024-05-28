@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.base.BaseCustomView;
+
+import com.tokopedia.travelcalendar.R;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class QuickSingleFilterView extends BaseCustomView {
 
     @LayoutRes
     protected int getLayoutRes(){
-        return R.layout.widget_quick_filter;
+        return R.layout.travel_calendar_widget_quick_filter;
     }
 
     protected void initialAdapter() {
