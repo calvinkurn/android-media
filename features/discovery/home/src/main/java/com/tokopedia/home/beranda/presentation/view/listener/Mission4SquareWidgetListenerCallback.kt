@@ -46,9 +46,8 @@ class Mission4SquareWidgetListenerCallback(
             AppLogRecommendation.sendCardClickAppLog(model.asCardModel(model.isCache))
         }
 
-        AppLogAnalytics.putPageData(
-            key = AppLogParam.ENTER_METHOD,
-            value = "${model.data.pageName}_${model.cardPosition + 1}"
+        AppLogAnalytics.setGlobalParamOnClick(
+            enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${model.data.pageName}_${model.cardPosition + 1}")
         )
     }
 
