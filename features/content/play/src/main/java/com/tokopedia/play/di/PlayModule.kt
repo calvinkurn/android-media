@@ -193,9 +193,10 @@ class PlayModule {
     fun providePlaySSE(
         @ApplicationContext appContext: Context,
         userSession: UserSessionInterface,
-        dispatchers: CoroutineDispatchers
+        dispatchers: CoroutineDispatchers,
+        socketDebounce: SocketDebounce,
     ): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, appContext)
+        PlayChannelSSEImpl(userSession, dispatchers, appContext, socketDebounce)
 
     /**
      * Sharing Experience

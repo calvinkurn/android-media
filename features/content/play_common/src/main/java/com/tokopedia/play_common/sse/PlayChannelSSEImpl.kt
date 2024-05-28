@@ -9,6 +9,7 @@ import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.play_common.sse.model.SSEAction
 import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
+import com.tokopedia.play_common.websocket.SocketDebounce
 import com.tokopedia.sse.OkSse
 import com.tokopedia.sse.ServerSentEvent
 import com.tokopedia.url.TokopediaUrl
@@ -24,13 +25,33 @@ import javax.inject.Inject
 class PlayChannelSSEImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val socketDebounce: SocketDebounce,
 ) : PlayChannelSSE {
 
     private var sse: ServerSentEvent? = null
     private var sseFlow = MutableSharedFlow<SSEAction>(extraBufferCapacity = 100)
 
-    override fun connect(channelId: String, pageSource: String, gcToken: String) {
+    override fun connect(channelId: String, pageSource: String, gcToken: String, isRetry: Boolean) {
+        if (isRetry) {
+            socketDebounce.debounce {
+                connect(channelId, pageSource, gcToken)
+            }
+        } else {
+            connect(channelId, pageSource, gcToken)
+        }
+    }
+
+    override fun close() {
+        sse?.close()
+        socketDebounce.close()
+    }
+
+    override fun listen(): Flow<SSEAction> {
+        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
+    }
+
+    private fun connect(channelId: String, pageSource: String, gcToken: String) {
         SSELogger.getInstance(context).init(buildGeneralInfo(channelId, gcToken, pageSource).toString())
         SSELogger.getInstance(context).send("SSE Connecting...")
 
@@ -85,14 +106,6 @@ class PlayChannelSSEImpl @Inject constructor(
                 }
             }
         )
-    }
-
-    override fun close() {
-        sse?.close()
-    }
-
-    override fun listen(): Flow<SSEAction> {
-        return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
     }
 
     private fun buildGeneralInfo(channelId: String, gcToken: String, pageSource: String): Map<String, String> {

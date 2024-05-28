@@ -8,7 +8,12 @@ import kotlinx.coroutines.flow.Flow
  */
 interface PlayChannelSSE {
 
-    fun connect(channelId: String, pageSource: String, gcToken: String)
+    fun connect(
+        channelId: String,
+        pageSource: String,
+        gcToken: String,
+        isRetry: Boolean,
+    )
 
     fun close()
 

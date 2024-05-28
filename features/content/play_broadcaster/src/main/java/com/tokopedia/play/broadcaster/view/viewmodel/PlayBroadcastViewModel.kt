@@ -1921,6 +1921,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleBroadcasterPause() {
         viewModelScope.launchCatchError(block = {
             broadcastTimer.pause()
+            closeWebSocket()
             updateChannelStatus(PlayChannelStatusType.Pause)
         }) {
             logger.logBroadcastError(it)

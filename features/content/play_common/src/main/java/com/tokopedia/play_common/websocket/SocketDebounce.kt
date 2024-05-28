@@ -11,6 +11,8 @@ class SocketDebounce @Inject constructor() {
 
     private var numOfRetry = 0
 
+    private val handler = Handler(Looper.getMainLooper())
+
     fun debounce(callback: () -> Unit) {
         numOfRetry++
 
@@ -20,9 +22,13 @@ class SocketDebounce @Inject constructor() {
             DEFAULT_DELAY_MULTIPLIER * numOfRetry
         }
 
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler.postDelayed({
             callback()
         }, duration)
+    }
+
+    fun close() {
+        handler.removeCallbacksAndMessages(null)
     }
 
     companion object {

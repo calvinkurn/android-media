@@ -161,6 +161,7 @@ class PlayUpcomingFragment @Inject constructor(
                 playUpcomingViewModel.latestChannelData
             )
             sendImpression()
+            playUpcomingViewModel.stopSSE()
         } catch (ignore: Exception) {}
     }
 

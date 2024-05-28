@@ -139,6 +139,7 @@ class PlayWebSocketImpl(
     override fun close() {
         try {
             mWebSocket?.close(1000, "Closing Socket")
+            socketDebounce.close()
         } catch (e: Throwable) { }
     }
 
