@@ -28,7 +28,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.DEFAULT_SEARCH_KEYWORD
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.DEFAULT_SEARCH_KEYWORD_OUTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.NORMAL_SEARCH
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -85,7 +84,6 @@ import com.tokopedia.discovery.common.microinteraction.SEARCH_BAR_MICRO_INTERACT
 import com.tokopedia.discovery.common.microinteraction.SearchBarMicroInteractionAttributes
 import com.tokopedia.discovery.common.microinteraction.autocomplete.autoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.discovery.common.reimagine.SearchRolloutUniverse
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.iris.IrisAnalytics
@@ -503,14 +501,14 @@ open class BaseAutoCompleteActivity :
         overridePendingTransition(0, 0)
     }
 
-    override fun onQueryTextSubmit(clickSearch: Boolean): Boolean {
+    override fun onQueryTextSubmit(): Boolean {
         val searchParameterCopy = viewModel?.getSubmitSearchParameter() ?: return false
 
         if (getQueryOrHint(searchParameterCopy).isEmpty()) return true
 
         sendTrackingByteIOTrendingWords(searchParameterCopy)
 
-        val searchResultApplink = createSearchResultApplink(searchParameterCopy, clickSearch)
+        val searchResultApplink = createSearchResultApplink(searchParameterCopy)
 
         sendTrackingSubmitQuery(searchParameterCopy, searchResultApplink)
         clearFocusSearchView()
@@ -536,14 +534,14 @@ open class BaseAutoCompleteActivity :
         return searchParameter.getTrackingSearchQuery().ifEmpty { searchParameter.get(HINT) ?: "" }
     }
 
-    private fun createSearchResultApplink(searchParameter: Map<String, String>, clickSearchBtn: Boolean): String {
+    private fun createSearchResultApplink(searchParameter: Map<String, String>): String {
         val parameter = searchParameter
         val searchResultApplink = parameter.getWithDefault(
             BASE_SRP_APPLINK,
             ApplinkConstInternalDiscovery.SEARCH_RESULT
         )
 
-        val enterMethod = enterMethod(searchParameter, clickSearchBtn)
+        val enterMethod = enterMethod(searchParameter)
         val modifiedParameter = parameter.toMutableMap().apply {
             addComponentId()
             addQueryIfEmpty()
@@ -554,10 +552,8 @@ open class BaseAutoCompleteActivity :
         return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(modifiedParameter)}"
     }
 
-    private fun enterMethod(searchParameter: Map<String, String>, clickSearchBtn: Boolean): String {
+    private fun enterMethod(searchParameter: Map<String, String>): String {
         return when {
-            // Search with clicking the "Cari" button
-            clickSearchBtn -> DEFAULT_SEARCH_KEYWORD_OUTER
             // Enter with placeholder
             searchParameter[SearchApiConst.Q].isNullOrEmpty() -> DEFAULT_SEARCH_KEYWORD
             // Enter with keyword input

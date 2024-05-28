@@ -103,7 +103,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
@@ -116,8 +115,8 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigContr
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
-import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.hasInboxCoachMarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setInboxCoachMarkHasShown
@@ -155,8 +154,8 @@ import com.tokopedia.home.beranda.presentation.view.listener.ShopFlashSaleWidget
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.shorten.TwoSquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.shorten.TwoSquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
@@ -868,14 +867,16 @@ open class HomeRevampFragment :
                     setInboxCoachMarkHasShown(ctx.applicationContext)
                     homeCoachmarkListener?.onHomeCoachMarkFinished()
                 }
-                showCoachMark(arrayListOf(
-                    CoachMark2Item(
-                        inboxView,
-                        getString(R.string.home_inbox_coach_mark_title),
-                        getString(R.string.home_inbox_coach_mark_description),
-                        position = CoachMark2.POSITION_BOTTOM
+                showCoachMark(
+                    arrayListOf(
+                        CoachMark2Item(
+                            inboxView,
+                            getString(R.string.home_inbox_coach_mark_title),
+                            getString(R.string.home_inbox_coach_mark_description),
+                            position = CoachMark2.POSITION_BOTTOM
+                        )
                     )
-                ))
+                )
             }
         } else {
             homeCoachmarkListener?.onHomeCoachMarkFinished()
@@ -888,11 +889,11 @@ open class HomeRevampFragment :
             val balanceWidgetSubscriptionView =
                 getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
             if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && (
-                    (
-                        balanceWidgetSubscriptionView?.y
-                            ?: VIEW_DEFAULT_HEIGHT
-                        ) > VIEW_DEFAULT_HEIGHT
-                    )
+                (
+                    balanceWidgetSubscriptionView?.y
+                        ?: VIEW_DEFAULT_HEIGHT
+                    ) > VIEW_DEFAULT_HEIGHT
+                )
             ) {
                 return balanceWidgetSubscriptionView
             }
@@ -1567,8 +1568,11 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            val takeLimit: Int = if ((layoutManager?.findLastVisibleItemPosition()
-                    ?: DEFAULT_BLOCK_SIZE) >= 0) {
+            val takeLimit: Int = if ((
+                layoutManager?.findLastVisibleItemPosition()
+                    ?: DEFAULT_BLOCK_SIZE
+                ) >= 0
+            ) {
                 layoutManager?.findLastVisibleItemPosition() ?: DEFAULT_BLOCK_SIZE
             } else {
                 DEFAULT_BLOCK_SIZE
@@ -2167,25 +2171,39 @@ open class HomeRevampFragment :
                 searchbarImpressionCallback = {},
                 shouldShowTransition = false,
                 hintImpressionCallback = { hintData, index ->
-                    if (hintData.imprId.isNotBlank())
+                    if (hintData.imprId.isNotBlank()) {
                         AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
+                    }
                 },
                 hintClickCallback = { hintData, index ->
-                    if (hintData.imprId.isNotBlank())
+                    if (hintData.imprId.isNotBlank()) {
                         AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
+                    }
                 },
                 searchBtnClickCallback = { hintData, index, isUsingDefaultHint ->
-                    val keyword = data.placeholder.safeEncodeUtf8()
-                    if (keyword.isBlank() || isUsingDefaultHint) {
-                        navigateToInitialSearch(data)
-                    } else {
-                        navigateToSRP(keyword)
-                    }
-                    if (hintData.imprId.isNotBlank()) {
-                        AppLogSearch.eventTrendingWordsClick(appLogTrendingWords(index, hintData))
-                    }
+                    setOnSearchBtnClicked(data, hintData, index, isUsingDefaultHint)
                 }
             )
+        }
+    }
+
+    private fun setOnSearchBtnClicked(
+        data: SearchPlaceholder.Data,
+        hintData: HintData,
+        index: Int,
+        isUsingDefaultHint: Boolean
+    ) {
+        val keyword = data.placeholder.safeEncodeUtf8()
+        if (keyword.isBlank() || isUsingDefaultHint) {
+            navigateToInitialSearch(data)
+        } else {
+            navigateToSRP(keyword)
+        }
+        if (hintData.imprId.isNotBlank()) {
+            val trendingWords = appLogTrendingWords(index, hintData).copy(
+                wordsSource = AppLogSearch.ParamValue.SEARCH_BAR_BUTTON
+            )
+            AppLogSearch.eventTrendingWordsClick(trendingWords)
         }
     }
 
@@ -2193,7 +2211,7 @@ open class HomeRevampFragment :
         val params = mapOf(
             SearchApiConst.Q to keyword,
             SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_PRODUCT,
-            SearchApiConst.ENTER_METHOD to AppLogSearch.ParamKey.DEFAULT_SEARCH_KEYWORD_OUTER
+            SearchApiConst.ENTER_METHOD to AppLogSearch.ParamValue.DEFAULT_SEARCH_KEYWORD_OUTER
         )
         val srpAppLink = UriUtil.buildUriAppendParam(ApplinkConstInternalDiscovery.SEARCH_RESULT, params)
         RouteManager.route(context, srpAppLink)
@@ -2206,7 +2224,7 @@ open class HomeRevampFragment :
             HOME_SOURCE,
             data.keyword.safeEncodeUtf8(),
             isFirstInstall().toString(),
-            AppLogSearch.ParamValue.ENTER,
+            AppLogSearch.ParamValue.ENTER
         )
 
         navToolbarMicroInteraction
@@ -2220,8 +2238,8 @@ open class HomeRevampFragment :
             content = hintData.keyword.trim(),
             groupId = hintData.groupId,
             imprId = hintData.imprId,
-            wordsSource = hintData.wordsSource,
-            searchEntrance = PageName.HOME,
+            wordsSource = AppLogSearch.ParamValue.SEARCH_BAR_OUTER,
+            searchEntrance = PageName.HOME
         )
 
     private fun hints(data: SearchPlaceholder.Data): List<HintData> {
@@ -2230,22 +2248,23 @@ open class HomeRevampFragment :
                 ?.filter { !it.placeholder.isNullOrBlank() && !it.keyword.isNullOrEmpty() }
                 ?: listOf()
 
-        return if (placeholders.isNotEmpty())
+        return if (placeholders.isNotEmpty()) {
             placeholders.map { hintData(it, data.wordsSource, data.imprId) }
-        else
+        } else {
             listOf(hintData(data, data.wordsSource, data.imprId))
+        }
     }
 
     private fun hintData(
         placeholder: SearchPlaceholder.PlaceHolder,
         wordsSource: String,
-        imprId: String,
+        imprId: String
     ) = HintData(
         placeholder = placeholder.placeholder ?: "",
         keyword = placeholder.keyword ?: "",
         groupId = placeholder.groupId,
         imprId = imprId,
-        wordsSource = wordsSource,
+        wordsSource = wordsSource
     )
 
     private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
@@ -2886,17 +2905,17 @@ open class HomeRevampFragment :
     private fun initEggDragListener() {
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.setOnDragListener(object :
-            FloatingEggButtonFragment.OnDragListener {
-            override fun onDragStart() {
-                refreshLayout?.setCanChildScrollUp(true)
-                refreshLayoutOld?.setCanChildScrollUp(true)
-            }
+                FloatingEggButtonFragment.OnDragListener {
+                override fun onDragStart() {
+                    refreshLayout?.setCanChildScrollUp(true)
+                    refreshLayoutOld?.setCanChildScrollUp(true)
+                }
 
-            override fun onDragEnd() {
-                refreshLayout?.setCanChildScrollUp(false)
-                refreshLayoutOld?.setCanChildScrollUp(false)
-            }
-        })
+                override fun onDragEnd() {
+                    refreshLayout?.setCanChildScrollUp(false)
+                    refreshLayoutOld?.setCanChildScrollUp(false)
+                }
+            })
     }
 
     override fun onPromoDragStart() {}

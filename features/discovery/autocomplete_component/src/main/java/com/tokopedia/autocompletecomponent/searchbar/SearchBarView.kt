@@ -300,7 +300,7 @@ class SearchBarView(
             binding.autocompleteButtonDivider.gone()
             binding.tvSearchCta.visible()
             binding.tvSearchCta.setOnClickListener {
-                onSubmitQuery(clickSearch = true)
+                onSubmitQuery()
             }
             val clearIconMargin = context.dpToPx(2).toInt()
             binding.autocompleteClearButton.setPadding(0)
@@ -318,9 +318,9 @@ class SearchBarView(
         }
     }
 
-    private fun onSubmitQuery(clickSearch: Boolean = false) {
+    private fun onSubmitQuery() {
         val searchTextView = binding?.searchTextView ?: return
-        if (!mOnQueryChangeListener.onQueryTextSubmit(clickSearch)) {
+        if (!mOnQueryChangeListener.onQueryTextSubmit()) {
             searchTextView.text = null
         }
     }
@@ -636,7 +636,7 @@ class SearchBarView(
     }
 
     interface OnQueryTextListener {
-        fun onQueryTextSubmit(clickSearch: Boolean): Boolean
+        fun onQueryTextSubmit(): Boolean
         fun onQueryTextChanged(query: String)
         fun setIsTyping(isTyping: Boolean)
     }
