@@ -586,5 +586,6 @@
     <string name="label_variant_sizechart_required">Panduan ukuran harus diisi</string>
     <string name="label_variant_sizechart_title_required">*\n</string>
     <string name="text_required">*</string>
+    <string name="error_size_chart_empty">Sizechart harus diisi.</string>
 
 </resources>

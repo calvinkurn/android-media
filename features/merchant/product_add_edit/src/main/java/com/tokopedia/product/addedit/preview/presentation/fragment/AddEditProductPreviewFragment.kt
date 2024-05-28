@@ -677,8 +677,8 @@ class AddEditProductPreviewFragment :
         }
 
         val validateMessage = viewModel.validateProductInput(
-            viewModel.productInputModel.value?.detailInputModel
-                ?: DetailInputModel()
+            viewModel.productInputModel.value
+                ?: ProductInputModel()
         )
         val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
         val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
@@ -1637,7 +1637,7 @@ class AddEditProductPreviewFragment :
         // upload the product to the server
         val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
         context?.let {
-            val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
+            val validateMessage = viewModel.validateProductInput(productInputModel)
             if (validateMessage.isEmpty()) {
                 startProductAddService(productInputModel)
                 view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)

@@ -408,8 +408,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
             })
     }
 
-    fun validateProductInput(detailInputModel: DetailInputModel): String {
+    fun validateProductInput(productInputModel: ProductInputModel): String {
         var errorMessage = ""
+        val detailInputModel = productInputModel.detailInputModel
+        val variantInputModel = productInputModel.variantInputModel
         // validate category input
         if (detailInputModel.categoryId.isEmpty() || detailInputModel.categoryId == "0") {
             errorMessage = resourceProvider.getInvalidCategoryIdErrorMessage() ?: ""
@@ -418,6 +420,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
         // validate images empty
         if (detailInputModel.imageUrlOrPathList.isEmpty()) {
             errorMessage = resourceProvider.getInvalidPhotoCountErrorMessage() ?: ""
+        }
+
+
+        if (variantInputModel.sizecharts.urlOriginal.isEmpty()) {
+            errorMessage = resourceProvider.getSizeChartErrorMessage() ?: ""
         }
 
         // validate images already reached limit

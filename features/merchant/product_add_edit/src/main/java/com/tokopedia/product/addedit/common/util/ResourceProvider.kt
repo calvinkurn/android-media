@@ -169,6 +169,10 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_invalid_photo_reach_maximum)
     }
 
+    fun getSizeChartErrorMessage(): String? {
+        return getString(R.string.error_size_chart_empty)
+    }
+
     // Product specification properties
 
     fun getProductSpecificationTips(): String {
@@ -220,4 +224,5 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getGqlErrorMessage(): String? {
         return getString(R.string.error_gql_failed)
     }
+
 }
