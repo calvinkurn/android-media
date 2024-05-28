@@ -866,6 +866,7 @@ open class HomeRevampFragment :
             inboxCoachMark?.run {
                 onDismissListener = {
                     setInboxCoachMarkHasShown(ctx.applicationContext)
+                    homeCoachmarkListener?.onHomeCoachMarkFinished()
                 }
                 showCoachMark(arrayListOf(
                     CoachMark2Item(
@@ -876,6 +877,8 @@ open class HomeRevampFragment :
                     )
                 ))
             }
+        } else {
+            homeCoachmarkListener?.onHomeCoachMarkFinished()
         }
     }
 
