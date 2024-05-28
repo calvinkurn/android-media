@@ -26,7 +26,6 @@ import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
-import com.tokopedia.loginregister.login.domain.LoginTiktokUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
@@ -73,7 +72,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val tickerInfoUseCase: TickerInfoUseCase,
     private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
-    private val loginTiktokUseCase: LoginTiktokUseCase,
     private val loginSdkConsentUseCase: LoginSdkConsentUseCase,
     private val validateClientUseCase: ValidateClientUseCase,
     private val authorizeSdkUseCase: AuthorizeSdkUseCase,
@@ -278,34 +276,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         )
     }
 
-    fun exchangeTiktokCode(code: String, codeVerifier: String, redirectUri: String) {
-        launch {
-            try {
-                userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
-                val result = loginTiktokUseCase(
-                    LoginTiktokUseCase.Param(
-                        code = code,
-                        codeVerifier = codeVerifier,
-                        redirectUri = redirectUri
-                    )
-                )
-                LoginV2Mapper(userSession).map(
-                    result.loginToken,
-                    onSuccessLoginToken = {
-                        mutableLoginTokenV2Response.value = Success(it)
-                    },
-                    onErrorLoginToken = {
-                        mutableLoginTokenV2Response.value = Fail(it)
-                    },
-                    onShowPopupError = { showPopup(it.popupError) },
-                    onGoToActivationPage = { },
-                    onGoToSecurityQuestion = { }
-                )
-            } catch (e: Exception) {
-                mutableLoginTokenV2Response.value = Fail(e)
-            }
-        }
-    }
     fun loginEmail(email: String, password: String) {
         loginTokenUseCase.executeLoginEmailWithPassword(
             LoginTokenUseCase.generateParamLoginEmail(
