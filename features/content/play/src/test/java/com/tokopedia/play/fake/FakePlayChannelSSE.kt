@@ -18,7 +18,7 @@ class FakePlayChannelSSE(
 
     private var isOpen = false
 
-    override fun connect(channelId: String, pageSource: String, gcToken: String) {
+    override fun connect(channelId: String, pageSource: String, gcToken: String, isRetry: Boolean) {
         isOpen = true
     }
 
