@@ -36,9 +36,12 @@ class ChooseAddressWidget :
     ConstraintLayout,
     ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
-    constructor(context: Context?) : super(context)
+    constructor(context: Context?) : super(context) {
+        init()
+    }
     constructor(context: Context?, type: Int) : super(context) {
         this.type = type
+        init()
     }
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
         initWithAttrs(attrs)
@@ -78,6 +81,10 @@ class ChooseAddressWidget :
         } finally {
             attributes.recycle()
         }
+        init()
+    }
+
+    private fun init() {
         inflateView()
         initInjector()
         initViews()
