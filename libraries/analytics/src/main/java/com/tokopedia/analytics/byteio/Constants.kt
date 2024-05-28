@@ -268,7 +268,6 @@ object AppLogParam {
     const val MAIN_VIDEO_ID = "main_video_id"
     const val IS_SHADOW = "is_shadow"
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
-    const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
     const val PARENT_PRODUCT_ID = "parent_product_id"
     const val PARENT_TRACK_ID = "parent_track_id"
     const val PARENT_REQUEST_ID = "parent_request_id"
