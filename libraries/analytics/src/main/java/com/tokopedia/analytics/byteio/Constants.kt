@@ -186,7 +186,6 @@ enum class EnterMethod(val str: String) {
     CLICK_EXTERNAL_ADS("click_external_ads"),
     CLICK_HOME_ICON("click_home_icon"),
     CLICK_APP_ICON("click_app_icon"),
-    CLICK_RECOM_CARD_INFINITE("click_recom_card_infinite"),
     CLICK_INBOX_HOMEPAGE("click_inbox_homepage"),
     CLICK_NOTIFICATION_HOMEPAGE("click_notification_homepage"),
     CLICK_CART_ICON_HOMEPAGE("click_cart_icon_homepage"),

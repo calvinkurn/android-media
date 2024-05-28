@@ -577,7 +577,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(model.asCardTrackModel())
-        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${model.pageName}_${position + 1}"))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
                 model.topAdsImageUiModel,
@@ -637,7 +637,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         sendCardClickAppLog(item.asCardTrackModel())
-        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${item.pageName}_${position + 1}"))
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -651,7 +651,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
         sendCardClickAppLog(element.asCardTrackModel())
-        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(EnterMethod.CLICK_RECOM_CARD_INFINITE.str))
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${element.pageName}_${position + 1}"))
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
             position,
