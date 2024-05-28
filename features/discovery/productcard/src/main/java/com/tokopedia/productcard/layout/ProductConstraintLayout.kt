@@ -34,6 +34,7 @@ open class ProductConstraintLayout :
     private var debugTextView: TextView? = null
 
     private val rectf: Rect by lazy { Rect() }
+    private val screen: Rect by lazy { Rect(0, actionBarHeight, getScreenWidth(), getScreenHeight()) }
 
     constructor(context: Context) : super(context) {
         inflateView()
@@ -255,7 +256,6 @@ open class ProductConstraintLayout :
             val actualPosition = Rect()
             getGlobalVisibleRect(actualPosition)
             actualPosition.offset(0, -actionBarHeight)
-            val screen = Rect(0, actionBarHeight, getScreenWidth(), getScreenHeight())
             actualPosition.intersect(screen)
         } else {
             false
