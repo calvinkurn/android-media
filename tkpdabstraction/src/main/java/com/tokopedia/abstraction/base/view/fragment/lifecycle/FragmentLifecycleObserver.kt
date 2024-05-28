@@ -6,12 +6,6 @@ object FragmentLifecycleObserver {
 
     private val callbacks = arrayListOf<FragmentLifecycleCallback>()
 
-    fun onHiddenChanged(fragment: Fragment, hidden: Boolean) {
-        for (item in callbacks) {
-            item.onHiddenChanged(fragment, hidden)
-        }
-    }
-
     fun onFragmentStart(fragment: Fragment) {
         for (item in callbacks) {
             item.onFragmentStart(fragment)
