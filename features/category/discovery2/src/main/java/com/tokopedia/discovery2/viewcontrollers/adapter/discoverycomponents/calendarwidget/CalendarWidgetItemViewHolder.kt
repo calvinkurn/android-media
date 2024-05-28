@@ -14,7 +14,9 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -263,7 +265,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     @SuppressLint("ResourcePackage")
     private fun setUpCalendarForMultipleView(dataItem: DataItem) {
         val calendarParent: ConstraintLayout = itemView.findViewById(R.id.calendar_parent)
-        val calendarBody: View = itemView.findViewById(R.id.container_body)
         val calendarDateAlpha: View = itemView.findViewById(R.id.calendar_date_alpha)
         val calendarDate: Typography = itemView.findViewById(R.id.calendar_date)
         val calendarTitleImage: ImageUnify = itemView.findViewById(R.id.calendar_title_image)
@@ -323,7 +324,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                             }
                         )
                     )
-                    calendarBody.apply {
+                    calendarParent.apply {
                         setBackgroundColor(
                             ContextCompat.getColor(
                                 itemView.context,
