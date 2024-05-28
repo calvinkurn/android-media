@@ -45,7 +45,6 @@ class HomeFragmentAtfPositionErrorUiTest {
             setupGraphqlMockResponse(HomeAtfPositionErrorResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
-            setupAtfRefactorConfig(false)
             super.beforeActivityLaunched()
         }
     }
