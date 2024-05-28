@@ -232,6 +232,10 @@ object AppLogSearch {
         AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWordsMap))
     }
 
+    fun eventTrendingWordsClick(trendingWords: TrendingWords) {
+        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWords.toMap()))
+    }
+
     fun saveTrendingWordsClickData(trendingWords: TrendingWords) {
         AppLogAnalytics.putPageData(TRENDING_WORDS_CLICK_DATA_KEY, trendingWords.toMap())
     }

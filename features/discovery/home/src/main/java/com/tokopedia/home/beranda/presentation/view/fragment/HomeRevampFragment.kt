@@ -2178,8 +2178,9 @@ open class HomeRevampFragment :
                     } else {
                         navigateToSRP(keyword)
                     }
-                    if (hintData.imprId.isNotBlank())
-                        AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
+                    if (hintData.imprId.isNotBlank()) {
+                        AppLogSearch.eventTrendingWordsClick(appLogTrendingWords(index, hintData))
+                    }
                 }
             )
         }
