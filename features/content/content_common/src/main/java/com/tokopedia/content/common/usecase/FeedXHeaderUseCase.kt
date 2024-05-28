@@ -139,6 +139,13 @@ class FeedXHeaderUseCase @Inject constructor(
         
         fragment FeedXHeaderCDPTitle on FeedXHeaderCDPTitle {
           title
+          searchBar {
+            isActive
+            placeholder
+            weblink
+            applink
+            __typename
+          }
           __typename
         }
         """
