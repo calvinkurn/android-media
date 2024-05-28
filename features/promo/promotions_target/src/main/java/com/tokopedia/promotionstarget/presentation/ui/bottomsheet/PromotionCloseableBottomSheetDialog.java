@@ -1,5 +1,6 @@
 package com.tokopedia.promotionstarget.presentation.ui.bottomsheet;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import com.tokopedia.promotionstarget.R;
  * @author by nisie on 2/23/18.
  */
 
+@SuppressLint("UnifyComponentUsage")
 public class PromotionCloseableBottomSheetDialog extends BottomSheetDialog {
 
     Context context;
@@ -134,6 +136,7 @@ public class PromotionCloseableBottomSheetDialog extends BottomSheetDialog {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     private View inflateRoundedCloseableHeader(View view, String title, boolean isCloseable) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                 .rounded_closeable_bottom_sheet, null);
