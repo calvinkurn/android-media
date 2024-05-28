@@ -17,6 +17,8 @@
         android:background="@drawable/product_card_ribbon_background"
         app:typographyType="small"
         app:typographyWeight="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
         tools:text="20%"/>
 
     <androidx.appcompat.widget.AppCompatImageView

@@ -5,7 +5,8 @@
 
     <corners
         android:bottomLeftRadius="@dimen/home_mission_widget_clear_image_corner_radius"
-        android:bottomRightRadius="@dimen/home_mission_widget_clear_image_corner_radius"/>
+        android:bottomRightRadius="@dimen/home_mission_widget_clear_image_corner_radius"
+        android:topRightRadius="@dimen/home_mission_widget_clear_image_corner_radius"/>
     <solid android:color="@color/Unify_RN600"/>
 
 </shape>

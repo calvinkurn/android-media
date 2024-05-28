@@ -1,11 +1,11 @@
 package com.tokopedia.home_component.visitable.shorten
 
+import android.os.Bundle
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.shorten.internal.ShortenVisitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class MultiTwoSquareWidgetUiModel(
@@ -25,7 +25,7 @@ data class MultiTwoSquareWidgetUiModel(
 
     override fun visitableId() = id
     override fun equalsWith(b: Any?) = b == this
-    override fun getChangePayloadFrom(b: Any?) = null
+    override fun getChangePayloadFrom(b: Any?) = Bundle()
     override fun type(typeFactory: HomeComponentTypeFactory) = typeFactory.type(this)
 
     sealed class Status {
