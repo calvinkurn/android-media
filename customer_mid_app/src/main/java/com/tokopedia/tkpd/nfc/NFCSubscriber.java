@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.nfc;
 
-import static com.tokopedia.tkpd.utils.ActivityIntentCheckerKt.checkActivity;
+import static com.tokopedia.utils.security.ActivityIntentCheckerKt.checkActivity;
 
 import android.app.Activity;
 import android.app.Application;

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.utils
+package com.tokopedia.utils.security
 
 import android.app.Activity
 import android.content.Intent
