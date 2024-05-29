@@ -36,6 +36,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.loadImage
@@ -281,7 +282,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 setImageAdjustViewBoundPost(calendarFullImage, calendarImageUrl!!, dataItem)
 
                 //render full image will hide other component
-                calendarImage.gone()
+                calendarImage.invisible()
                 calendarTitle.hide()
                 calendarTitleImage.hide()
 
