@@ -91,7 +91,6 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                         iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
                         titleTokopediaPlus.text = tokopediaPlusData.title
                         descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
-                        descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
 
                         setOnClickListener {
                             listener?.onClick(pageSource, tokopediaPlusData)
@@ -123,7 +122,6 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                         iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
                         titleTokopediaPlus.text = tokopediaPlusData.title
                         descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
-                        descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
 
                         setOnClickListener {
                             listener?.onClick(pageSource, tokopediaPlusData)
