@@ -33,3 +33,15 @@ apply from: "buildconfig/appcompile/compile-wearosapp.gradle"
 
 
 apply from: "tools/composite_build_settings.gradle"
+
+ext.appProjectName = 'customerapp'
+ext.appAid = 573733
+//ext.hookDebug=true
+apply from: 'gradle/build-collect.gradle'
+
+gradle.startParameter.getTaskNames().each {
+    taskName ->
+        if(taskName.contains("package")){
+            ext.Scan = true
+        }
+}

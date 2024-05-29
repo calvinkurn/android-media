@@ -22,15 +22,13 @@
         android:layout_marginBottom="8dp" />
 
     <com.tokopedia.carouselproductcard.CarouselProductCardView
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:clipToPadding="false"
         android:clipChildren="false"
         android:id="@+id/recyclerViewCarousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"
-        app:useDefaultItemDecorator="false" />
+        app:reimagine="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:paddingLeft="10dp"

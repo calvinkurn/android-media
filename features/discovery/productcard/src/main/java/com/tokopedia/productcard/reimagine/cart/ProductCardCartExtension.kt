@@ -232,16 +232,23 @@ internal class ProductCardCartExtension(
     private fun overrideColor(colorMode: ProductCardColor?) {
         if (colorMode == null) return
 
-        val quantityTextColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.quantityTextColor)
-        val buttonDeleteCartLightColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.buttonDeleteCartColorLight)
-        val buttonDeleteCartDarkColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.buttonDeleteCartColorDark)
+        colorMode.quantityEditorColor?.quantityTextColor?.let { quantityTextColor ->
+            quantityEditor?.editText?.setTextColor(ContextCompat.getColor(context, quantityTextColor))
+        }
 
-        quantityEditor?.editText?.setTextColor(quantityTextColor)
-        deleteCartButton?.setImage(
-            newIconId = IconUnify.DELETE,
-            newLightEnable = buttonDeleteCartLightColor,
-            newDarkDisable = buttonDeleteCartDarkColor
-        )
-        addToCartButton?.applyColorMode(colorMode.buttonColorMode)
+        if (colorMode.quantityEditorColor?.buttonDeleteCartColorLight != null && colorMode.quantityEditorColor?.buttonDeleteCartColorDark != null) {
+            val buttonDeleteCartLightColor = ContextCompat.getColor(context, colorMode.quantityEditorColor?.buttonDeleteCartColorLight ?: return)
+            val buttonDeleteCartDarkColor = ContextCompat.getColor(context, colorMode.quantityEditorColor?.buttonDeleteCartColorDark ?: return)
+
+            deleteCartButton?.setImage(
+                newIconId = IconUnify.DELETE,
+                newLightEnable = buttonDeleteCartLightColor,
+                newDarkDisable = buttonDeleteCartDarkColor
+            )
+        }
+
+        colorMode.buttonColorMode?.let { buttonColorMode ->
+            addToCartButton?.applyColorMode(buttonColorMode)
+        }
     }
 }

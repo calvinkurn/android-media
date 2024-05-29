@@ -14,11 +14,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 	implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
@@ -26,6 +31,8 @@ dependencies {
     }
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
 }
 

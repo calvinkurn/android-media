@@ -71,7 +71,12 @@ class ShopAdsLayout2View(
                 }
 
                 override fun onProductItemImpressed(productPreviewIndex: Int) {
-                    impressionListener?.onImpressionHeadlineAdsItem(productPreviewIndex, cpmData)
+                    val product = productList.getOrNull(productPreviewIndex) ?: return
+                    impressionListener?.onImpressionProductAdsItem(
+                        productPreviewIndex,
+                        product,
+                        cpmData
+                    )
                 }
 
                 override fun onProductItemClicked(productPreviewIndex: Int) {

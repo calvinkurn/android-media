@@ -36,9 +36,13 @@
     <color name="dms_static_white">#ffffff</color>
     <color name="dms_static_black">#000000</color>
 
+    <color name="dms_static_light_N50">#F3F4F5</color>
+    <color name="dms_static_light_N100">#DBDEE2</color>
+    <color name="dms_static_light_N300">#838994</color>
 
     <color name="dms_static_light_NN0_dark">#121212</color>
     <color name="dms_static_light_NN100">#E4EBF5</color>
+    <color name="dms_static_light_NN400">#AAB4C8</color>
     <color name="dms_static_light_NN600">#6D7588</color>
     <color name="dms_static_light_NN900">#2E3137</color>
     <color name="dms_static_light_NN950">#212121</color>
@@ -54,22 +58,36 @@
     <color name="dms_static_light_GN500">#00AA5B</color>
     <color name="dms_static_light_GN100">#C9FDE0</color>
 
+
+    <color name="dms_static_dark_N50">#26292E</color>
+    <color name="dms_static_dark_N100">#40454C</color>
+    <color name="dms_static_dark_N300">#838994</color>
+
+    <color name="dms_static_dark_NN100">#2E2F36</color>
+    <color name="dms_static_dark_NN400">#696D78</color>
     <color name="dms_static_dark_NN600">#AEB2BF</color>
     <color name="dms_static_dark_NN900">#E9EBF5</color>
     <color name="dms_static_dark_NN950">#F5F6FF</color>
     <color name="dms_static_dark_NN950_96">#F5F5F6FF</color>
     <color name="dms_static_dark_NN950_44">#70F5F6FF</color>
     <color name="dms_static_dark_NN950_68">#ADF5F6FF</color>
+    <color name="dms_static_dark_YN500">#F29E2B</color>
+    <color name="dms_static_dark_YN300">#C9652A</color>
     <color name="dms_static_dark_RN500">#FF425D</color>
+    <color name="dms_shop_stockbar_track_color_dark">@color/Unify_N300</color>
 
     <color name="dms_static_black_80000000">#80000000</color>
     <color name="dms_labelunify_dark_green_background">@color/Unify_GN500</color>
     <color name="dms_labelunify_dark_time_general_text">@color/Unify_NN0</color>
     <color name="dms_labelunify_light_grey_text">@color/Unify_NN600</color>
     <color name="dms_color_00FFFFFF">#00FFFFFF</color>
+    <!--Shop Info Reimagine-->
+    <color name="dms_clr_Unify_NN0_70_light">#B3121212</color>
 
     <color name="dms_clr_thematic_widget_bg_default_first_color">#008849</color>
     <color name="dms_clr_thematic_widget_bg_default_second_color">#00AA5B</color>
-    <!--Shop Info Reimagine-->
-    <color name="dms_clr_Unify_NN0_70_light">#B3121212</color>
+
+    <color name="dms_static_shop_flash_sale_start_bg_color">#26A110</color>
+    <color name="dms_static_shop_flash_sale_end_bg_color">#60BB55</color>
+
 </resources>

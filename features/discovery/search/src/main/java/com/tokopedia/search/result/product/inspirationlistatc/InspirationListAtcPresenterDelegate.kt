@@ -50,6 +50,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
         product: InspirationCarouselDataView.Option.Product,
         type: String,
     ) {
+        inspirationListAtcView.trackAtcClicked(product)
         if (product.shouldOpenVariantBottomSheet()) {
             inspirationListAtcView.trackAddToCartVariant(product)
             if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
