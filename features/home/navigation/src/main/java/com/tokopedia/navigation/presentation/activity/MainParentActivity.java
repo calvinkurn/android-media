@@ -1562,8 +1562,8 @@ public class MainParentActivity extends BaseActivity implements
     @NonNull
     @Override
     public String getAdsPageName() {
-        if (currentFragment instanceof AppLogInterface) {
-            return ((AppLogInterface) currentFragment).getPageName();
+        if (currentFragment instanceof IAdsLog) {
+            return ((IAdsLog) currentFragment).getAdsPageName();
         }
         return "";
     }

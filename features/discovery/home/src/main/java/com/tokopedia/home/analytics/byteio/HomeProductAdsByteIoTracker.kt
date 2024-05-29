@@ -1,4 +1,4 @@
-package com.tokopedia.home.util
+package com.tokopedia.home.analytics.byteio
 
 import android.content.Context
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
