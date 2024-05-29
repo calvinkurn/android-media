@@ -36,10 +36,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.updateAdsFragmentPageData
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -137,7 +139,8 @@ class NewMainParentActivity :
     ITelemetryActivity,
     InAppCallback,
     HomeCoachmarkListener,
-    HomeBottomNavListener {
+    HomeBottomNavListener,
+    IAdsLog {
 
     @Inject
     lateinit var viewModelFactory: Lazy<ViewModelFactory>
@@ -408,6 +411,10 @@ class NewMainParentActivity :
                 }, EXIT_DELAY_MILLIS)
             }.onFailure { it.printStackTrace() }
         }
+    }
+
+    override fun getAdsPageName(): String {
+        return (getCurrentActiveFragment() as? IAdsLog)?.getAdsPageName().orEmpty()
     }
 
     private fun reloadPage(id: BottomNavItemId, isJustLoggedIn: Boolean) {
@@ -784,6 +791,8 @@ class NewMainParentActivity :
 
         val model = viewModel.getModelById(itemId)
         if (model != null) onTabSelected.forEach { it.onSelected(model) }
+
+        updateAdsFragmentPageData(this, PAGE_NAME, getAdsPageName())
 
         return true
     }
