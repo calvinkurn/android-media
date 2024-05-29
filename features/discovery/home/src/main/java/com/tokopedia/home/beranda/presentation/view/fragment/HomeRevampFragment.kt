@@ -865,7 +865,6 @@ open class HomeRevampFragment :
             inboxCoachMark?.run {
                 onDismissListener = {
                     setInboxCoachMarkHasShown(ctx.applicationContext)
-                    homeCoachmarkListener?.onHomeCoachMarkFinished()
                 }
                 showCoachMark(
                     arrayListOf(
@@ -878,8 +877,6 @@ open class HomeRevampFragment :
                     )
                 )
             }
-        } else {
-            homeCoachmarkListener?.onHomeCoachMarkFinished()
         }
     }
 
@@ -1274,6 +1271,7 @@ open class HomeRevampFragment :
             activityStateListener!!.onPause()
         }
         performanceTrace?.finishOnPaused()
+        inboxCoachMark?.dismissCoachMark()
     }
 
     override fun onStop() {
