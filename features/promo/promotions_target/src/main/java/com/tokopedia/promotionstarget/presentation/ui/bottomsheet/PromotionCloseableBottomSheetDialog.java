@@ -139,7 +139,7 @@ public class PromotionCloseableBottomSheetDialog extends BottomSheetDialog {
     @SuppressLint("MissingInflatedId")
     private View inflateRoundedCloseableHeader(View view, String title, boolean isCloseable) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
-                .rounded_closeable_bottom_sheet, null);
+                .promo_rounded_closeable_bottom_sheet, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
         ImageView closeButton = contentView.findViewById(R.id.close_button_rounded);
@@ -166,7 +166,7 @@ public class PromotionCloseableBottomSheetDialog extends BottomSheetDialog {
 
     private View inflateCloseableHeader(View view, String title, boolean isCloseable) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
-                .closeable_bottom_sheet_dialog, null);
+                .promo_closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
         ImageView closeButton = contentView.findViewById(R.id.close_button);
@@ -193,7 +193,7 @@ public class PromotionCloseableBottomSheetDialog extends BottomSheetDialog {
 
     private View inflateRoundedHeader(View view, boolean isCloseable) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
-                .rounded_closeable_bottom_sheet_dialog, null);
+                .promo_rounded_closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
         View trayClose = contentView.findViewById(R.id.tray_close);
@@ -210,7 +210,7 @@ public class PromotionCloseableBottomSheetDialog extends BottomSheetDialog {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
-                    .closeable_bottom_sheet_dialog, null);
+                    .promo_closeable_bottom_sheet_dialog, null);
             FrameLayout frameLayout = contentView.findViewById(R.id.container);
             View view = inflater.inflate(layoutResId, null);
             frameLayout.addView(view);

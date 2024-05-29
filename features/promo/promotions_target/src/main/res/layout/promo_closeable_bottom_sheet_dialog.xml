@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@drawable/t_header_bottom_sheet_rounded_white"
+        android:background="@drawable/fromtkpddesign_header_bottom_sheet_rounded_white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 

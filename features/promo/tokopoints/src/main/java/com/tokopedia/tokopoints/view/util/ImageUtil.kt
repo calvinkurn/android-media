@@ -27,8 +27,8 @@ object ImageUtil {
             Glide.with(imageView.context)
                 .load(url)
                 .dontAnimate()
-                .placeholder(R.drawable.ic_loading_image_tokopoints)
-                .error(R.drawable.ic_loading_image_tokopoints)
+                .placeholder(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
+                .error(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
                 .override(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL)
                 .into(imageView)
         } catch (e: Exception) {

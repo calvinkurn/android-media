@@ -9,7 +9,7 @@
         android:id="@+id/header_rounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/t_header_bottom_sheet_rounded_white"
+        android:background="@drawable/fromtkpddesign_header_bottom_sheet_rounded_white"
         android:gravity="center"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +20,7 @@
             android:id="@+id/tray_close"
             android:layout_width="@dimen/dp_28"
             android:layout_height="4dp"
-            android:background="@drawable/t_close_button_bottom_sheet" />
+            android:background="@drawable/fromtkpddesign_close_button_bottom_sheet" />
 
     </RelativeLayout>
 
