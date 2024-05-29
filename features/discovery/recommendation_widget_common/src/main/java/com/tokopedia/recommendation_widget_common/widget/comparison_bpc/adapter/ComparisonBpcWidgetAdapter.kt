@@ -19,7 +19,6 @@ class ComparisonBpcWidgetAdapter(
     var adapterTypeFactory: ComparisonBpcTypeFactory
 ) : RecyclerView.Adapter<AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>>>() {
     private var comparisonBpcListModel = ComparisonBpcListModel()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<ComparisonBpcTypeFactory>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return adapterTypeFactory.createViewHolder(view, viewType)
