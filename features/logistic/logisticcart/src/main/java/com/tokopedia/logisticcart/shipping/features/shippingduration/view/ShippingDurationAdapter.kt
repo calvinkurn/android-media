@@ -7,10 +7,12 @@ import com.tokopedia.logisticcart.databinding.ItemArmyBinding
 import com.tokopedia.logisticcart.databinding.ItemDividerLogisticCartBinding
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.databinding.ItemNotifierBinding
+import com.tokopedia.logisticcart.databinding.ItemPaidShippingTitleBinding
 import com.tokopedia.logisticcart.databinding.ItemProductShipmentDetailBinding
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -31,7 +33,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         mData = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationUiModels: MutableList<RatesViewModelType>, isDisableOrderPrioritas: Boolean) {
+    fun setShippingDurationViewModels(
+        shippingDurationUiModels: MutableList<RatesViewModelType>,
+        isDisableOrderPrioritas: Boolean
+    ) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
         this.mData = shippingDurationUiModels
         notifyDataSetChanged()
@@ -50,13 +55,21 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         is NotifierModel -> NotifierViewHolder.LAYOUT
         is DividerModel -> DividerViewHolder.LAYOUT
         is ProductShipmentDetailModel -> ProductShipmentDetailViewHolder.LAYOUT
+        is PaidSectionInfoUiModel -> PaidShippingInfoViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            ArmyViewHolder.LAYOUT -> ArmyViewHolder(ItemArmyBinding.inflate(inflater, parent, false))
+            ArmyViewHolder.LAYOUT -> ArmyViewHolder(
+                ItemArmyBinding.inflate(
+                    inflater,
+                    parent,
+                    false
+                )
+            )
+
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(
                 ItemNotifierBinding.inflate(
                     inflater,
@@ -77,6 +90,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                 ItemProductShipmentDetailBinding.inflate(inflater, parent, false)
             )
 
+            PaidShippingInfoViewHolder.LAYOUT -> PaidShippingInfoViewHolder(
+                ItemPaidShippingTitleBinding.inflate(inflater, parent, false)
+            )
+
             else -> ShippingDurationViewHolder(
                 ItemDurationBinding.inflate(inflater, parent, false),
                 cartPosition
@@ -86,10 +103,23 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ShippingDurationViewHolder -> holder.bindData(mData[position] as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
-            is ArmyViewHolder -> holder.bindData(mData[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
+            is ShippingDurationViewHolder -> holder.bindData(
+                mData[position] as ShippingDurationUiModel,
+                shippingDurationAdapterListener,
+                isDisableOrderPrioritas
+            )
+
+            is ArmyViewHolder -> holder.bindData(
+                mData[position] as LogisticPromoUiModel,
+                shippingDurationAdapterListener
+            )
+
             is NotifierViewHolder -> holder.bindData(mData[position] as NotifierModel)
             is ProductShipmentDetailViewHolder -> holder.bindData(mData[position] as ProductShipmentDetailModel)
+            is PaidShippingInfoViewHolder -> holder.bindData(
+                mData[position] as PaidSectionInfoUiModel,
+                shippingDurationAdapterListener
+            )
         }
     }
 

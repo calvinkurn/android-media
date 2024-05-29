@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder.review.ui
 
-import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +20,6 @@ import com.tokopedia.product.detail.data.model.review.UserStatistic
 import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
-import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
@@ -65,7 +63,7 @@ class ProductReviewViewHolder(
             adapter = ratingKeywordAdapter
             layoutManager = keywordLayoutManager
             addItemDecoration(ItemSpaceDecorator(space = KEYWORD_ITEM_SPACING))
-            optimizeNestedRecyclerView()
+//            optimizeNestedRecyclerView()
         }
     }
 

@@ -2,8 +2,11 @@ package com.tokopedia.recommendation_widget_common.domain
 
 import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
@@ -41,9 +44,16 @@ constructor(
             .map {
                 val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
                 entity.productRecommendationWidget.data.also { data ->
-                    requestParams.parameters[GetRecommendationUseCase.PAGE_NAME]?.toString()?.let { pageName ->
-                        byteIoUseCase.updateSessionId(pageName, data.appLog.sessionId)
+                    // if the request does not have pageName, use productId as identifier
+                    // example use case: similar recommendation landing page
+                    val requestIdentifier = requestParams.parameters[PRODUCT_IDS].toString().ifEmpty {
+                        requestParams.parameters[PRODUCT_IDS].toString()
                     }
+                    byteIoUseCase.updateMap(
+                        requestIdentifier,
+                        sessionId = data.appLog.sessionId,
+                        totalData = data.recommendation.size
+                    )
                 }
             }
     }
@@ -76,6 +86,8 @@ constructor(
         params.putInt(PARAM_CARD_REIMAGINE, reimagineCardParam)
         params.putString(REFRESH_TYPE, byteIoParam.refreshType.value.toString())
         params.putString(CURRENT_SESSION_ID, byteIoParam.bytedanceSessionId)
+        params.putString(ENTER_FROM, AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)?.toString().orEmpty())
+        params.putString(SOURCE_PAGE_TYPE, AppLogAnalytics.getLastData(AppLogParam.SOURCE_PAGE_TYPE)?.toString().orEmpty())
         return params
     }
 
@@ -97,6 +109,8 @@ constructor(
         private const val PARAM_CARD_REIMAGINE = "productCardVersion"
         private const val REFRESH_TYPE = "refreshType"
         private const val CURRENT_SESSION_ID = "currentSessionID"
+        private const val ENTER_FROM = "enterFrom"
+        private const val SOURCE_PAGE_TYPE = "sourcePageType"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0

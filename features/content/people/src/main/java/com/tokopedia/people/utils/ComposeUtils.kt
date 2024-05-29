@@ -6,6 +6,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 
 @Composable
 internal fun LazyListState.onLoadMore(
@@ -30,3 +32,10 @@ internal fun LazyListState.onLoadMore(
         if (shouldLoadMore) onShouldLoadMore()
     }
 }
+
+private const val PREFIX_ID = "com.tokopedia.tkpd:id"
+
+@Composable
+internal fun Modifier.resId(id: String) = then(
+    Modifier.testTag("$PREFIX_ID/$id")
+)

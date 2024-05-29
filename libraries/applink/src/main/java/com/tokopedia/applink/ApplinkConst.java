@@ -13,6 +13,7 @@ public interface ApplinkConst {
     String APPLINK_CUSTOMER_SCHEME = "tokopedia";
     String HOME_NAVIGATION = "tokopedia://navigation/main";
     String HOME = "tokopedia://home";
+    String HOME_OLD = "tokopedia://home/old";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
     String HOME_ACCOUNT_SELLER = "tokopedia://home/account/seller";
@@ -369,6 +370,9 @@ public interface ApplinkConst {
     String HAS_PASSWORD = "tokopedia://settings/haspassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
     String SETTING_NOTIFICATION = "tokopedia://settings/notification";
+    String SETTING_NOTIF_PUSH_NOTIFICATION = "tokopedia://settings/notification/push_notification";
+    String SETTING_NOTIF_EMAIL = "tokopedia://settings/notification/email";
+    String SETTING_NOTIF_SMS = "tokopedia://settings/notification/sms";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";

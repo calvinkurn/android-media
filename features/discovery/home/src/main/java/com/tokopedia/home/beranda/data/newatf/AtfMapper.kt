@@ -4,10 +4,12 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.model.GetTargetedTicker
+import com.tokopedia.home.beranda.data.newatf.balance.BalanceWidgetMapper
 import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelMapper
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper
 import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
+import com.tokopedia.home.beranda.data.newatf.shorten.ShortenWidgetMapper
 import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TargetedTickerMapper
 import com.tokopedia.home.beranda.data.newatf.ticker.mapper.TickerMapper
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetMapper
@@ -19,6 +21,9 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
+import com.tokopedia.home.beranda.data.newatf.balance.DynamicBalanceWidgetModel
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.home.beranda.data.model.AtfData as OldAtfData
 import javax.inject.Inject
 
@@ -32,6 +37,7 @@ class AtfMapper @Inject constructor(
     private val atfChannelMapper: AtfChannelMapper,
     private val missionWidgetMapper: MissionWidgetMapper,
     private val todoWidgetMapper: TodoWidgetMapper,
+    private val balanceWidgetMapper: BalanceWidgetMapper,
 ) {
     fun mapRemoteToDomainAtfData(
         position: Int,
@@ -47,6 +53,12 @@ class AtfMapper @Inject constructor(
                 isOptional = data.isOptional,
                 isShimmer = data.isShimmer,
             ),
+            style = AtfData.AtfStyle(
+                isBleeding = data.style?.isBleeding.orFalse(),
+                heightRatio = data.style?.heightRatio.orZero(),
+                widthRatio = data.style?.widthRatio.orZero(),
+                gradientColor = data.style?.gradientColor ?: emptyList(),
+            ),
             isCache = false,
         )
     }
@@ -54,6 +66,10 @@ class AtfMapper @Inject constructor(
     fun mapCacheToDomainAtfData(
         data: AtfCacheEntity,
     ): AtfData {
+        val style = safe(OldAtfData.AtfStyle()) {
+            Gson().fromJson(data.style, OldAtfData.AtfStyle::class.java)
+        }
+
         return AtfData(
             atfMetadata = AtfMetadata(
                 id = data.id,
@@ -68,12 +84,20 @@ class AtfMapper @Inject constructor(
             atfStatus = data.status,
             isCache = true,
             lastUpdate = data.lastUpdate,
+            style = AtfData.AtfStyle(
+                isBleeding = style.isBleeding,
+                heightRatio = style.heightRatio,
+                widthRatio = style.widthRatio,
+                gradientColor = style.gradientColor,
+            ),
         )
     }
 
     fun mapDomainToCacheEntity(
         data: AtfData,
     ): AtfCacheEntity {
+        val style = safe("") { Gson().toJson(data.style) }
+
         return AtfCacheEntity(
             id = data.atfMetadata.id,
             position = data.atfMetadata.position,
@@ -85,6 +109,7 @@ class AtfMapper @Inject constructor(
             status = data.atfStatus,
             isShimmer = data.atfMetadata.isShimmer,
             lastUpdate = data.lastUpdate,
+            style = style
         )
     }
 
@@ -93,11 +118,13 @@ class AtfMapper @Inject constructor(
             AtfKey.TYPE_BANNER, AtfKey.TYPE_BANNER_V2 -> content?.getAtfContent<BannerDataModel>()
             AtfKey.TYPE_ICON, AtfKey.TYPE_ICON_V2 -> content?.getAtfContent<DynamicHomeIcon>()
             AtfKey.TYPE_TICKER -> content?.getAtfContent<GetTargetedTicker>() ?: content?.getAtfContent<Ticker>()
+            AtfKey.TYPE_HORIZONTAL,
             AtfKey.TYPE_CHANNEL -> content?.getAtfContent<DynamicHomeChannel>()
             AtfKey.TYPE_MISSION,
             AtfKey.TYPE_MISSION_V2,
             AtfKey.TYPE_MISSION_V3 -> content?.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>()
             AtfKey.TYPE_TODO -> content?.getAtfContent<HomeTodoWidgetData.GetHomeTodoWidget>()
+            AtfKey.TYPE_BALANCE -> content?.getAtfContent<DynamicBalanceWidgetModel>()
             else -> null
         }
     }
@@ -118,10 +145,20 @@ class AtfMapper @Inject constructor(
                     is GetTargetedTicker -> TargetedTickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
                     is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(missionWidgetMapper.asVisitable(this, index, value))
                     is HomeTodoWidgetData.GetHomeTodoWidget -> todoWidgetMapper.asVisitable(this, index, value)?.let { visitables.add(it) }
-                    is DynamicHomeChannel -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
+                    is DynamicHomeChannel -> {
+                        when (value.atfMetadata.component) {
+                            AtfKey.TYPE_CHANNEL -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
+                            AtfKey.TYPE_HORIZONTAL -> visitables.add(ShortenWidgetMapper.to2SquareUiModel(this, value, index))
+                        }
+                    }
+                    is DynamicBalanceWidgetModel -> visitables.add(balanceWidgetMapper.asVisitable(this, value.atfStatus))
                 }
             }
         }
         return visitables
+    }
+
+    private fun <T> safe(default: T, invoke: () -> T): T {
+        return try { invoke() } catch (_: Throwable) { default }
     }
 }

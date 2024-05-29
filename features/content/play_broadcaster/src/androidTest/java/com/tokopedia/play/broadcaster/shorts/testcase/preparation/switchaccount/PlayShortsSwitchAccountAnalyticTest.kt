@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -15,6 +16,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -26,6 +28,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 12, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSwitchAccountAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -44,6 +47,7 @@ class PlayShortsSwitchAccountAnalyticTest {
     private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
@@ -53,6 +57,8 @@ class PlayShortsSwitchAccountAnalyticTest {
     private val mockAccountUser = mockAccountList[1]
 
     init {
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any(), any()) } returns true
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockShortsRepo.getShortsConfiguration(any(), any()) } returns mockShortsConfig
         coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
@@ -75,6 +81,7 @@ class PlayShortsSwitchAccountAnalyticTest {
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
+                        mockCoachMarkSharedPref = mockCoachMarkSharedPref,
                     )
                 )
                 .build()
@@ -82,129 +89,53 @@ class PlayShortsSwitchAccountAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickSwitchAccount() {
-
+    fun testAnalytic_shorts_switchAccount() {
         launcher.launchActivity {
             coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
+            coEvery { mockAccountManager.switchAccount(any(), any()) } returns mockAccountUser
         }
 
-        clickToolbar()
+        /** Setup title to display switch account confirmation */
+        setupTitle()
 
+        clickToolbar()
         cassavaValidator.verify("click - available account")
-    }
+        cassavaValidator.verify("view - switch profile bottom sheet")
 
-    @Test
-    fun testAnalytic_clickCloseSwitchAccount() {
-
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
-        }
+        clickCloseBottomSheet()
+        cassavaValidator.verify("click - close switch profile")
 
         clickToolbar()
-        clickCloseBottomSheet()
-
-        cassavaValidator.verify("click - close switch profile")
-    }
-
-    @Test
-    fun testAnalytic_clickUserAccount() {
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
-        }
+        clickShopAccount()
+        cassavaValidator.verify("click - pilih akun shop")
 
         clickToolbar()
         clickUserAccount()
-
         cassavaValidator.verify("click - pilih akun user")
-    }
+        cassavaValidator.verify("view - switch profile user bottom sheet")
 
-    @Test
-    fun testAnalytic_clickShopAccount() {
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
-        }
-
-        clickToolbar()
-        clickShopAccount()
-
-        cassavaValidator.verify("click - pilih akun shop")
-    }
-
-    @Test
-    fun testAnalytic_viewSwitchAccountToShopConfirmation() {
-
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
-        }
-
-        clickMenuTitle()
-        inputTitle()
-        submitTitle()
-
-        clickToolbar()
-        clickShopAccount()
-
-        cassavaValidator.verify("view - switch profile shop bottom sheet")
-    }
-
-    @Test
-    fun testAnalytic_clickCancelSwitchAccountToShop() {
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
-        }
-
-        clickMenuTitle()
-        inputTitle()
-        submitTitle()
-
-        clickToolbar()
-        clickShopAccount()
         clickCancelSwitchAccount()
+        cassavaValidator.verify("click - batal switch to user")
 
+        /** Switch Account to User */
+        clickToolbar()
+        clickUserAccount()
+        clickProceedSwitchAccount()
+
+        /** Setup title to display switch account confirmation */
+        setupTitle()
+
+        clickToolbar()
+        clickShopAccount()
+        cassavaValidator.verify("view - switch profile shop bottom sheet")
+
+        clickCancelSwitchAccount()
         cassavaValidator.verify("click - batal switch to shop")
     }
 
-    @Test
-    fun testAnalytic_viewSwitchAccountToUserConfirmation() {
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
-        }
-
+    private fun setupTitle() {
         clickMenuTitle()
         inputTitle()
         submitTitle()
-
-        clickToolbar()
-        clickUserAccount()
-
-        cassavaValidator.verify("view - switch profile user bottom sheet")
-    }
-
-    @Test
-    fun testAnalytic_clickCancelSwitchAccountToUser() {
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
-        }
-
-        clickMenuTitle()
-        inputTitle()
-        submitTitle()
-
-        clickToolbar()
-        clickUserAccount()
-        clickCancelSwitchAccount()
-
-        cassavaValidator.verify("click - batal switch to user")
-    }
-
-    @Test
-    fun testAnalytic_viewSwitchAccountBottomSheet() {
-        launcher.launchActivity {
-            coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
-        }
-
-        clickToolbar()
-
-        cassavaValidator.verify("view - switch profile bottom sheet")
     }
 }

@@ -94,6 +94,7 @@ import com.tokopedia.discovery2.di.DiscoveryComponent
 import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ADDITIONAL_QUERY_PARAMS
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -109,6 +110,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOULD_SHOW_GLOBAL_NAV
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
@@ -126,6 +128,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sect
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -354,6 +358,10 @@ open class DiscoveryFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // WORKAROUND for gtm tab name
+        CURRENT_TAB_NAME = ""
+        CURRENT_TAB_INDEX = 0
+
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
@@ -431,11 +439,14 @@ open class DiscoveryFragment :
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                         disableDefaultGtmTracker = true
                     )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+                    .also {
+                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                        it.addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
+                    }
             )
         }
     }
@@ -686,7 +697,8 @@ open class DiscoveryFragment :
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
-        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "").orEmpty()
+        discoveryViewModel.additionalQueryParamsString = arguments?.getString(ADDITIONAL_QUERY_PARAMS, "").orEmpty()
         pageEndPoint = discoveryViewModel.pageIdentifier
         checkForSamePageOpened()
         fetchDiscoveryPageData()
@@ -749,6 +761,7 @@ open class DiscoveryFragment :
                         ComponentNames.ProductCardSingleItem.componentName,
                         ComponentNames.ProductCardSingleItemReimagine.componentName,
                         ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                        ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName,
                         ComponentNames.ShimmerProductCard.componentName -> if (template == LIST) 2 else 1
 
                         else -> 2
@@ -1330,11 +1343,14 @@ open class DiscoveryFragment :
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                         disableDefaultGtmTracker = true
                     )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+                    .also {
+                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                        it.addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
+                    }
             )
             navToolbar.updateNotification()
         } else {
@@ -1350,11 +1366,14 @@ open class DiscoveryFragment :
                     onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                     disableDefaultGtmTracker = true
                 )
-                .addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
+                .also {
+                    if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                    it.addIcon(
+                        iconId = IconList.ID_NAV_GLOBAL,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                        disableDefaultGtmTracker = true
+                    )
+                }
         )
         navToolbar.updateNotification()
     }
@@ -1599,7 +1618,8 @@ open class DiscoveryFragment :
             discoveryViewModel.getQueryParameterMapFromBundle(
                 arguments
             ),
-            userAddressData
+            userAddressData,
+
         )
     }
 
@@ -1732,8 +1752,18 @@ open class DiscoveryFragment :
         refreshPage()
     }
 
+    // workaround to store singleton value into fragment
+    // to retain the value when the fragment is paused/resumed
+    private var currentTabName = ""
+    private var currentTabIndex = 0
+
     override fun onPause() {
         super.onPause()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        currentTabName = CURRENT_TAB_NAME
+        currentTabIndex = CURRENT_TAB_INDEX
+
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(false)
     }
@@ -2031,6 +2061,11 @@ open class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
+        // workaround to store singleton value into fragment
+        // to retain the value when the fragment is paused/resumed
+        CURRENT_TAB_NAME = currentTabName
+        CURRENT_TAB_INDEX = currentTabIndex
+
         discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner) {
             if (!openScreenStatus) {
                 when (it) {

@@ -28,8 +28,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
@@ -82,8 +80,6 @@ interface ProductDetailAdapterFactory {
     fun type(data: ContentWidgetDataModel): Int
     fun type(data: FintechWidgetDataModel): Int
     fun type(data: FintechWidgetV2DataModel): Int
-    fun type(data: ProductRecommendationVerticalDataModel): Int
-    fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int
     fun type(data: LoadingDataModel): Int
     fun type(data: GlobalBundlingDataModel): Int
     fun type(data: ProductShopAdditionalDataModel): Int

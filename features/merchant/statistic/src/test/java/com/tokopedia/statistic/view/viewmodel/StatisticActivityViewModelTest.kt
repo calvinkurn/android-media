@@ -1,14 +1,15 @@
 package com.tokopedia.statistic.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.gm.common.constant.PMStatusConst
-import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
-import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
+import com.tokopedia.gm.common.domain.model.BenefitKeyValueModel
+import com.tokopedia.gm.common.domain.model.GetElementBenefitByKeyBulkData
+import com.tokopedia.gm.common.domain.usecase.GetElementBenefitByKeyBulkUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.statistic.domain.usecase.CheckWhitelistedStatusUseCase
 import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.statistic.utils.TestConst
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -16,12 +17,16 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifyAll
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
-import io.mockk.verifyAll
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -31,6 +36,7 @@ import org.junit.Test
  * Created By @ilhamsuaib on 19/02/21
  */
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class StatisticActivityViewModelTest {
 
     @RelaxedMockK
@@ -40,13 +46,16 @@ class StatisticActivityViewModelTest {
     lateinit var getUserRoleUseCase: GetUserRoleUseCase
 
     @RelaxedMockK
-    lateinit var getPMStatusUseCase: GetPMStatusUseCase
+    lateinit var getElementBenefitByKeyBulkUseCase: GetElementBenefitByKeyBulkUseCase
 
     @RelaxedMockK
     lateinit var checkWhitelistedStatusUseCase: CheckWhitelistedStatusUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     private lateinit var viewModel: StatisticActivityViewModel
 
@@ -58,7 +67,7 @@ class StatisticActivityViewModelTest {
             { userSession },
             { checkWhitelistedStatusUseCase },
             { getUserRoleUseCase },
-            { getPMStatusUseCase },
+            { getElementBenefitByKeyBulkUseCase },
             CoroutineTestDispatchersProvider
         )
     }
@@ -141,8 +150,6 @@ class StatisticActivityViewModelTest {
 
         viewModel.getUserRole()
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             userSession.userId
         }
@@ -170,8 +177,6 @@ class StatisticActivityViewModelTest {
 
         viewModel.getUserRole()
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             userSession.userId
         }
@@ -184,99 +189,135 @@ class StatisticActivityViewModelTest {
     }
 
     @Test
-    fun `when fetch shop status is Official Store should update the shop status on userSession`() {
-        runBlocking {
-            val mockShopId = "12345"
-            val mockResponse = PMStatusUiModel(
-                isOfficialStore = true,
-                status = PMStatusConst.ACTIVE
+    fun `when fetch paywall access should success then set the access is granted`() {
+        fetchPaywallAccessTestScope { mockShopId, elementKey, source, results ->
+            val granted = 1
+            val mockResponse = GetElementBenefitByKeyBulkData(
+                result = listOf(
+                    BenefitKeyValueModel(
+                        elementKey = elementKey,
+                        value = granted
+                    )
+                )
             )
+
+            coEvery {
+                getElementBenefitByKeyBulkUseCase.execute(
+                    shopId = mockShopId,
+                    elementKeys = listOf(elementKey),
+                    source = source,
+                    useCache = true
+                )
+            } returns mockResponse
+
+            viewModel.fetchPaywallAccessState()
+
+            coVerifyAll {
+                userSession.shopId
+                getElementBenefitByKeyBulkUseCase.execute(
+                    shopId = mockShopId,
+                    elementKeys = listOf(elementKey),
+                    source = source,
+                    useCache = true
+                )
+            }
+
+            assert(!results[0]) // initial value
+            assert(results[1]) // resulting 1 (granted) which means the user has the access
+        }
+    }
+
+    @Test
+    fun `when fetch paywall access should success then set the access is not granted`() {
+        fetchPaywallAccessTestScope { mockShopId, elementKey, source, results ->
+            val granted = 0
+            val mockResponse = GetElementBenefitByKeyBulkData(
+                result = listOf(
+                    BenefitKeyValueModel(
+                        elementKey = elementKey,
+                        value = granted
+                    )
+                )
+            )
+
+            coEvery {
+                getElementBenefitByKeyBulkUseCase.execute(
+                    shopId = mockShopId,
+                    elementKeys = listOf(elementKey),
+                    source = source,
+                    useCache = true
+                )
+            } returns mockResponse
+
+            viewModel.fetchPaywallAccessState()
+
+            coVerifyAll {
+                userSession.shopId
+                getElementBenefitByKeyBulkUseCase.execute(
+                    shopId = mockShopId,
+                    elementKeys = listOf(elementKey),
+                    source = source,
+                    useCache = true
+                )
+            }
+
+            assert(!results[0]) // initial value and resulting 0 (not granted) which means the user doesn't has the access
+        }
+    }
+
+    @Test
+    fun `when fetch paywall access should failed then set the access is not granted`() {
+        fetchPaywallAccessTestScope { mockShopId, elementKey, source, results ->
+            val exception = Exception()
+            coEvery {
+                getElementBenefitByKeyBulkUseCase.execute(
+                    shopId = mockShopId,
+                    elementKeys = listOf(elementKey),
+                    source = source,
+                    useCache = true
+                )
+            } throws exception
+
+            viewModel.fetchPaywallAccessState()
+
+            coVerifyAll {
+                userSession.shopId
+                getElementBenefitByKeyBulkUseCase.execute(
+                    shopId = mockShopId,
+                    elementKeys = listOf(elementKey),
+                    source = source,
+                    useCache = true
+                )
+            }
+
+            assert(!results[0]) // initial value is false and throws exception which means the user doesn't has the access, so the value still false
+        }
+    }
+
+    private fun fetchPaywallAccessTestScope(
+        testBody: TestScope.(mockShopId: String, elementKey: String, source: String, results: List<Boolean>) -> Unit
+    ) {
+        runTest {
+            val results = mutableListOf<Boolean>()
+            val job = launch(UnconfinedTestDispatcher()) {
+                viewModel.paywallAccess.collectLatest {
+                    results.add(it)
+                }
+            }
+
+            val mockShopId = "12345"
+            val elementKey =
+                GetElementBenefitByKeyBulkUseCase.Companion.Keys.STATISTIC_PAYWALL_ACCESS
+            val source = GetElementBenefitByKeyBulkUseCase.Companion.Sources.STATISTIC
 
             every {
                 userSession.shopId
             } returns mockShopId
 
-            coEvery {
-                getPMStatusUseCase.executeOnBackground()
-            } returns mockResponse
+            testBody(mockShopId, elementKey, source, results)
 
-            viewModel.fetchPMStatus()
-
-            verifyAll {
-                userSession.shopId
-                userSession.setIsShopOfficialStore(true)
-                userSession.setIsGoldMerchant(true)
-                userSession.setIsPowerMerchantIdle(false)
-            }
+            job.cancel()
         }
-    }
-
-    @Test
-    fun `when fetch shop status is Power Merchant Active should update the shop status on userSession`() {
-        runBlocking {
-            val mockShopId = "12345"
-            val mockResponse = PMStatusUiModel(
-                isOfficialStore = false,
-                status = PMStatusConst.ACTIVE
-            )
-
-            every {
-                userSession.shopId
-            } returns mockShopId
-
-            coEvery {
-                getPMStatusUseCase.executeOnBackground()
-            } returns mockResponse
-
-            viewModel.fetchPMStatus()
-
-            verifyAll {
-                userSession.shopId
-                userSession.setIsShopOfficialStore(false)
-                userSession.setIsPowerMerchantIdle(false)
-                userSession.setIsGoldMerchant(true)
-            }
-        }
-    }
-
-    @Test
-    fun `when fetch shop status is Power Merchant Idle should update the shop status on userSession`() {
-        runBlocking {
-            val mockShopId = "12345"
-
-            val mockResponse = PMStatusUiModel(
-                isOfficialStore = false,
-                status = PMStatusConst.IDLE
-            )
-
-            every {
-                userSession.shopId
-            } returns mockShopId
-
-            coEvery {
-                getPMStatusUseCase.executeOnBackground()
-            } returns mockResponse
-
-            viewModel.fetchPMStatus()
-
-            verifyAll {
-                userSession.shopId
-                userSession.setIsShopOfficialStore(false)
-                userSession.setIsPowerMerchantIdle(true)
-                userSession.setIsGoldMerchant(true)
-            }
-        }
-    }
-
-    @Test
-    fun `when fetch shop status then throws exception should do nothing`() {
-        val throwable = Throwable()
-
-        coEvery {
-            getPMStatusUseCase.executeOnBackground()
-        } throws throwable
-
-        viewModel.fetchPMStatus()
     }
 
     private fun getMockParams(whiteListName: String): RequestParams {

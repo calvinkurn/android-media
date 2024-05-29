@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -99,6 +100,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
@@ -148,6 +151,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.ShopFlashSaleWidget
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.shorten.TwoSquareWidgetListenerCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -183,6 +187,8 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.libra.LibraInstance
+import com.tokopedia.libra.LibraOwner
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -301,6 +307,7 @@ open class HomeRevampFragment :
         private const val SOURCE_ACCOUNT = "account"
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
+        private const val KEY_SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
         private const val CLICK_TIME_INTERVAL: Long = 500
 
         private const val PARAM_APPLINK_AUTOCOMPLETE =
@@ -340,10 +347,11 @@ open class HomeRevampFragment :
         private const val FPS_TRACER_HOME = "Home Scene"
 
         @JvmStatic
-        fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
+        fun newInstance(scrollToRecommendList: Boolean, shouldShowGlobalNav: Boolean): HomeRevampFragment {
             val fragment = HomeRevampFragment()
             val args = Bundle()
             args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList)
+            args.putBoolean(KEY_SHOULD_SHOW_GLOBAL_NAV, shouldShowGlobalNav)
             fragment.arguments = args
             return fragment
         }
@@ -483,6 +491,12 @@ open class HomeRevampFragment :
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         }
         startToTransitionOffset = 1f.toDpInt()
+
+        lifecycleScope.launchWhenCreated {
+            context?.let {
+                LibraInstance.get(it).fetch(LibraOwner.Home)
+            }
+        }
     }
 
     protected open fun initHomePageFlows(): Boolean {
@@ -672,7 +686,7 @@ open class HomeRevampFragment :
             icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_NOTIFICATION_HOMEPAGE) }
             icons.apply {
                 addIcon(IconList.ID_CART) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_CART_ICON_HOMEPAGE) }
-                addIcon(IconList.ID_NAV_GLOBAL) {}
+                if (arguments?.getBoolean(KEY_SHOULD_SHOW_GLOBAL_NAV, true) != false) addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
             it.setupMicroInteraction(navToolbarMicroInteraction)
@@ -1312,7 +1326,6 @@ open class HomeRevampFragment :
             viewLifecycleOwner,
             Observer { dynamicChannel: HomeDynamicChannelModel? ->
                 dynamicChannel?.let {
-                    val data = dynamicChannel.list.filter { it is HomeRecommendationFeedDataModel }
                     if (dynamicChannel.list.isNotEmpty()) {
                         setData(dynamicChannel.list, dynamicChannel.isCache)
                     }
@@ -1668,6 +1681,7 @@ open class HomeRevampFragment :
             getThematicUtil(),
             HomeOrigamiListenerDelegate(context, this),
             Mission4SquareWidgetListenerCallback(this),
+            TwoSquareWidgetListenerCallback(this),
             getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -3118,7 +3132,15 @@ open class HomeRevampFragment :
     }
 
     override fun refreshBalanceWidget() {
-        getHomeViewModel().getBalanceWidgetData()
+        getHomeViewModel().refreshBalanceWidget()
+    }
+
+    override fun refreshBalanceWidget(contentType: BalanceItemVisitable.ContentType?) {
+        getHomeViewModel().refreshBalanceWidget(contentType)
+    }
+
+    override fun refreshShortenWidget() {
+        getHomeViewModel().refreshShortenWidget()
     }
 
     override fun showHomeCoachmark(

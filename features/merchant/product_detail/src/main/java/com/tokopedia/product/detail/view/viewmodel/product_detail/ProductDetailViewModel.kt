@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -56,7 +55,6 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
-import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -110,11 +108,11 @@ import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
@@ -138,6 +136,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -193,7 +192,8 @@ class ProductDetailViewModel @Inject constructor(
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
-    GetProductDetailDataMediator {
+    GetProductDetailDataMediator,
+    IPdpCartRedirectionButtonsByteIOTrackerDataProvider by PdpCartRedirectionButtonsByteIOTrackerDataProvider() {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -241,10 +241,6 @@ class ProductDetailViewModel @Inject constructor(
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
-    private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
-    val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
-        get() = _addToCartLiveData
-
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
     val toggleTeaserNotifyMe: LiveData<Result<NotifyMeUiData>>
         get() = _toggleTeaserNotifyMe
@@ -280,25 +276,20 @@ class ProductDetailViewModel @Inject constructor(
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
     private val _finishAnimationAtc = MutableStateFlow(false)
-    private val _finishAtc = MutableStateFlow(false)
+    private val _addToCartState = MutableStateFlow<Result<AddToCartDataModel>?>(null)
 
-    val successAtcAndAnimation: Flow<Boolean> =
-        _finishAnimationAtc.combine(_finishAtc) { finishAtcAnimation, finishAtc ->
-            val finishAtcAnimationResult =
-                !ProductRollenceHelper.rollenceAtcAnimationActive() || finishAtcAnimation
-
-            finishAtcAnimationResult && finishAtc
-        }.map { bothSuccess ->
-            if (bothSuccess) {
-                _finishAnimationAtc.emit(false)
-                _finishAtc.emit(false)
-            }
-            bothSuccess
+    val addToCartResultState
+        get() = _finishAnimationAtc.combine(_addToCartState) { finishAtcAnimation, addToCartState ->
+            finishAtcAnimation to addToCartState
         }.filter {
-            it
-        }.shareIn(
-            viewModelScope,
-            SharingStarted.Lazily
+            it.first && it.second != null
+        }.map {
+            _finishAnimationAtc.emit(false)
+            _addToCartState.emit(null)
+            it.second
+        }.filterNotNull().shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000)
         )
 
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
@@ -328,8 +319,11 @@ class ProductDetailViewModel @Inject constructor(
     val mainPhotoViewed: MutableSet<Int> = mutableSetOf()
     val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
     private val isSingleSku: Boolean
-        get() = if (getProductInfoP1?.isProductVariant() == false) true
-        else variantData?.children?.size == 1
+        get() = if (getProductInfoP1?.isProductVariant() == false) {
+            true
+        } else {
+            variantData?.children?.size == 1
+        }
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -371,18 +365,17 @@ class ProductDetailViewModel @Inject constructor(
 
     override fun getP2(): ProductInfoP2UiData? = p2Data.value
 
+    override fun getP2Login(): ProductInfoP2Login? = p2Login.value
+
     override fun getVariant(): ProductVariant? = variantData
 
     init {
         iniQuantityFlow()
+        registerPdpCartRedirectionButtonsByteIOTrackerDataProvider(mediator = this)
     }
 
     fun onFinishAnimation() {
         _finishAnimationAtc.tryEmit(true)
-    }
-
-    fun onFinishAtc() {
-        _finishAtc.tryEmit(true)
     }
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
@@ -597,7 +590,7 @@ class ProductDetailViewModel @Inject constructor(
             originalPrice = data?.originalPrice.orZero(),
             salePrice = data?.finalPrice.orZero(),
             skuId = data?.basic?.productID.orEmpty(),
-            addSkuNum = data?.basic?.minOrder.orZero(),
+            addSkuNum = data?.basic?.minOrder.orZero()
         )
     }
 
@@ -751,7 +744,7 @@ class ProductDetailViewModel @Inject constructor(
                 }
             }
         }) {
-            _addToCartLiveData.value = it.cause?.asFail() ?: it.asFail()
+            _addToCartState.emit(it.cause?.asFail() ?: it.asFail())
         }
     }
 
@@ -765,7 +758,7 @@ class ProductDetailViewModel @Inject constructor(
                 originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                addSkuNum = data.basic.minOrder,
+                addSkuNum = data.basic.minOrder
             )
         )
     }
@@ -789,7 +782,7 @@ class ProductDetailViewModel @Inject constructor(
                     deviceId
                 )
             }
-            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
             val isTokoNow = getProductInfoP1?.basic?.isTokoNow ?: false
             if (isTokoNow) {
@@ -800,12 +793,11 @@ class ProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-            _addToCartLiveData.value = result.asSuccess()
+            _addToCartState.emit(result.asSuccess())
         }
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
-//        sendConfirmCartBytIoTracker() // disabled on this phase
         val result = withContext(dispatcher.io) {
             addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
         }
@@ -820,9 +812,9 @@ class ProductDetailViewModel @Inject constructor(
                     deviceId
                 )
             }
-            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
-            _addToCartLiveData.value = result.asSuccess()
+            _addToCartState.emit(result.asSuccess())
         }
     }
 
@@ -855,9 +847,9 @@ class ProductDetailViewModel @Inject constructor(
                     deviceId
                 )
             }
-            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
-            _addToCartLiveData.value = result.asSuccess()
+            _addToCartState.emit(result.asSuccess())
         }
     }
 
@@ -1281,10 +1273,13 @@ class ProductDetailViewModel @Inject constructor(
 
             val subIds = affiliateSubIds?.mapNotNull {
                 val key = it.key.toIntOrNull()
-                    ?: if (it.key.length > PARAM_START_SUBID.length) it.key.substring(
-                        PARAM_START_SUBID.length
-                    ).toIntOrNull() else
+                    ?: if (it.key.length > PARAM_START_SUBID.length) {
+                        it.key.substring(
+                            PARAM_START_SUBID.length
+                        ).toIntOrNull()
+                    } else {
                         return@mapNotNull null
+                    }
 
                 AdditionalParam(
                     key = key.toString(),
@@ -1301,9 +1296,8 @@ class ProductDetailViewModel @Inject constructor(
                 source = affiliateSource ?: ""
             )
         }, onError = {
-            // no op, expect to be handled by Affiliate SDK
-
-        })
+                // no op, expect to be handled by Affiliate SDK
+            })
     }
 
     private fun updateRecomAtcStatusAndMiniCart(

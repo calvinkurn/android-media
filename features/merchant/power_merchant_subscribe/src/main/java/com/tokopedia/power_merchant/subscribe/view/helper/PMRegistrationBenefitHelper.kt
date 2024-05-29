@@ -24,9 +24,7 @@ object PMRegistrationBenefitHelper {
         } else {
             listOf(
                 getPMBenefits(context, shopInfo),
-                getPMProAdvanceBenefits(context, shopInfo),
-                getPMProExpertBenefits(context, shopInfo),
-                getPMProUltimateBenefits(context, shopInfo)
+                getPMProBenefits(context, shopInfo),
             )
         }
     }
@@ -106,14 +104,28 @@ object PMRegistrationBenefitHelper {
     ): PMGradeWithBenefitsUiModel {
         return PMGradeWithBenefitsUiModel.PM(
             gradeName = Constant.POWER_MERCHANT,
-            isTabActive = shopInfo.shopLevel <= PMConstant.ShopLevel.ONE
-                    || !shopInfo.isEligiblePm || !shopInfo.isEligiblePmPro,
+            isTabActive = shopInfo.isEligiblePm,
             tabLabel = context.getString(R.string.pm_power_merchant),
-            tabResIcon = IconUnify.BADGE_PM_FILLED,
             benefitList = listOf(
-                getTopAdsBenefit(context, Constant.PM_TOP_ADS_CREDIT, Constant.PM_BROAD_CAST_CHAT),
-                getSpecialReleaseBenefit(context, Constant.PM_SPECIAL_RELEASE),
-                getProductBundlingBenefit(context, Constant.PM_PRODUCT_BUNDLING)
+                getBadgeBenefit(context, true),
+                getAccessBenefit(context, true),
+                getPotentialVisitorBenefit(context)
+            )
+        )
+    }
+
+    private fun getPMProBenefits(
+        context: Context,
+        shopInfo: PMShopInfoUiModel
+    ): PMGradeWithBenefitsUiModel {
+        return PMGradeWithBenefitsUiModel.PMProExpert(
+            gradeName = Constant.POWER_MERCHANT,
+            isTabActive = shopInfo.isEligiblePmPro,
+            tabLabel = context.getString(R.string.pm_pm_pro),
+            benefitList = listOf(
+                getBadgeBenefit(context, false),
+                getAccessBenefit(context, false),
+                getPotentialVisitorBenefit(context)
             )
         )
     }
@@ -152,6 +164,42 @@ object PMRegistrationBenefitHelper {
             benefitDescription = context.getString(
                 R.string.pm_benefit_top_ads, topAdsCredit, broadcastChat
             )
+        )
+    }
+
+    private fun getBadgeBenefit(
+        context: Context,
+        isPM: Boolean): PMBenefitItemUiModel {
+        return PMBenefitItemUiModel(
+            icon = if (isPM) {
+                IconUnify.BADGE_PM_FILLED
+            } else {
+                IconUnify.BADGE_PMPRO_FILLED
+            },
+            benefitDescription = if (isPM) {
+                context.getString(R.string.pm_pm_badge_benefit)
+            } else {
+                context.getString(R.string.pm_pm_pro_badge_benefit)
+            }
+        )
+    }
+    private fun getAccessBenefit(
+        context: Context,
+        isPM: Boolean): PMBenefitItemUiModel {
+        return PMBenefitItemUiModel(
+            iconUrl = PMConstant.Images.PM_SHOP_PROMO_ICON,
+            benefitDescription = if (isPM) {
+                context.getString(R.string.pm_pm_access_benefit)
+            } else {
+                context.getString(R.string.pm_pm_pro_access_benefit)
+            }
+        )
+    }
+    private fun getPotentialVisitorBenefit(
+        context: Context): PMBenefitItemUiModel {
+        return PMBenefitItemUiModel(
+            iconUrl = PMConstant.Images.PM_SEARCH_DISCOVERY_ICON,
+            benefitDescription = context.getString(R.string.pm_pm_visitor_benefit)
         )
     }
 }
