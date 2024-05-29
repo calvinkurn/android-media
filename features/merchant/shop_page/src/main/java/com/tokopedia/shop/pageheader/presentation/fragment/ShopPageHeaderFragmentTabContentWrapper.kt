@@ -40,10 +40,8 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -51,7 +49,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -383,16 +380,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun configureSearchStyle() {
-        navToolbar?.setSearchStyle(getSearchStyle(), showSearchBtn = false)
-    }
-
-    private fun getSearchStyle(): NavToolbar.Companion.SearchStyle {
-        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
-        return if (enableSearchRedesign) {
-            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
-        } else {
-            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
-        }
+        navToolbar?.updateSearchBarStyle(showSearchBtn = false)
     }
 
     private fun configToolbarForSellerView() {

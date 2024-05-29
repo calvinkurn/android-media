@@ -702,10 +702,7 @@ open class HomeRevampFragment :
             it.addOnImpression1pxListener(ImpressHolder()) {
                 AppLogSearch.eventShowSearch()
             }
-            it.setSearchStyle(
-                getSearchStyle(shouldCombineInboxNotif),
-                showSearchBtn = shouldCombineInboxNotif
-            )
+            it.updateSearchBarStyle(showSearchBtn = shouldCombineInboxNotif)
             it.setupItemCoachMark(IconList.ID_MESSAGE) { inboxView ->
                 showInboxCoachMark(inboxView)
             }
@@ -731,14 +728,6 @@ open class HomeRevampFragment :
 
         homeRecyclerView?.bindFpsTracer(FPS_TRACER_HOME)
         return view
-    }
-
-    private fun getSearchStyle(isCombineEnabled: Boolean): NavToolbar.Companion.SearchStyle {
-        return if (isCombineEnabled) {
-            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
-        } else {
-            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
-        }
     }
 
     private fun getSearchPlaceHolderHint() {

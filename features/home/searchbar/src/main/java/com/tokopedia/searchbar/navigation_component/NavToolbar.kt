@@ -62,6 +62,7 @@ import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
@@ -267,6 +268,26 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         configureSearchIcon()
         configureSearchBox()
         btnSearch.showWithCondition(showSearchBtn)
+    }
+
+    fun updateSearchBarStyle(showSearchBtn: Boolean = true) {
+        this.searchStyle = getSearchBarStyle()
+        configureInvertedSearchBar()
+        configureSearchIcon()
+        configureSearchBox()
+        btnSearch.showWithCondition(showSearchBtn)
+    }
+
+    fun setupItemCoachMark(iconId: Int, onReady: (View) -> Unit) {
+        navIconRecyclerView.post {
+            val itemIndex = navIconAdapter?.indexOf(iconId) ?: return@post
+            if (itemIndex != RecyclerView.NO_POSITION) {
+                val view = runCatching {
+                    navIconRecyclerView.getChildAt(itemIndex)
+                }.getOrNull() ?: return@post
+                onReady(view)
+            }
+        }
     }
 
     /**
@@ -1056,15 +1077,12 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         etSearch.setHintTextColor(context.getResColor(hintTextColor))
     }
 
-    fun setupItemCoachMark(iconId: Int, onReady: (View) -> Unit) {
-        navIconRecyclerView.post {
-            val itemIndex = navIconAdapter?.indexOf(iconId) ?: return@post
-            if (itemIndex != RecyclerView.NO_POSITION) {
-                val view = runCatching {
-                    navIconRecyclerView.getChildAt(itemIndex)
-                }.getOrNull() ?: return@post
-                onReady(view)
-            }
+    private fun getSearchBarStyle(): SearchStyle {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        return if (enableSearchRedesign) {
+            SearchStyle.SEARCH_REDESIGN
+        } else {
+            SearchStyle.SEARCH_DEFAULT
         }
     }
 }

@@ -1550,16 +1550,7 @@ class ShopPageHeaderFragment :
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
             }
             setToolbarPageName(SHOP_PAGE)
-            setSearchStyle(getSearchStyle(), showSearchBtn = false)
-        }
-    }
-
-    private fun getSearchStyle(): NavToolbar.Companion.SearchStyle {
-        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
-        return if (enableSearchRedesign) {
-            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
-        } else {
-            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
+            updateSearchBarStyle(showSearchBtn = false)
         }
     }
 

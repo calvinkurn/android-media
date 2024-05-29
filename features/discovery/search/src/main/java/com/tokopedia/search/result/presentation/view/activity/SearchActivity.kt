@@ -33,9 +33,9 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARC
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchSessionId
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
@@ -708,12 +708,6 @@ class SearchActivity :
     }
 
     private fun configureSearchBox() {
-        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
-        val searchStyle = if (enableSearchRedesign) {
-            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
-        } else {
-            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
-        }
-        searchNavigationToolbar?.setSearchStyle(searchStyle, showSearchBtn = false)
+        searchNavigationToolbar?.updateSearchBarStyle(showSearchBtn = false)
     }
 }
