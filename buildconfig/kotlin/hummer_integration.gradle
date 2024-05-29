@@ -11,7 +11,7 @@ if (isBitsRepo()) {
 
     gradle.startParameter.getTaskNames().each {
         taskName ->
-            if(taskName.contains("package")){
+            if(taskName.contains("package") || taskName.contains("bundle") || taskName.contains("build")){
                 ext.Scan = true
             }
     }
