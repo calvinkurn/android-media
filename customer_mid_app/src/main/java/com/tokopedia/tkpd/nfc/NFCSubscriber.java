@@ -86,9 +86,9 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                                     if(nfcAdapter.isEnabled()) {
                                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_IMMUTABLE);
                                         }else{
-                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
                                         }
                                         nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
                                     }
