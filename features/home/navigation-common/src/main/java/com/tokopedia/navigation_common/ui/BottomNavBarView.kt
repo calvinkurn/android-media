@@ -108,7 +108,31 @@ class BottomNavBarView : LinearLayout {
         }
 
         val firstModel = modelList.firstOrNull() ?: return
-        select(mSelectedItemId ?: firstModel.uniqueId)
+        selectInternal(mSelectedItemId ?: firstModel.uniqueId)
+    }
+
+    /**
+     * Select the specified [BottomNavItemId] to be active.
+     *
+     * Selection can be forced which means even though the current models do not contain the specified [BottomNavItemId],
+     * it will still be forcefully selected internally. This might be useful if
+     * you need to select a [BottomNavItemId] while still waiting for the models.
+     * After the models have been set, it will automatically select the id specified in this function.
+     *
+     * A non-forced selection will ignore the selection process if the model
+     * with the specified id does not exist.
+     *
+     * Note that the [BottomNavBarView.Listener.onItemSelected] will always be called if the model existed
+     * regardless the selection is forced or not.
+     *
+     * Selecting item through this method will not trigger any reselection
+     * even though the current item id is the same as the specified [itemId]
+     *
+     * @param itemId the id to be selected
+     * @param forceSelect whether the selection should be forced
+     */
+    fun select(itemId: BottomNavItemId, forceSelect: Boolean = false) {
+        selectInternal(itemId, forceSelect, shouldTriggerReselection = false)
     }
 
     /**
@@ -127,12 +151,13 @@ class BottomNavBarView : LinearLayout {
      *
      * @param itemId the id to be selected
      * @param forceSelect whether the selection should be forced
+     * @param shouldTriggerReselection whether calling this should trigger reselection if the current item id is the same as the [itemId]
      */
-    fun select(itemId: BottomNavItemId, forceSelect: Boolean = false) {
+    private fun selectInternal(itemId: BottomNavItemId, forceSelect: Boolean = false, shouldTriggerReselection: Boolean = true) {
         val model = modelMap[itemId]
 
         if (model != null) {
-            val isSelected = mListener?.onItemSelected(this, model, mSelectedItemId == itemId, model.isJumper())
+            val isSelected = mListener?.onItemSelected(this, model, mSelectedItemId == itemId && shouldTriggerReselection, model.isJumper())
             if (isSelected != true && !forceSelect) return
         } else {
             if (!forceSelect) return
@@ -225,7 +250,7 @@ class BottomNavBarView : LinearLayout {
         rippleView.background = ContextCompat.getDrawable(uiModeAwareContext, navigation_commonR.drawable.bg_ripple_container)
 
         root.setOnTouchListener(BottomNavBarItemRippleTouchListener(root, rippleView))
-        root.setOnClickListener { select(model.uniqueId) }
+        root.setOnClickListener { selectInternal(model.uniqueId) }
 
         updateState(stateHolder.copy(isSelected = isSelected, isJumper = shouldUseJumper))
     }
