@@ -61,8 +61,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
-    implementation rootProject.ext.miscDependencies.exoPlayer
-
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

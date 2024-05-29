@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.ImageView
 import com.tokopedia.media.loaderfresco.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loaderfresco.data.Properties
+import timber.log.Timber
 
 @PublishedApi
 internal fun ImageView.call(source: Any?, properties: Properties) {
@@ -14,6 +15,7 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
                 properties.setSource(source)
             )
         } catch (e: Exception) {
+            Timber.d(e)
             setImageResource(ERROR_RES_UNIFY)
         }
     }
