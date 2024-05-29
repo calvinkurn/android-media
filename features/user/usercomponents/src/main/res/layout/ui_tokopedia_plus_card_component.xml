@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
                 android:layout_marginTop="2dp"
-                tools:visibility="visible"
+                tools:visibility="gone"
                 tools:text="Description"
                 android:lines="1"
                 android:ellipsize="end"
