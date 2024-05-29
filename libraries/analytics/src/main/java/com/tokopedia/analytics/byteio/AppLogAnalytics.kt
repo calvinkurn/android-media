@@ -392,9 +392,10 @@ object AppLogAnalytics {
 
     fun getTwoLastAdsDataBeforeCurrent(key: String): Any? {
         if (_adsPageDataList.isEmpty()) return null
-        var idx = _adsPageDataList.lastIndex - 2
+        val adsPageDataNonEmpty = _adsPageDataList.filter { map -> map.values.any { (it.third as? String)?.isNotBlank() == true } }
+        var idx = adsPageDataNonEmpty.lastIndex - 2
         while (idx >= 0) {
-            val map = _adsPageDataList[idx]
+            val map = adsPageDataNonEmpty[idx]
             map[key]?.let {
                 return it.third
             }
