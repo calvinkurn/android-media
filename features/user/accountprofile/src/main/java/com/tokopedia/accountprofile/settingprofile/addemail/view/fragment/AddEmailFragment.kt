@@ -93,7 +93,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 if (s.isNotEmpty()) {
                     setErrorText("")
                 } else if (binding?.etEmail?.editText?.text?.isEmpty() == true) {
-                    setErrorText(getString(com.tokopedia.accountprofile.R.string.error_cant_empty))
+                    setErrorText(getString(R.string.error_cant_empty))
                 }
             }
 
