@@ -51,6 +51,7 @@ import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.FingerPrintGqlParam
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2GqlParam
@@ -71,6 +72,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val loginTokenUseCase: LoginTokenUseCase,
     private val tickerInfoUseCase: TickerInfoUseCase,
     private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
+    private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
     private val loginSdkConsentUseCase: LoginSdkConsentUseCase,
     private val validateClientUseCase: ValidateClientUseCase,
@@ -188,6 +190,12 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val shopStatus: LiveData<ShopStatus>
         get() = _shopStatus
 
+    private var isLoginSdkFlow: Boolean = false
+
+    fun setAsLoginSdkFlow() {
+        isLoginSdkFlow = true
+    }
+
     fun registerCheck(id: String) {
         launchCatchError(block = {
             val params = RegisterCheckParam(id)
@@ -221,31 +229,50 @@ class LoginEmailPhoneViewModel @Inject constructor(
         })
     }
 
-    fun getUserInfo() {
+    fun getUserInfoOnly() {
         launch {
             try {
-                if(GlobalConfig.isSellerApp()) {
-                    getShopStatus()
-                }
-                when (val admin = getProfileAndAdmin(Unit)) {
-                    is AdminResult.AdminResultOnSuccessGetProfile -> {
-                        mutableProfileResponse.value = Success(admin.profile)
-                    }
-                    is AdminResult.AdminResultOnLocationAdminRedirection -> {
-                        mutableAdminRedirection.value = Success(true)
-                    }
-                    is AdminResult.AdminResultShowLocationPopup -> {
-                        mutableShowLocationAdminPopUp.value = Success(true)
-                    }
-                    is AdminResult.AdminResultOnErrorGetProfile -> {
-                        mutableProfileResponse.value = Fail(admin.error)
-                    }
-                    is AdminResult.AdminResultOnErrorGetAdmin -> {
-                        mutableShowLocationAdminPopUp.value = Fail(admin.error)
-                    }
-                }
+                val userInfo = userProfileAndSaveSessionUseCase(Unit)
+                mutableProfileResponse.value = userInfo
             } catch (e: Exception) {
                 mutableProfileResponse.value = Fail(e)
+            }
+        }
+    }
+
+    fun getUserInfo() {
+        if (isLoginSdkFlow) {
+            getUserInfoOnly()
+        } else {
+            launch {
+                try {
+                    if (GlobalConfig.isSellerApp()) {
+                        getShopStatus()
+                    }
+                    when (val admin = getProfileAndAdmin(Unit)) {
+                        is AdminResult.AdminResultOnSuccessGetProfile -> {
+                            mutableProfileResponse.value = Success(admin.profile)
+                        }
+
+                        is AdminResult.AdminResultOnLocationAdminRedirection -> {
+                            mutableAdminRedirection.value = Success(true)
+                        }
+
+                        is AdminResult.AdminResultShowLocationPopup -> {
+                            mutableShowLocationAdminPopUp.value = Success(true)
+                        }
+
+                        is AdminResult.AdminResultOnErrorGetProfile -> {
+                            mutableProfileResponse.value = Fail(admin.error)
+                        }
+
+                        is AdminResult.AdminResultOnErrorGetAdmin -> {
+                            mutableShowLocationAdminPopUp.value = Fail(admin.error)
+                        }
+                    }
+                } catch (e: Exception) {
+                    mutableProfileResponse.value = Fail(e)
+                }
             }
         }
     }

@@ -124,11 +124,11 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         if (isLoginSdkFlow()) {
             backToLoginSdk()
         } else {
-            gotoLoginPage()
+            gotoLoginPage(uri)
         }
     }
 
-    private fun gotoLoginPage() {
+    private fun gotoLoginPage(uri: Uri?) {
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
         if(uri != null) {
             val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)

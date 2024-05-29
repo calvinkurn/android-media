@@ -93,7 +93,7 @@
     <string name="button_login_google">Masuk dengan Google</string>
 
 
-    <string name="login_sdk_terms_privacy_txt">Syarat &amp; ketentuan serta Kebijakan Privasi %s</string>
+    <string name="login_sdk_terms_privacy_txt">Syarat &amp; Ketentuan serta Kebijakan Privasi %s</string>
     <string name="login_sdk_privacy_txt">Kebijakan Privasi</string>
     <string name="login_sdk_header_text">Izinkan %s untuk mengakses data dari akun berikut</string>
     <string name="login_sdk_consent_text">Dengan klik Izinkan, kamu setuju pembagian data untuk %s</string>

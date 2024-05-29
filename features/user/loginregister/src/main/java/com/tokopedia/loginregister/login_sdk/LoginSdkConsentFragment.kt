@@ -12,10 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
@@ -191,8 +191,8 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                         onSpanTextClicked(it)
                     }
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = ContextCompat.getColor(context, color)
-                        ds.setTypeface(Typeface.DEFAULT_BOLD);
+                        ds.color = getColor(context, color)
+                        ds.setTypeface(Typeface.DEFAULT_BOLD)
                     }
                 },
                 text.indexOf(it),
@@ -221,7 +221,6 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             imgProfile.loadImageCircle(consentData.userInfo.profilePicture)
 
             imgPartnerLogo.loadImage(consentData.clientInfo.imageUrl)
-
 
             txtTncPrivPartner.text = String.format(getString(loginregisterR.string.login_sdk_terms_privacy_txt), consentData.clientInfo.appName)
 

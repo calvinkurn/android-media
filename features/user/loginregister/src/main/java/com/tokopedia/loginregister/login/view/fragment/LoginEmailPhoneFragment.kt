@@ -699,7 +699,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
     }
 
-    private fun clearData() {
+    open fun clearData() {
         userSession.logoutSession()
     }
 

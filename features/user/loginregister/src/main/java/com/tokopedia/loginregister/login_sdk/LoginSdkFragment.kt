@@ -42,6 +42,7 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         initObserver()
         prepareLoginTiktokView()
         showLoadingLogin()
+        viewModel.setAsLoginSdkFlow()
         viewModel.validateClient(
             clientId = arguments?.getString(CLIENT_ID) ?: "",
             signature = arguments?.getString(SIGN_CERT) ?: "",
@@ -139,6 +140,10 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
         startActivityForResult(intent, LoginConstants.Request.REQUEST_INIT_REGISTER_SDK)
+    }
+
+    override fun clearData() {
+        // this function is disabled for login sdk flow to prevent logout
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
