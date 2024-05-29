@@ -25,7 +25,8 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
-import com.tokopedia.analytics.byteio.IAdsLog
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
@@ -100,8 +101,7 @@ class SearchActivity :
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
     ITelemetryActivity,
-    AppLogInterface,
-    IAdsLog {
+    AppLogInterface {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -138,8 +138,6 @@ class SearchActivity :
 
     override fun getPageName(): String = AppLogSearch.ParamValue.SEARCH_RESULT
 
-    override fun getAdsPageName(): String = AppLogSearch.ParamValue.SEARCH_RESULT
-
     override fun isEnterFromWhitelisted(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -160,7 +158,18 @@ class SearchActivity :
 
         SearchSessionId.update()
         AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance.value())
+        setAdsPageData()
         handleSearchHeaderThematic()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppLogAnalytics.removeLastAdsPageData(this)
+    }
+
+    private fun setAdsPageData() {
+        AppLogAnalytics.currentPageName = PageName.SEARCH_RESULT
+        AppLogAnalytics.putAdsPageData(this, AppLogParam.PAGE_NAME, PageName.SEARCH_RESULT)
     }
 
     private fun observeSearchState() {
