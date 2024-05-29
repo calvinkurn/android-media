@@ -7,6 +7,7 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudSlardarApmDataSourceImpl
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.InternalLoggerInterface
@@ -117,6 +118,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val loggerCloudNewRelicSdkDataSource = LoggerCloudNewRelicSdkDataSource()
             val loggerCloudNewRelicApiDataSource = LoggerCloudNewRelicApiDataSource()
             val loggerCloudEmbraceDataSource = LoggerCloudEmbraceDataSource()
+            val loggerCloudSlardarApmDataSource = LoggerCloudSlardarApmDataSourceImpl()
             val loggerRepoNew = LoggerRepository(
                 Gson(),
                 logsDao,
@@ -124,6 +126,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 loggerCloudNewRelicSdkDataSource,
                 loggerCloudNewRelicApiDataSource,
                 loggerCloudEmbraceDataSource,
+                loggerCloudSlardarApmDataSource,
                 getScalyrConfigList(context),
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,

@@ -7,6 +7,7 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkImpl
+import com.tokopedia.logger.datasource.cloud.LoggerCloudSlardarApmDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
@@ -36,6 +37,7 @@ class LoggerRepository(
     private val loggerCloudNewRelicSdkImpl: LoggerCloudNewRelicSdkImpl,
     private val loggerCloudNewRelicApiImpl: LoggerCloudNewRelicApiImpl,
     private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
+    private val loggerCloudSlardarApmDataSource: LoggerCloudSlardarApmDataSource,
     private val scalyrConfigs: List<ScalyrConfig>,
     private val encrypt: ((String) -> (String))? = null,
     val decrypt: ((String) -> (String))? = null,
@@ -148,6 +150,11 @@ class LoggerRepository(
                     jobList.add(jobEmbrace)
                 }
 
+                val jobApmSlardar = async {
+                    sendSlardarApmLogToServer(newRelicMessageSdkList, newRelicMessageApiList)
+                }
+                jobList.add(jobApmSlardar)
+
                 val isSuccess = jobList.toList().awaitAll().any { it }
                 if (isSuccess) {
                     deleteEntries(logs)
@@ -166,6 +173,23 @@ class LoggerRepository(
         }
 
         return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
+    }
+
+    private suspend fun sendSlardarApmLogToServer(
+        newRelicSdkList: List<NewRelicBodySdk>,
+        newRelicApiMap: Map<String, NewRelicBodyApi>
+    ): Boolean {
+        var resultSdkList = false
+        if (newRelicSdkList.isNotEmpty()) {
+            resultSdkList = loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicSdkList)
+        }
+
+        var resultApiList = false
+        if (newRelicApiMap.isNotEmpty()) {
+            resultApiList = loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicApiMap)
+        }
+
+        return resultSdkList && resultApiList
     }
 
     private fun mapLogs(logs: List<Logger>): LoggerCloudModelWrapper {
