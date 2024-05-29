@@ -262,7 +262,6 @@ class SearchActivity :
 
     private fun configureSearchNavigationToolbar() {
         setSearchNavigationToolbar()
-        fetchNotification()
     }
 
     private fun setSearchNavigationToolbar() {
@@ -272,7 +271,6 @@ class SearchActivity :
             it.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE)
             it.setIcon(
                 IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SRP))
-                    .addIcon(IconList.ID_MESSAGE) {}
                     .addIcon(
                         IconList.ID_CART,
                         disableRouteManager = false,
@@ -288,12 +286,6 @@ class SearchActivity :
             )
 
             AppLogSearch.eventCartEntranceShow()
-        }
-    }
-
-    private fun fetchNotification() {
-        if (userSession.isLoggedIn) {
-            searchNavigationToolbar?.updateNotification()
         }
     }
 
