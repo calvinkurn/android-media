@@ -111,7 +111,6 @@
                 android:text="@string/button_login_google"
                 android:textAllCaps="false"
                 android:visibility="gone"
-                android:drawableLeft="@drawable/ic_login_google"
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />
 

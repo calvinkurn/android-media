@@ -16,8 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
@@ -72,11 +71,7 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
             dismiss()
         }
 
-        if (shouldShowInactivePhone) {
-            viewBinding?.ubInactivePhoneNumber?.visible()
-        } else {
-            viewBinding?.ubInactivePhoneNumber?.gone()
-        }
+        viewBinding?.ubInactivePhoneNumber?.showWithCondition(shouldShowInactivePhone)
 
         viewBinding?.ubForgotPassword?.setOnClickListener {
             needHelpAnalytics.trackPageBottomSheetClickForgotPassword()

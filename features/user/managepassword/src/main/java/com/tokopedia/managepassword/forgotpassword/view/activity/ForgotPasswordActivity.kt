@@ -124,21 +124,25 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         if (isLoginSdkFlow()) {
             backToLoginSdk()
         } else {
-            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-            if(uri != null) {
-                val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
-                val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
-
-                if (!email.isNullOrEmpty()) {
-                    intent.putExtra(PARAM_AUTO_FILL, decodeParam(email))
-                    userSession.autofillUserData = decodeParam(email)
-                } else if (!phone.isNullOrEmpty()) {
-                    intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
-                    userSession.autofillUserData = decodeParam(phone)
-                }
-            }
-            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            gotoLoginPage()
         }
+    }
+
+    private fun gotoLoginPage() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+        if(uri != null) {
+            val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
+            val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
+
+            if (!email.isNullOrEmpty()) {
+                intent.putExtra(PARAM_AUTO_FILL, decodeParam(email))
+                userSession.autofillUserData = decodeParam(email)
+            } else if (!phone.isNullOrEmpty()) {
+                intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
+                userSession.autofillUserData = decodeParam(phone)
+            }
+        }
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     private fun gotoHome() {

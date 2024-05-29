@@ -23,10 +23,10 @@ class ValidateClientUseCase @Inject constructor(
     }
 
     private val query = object : GqlQueryInterface {
-        override fun getOperationNameList(): List<String> = emptyList()
+        override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
 
         override fun getQuery(): String = """
-            query validateClient(${'$'}client_id: String!, ${'$'}app_signature: String!, ${'$'}package_name: String!, ${'$'}redirect_uri: String!){
+            query $OPERATION_NAME(${'$'}client_id: String!, ${'$'}app_signature: String!, ${'$'}package_name: String!, ${'$'}redirect_uri: String!){
                 validate_client_signature(
                     client_id:${'$'}client_id,
                     app_signature:${'$'}app_signature,
@@ -39,6 +39,10 @@ class ValidateClientUseCase @Inject constructor(
                 }
             }""".trimIndent()
 
-        override fun getTopOperationName(): String = ""
+        override fun getTopOperationName(): String = OPERATION_NAME
+    }
+
+    companion object {
+        const val OPERATION_NAME = "validate_client_signature"
     }
 }

@@ -11,25 +11,12 @@ object LoginSdkUtils {
     private const val RESULT_AUTH_CODE = "auth_code"
     private const val RESULT_ERROR = "error"
     private const val RESULT_ERROR_CODE = "error_code"
-
-
     const val ERR_CODE_UNKNOWN = "err_unknown"
     const val ERR_CODE_API = "api_error"
     const val ERR_CODE_CLIENT = "client_error"
-
     const val ERR_CLIENT_CANCELLED = "User click on back button"
 
     fun redirectToTargetUri(activity: Activity, redirectUrl: String, authCode: String, error: String = "", errorCode: String = "") {
-/*        val finalUrl = if (inQuery) "$redirectUrl&auth_code=$authCode&error=$error" else redirectUrl
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))
-        if (!inQuery) {
-            if (authCode.isNotEmpty()) {
-                intent.putExtra(RESULT_AUTH_CODE, authCode)
-            }
-            if (error.isNotEmpty()) {
-                intent.putExtra(RESULT_ERROR, error)
-            }
-        }*/
         val intent = Intent()
         if (authCode.isNotEmpty()) {
             intent.putExtra(RESULT_AUTH_CODE, authCode)
@@ -43,7 +30,7 @@ object LoginSdkUtils {
         activity.finish()
     }
 
-    fun getClientLabelIfAvailable(clientName: String, removeDash: Boolean = false) : String {
+    fun getClientLabelIfAvailable(clientName: String, removeDash: Boolean = false): String {
         return if (clientName.isNotEmpty()) {
             if (removeDash) {
                 clientName

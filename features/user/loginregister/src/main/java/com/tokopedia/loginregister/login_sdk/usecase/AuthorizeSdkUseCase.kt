@@ -24,10 +24,11 @@ class AuthorizeSdkUseCase @Inject constructor(
     }
 
     private val query = object : GqlQueryInterface {
-        override fun getOperationNameList(): List<String> = emptyList()
+
+        override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
 
         override fun getQuery(): String = """
-            query authorize(${'$'}input: OauthAuthorizeParam!){
+            query $OPERATION_NAME(${'$'}input: OauthAuthorizeParam!){
                 oauth_authorize(input:${'$'}input) {
                     expires_in
                     code
@@ -37,6 +38,10 @@ class AuthorizeSdkUseCase @Inject constructor(
                 }
             }""".trimIndent()
 
-        override fun getTopOperationName(): String = ""
+        override fun getTopOperationName(): String = OPERATION_NAME
+    }
+
+    companion object {
+        const val OPERATION_NAME = "oauth_authorize"
     }
 }

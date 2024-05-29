@@ -92,10 +92,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val navigateToGojekSeamless: LiveData<Boolean>
         get() = mutableNavigateToGojekSeamless
 
-    private val mutableIsLoggedIn = SingleLiveEvent<Boolean>()
-    val isLoggedIn: LiveData<Boolean>
-        get() = mutableIsLoggedIn
-
     private val mutableRegisterCheckResponse = MutableLiveData<Result<RegisterCheckData>>()
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>
         get() = mutableRegisterCheckResponse
@@ -462,15 +458,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
             false
-        }
-    }
-
-    fun checkLoginStatus() {
-        try {
-            val isLoggedIn = userSession.accessToken.isNotEmpty() && userSession.freshToken.isNotEmpty() && userSession.userId != "0" && userSession.userId.isNotEmpty()
-            mutableIsLoggedIn.value = isLoggedIn
-        } catch (e: Exception) {
-            mutableIsLoggedIn.value = false
         }
     }
 

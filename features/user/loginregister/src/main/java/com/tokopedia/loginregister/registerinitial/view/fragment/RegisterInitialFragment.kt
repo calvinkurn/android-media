@@ -492,7 +492,10 @@ class RegisterInitialFragment :
     private fun prepareLoginTiktokView() {
         viewBinding?.apply {
             socmedBtn.showWithCondition(false)
+
             btnLoginGoogle.showWithCondition(true)
+            val googleIcon = MethodChecker.getDrawable(requireContext(), R.drawable.ic_login_google)
+            btnLoginGoogle.setCompoundDrawablesWithIntrinsicBounds(googleIcon, null, null, null)
         }
     }
 

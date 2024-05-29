@@ -110,4 +110,5 @@ object LoginSdkAnalytics {
             .send()
     }
 
+    const val LABEL_CLICK = "click"
 }

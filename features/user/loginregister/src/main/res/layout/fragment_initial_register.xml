@@ -89,8 +89,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/button_login_google"
                 android:textAllCaps="false"
-                android:visibility="gone"
-                android:drawableLeft="@drawable/ic_login_google"
+                android:visibility="visible"
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />
 

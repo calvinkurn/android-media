@@ -1,6 +1,11 @@
 package com.tokopedia.verification.common.analytics
 
 import android.os.Build
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientLabelIfAvailable
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.verification.common.analytics.TrackingOtpConstant.Action
 import com.tokopedia.verification.common.analytics.TrackingOtpConstant.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.verification.common.analytics.TrackingOtpConstant.Category
@@ -12,12 +17,8 @@ import com.tokopedia.verification.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.verification.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.verification.otp.data.OtpData
 import com.tokopedia.verification.otp.domain.pojo.ModeListData
-import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientLabelIfAvailable
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.track.interfaces.Analytics
-import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -39,7 +40,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                String.format("click - %s - %s", otpType.toString(), modeName) + getClientLabelIfAvailable(clientName)
+                String.format(Locale.getDefault(), "click - %s - %s", otpType.toString(), modeName) + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -48,7 +49,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             Event.EVENT_CLICK_OTP,
             Category.CATEGORY_OTP_PAGE,
             Action.ACTION_CLICK_METHOD_OTP,
-            String.format("fail - %s - %s - %s", reason, otpType.toString(), modeName)  + getClientLabelIfAvailable(clientName)))
+            String.format(Locale.getDefault(), "fail - %s - %s - %s", reason, otpType.toString(), modeName)  + getClientLabelIfAvailable(clientName)))
     }
 
     fun trackClickInactivePhoneNumber(otpType: String) {
@@ -721,7 +722,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                String.format("success - %s - %s - %s", otpType.toString(), modeName, correlationId))
+                String.format(Locale.getDefault(), "success - %s - %s - %s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -733,7 +734,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                String.format("failed - %s - %s - %s", reason, otpType.toString(), modeName))
+                String.format(Locale.getDefault(), "failed - %s - %s - %s", reason, otpType.toString(), modeName))
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -744,7 +745,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
                 Action.ACION_CLICK_TRY_AGAIN,
-                String.format("success - %s - %s - %s", otpType.toString(), modeName, correlationId))
+                String.format(Locale.getDefault(), "success - %s - %s - %s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -757,7 +758,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
                 Action.ACION_CLICK_TRY_AGAIN,
-                String.format("click - %s - %s", otpType.toString(), modeName))
+                String.format(Locale.getDefault(), "click - %s - %s", otpType.toString(), modeName))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -770,7 +771,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
                 Action.ACION_CLICK_TRY_AGAIN,
-                String.format("failed - %s - %s - %s", reason, otpType.toString(), modeName))
+                String.format(Locale.getDefault(), "failed - %s - %s - %s", reason, otpType.toString(), modeName))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -782,7 +783,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACION_CLICK_CHOOSE_OTHER_METHOD,
-                String.format("%s - %s", otpType.toString(), modeName) + getClientLabelIfAvailable(clientName)
+                String.format(Locale.getDefault(), "%s - %s", otpType.toString(), modeName) + getClientLabelIfAvailable(clientName)
         )
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT

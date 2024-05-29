@@ -107,8 +107,8 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.P
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
-import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.login_sdk.LoginSdkActivity
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
@@ -382,7 +382,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         super.onViewCreated(view, savedInstanceState)
         fetchRemoteConfig()
         if (savedInstanceState == null) {
-//            clearData()
+            clearData()
         }
 
         initObserver()
@@ -1872,7 +1872,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    open fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
+    fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
         return {
             trackSuccessValidate()
 

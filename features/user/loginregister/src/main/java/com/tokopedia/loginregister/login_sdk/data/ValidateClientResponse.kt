@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login_sdk.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class ValidateClientResponse (
@@ -8,8 +9,9 @@ data class ValidateClientResponse (
 )
 
 data class ValidateClientData(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("is_valid")
-    val status: Boolean,
+    var status: Boolean = false,
     @SerializedName("error")
     var error: String = "",
     @SerializedName("app_name")

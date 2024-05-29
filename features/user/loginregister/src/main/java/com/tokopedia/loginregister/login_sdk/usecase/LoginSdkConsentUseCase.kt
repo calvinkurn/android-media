@@ -23,10 +23,10 @@ class LoginSdkConsentUseCase @Inject constructor(
     }
 
     private val query = object : GqlQueryInterface {
-        override fun getOperationNameList(): List<String> = emptyList()
+        override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
 
         override fun getQuery(): String = """
-            query getConsent(${'$'}client_id: String!){
+            query $OPERATION_NAME(${'$'}client_id: String!){
                 oauth_check_consent(client_id:${'$'}client_id) {
                     show_consent
                     user_info{
@@ -54,6 +54,10 @@ class LoginSdkConsentUseCase @Inject constructor(
                 }
             }""".trimIndent()
 
-        override fun getTopOperationName(): String = ""
+        override fun getTopOperationName(): String = OPERATION_NAME
+    }
+
+    companion object {
+        const val OPERATION_NAME = "oauth_check_consent"
     }
 }

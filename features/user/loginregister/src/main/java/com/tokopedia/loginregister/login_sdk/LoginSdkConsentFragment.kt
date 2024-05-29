@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.login_sdk
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -20,10 +19,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentConsentLayoutBinding
 import com.tokopedia.loginregister.login.di.LoginComponent
@@ -46,8 +44,10 @@ import com.tokopedia.sessioncommon.util.LoginSdkUtils.setAsLoginSdkFlow
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.loginregister.R as loginregisterR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LoginSdkConsentFragment: BaseDaggerFragment() {
 
@@ -83,7 +83,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
 
         viewBinding?.btnLoginConsent?.setOnClickListener {
             viewBinding?.btnLoginConsent?.isLoading = true
-            LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("click")
+            LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent(LoginSdkAnalytics.LABEL_CLICK)
             viewModel.authorizeSdk(
                 clientId = arguments?.getString(CLIENT_ID) ?: "",
                 redirectUri = redirectUrl,
@@ -111,12 +111,9 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
     }
 
     private fun showLoading(shouldShow: Boolean) {
-        if(shouldShow) {
-            viewBinding?.pageLoader?.visible()
-            viewBinding?.containerView?.invisible()
-        } else {
-            viewBinding?.pageLoader?.gone()
-            viewBinding?.containerView?.visible()
+        viewBinding?.apply {
+            pageLoader.showWithCondition(shouldShow)
+            containerView.visibleWithCondition(!shouldShow)
         }
     }
 
@@ -128,7 +125,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                         if (it.data.showConsent) {
                             setUI(it.data)
                         } else {
-                            LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent("click")
+                            LoginSdkAnalytics.sendClickOnButtonLanjutDanIzinkanEvent(LoginSdkAnalytics.LABEL_CLICK)
                             viewModel.authorizeSdk(
                                 clientId = arguments?.getString(CLIENT_ID) ?: "",
                                 redirectUri = redirectUrl,
@@ -180,19 +177,6 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
         }
     }
 
-    fun getColor(context: Context, id: Int): Int {
-        return try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ContextCompat.getColor(context, id)
-            } else {
-                context.resources.getColor(id)
-            }
-        } catch (e: NullPointerException) {
-            e.printStackTrace()
-            0
-        }
-    }
-
     fun TextView.clickableText(
         context: Context,
         spanText: List<String>,
@@ -207,7 +191,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                         onSpanTextClicked(it)
                     }
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = getColor(context, color)
+                        ds.color = ContextCompat.getColor(context, color)
                         ds.setTypeface(Typeface.DEFAULT_BOLD);
                     }
                 },
@@ -244,14 +228,14 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             txtTncPrivPartner.clickableText(
                 requireContext(),
                 listOf(getString(R.string.phone_shop_tnc_title), getString(R.string.login_sdk_privacy_txt)),
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             ) {
                 if (it == getString(loginregisterR.string.phone_shop_tnc_title)) {
-                    RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.url))
+                    RouteManager.route(activity, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.url))
                     LoginSdkAnalytics.sendClickOnButtonSyaratDanKetentuanEvent(requireContext().getClientName())
                 }
                 if (it == getString(loginregisterR.string.login_sdk_privacy_txt)) {
-                    RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.privacyUrl))
+                    RouteManager.route(activity, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, consentData.termPrivacy.privacyUrl))
                     LoginSdkAnalytics.sendClickOnButtonKebijakanPrivasiEvent(requireContext().getClientName())
                 }
             }

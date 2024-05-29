@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -54,7 +55,10 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
             loginOptionTitle.text = getString(loginregisterR.string.login_sdk_or_text)
             socmedBtn.showWithCondition(false)
             registerButton.showWithCondition(false)
+
             btnLoginGoogle.showWithCondition(true)
+            val googleIcon = MethodChecker.getDrawable(requireContext(), R.drawable.ic_login_google)
+            btnLoginGoogle.setCompoundDrawablesWithIntrinsicBounds(googleIcon, null, null, null)
             btnLoginGoogle.setOnClickListener {
                 onLoginGoogleClick()
             }
@@ -88,7 +92,7 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
     }
 
     override fun autoFillWithDataFromLatestLoggedIn() {
-        // no-op
+        // no-op, for the sdk this function should be disabled
     }
 
     override fun checkLoginOption() {

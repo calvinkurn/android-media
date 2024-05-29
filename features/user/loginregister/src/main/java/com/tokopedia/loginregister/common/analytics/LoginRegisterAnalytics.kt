@@ -3,10 +3,7 @@ package com.tokopedia.loginregister.common.analytics
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.util.Patterns
-import android.widget.Toast
-import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
@@ -22,6 +19,7 @@ import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientLabelIfAvailable
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -99,8 +97,8 @@ class LoginRegisterAnalytics @Inject constructor(
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "email"),
-                        String.format("failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "email"),
+                        String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
                 )
 
 
@@ -109,14 +107,14 @@ class LoginRegisterAnalytics @Inject constructor(
                     EVENT_CLICK_LOGIN,
                     CATEGORY_LOGIN_PAGE,
                     "enter login phone number",
-                    String.format("failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
+                    String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
             )
             else -> {
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "unknown"),
-                        String.format("failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "unknown"),
+                        String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
                 )
 
                 if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -139,7 +137,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "email"),
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "email"),
                         "success" + getClientLabelIfAvailable(clientName)
                 )
 
@@ -157,7 +155,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "unknown"),
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "unknown"),
                         "success" + getClientLabelIfAvailable(clientName)
                 )
 
@@ -196,7 +194,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "enter login phone number",
-                String.format("failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
+                String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -681,7 +679,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on masuk dengan $GOOGLE",
-                String.format("failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
+                String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -690,7 +688,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_EMAIL,
-                String.format("failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
+                String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
         )
 
         if(!hashMap.containsKey(KEY_SESSION_IRIS)){

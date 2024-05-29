@@ -21,7 +21,6 @@ object LoginConstants {
         const val REQUEST_GOTO_SEAMLESS = 125
         const val REQUEST_CHOOSE_ACCOUNT_OCL = 126
         const val REQUEST_INIT_REGISTER_SDK = 127
-        const val REQUEST_TIKTOK_LOGIN = 128
     }
 
     object RemoteConfigKey {

@@ -165,12 +165,6 @@ object ApplinkConstInternalUserPlatform {
     const val SEAMLESS_LOGIN = "$NEW_INTERNAL_USER/login-seamless"
 
     /**
-     * TiktokLoginActivity
-     * @Applink : tokopedia-android-internal://user/login-tiktok
-     **/
-    const val TIKTOK_LOGIN = "$NEW_INTERNAL_USER/login-tiktok"
-
-    /**
      * TermPrivacyActivity
      * @applink : tokopedia-android-internal://user/term-privacy/{page}/
      **/
