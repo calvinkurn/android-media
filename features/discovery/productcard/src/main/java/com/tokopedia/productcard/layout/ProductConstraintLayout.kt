@@ -107,7 +107,6 @@ open class ProductConstraintLayout :
                     LEFT -> toRight()
                     else -> toCenter()
                 }
-                debugTextView?.text = "$maxAreaPercentage%"
             }
         }
     }
@@ -225,7 +224,7 @@ open class ProductConstraintLayout :
     }
 
     override fun onViewAttachedToWindow(p0: View) {
-        onShow()
+        post { calculateVisibility(isFromGlobal = true) }
     }
 
     override fun onViewDetachedFromWindow(p0: View) {
@@ -267,6 +266,7 @@ open class ProductConstraintLayout :
             mPercentageListener?.onShow()
             viewDetachedFromWindows = false
         }
+        debugTextView?.text = "$maxAreaPercentage%"
     }
 
     private fun onShowOver() {
@@ -275,6 +275,7 @@ open class ProductConstraintLayout :
             viewDetachedFromWindows = true
         }
         maxAreaPercentage = 0
+        debugTextView?.text = "$maxAreaPercentage%"
     }
 
     private fun inflateView() {
