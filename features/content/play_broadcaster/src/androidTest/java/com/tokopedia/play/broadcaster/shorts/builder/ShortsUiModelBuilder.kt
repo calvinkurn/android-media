@@ -63,7 +63,6 @@ class ShortsUiModelBuilder {
                     type = ContentCommonUserType.TYPE_SHOP,
                     name = "Shop",
                     iconUrl = "icon.url.shop",
-                    badge = "icon.badge",
                     hasUsername = usernameShop,
                     hasAcceptTnc = tncShop,
                     enable = tncShop
@@ -76,7 +75,6 @@ class ShortsUiModelBuilder {
                     type = ContentCommonUserType.TYPE_USER,
                     name = "Buyer",
                     iconUrl = "icon.url.buyer",
-                    badge = "icon.badge",
                     hasUsername = usernameBuyer,
                     hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
@@ -89,7 +87,6 @@ class ShortsUiModelBuilder {
                     type = ContentCommonUserType.TYPE_SHOP,
                     name = "Shop",
                     iconUrl = "icon.url.shop",
-                    badge = "icon.badge",
                     hasUsername = usernameShop,
                     hasAcceptTnc = tncShop,
                     enable = tncShop
@@ -99,7 +96,6 @@ class ShortsUiModelBuilder {
                     type = ContentCommonUserType.TYPE_USER,
                     name = "Buyer",
                     iconUrl = "icon.url.buyer",
-                    badge = "icon.badge",
                     hasUsername = usernameBuyer,
                     hasAcceptTnc = tncBuyer,
                     enable = tncBuyer

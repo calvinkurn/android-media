@@ -18,7 +18,6 @@ class StoriesCreationModelBuilder {
             type = "content-shop",
             hasUsername = true,
             hasAcceptTnc = true,
-            badge = "",
             enable = enable,
         )
     )

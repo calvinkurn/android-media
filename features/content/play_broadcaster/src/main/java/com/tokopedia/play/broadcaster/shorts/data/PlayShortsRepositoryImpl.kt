@@ -1,8 +1,9 @@
 package com.tokopedia.play.broadcaster.shorts.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.usecase.GetWhiteListUseCase
+import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
@@ -28,7 +29,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 08, 2022
  */
 class PlayShortsRepositoryImpl @Inject constructor(
-    private val getWhiteListUseCase: GetWhiteListUseCase,
+    private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -41,10 +42,14 @@ class PlayShortsRepositoryImpl @Inject constructor(
     private val checkProductCustomVideoUseCase: CheckProductCustomVideoUseCase,
 ) : PlayShortsRepository {
 
-    override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
-        val response = getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
-
-        return@withContext mapper.mapAuthorList(response)
+    override suspend fun getAccountList(): List<ContentAccountUiModel> {
+        return withContext(dispatchers.io) {
+            feedXHeaderUseCase.setRequestParams(
+                FeedXHeaderUseCase.createParam(listOf(FeedXHeaderRequestFields.CREATION.value))
+            )
+            val result = feedXHeaderUseCase.executeOnBackground()
+            mapper.mapAuthorList(result.feedXHeaderData.data.creation)
+        }
     }
 
     override suspend fun getShortsConfiguration(
@@ -61,17 +66,18 @@ class PlayShortsRepositoryImpl @Inject constructor(
         mapper.mapShortsConfig(response)
     }
 
-    override suspend fun createShorts(authorId: String, authorType: String): String = withContext(dispatchers.io) {
-        val response = createChannelUseCase.apply {
-            params = CreateChannelUseCase.createParams(
-                authorId = authorId,
-                authorType = authorType,
-                type = CreateChannelUseCase.Type.Shorts,
-            )
-        }.executeOnBackground()
+    override suspend fun createShorts(authorId: String, authorType: String): String =
+        withContext(dispatchers.io) {
+            val response = createChannelUseCase.apply {
+                params = CreateChannelUseCase.createParams(
+                    authorId = authorId,
+                    authorType = authorType,
+                    type = CreateChannelUseCase.Type.Shorts,
+                )
+            }.executeOnBackground()
 
-        return@withContext response.id
-    }
+            return@withContext response.id
+        }
 
     override suspend fun uploadTitle(title: String, shortsId: String, authorId: String) {
         withContext(dispatchers.io) {

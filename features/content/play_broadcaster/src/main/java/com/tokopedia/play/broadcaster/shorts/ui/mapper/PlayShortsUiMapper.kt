@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.shorts.ui.mapper
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.model.Creation
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterAuthorConfigResponse
@@ -26,23 +26,22 @@ class PlayShortsUiMapper @Inject constructor(
     private val gson: Gson
 ) : PlayShortsMapper {
 
-    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
-        return response.whitelist.authors.map {
+    override fun mapAuthorList(response: Creation): List<ContentAccountUiModel> {
+        return response.authors.map {
             ContentAccountUiModel(
                 id = it.id,
                 name = it.name,
-                iconUrl = it.thumbnail,
-                badge = it.badge,
+                iconUrl = it.image,
                 type = it.type,
-                hasUsername = it.shortVideo.hasUsername,
-                hasAcceptTnc = it.hasAcceptTnc,
-                enable = it.shortVideo.enable
+                hasUsername = it.hasUsername,
+                hasAcceptTnc = it.hasAcceptTnC,
+                enable = response.isActive,
             )
         }
     }
 
     override fun mapShortsConfig(response: GetBroadcasterAuthorConfigResponse): PlayShortsConfigUiModel {
-        val config = if(response.authorConfig.config.isEmpty()) {
+        val config = if (response.authorConfig.config.isEmpty()) {
             PlayShortsConfig()
         } else {
             gson.fromJson<PlayShortsConfig>(

@@ -184,7 +184,6 @@ class ProductPickerUserBottomSheet @Inject constructor(
                 .setAuthorType(selectedAccount?.type.orEmpty())
                 .setProductTagSource(ProductTagSource.GlobalSearch.tag)
                 .setAuthorId(selectedAccount?.id.orEmpty())
-                .setShopBadge(mDataSource?.getShopBadgeIfAny().orEmpty())
                 .setMultipleSelectionProduct(true, viewModel.maxProduct)
                 .setIsShowActionBarDivider(false)
         )
@@ -267,7 +266,6 @@ class ProductPickerUserBottomSheet @Inject constructor(
 
     interface DataSource {
         fun getSelectedAccount(): ContentAccountUiModel
-        fun getShopBadgeIfAny(): String
     }
 
     interface Listener {

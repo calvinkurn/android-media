@@ -1,12 +1,10 @@
 package com.tokopedia.content.common.ui.viewholder
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.databinding.ItemFeedAccountTypeBinding
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 
 /**
@@ -21,10 +19,6 @@ class FeedAccountTypeViewHolder(
         binding.apply {
             tvAccountName.text = item.name
             ivAvatar.loadImageCircle(item.iconUrl)
-            ivBadge.loadImage(item.badge)
-
-            ivBadge.visibility = if(item.badge.isNotEmpty()) View.VISIBLE else View.GONE
-
             root.setOnClickListener {
                 listener.onClick(item)
             }

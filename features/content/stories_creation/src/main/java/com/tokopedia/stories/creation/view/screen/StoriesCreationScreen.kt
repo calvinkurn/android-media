@@ -51,12 +51,12 @@ import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
-import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.model.StoriesMedia
 import com.tokopedia.stories.creation.view.model.StoriesMediaCover
-import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
 import com.tokopedia.nest.components.R as nestcomponentsR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023
@@ -112,7 +112,6 @@ fun StoriesCreationScreen(
         StoriesCreationHeader(
             imageUrl = uiState.selectedAccount.iconUrl,
             authorName = uiState.selectedAccount.name,
-            badge = uiState.selectedAccount.badge,
             isEligibleToSwitchAccount = uiState.accountList.size > 1,
             onBackPressed = onBackPressed,
             onClickChangeAccount = onClickChangeAccount,
@@ -206,7 +205,6 @@ fun StoriesCreationScreen(
 private fun StoriesCreationHeader(
     imageUrl: String,
     authorName: String,
-    badge: String,
     isEligibleToSwitchAccount: Boolean,
     onBackPressed: () -> Unit,
     onClickChangeAccount: () -> Unit,
