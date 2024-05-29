@@ -128,9 +128,6 @@ object RollenceKey {
 
     const val ANDROID_INTERNAL_TEST = "android_internal"
 
-    const val PDP_ATC_ANIMATION_VARIANT = "variant_animation"
-    const val PDP_ATC_ANIMATION_KEY = "pdp_animation_atc"
-
     // Travel
     const val FLIGHT_INSURANCE_AUTO_TICK = "Flight_Ins_Att"
     const val FLIGHT_INSURANCE_AUTO_TICK_CONTROL = "flight_ins_with_att"

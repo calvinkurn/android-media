@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/unify_space_8"
             android:layout_weight="1"
-            android:background="@drawable/bg_rounded_corner_white"
+            android:background="@drawable/home_credit_bg_rounded_corner_white"
             android:gravity="center_horizontal"
             android:paddingTop="@dimen/unify_space_12"
             android:paddingBottom="@dimen/unify_space_12"
