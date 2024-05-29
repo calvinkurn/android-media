@@ -9,13 +9,13 @@ data class SdkAuthorizeResponse (
 
 data class AuthorizeData(
     @SerializedName("code")
-    val code: String,
+    val code: String = "",
     @SerializedName("expires_in")
-    val expires: Int,
+    val expires: Int = 0,
     @SerializedName("is_success")
-    val isSuccess: Boolean,
+    val isSuccess: Boolean = false,
     @SerializedName("redirect_uri")
-    var redirectUri: String,
+    val redirectUri: String,
     @SerializedName("error")
-    var error: String = ""
+    val error: String = ""
 )

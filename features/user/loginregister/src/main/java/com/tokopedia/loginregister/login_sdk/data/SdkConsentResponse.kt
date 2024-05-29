@@ -28,32 +28,32 @@ data class UserInfo(
     @SerializedName("fullname")
     val fullName: String = "",
     @SerializedName("email")
-    var email: String = "",
+    val email: String = "",
     @SerializedName("phone_number")
-    var phone: String = "",
+    val phone: String = "",
     @SerializedName("profile_picture")
-    val profilePicture: String ,
+    val profilePicture: String,
 )
 
 
 data class ClientInfo(
     @SerializedName("image_url")
-    val imageUrl: String,
+    val imageUrl: String = "",
     @SerializedName("app_name")
-    val appName: String,
+    val appName: String = "",
     @SerializedName("redirect_uri")
-    val redirectUri: String,
+    val redirectUri: String = "",
     @SerializedName("is_external")
     val isExternal: Boolean
 )
 
 data class TermPrivacy(
     @SerializedName("tokopedia_tnc_id")
-    val tncId: String,
+    val tncId: String = "",
     @SerializedName("tnc_url")
-    val url: String,
+    val url: String = "",
     @SerializedName("privacy_url")
-    val privacyUrl: String,
+    val privacyUrl: String = "",
     @SerializedName("purpose")
-    val purpose: String
+    val purpose: String = ""
 )

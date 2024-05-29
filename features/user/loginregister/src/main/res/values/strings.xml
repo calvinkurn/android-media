@@ -251,5 +251,8 @@
 
     <string name="official_store_on_progress_text">Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.</string>
     <string name="shop_creation_card_unselected_text">Pilih salah satu jenis toko dulu, ya.</string>
+    <string name="login_sdk_header_txt">Izin akses data dari akun Tokopedia berikut</string>
+    <string name="login_sdk_data_info_header_txt">Data yang akan diakses:</string>
+    <string name="login_sdk_btn_consent">Izinkan</string>
 
 </resources>
