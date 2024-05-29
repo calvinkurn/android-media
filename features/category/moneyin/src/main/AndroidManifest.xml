@@ -2,7 +2,7 @@
     package="com.tokopedia.moneyin">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <application android:usesCleartextTraffic="true">
+    <application >
         <activity
             android:name="com.tokopedia.moneyin.viewcontrollers.activity.MoneyInHomeActivity"
             android:theme="@style/Theme.WhiteUnify"
