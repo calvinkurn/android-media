@@ -1,8 +1,10 @@
 package com.tokopedia.media.loaderfresco.data
 
+import com.tokopedia.media.loaderfresco.R as medialoaderfrescoR
+
 // unify resources
-val ERROR_RES_UNIFY = com.tokopedia.media.loaderfresco.R.drawable.medialoader_image_state_error
-val PLACEHOLDER_RES_UNIFY = com.tokopedia.media.loaderfresco.R.drawable.medialoader_image_state_placeholder
+val ERROR_RES_UNIFY = medialoaderfrescoR.drawable.medialoader_image_state_error
+val PLACEHOLDER_RES_UNIFY = medialoaderfrescoR.drawable.medialoader_image_state_placeholder
 
 const val DEFAULT_ROUNDED = 5.0f
 

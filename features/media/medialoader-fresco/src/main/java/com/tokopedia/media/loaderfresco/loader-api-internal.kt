@@ -14,7 +14,6 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
                 properties.setSource(source)
             )
         } catch (e: Exception) {
-            e.printStackTrace()
             setImageResource(ERROR_RES_UNIFY)
         }
     }
