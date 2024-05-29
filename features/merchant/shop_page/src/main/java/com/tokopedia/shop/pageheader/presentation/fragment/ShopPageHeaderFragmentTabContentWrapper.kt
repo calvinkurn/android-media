@@ -51,6 +51,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
@@ -377,6 +378,20 @@ class ShopPageHeaderFragmentTabContentWrapper :
             configToolbarForSellerView()
         } else {
             configToolbarForBuyerView()
+        }
+        configureSearchStyle()
+    }
+
+    private fun configureSearchStyle() {
+        navToolbar?.setSearchStyle(getSearchStyle(), showSearchBtn = false)
+    }
+
+    private fun getSearchStyle(): NavToolbar.Companion.SearchStyle {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        return if (enableSearchRedesign) {
+            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
+        } else {
+            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
         }
     }
 
