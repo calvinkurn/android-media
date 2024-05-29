@@ -1830,7 +1830,7 @@ class CartRevampFragment :
             object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if (hasLoadRecommendation) {
-                        loadRecommendation()
+                        loadRecommendation(null)
                     }
                 }
             }
@@ -2787,8 +2787,11 @@ class CartRevampFragment :
         return isPromoApplied
     }
 
-    private fun loadRecommendation() {
-        val pageName = if (FLAG_IS_CART_EMPTY) CartViewModel.PAGE_NAME_RECOMMENDATION_EMPTY else CartViewModel.PAGE_NAME_RECOMMENDATION
+    private fun loadRecommendation(cartData: CartData?) {
+        val isAvailableGroupEmpty = cartData?.availableSection?.availableGroupGroups?.isEmpty() == true
+        val isUnavailableGroupEmpty = cartData?.unavailableSections?.isEmpty() == true
+        val isCartEmpty = (isAvailableGroupEmpty && isUnavailableGroupEmpty) || (isAvailableGroupEmpty && !isUnavailableGroupEmpty)
+        val pageName = if (isCartEmpty) CartViewModel.PAGE_NAME_RECOMMENDATION_EMPTY else CartViewModel.PAGE_NAME_RECOMMENDATION
         viewModel.processGetRecommendationData(pageName)
     }
 
@@ -4197,11 +4200,11 @@ class CartRevampFragment :
         notifyBottomCartParent()
     }
 
-    private fun renderAdditionalWidget() {
+    private fun renderAdditionalWidget(cartData: CartData) {
         validateRenderBuyAgain()
         validateRenderWishlist()
         viewModel.addCartRecentViewData()
-        loadRecommendation()
+        loadRecommendation(cartData)
     }
 
     private fun renderCartAvailableItems(cartData: CartData) {
@@ -4459,7 +4462,7 @@ class CartRevampFragment :
         validateGoToCheckout()
         scrollToProductShopWithCartId()
 
-        renderAdditionalWidget()
+        renderAdditionalWidget(cartData)
         resetArguments()
     }
 
