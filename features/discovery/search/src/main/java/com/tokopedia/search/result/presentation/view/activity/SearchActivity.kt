@@ -158,13 +158,18 @@ class SearchActivity :
 
         SearchSessionId.update()
         AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance.value())
-        AppLogAnalytics.putAdsPageData(this, AppLogParam.PAGE_NAME, PageName.SEARCH_RESULT)
+        setAdsPageData()
         handleSearchHeaderThematic()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         AppLogAnalytics.removeLastAdsPageData(this)
+    }
+
+    private fun setAdsPageData() {
+        AppLogAnalytics.currentPageName = PageName.SEARCH_RESULT
+        AppLogAnalytics.putAdsPageData(this, AppLogParam.PAGE_NAME, PageName.SEARCH_RESULT)
     }
 
     private fun observeSearchState() {
