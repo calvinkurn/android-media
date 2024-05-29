@@ -37,7 +37,6 @@ import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
-import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.view.InboxView;
@@ -419,11 +418,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void intiInjector() {
-        DaggerGlobalNavComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .globalNavModule(new GlobalNavModule())
-                .build()
-                .inject(this);
+        DaggerGlobalNavComponent.factory()
+                .create(
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent(),
+                    requireContext()
+                ).inject(this);
     }
 
     private List<Visitable> getData() {

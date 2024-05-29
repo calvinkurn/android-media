@@ -61,6 +61,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_NEW_RELIC = "View New Relic Log"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
+        const val KEYWORD_OK_HTTP_TIMEOUT = "OkHttp default timeout value"
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
@@ -216,6 +217,7 @@ class DeveloperOptionAdapter(
                 KEYWORD_LIVE
             )
         ),
+        OkHttpTimeoutUiModel(listOf(KEYWORD_OK_HTTP_TIMEOUT)),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
         DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),

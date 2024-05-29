@@ -97,6 +97,8 @@
     <string name="shop_page_label_remind_me">Ingatkan</string>
 
     <string name="occ_text">Beli Langsung</string>
+    <string name="shop_atc">+ Keranjang</string>
+
 
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_search_product_in_shop_name">di %1s</string>

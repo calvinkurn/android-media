@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
@@ -18,6 +19,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -30,6 +32,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 15, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSetupProductUGCAnalyticTest {
 
     @get:Rule
@@ -49,6 +52,7 @@ class PlayShortsSetupProductUGCAnalyticTest {
     private val mockContentProductPickerSGCCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
     private val ugcModelBuilder = ProductPickerUgcModelBuilder()
@@ -59,6 +63,8 @@ class PlayShortsSetupProductUGCAnalyticTest {
     private val mockLastTaggedProducts = ugcModelBuilder.buildLastTaggedProducts()
 
     init {
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any(), any()) } returns true
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
         coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
@@ -82,6 +88,7 @@ class PlayShortsSetupProductUGCAnalyticTest {
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
+                        mockCoachMarkSharedPref = mockCoachMarkSharedPref,
                     )
                 )
                 .build()
@@ -94,26 +101,23 @@ class PlayShortsSetupProductUGCAnalyticTest {
 
         clickMenuProduct()
         delay()
+    }
+
+    @Test
+    fun testAnalytic_shorts_productSetupUgc() {
+        openChooseSourceBottomSheet()
+        cassavaValidator.verify("view - product selection user profile")
+
+        clickCloseBreadcrumb()
+        cassavaValidator.verify("click - close product selection filter")
+
+        openChooseSourceBottomSheet()
+        clickProductTagSourceTokopedia()
+        cassavaValidator.verify("click - product selection filter")
+    }
+
+    private fun openChooseSourceBottomSheet() {
         clickBreadcrumb()
         delay()
-    }
-
-    @Test
-    fun testAnalyic_viewProductTagSourceBottomSheet() {
-        cassavaValidator.verify("view - product selection user profile")
-    }
-
-    @Test
-    fun testAnalyic_clickCloseOnProductTagSourceBottomSheet() {
-        clickCloseBreadcrumb()
-
-        cassavaValidator.verify("click - close product selection filter")
-    }
-
-    @Test
-    fun testAnalyic_clickProductTagSource() {
-        clickProductTagSourceTokopedia()
-
-        cassavaValidator.verify("click - product selection filter")
     }
 }

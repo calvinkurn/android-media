@@ -16,8 +16,8 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.filter.R;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 /**
  * Created by henrypriyono on 8/14/17.

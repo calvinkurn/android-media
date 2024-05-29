@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        maven {
+            url 'https://maven.byted.org/repository/android_public/'
+        }
+    }
+
+    dependencies {
+        classpath("com.bytedance.tools:build_collect:1.0.0.gradle-8.0")
+    }
+}
+
+println("This is init.gradle script")
+
+ext.startTime = System.currentTimeMillis()
+
+//项目是否已经接入了build collect
+//System.setProperty("APPLIED_INIT_SCRIPT", "true")
+
+import com.bytedance.build_collect.BuildScanPlugin
+gradle.addListener(new BuildAdapter(){
+    @Override
+    void settingsEvaluated(Settings settings) {
+        try{
+            settings.ext.startTime = ext.startTime
+            settings.ext.settingsTime = System.currentTimeMillis()
+            settings.apply(plugin: BuildScanPlugin)
+        }catch(Exception e){
+            e.printStackTrace()
+        }
+    }
+})
