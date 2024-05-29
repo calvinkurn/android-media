@@ -238,6 +238,8 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
         if (isExpandingState()) {
             rootView.viewTreeObserver.removeOnScrollChangedListener(this.specOnScrollChangedListener)
             this.specOnScrollChangedListener = null
+            this.adsViewListener = null
+            this.adsItemClickListener = null
         }
     }
 }

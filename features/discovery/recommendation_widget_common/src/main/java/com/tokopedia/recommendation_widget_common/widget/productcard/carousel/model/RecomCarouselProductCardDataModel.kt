@@ -15,7 +15,7 @@ data class RecomCarouselProductCardDataModel(
         val productModel: ProductCardModel,
         val recomItem: RecommendationItem,
         val componentName: String = "",
-        val listener: RecomCommonProductCardListener? = null,
+        val listener: RecomCommonProductCardListener? = null
 ): Visitable<CommonRecomCarouselCardTypeFactory>, RecomCarouselDiffUtilComparable {
     override fun type(typeFactory: CommonRecomCarouselCardTypeFactory): Int {
         return typeFactory.type(this)
