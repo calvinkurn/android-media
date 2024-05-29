@@ -95,7 +95,10 @@ object ForYouDataMapper {
                         url = it.url
                     )
                 },
-                recommendationAdsLog = RecommendationAdsLog(recommendationProductItem.recommendationAdsLog.creativeID, recommendationProductItem.recommendationAdsLog.logExtra)
+                recommendationAdsLog = RecommendationAdsLog(
+                    creativeID = recommendationProductItem.recommendationAdsLog.creativeID,
+                    logExtra = recommendationProductItem.recommendationAdsLog.logExtra
+                )
             ),
             pageName = pageName,
             layoutName = layoutName,
