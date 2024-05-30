@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
@@ -96,18 +95,6 @@ class GetP1DataUseCase @Inject constructor(
                     GetBrcCsatWidgetRequestState.Complete.Error(it)
                 )
             )
-        }.onCompletion {
-            logCompletionBreadcrumb(params, it)
-        }
-    }
-
-    private fun logCompletionBreadcrumb(params: GetP1DataParams, throwable: Throwable?) {
-        runCatching {
-            if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Success: $params")
-            } else {
-                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Error: ${throwable.stackTraceToString()}")
-            }
         }
     }
 }

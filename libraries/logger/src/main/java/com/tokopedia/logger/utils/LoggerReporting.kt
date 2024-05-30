@@ -22,7 +22,6 @@ class LoggerReporting {
     var packageName: String? = null
     var tagMapsScalyr: HashMap<String, Tag> = hashMapOf()
     var tagMapsNewRelic: HashMap<String, NewRelicTag> = hashMapOf()
-    var tagMapsEmbrace: HashMap<String, Tag> = hashMapOf()
 
     /*
     * since server logger v3 to make it more flexible and support two endpoints use the API & SDK in New relic
@@ -56,9 +55,6 @@ class LoggerReporting {
             priorityTag = it.postPriority
         }
 
-        tagMapsEmbrace[tagMapKey]?.let {
-            priorityTag = it.postPriority
-        }
 
         if (priorityTag != -1) {
             var processedMessage = getMessage(tag, timeStamp, priorityText, oriMessageMap, userId, activityName)
@@ -220,30 +216,6 @@ class LoggerReporting {
             val nrTableName = nrTableSplit[0]
             val nrTableValue = nrTableSplit[1]
             tagMapsNrTable[nrTableName] = nrTableValue
-        }
-    }
-
-    fun setPopulateTagMapsEmbrace(tags: List<String>?) {
-        tagMapsEmbrace.clear()
-        if (tags.isNullOrEmpty()) {
-            return
-        }
-        for (tag in tags) {
-            val tagSplit = tag.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
-            if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
-                continue
-            }
-            tagSplit[2].toDoubleOrNull()?.let {
-                val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
-                if (randomNumber <= it) {
-                    val tagKey = StringBuilder()
-                        .append(tagSplit[0])
-                        .append(DELIMITER_TAG_MAPS)
-                        .append(tagSplit[1])
-                        .toString()
-                    tagMapsEmbrace[tagKey] = Tag(getPriority(tagSplit[3]))
-                }
-            }
         }
     }
 

@@ -155,7 +155,6 @@ public class RemoteConfigKey {
     public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
 
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
-    public static final String HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB = "android_customer_home_enable_scroll_breadcrumb";
 
     public static final String RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS = "android_customer_recom_disable_viewport_ds_topads";
 
@@ -187,7 +186,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_APLHA_OBSERVER = "android_enable_alpha_observer";
 
-    public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
 
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
     public static final String ENABLE_SLASH_PRICE = "android_enable_slash_price";
@@ -208,7 +206,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
-    public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
     public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";

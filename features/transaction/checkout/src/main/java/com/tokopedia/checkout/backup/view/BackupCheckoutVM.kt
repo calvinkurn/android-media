@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
-import com.tokopedia.analytics.performance.util.EmbraceKey
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.backup.view.converter.CheckoutDataConverter
@@ -176,7 +174,6 @@ class BackupCheckoutVM @Inject constructor(
 
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
-        EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
     }
 
     fun loadSAF(
@@ -202,7 +199,6 @@ class BackupCheckoutVM @Inject constructor(
                 isReloadAfterPriceChangeHigher,
                 shipmentAction
             )
-            stopEmbraceTrace()
             when (saf) {
                 is CheckoutPageState.Success -> {
                     try {

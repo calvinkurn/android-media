@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.tracking
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -13,7 +12,6 @@ import org.json.JSONObject
 
 object ProductDetailServerLogger {
     private const val PDP_MODULE_NAME = "product_detail"
-    private const val PDP_EMBRACE_BREADCRUMB_FORMAT = "%s, %s, %s"
     private const val PDP_FIRST_OPEN_PAGE_STATE = "first open page"
     private const val PDP_SUCCESS_GET_P1_STATE = "success get p1"
     private const val PDP_SUCCESS_GET_P2_STATE = "success get p2"
@@ -193,14 +191,4 @@ object ProductDetailServerLogger {
             "serviceType: ${localizationChooseAddress.service_type}"
     }
 
-    private fun logBreadCrumb(state: String, embraceJsonData: JSONObject) {
-        EmbraceMonitoring.logBreadcrumb(
-            String.format(
-                PDP_EMBRACE_BREADCRUMB_FORMAT,
-                PDP_MODULE_NAME,
-                state,
-                embraceJsonData
-            )
-        )
-    }
 }

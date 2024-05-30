@@ -848,7 +848,6 @@ class ShipmentViewModel @Inject constructor(
                     )
                 )
                 if (view != null) {
-                    view!!.stopEmbraceTrace()
                     if (isReloadData) {
                         view!!.setShipmentNewUpsellLoading(false)
                         view!!.setHasRunningApiCall(false)
@@ -869,7 +868,6 @@ class ShipmentViewModel @Inject constructor(
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 if (view != null) {
-                    view!!.stopEmbraceTrace()
                     if (isReloadData) {
                         view!!.setShipmentNewUpsellLoading(false)
                         view!!.setHasRunningApiCall(false)

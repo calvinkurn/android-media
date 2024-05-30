@@ -188,13 +188,12 @@ class TrackingRepository private constructor(
     }
 
     private fun setRelicLog(queryName: String, queryParam: String) {
-        if (getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING) ?: false) {
-            val relicMap = mapOf(
-                "queryName" to queryName,
-                "detail" to queryParam
-            )
-            ServerLogger.log(Priority.P2, NEW_RELIC_CUSTOMER_TAG, relicMap)
-        }
+//            val relicMap = mapOf(
+//                "queryName" to queryName,
+//                "detail" to queryParam
+//            )
+//            ServerLogger.log(Priority.P2, NEW_RELIC_CUSTOMER_TAG, relicMap)
+//        }
     }
 
     fun delete(data: List<Tracking>) {

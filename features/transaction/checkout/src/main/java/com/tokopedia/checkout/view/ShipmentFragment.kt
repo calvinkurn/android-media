@@ -25,8 +25,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.analytics.performance.util.EmbraceKey
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring.stopMoments
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -892,11 +890,6 @@ class ShipmentFragment :
             shipmentTracePerformance?.stopTrace()
             isShipmentTraceStopped = true
         }
-    }
-
-    fun stopEmbraceTrace() {
-        val emptyMap: Map<String, Any> = HashMap()
-        stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
     }
 
     fun renderCheckoutPageNoAddress(

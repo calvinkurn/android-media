@@ -18,7 +18,6 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -77,7 +76,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
-import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 
@@ -90,7 +88,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_v3_new_relic";
-    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle_seller";
@@ -127,7 +124,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         TokopediaUrl.Companion.init(this);
         initRemoteConfig();
         initCacheManager();
-        initEmbrace();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             initCassava();
@@ -150,8 +146,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
 
-        setEmbraceUserId();
-        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             showDevOptNotification();
@@ -297,16 +291,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
 
-            @NotNull
-            @Override
-            public String getEmbraceConfig() {
-                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
-            }
         });
-    }
-
-    private void initEmbrace() {
-        Embrace.getInstance().start(this);
     }
 
     private void setVersionName() {
@@ -395,12 +380,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
-    }
-
-    private void setEmbraceUserId() {
-        if (getUserSession().isLoggedIn()) {
-            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
-        }
     }
 
     @SuppressLint("RestrictedApi")

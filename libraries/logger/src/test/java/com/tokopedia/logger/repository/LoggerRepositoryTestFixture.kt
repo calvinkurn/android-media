@@ -2,7 +2,6 @@ package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
-import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkImpl
 import com.tokopedia.logger.datasource.db.LoggerDao
@@ -26,9 +25,6 @@ abstract class LoggerRepositoryTestFixture {
     lateinit var loggerCloudNewRelicApiImpl: LoggerCloudNewRelicApiImpl
 
     @RelaxedMockK
-    lateinit var loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl
-
-    @RelaxedMockK
     lateinit var scalyrConfigs: List<ScalyrConfig>
 
     protected var encrypt: ((String) -> String)? = null
@@ -46,7 +42,6 @@ abstract class LoggerRepositoryTestFixture {
         loggerRepository = LoggerRepository(
             Gson(),
             loggerDao, loggerCloudDataSource, loggerCloudNewRelicSdkImpl, loggerCloudNewRelicApiImpl,
-            loggerCloudEmbraceImpl,
             scalyrConfigs, encrypt, decrypt, decryptNrKey
         )
     }

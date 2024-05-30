@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
@@ -37,17 +36,5 @@ class GetP0DataUseCase @Inject constructor(
         mapToGetP0DataRequestState(it)
     }.catch {
         emit(GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)))
-    }.onCompletion {
-        logCompletionBreadcrumb(params, it)
-    }
-
-    private fun logCompletionBreadcrumb(params: GetP0DataParams, throwable: Throwable?) {
-        runCatching {
-            if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetP0DataUseCase - Success: $params")
-            } else {
-                EmbraceMonitoring.logBreadcrumb("GetP0DataUseCase - Error: ${throwable.stackTraceToString()}")
-            }
-        }
     }
 }

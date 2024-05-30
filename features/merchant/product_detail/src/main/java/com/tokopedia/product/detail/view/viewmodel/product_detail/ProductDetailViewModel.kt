@@ -14,8 +14,6 @@ import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
-import com.tokopedia.analytics.performance.util.EmbraceKey
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -769,7 +767,6 @@ class ProductDetailViewModel @Inject constructor(
             addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
         }
 
-        EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
         hasDoneAddToCart = true
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""

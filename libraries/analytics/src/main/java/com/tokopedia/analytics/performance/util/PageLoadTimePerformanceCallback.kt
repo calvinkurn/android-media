@@ -58,7 +58,6 @@ open class PageLoadTimePerformanceCallback(
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
-        EmbraceMonitoring.startMoments(traceName)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
         startMethodTracing(traceName);
     }
@@ -70,7 +69,6 @@ open class PageLoadTimePerformanceCallback(
 
         performanceMonitoring?.let {
             performanceMonitoring?.stopTrace()
-            EmbraceMonitoring.stopMoments(traceName)
             overallDuration = System.currentTimeMillis() - overallDuration
             stopMethodTracing(traceName)
             onStop?.invoke(overallDuration)

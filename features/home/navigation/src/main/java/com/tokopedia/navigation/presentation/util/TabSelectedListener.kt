@@ -61,10 +61,6 @@ class GlobalNavAnalyticsProcessor @Inject constructor(
     }
 }
 
-fun EmbraceNavAnalyticsProcessor() = TabSelectedListener {
-    MainParentServerLogger.sendEmbraceBreadCrumb(it.title)
-}
-
 class VisitFeedProcessor @Inject constructor(
     private val globalNavAnalytics: GlobalNavAnalytics,
     private val userSession: UserSessionInterface,

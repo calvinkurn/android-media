@@ -21,8 +21,6 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     ksp rootProject.ext.dbDependencies.dbRoomCompiler
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     //new relic sdk
     implementation rootProject.ext.miscDependencies.newRelic

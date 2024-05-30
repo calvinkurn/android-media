@@ -49,8 +49,6 @@ import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.perf.bindFpsTracer
-import com.tokopedia.analytics.performance.util.EmbraceKey
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -872,7 +870,6 @@ open class ProductDetailFragment :
         if (productId != null || (productKey != null && shopDomain != null)) {
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-                EmbraceMonitoring.startMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
                 viewModel.getProductP1(
                     ProductParams(
                         productId = productId,
@@ -3319,10 +3316,6 @@ open class ProductDetailFragment :
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
-
-            getRecyclerView()?.addOneTimeGlobalLayoutListener {
-                EmbraceMonitoring.stopMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
-            }
         }
     }
 
@@ -5081,10 +5074,6 @@ open class ProductDetailFragment :
     }
 
     private fun hitAtc(button: AvailableButton) {
-        if (button.atcKey == ProductDetailCommonConstant.ATC_BUTTON) {
-            EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
-        }
-
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->

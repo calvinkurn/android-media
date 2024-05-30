@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.mapper
 
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
@@ -144,7 +143,6 @@ object BuyerOrderDetailUiStateMapper {
             json.put("SCP", scpRewardsMedalTouchPointWidgetUiState::class.java.simpleName)
             json.put("Saving", savingsWidgetUiState::class.java.simpleName)
             json.put("Result", this::class.java.simpleName)
-            EmbraceMonitoring.logBreadcrumb(json.toString())
         }
     }
 }

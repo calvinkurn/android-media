@@ -1,7 +1,5 @@
 apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
-if(project.hasProperty('enableEmbraceMa')) {
-    apply plugin: 'embrace-swazzler'
-}
+
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'newrelic'
@@ -102,7 +100,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
-        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.gradlePlugin.googleServices
         classpath rootProject.ext.gradlePlugin.testRetry
@@ -414,7 +411,6 @@ dependencies {
     implementation rootProject.ext.appLogDependencies.bdTrackerGlobal
 
     implementation rootProject.ext.supportLibDependencies.exifinterface
-    implementation rootProject.ext.miscDependencies.embraceSdk
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
