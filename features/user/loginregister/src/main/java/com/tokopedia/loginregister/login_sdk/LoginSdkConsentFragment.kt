@@ -28,7 +28,7 @@ import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.login_sdk.LoginSdkAnalytics.LABEL_FAILED
 import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.CLIENT_ID
-import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.CODE_VERIFIER
+import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.CODE_CHALLENGE
 import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.PACKAGE_NAME
 import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.REDIRECT_URI
 import com.tokopedia.loginregister.login_sdk.LoginSdkConstant.SCOPES
@@ -87,7 +87,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
             viewModel.authorizeSdk(
                 clientId = arguments?.getString(CLIENT_ID) ?: "",
                 redirectUri = redirectUrl,
-                codeChallenge = arguments?.getString(CODE_VERIFIER) ?: ""
+                codeChallenge = arguments?.getString(CODE_CHALLENGE) ?: ""
             )
         }
 
@@ -129,7 +129,7 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
                             viewModel.authorizeSdk(
                                 clientId = arguments?.getString(CLIENT_ID) ?: "",
                                 redirectUri = redirectUrl,
-                                codeChallenge = arguments?.getString(CODE_VERIFIER) ?: ""
+                                codeChallenge = arguments?.getString(CODE_CHALLENGE) ?: ""
                             )
                         }
                     } else {
