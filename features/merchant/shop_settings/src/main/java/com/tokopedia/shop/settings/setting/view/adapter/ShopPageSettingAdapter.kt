@@ -5,11 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.setting.data.Content
 import com.tokopedia.shop.settings.setting.data.Product
 import com.tokopedia.shop.settings.setting.data.Profile
 import com.tokopedia.shop.settings.setting.data.Shipping
 import com.tokopedia.shop.settings.setting.data.ShopPageSetting
 import com.tokopedia.shop.settings.setting.data.Support
+import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ContentSettingsViewHolder
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ProfileViewHolder
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ShippingViewHolder
@@ -19,7 +21,8 @@ class ShopPageSettingAdapter(
     private val profileItemClickListener: ProfileItemClickListener,
     private val productItemClickListener: ProductItemClickListener,
     private val supportItemClickListener: SupportItemClickListener,
-    private val shippingItemClickListener: ShippingItemClickListener
+    private val shippingItemClickListener: ShippingItemClickListener,
+    private val contentItemClickListener: ContentItemClickListener,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -28,6 +31,7 @@ class ShopPageSettingAdapter(
         private const val TYPE_PRODUCT = 2
         private const val TYPE_SUPPORT = 3
         private const val TYPE_SHIPPING = 4
+        private const val TYPE_CONTENT = 5
     }
 
     interface ProfileItemClickListener {
@@ -51,6 +55,10 @@ class ShopPageSettingAdapter(
         fun onManageShippingServiceClicked()
     }
 
+    interface ContentItemClickListener {
+        fun onClickContent()
+    }
+
     private var shopPageSettingList = listOf<ShopPageSetting>()
     private var shippingViewHolder: ShippingViewHolder? = null
 
@@ -60,6 +68,7 @@ class ShopPageSettingAdapter(
             is Product -> TYPE_PRODUCT
             is Support -> TYPE_SUPPORT
             is Shipping -> TYPE_SHIPPING
+            is Content -> TYPE_CONTENT
             else -> throw IllegalArgumentException("Invalid type of setting")
         }
     }
@@ -71,6 +80,7 @@ class ShopPageSettingAdapter(
             TYPE_PRODUCT -> ProductViewHolder(inflater.inflate(R.layout.item_shop_page_setting_product, parent, false))
             TYPE_SUPPORT -> SupportViewHolder(inflater.inflate(R.layout.item_shop_page_setting_support, parent, false))
             TYPE_SHIPPING -> ShippingViewHolder(inflater.inflate(R.layout.item_shop_page_setting_shipping, parent, false))
+            TYPE_CONTENT -> ContentSettingsViewHolder(inflater.inflate(R.layout.item_shop_page_settings_content, parent, false))
             else -> throw IllegalArgumentException("Invalid type of viewType")
         }
     }
@@ -93,6 +103,9 @@ class ShopPageSettingAdapter(
             is ShippingViewHolder -> {
                 holder.bind(true, shippingItemClickListener)
                 shippingViewHolder = holder
+            }
+            is ContentSettingsViewHolder -> {
+                holder.bind(contentItemClickListener)
             }
         }
     }
