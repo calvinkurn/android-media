@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_credibility_stats_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingVertical="1dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_stats_icon"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_centerVertical="true"
         app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -21,6 +22,6 @@
         android:maxLines="1"
         app:typographyType="display_3"
         android:layout_toEndOf="@id/shop_credibility_stats_icon"
-        tools:text="2 jam pesanan" />
+        tools:text="2 jam pesanana" />
 
 </RelativeLayout>

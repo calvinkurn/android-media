@@ -124,7 +124,7 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@id/shop_credibility_button_follow"
         app:layout_constraintStart_toStartOf="@id/stories_border"
-        app:layout_constraintTop_toBottomOf="@id/ic_shop_credibility_location" />
+        app:layout_constraintTop_toBottomOf="@+id/shop_credibility_location" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/shop_credibility_button_follow"

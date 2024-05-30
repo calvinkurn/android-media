@@ -6,7 +6,9 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -31,6 +33,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gm.common.R as gmcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -287,9 +290,13 @@ class ProductShopCredibilityViewHolder(
     ) = with(binding.shopCredibilityStatsContainer) {
         removeAllViews()
 
-        element.infoShopData.forEach {
-            val child = createStatView(data = it)
+        element.infoShopData.forEachIndexed { idx, data ->
+            val child = createStatView(data = data)
             addView(child)
+
+            if (idx != Int.ZERO) {
+                child.setMargin(Int.ZERO, 4.toPx(), Int.ZERO, Int.ZERO)
+            }
         }
     }
 
@@ -335,10 +342,12 @@ class ProductShopCredibilityViewHolder(
                 view.context,
                 gmcommonR.drawable.ic_official_store_product
             )
+
             isPm -> MethodChecker.getDrawable(
                 view.context,
                 gmcommonR.drawable.ic_power_merchant
             )
+
             else -> null
         }
         shopCredibilityBadge.shouldShowWithAction(drawable != null) {
