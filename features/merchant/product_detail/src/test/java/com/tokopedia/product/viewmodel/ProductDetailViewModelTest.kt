@@ -2203,12 +2203,6 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
-        verify(exactly = 1) {
-            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                isSuccess = capture(isSuccess),
-                errorMessage = capture(errorMessage)
-            )
-        }
 
         assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
         assertEquals(isSuccess.captured, false)
@@ -2245,13 +2239,6 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
-        coVerify(exactly = 1) {
-            ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                isSuccess = capture(isSuccess),
-                errorCode = capture(errorCode),
-                isTopAds = capture(isTopAds)
-            )
-        }
 
         assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
         assertEquals(isSuccess.captured, true)

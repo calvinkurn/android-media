@@ -1005,11 +1005,6 @@ class ProductDetailViewModel @Inject constructor(
                             queryParam = queryParams
                         )
                     }
-                    ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                        isSuccess = true,
-                        errorCode = errorCode,
-                        isTopAds = isTopAds
-                    )
                 }
                 if (job == null) {
                     ProductTopAdsLogger.logServer(
@@ -1021,10 +1016,6 @@ class ProductDetailViewModel @Inject constructor(
             }) {
                 it.printStackTrace()
                 _topAdsRecomChargeData.postValue(it.asFail())
-                ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                    isSuccess = false,
-                    errorMessage = it.message
-                )
                 ProductTopAdsLogger.logServer(
                     tag = TOPADS_PDP_GENERAL_ERROR,
                     throwable = it,

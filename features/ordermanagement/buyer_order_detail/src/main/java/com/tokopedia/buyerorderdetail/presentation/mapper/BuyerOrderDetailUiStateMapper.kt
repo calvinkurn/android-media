@@ -101,48 +101,6 @@ object BuyerOrderDetailUiStateMapper {
             BuyerOrderDetailUiState.Error(pgRecommendationWidgetUiState.throwable)
         } else {
             BuyerOrderDetailUiState.FullscreenLoading
-        }.logBreadcrumb(
-            actionButtonsUiState,
-            orderStatusUiState,
-            paymentInfoUiState,
-            productListUiState,
-            shipmentInfoUiState,
-            pgRecommendationWidgetUiState,
-            orderResolutionTicketStatusUiState,
-            orderInsuranceUiState,
-            epharmacyInfoUiState,
-            scpRewardsMedalTouchPointWidgetUiState,
-            savingsWidgetUiState
-        )
-    }
-
-    private fun BuyerOrderDetailUiState.logBreadcrumb(
-        actionButtonsUiState: ActionButtonsUiState,
-        orderStatusUiState: OrderStatusUiState,
-        paymentInfoUiState: PaymentInfoUiState,
-        productListUiState: ProductListUiState,
-        shipmentInfoUiState: ShipmentInfoUiState,
-        pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
-        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
-        orderInsuranceUiState: OrderInsuranceUiState,
-        epharmacyInfoUiState: EpharmacyInfoUiState,
-        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
-        savingsWidgetUiState: SavingsWidgetUiState
-    ) = also {
-        runCatching {
-            val json = JSONObject()
-            json.put("Button", actionButtonsUiState::class.java.simpleName)
-            json.put("Status", orderStatusUiState::class.java.simpleName)
-            json.put("Payment", paymentInfoUiState::class.java.simpleName)
-            json.put("Product", productListUiState::class.java.simpleName)
-            json.put("Shipment", shipmentInfoUiState::class.java.simpleName)
-            json.put("Recom", pgRecommendationWidgetUiState::class.java.simpleName)
-            json.put("Reso", orderResolutionTicketStatusUiState::class.java.simpleName)
-            json.put("Insurance", orderInsuranceUiState::class.java.simpleName)
-            json.put("Epharm", epharmacyInfoUiState::class.java.simpleName)
-            json.put("SCP", scpRewardsMedalTouchPointWidgetUiState::class.java.simpleName)
-            json.put("Saving", savingsWidgetUiState::class.java.simpleName)
-            json.put("Result", this::class.java.simpleName)
         }
     }
 }

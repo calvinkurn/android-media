@@ -931,12 +931,6 @@ open class ProductDetailFragment :
         firstOpenPage = true
         super.onCreate(savedInstanceState)
 
-        ProductDetailServerLogger.logBreadCrumbFirstOpenPage(
-            productId,
-            shopDomain,
-            productKey,
-            context
-        )
         assignDeviceId()
         loadData()
         registerCallback(mediator = this)
@@ -1299,7 +1293,6 @@ open class ProductDetailFragment :
         )
         if (isUserLocationChanged) {
             refreshPage()
-            ProductDetailServerLogger.logBreadCrumbAddressChanged(context)
         }
     }
 
@@ -3074,11 +3067,6 @@ open class ProductDetailFragment :
                     } else {
                         success = true
                         onSuccessAtc(it.data)
-                        ProductDetailServerLogger.logBreadCrumbAtc(
-                            isSuccess = true,
-                            errorMessage = it.data.getAtcErrorMessage() ?: "",
-                            atcType = buttonActionType
-                        )
                     }
                     cartId = it.data.data.cartId
                 }, {
@@ -3115,21 +3103,11 @@ open class ProductDetailFragment :
                 t.message.orEmpty(),
                 ctaText = getString(productdetailcommonR.string.pdp_common_oke)
             )
-            ProductDetailServerLogger.logBreadCrumbAtc(
-                false,
-                t.message ?: "",
-                buttonActionType
-            )
         } else {
             val errorMessage = getErrorMessage(t)
             view?.showToasterError(
                 errorMessage,
                 ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-            )
-            ProductDetailServerLogger.logBreadCrumbAtc(
-                isSuccess = false,
-                errorMessage = errorMessage,
-                atcType = buttonActionType
             )
         }
     }
@@ -3156,11 +3134,6 @@ open class ProductDetailFragment :
                 pdpUiUpdater = PdpUiUpdater(ProductDetailMapper.hashMapLayout(it.data))
                 viewModel.getProductInfoP1?.let { dataP1 ->
                     onSuccessGetDataP1(dataP1)
-                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-                        isSuccess = true,
-                        cacheState = viewModel.getProductInfoP1?.cacheState,
-                        isCampaign = viewModel.getProductInfoP1?.isCampaign.orFalse()
-                    )
                     ProductDetailServerLogger.logNewRelicP1Success(
                         productId = productId,
                         cacheState = viewModel.getProductInfoP1?.cacheState,
@@ -3226,13 +3199,6 @@ open class ProductDetailFragment :
         val pdpLayout = viewModel.getProductInfoP1
 
         renderPageError(errorModel)
-        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-            isSuccess = false,
-            errorMessage = errorModel.errorMessage,
-            errorCode = errorModel.errorCode,
-            cacheState = pdpLayout?.cacheState,
-            isCampaign = pdpLayout?.isCampaign.orFalse()
-        )
     }
 
     private fun isPdpCacheableError(): Boolean {
@@ -3272,14 +3238,6 @@ open class ProductDetailFragment :
         ) {
             onSwipeRefresh()
         }.show()
-
-        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-            isSuccess = false,
-            errorMessage = errorModel.errorMessage,
-            errorCode = errorModel.errorCode,
-            cacheState = pdpLayout?.cacheState,
-            isCampaign = pdpLayout?.isCampaign.orFalse()
-        )
     }
 
     private fun observeP2Login() {
@@ -3313,9 +3271,6 @@ open class ProductDetailFragment :
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
             AppLogPdp.sendPDPEnterPage(viewModel.getProductDetailTrack())
             getProductDetailActivity()?.stopMonitoringP2Data()
-            ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
-                isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
-            )
         }
     }
 
