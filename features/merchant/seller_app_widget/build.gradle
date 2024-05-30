@@ -38,6 +38,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.workManager
 
+    implementation rootProject.ext.networkDependencies.glide
+
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
