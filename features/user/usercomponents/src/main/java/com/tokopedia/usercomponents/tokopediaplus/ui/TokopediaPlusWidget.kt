@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.unifycomponents.dpToPx
@@ -91,7 +92,7 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                         iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
                         titleTokopediaPlus.text = tokopediaPlusData.title
                         descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
-                        descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
+                        descriptionTokopediaPlus.showWithCondition(tokopediaPlusData.subtitle.isNotEmpty())
 
                         setOnClickListener {
                             listener?.onClick(pageSource, tokopediaPlusData)
@@ -123,7 +124,7 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                         iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
                         titleTokopediaPlus.text = tokopediaPlusData.title
                         descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
-                        descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
+                        descriptionTokopediaPlus.showWithCondition(tokopediaPlusData.subtitle.isNotEmpty())
 
                         setOnClickListener {
                             listener?.onClick(pageSource, tokopediaPlusData)
