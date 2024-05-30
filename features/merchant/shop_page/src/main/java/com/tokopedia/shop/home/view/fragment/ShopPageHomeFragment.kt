@@ -127,7 +127,6 @@ import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetA
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
-import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopPageRemoteConfigChecker
