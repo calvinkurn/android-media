@@ -555,32 +555,6 @@ object AppLogAnalytics {
     }
 
     /**
-     * This method should be refactored to the normal getEntranceInfoJson, this is separated
-     * to minimize changes and avoid regression during hotfix
-     * */
-//    internal fun getEntranceInfoJsonForCheckoutInstant(): JSONObject {
-//        return JSONObject().also {
-//            it.addEnterFromInfo()
-//            it.addEntranceForm()
-//            it.addSourcePageType()
-//            it.addTrackId()
-//            it.put(IS_AD, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true))
-//            it.addRequestId()
-//            it.put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE))
-//            it.put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD))
-//            it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
-//            it.put(SEARCH_ID, getLastData(SEARCH_ID))
-//            it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
-//            it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
-//            it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
-//            it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
-//            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true))
-//            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID, true))
-//            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID, true))
-//        }
-//    }
-
-    /**
      * Starting from N-1, this method will start searching for a key after the current item is the anchor
      * If isOneStep is true then it will always return N-1 data
      * */
