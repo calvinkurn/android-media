@@ -19,6 +19,7 @@ import com.tokopedia.logger.utils.LoggerUtils.getLogSession
 import com.tokopedia.logger.utils.LoggerUtils.getPartDeviceId
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logger.utils.globalScopeLaunch
+import timber.log.Timber
 
 /**
  * Class to wrap the mechanism to send the logging message to server.
@@ -128,6 +129,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 loggerCloudEmbraceDataSource,
                 loggerCloudSlardarApmDataSource,
                 getScalyrConfigList(context),
+                getRollenceMap(context),
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,
                 loggerProxy.decryptNrKey,
@@ -155,9 +157,33 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         return ScalyrConfig(loggerProxy.scalyrToken, session, serverHost, parser)
     }
 
+    private fun getRollenceMap(context: Context): Map<String, Boolean> {
+        val result = mutableMapOf<String, Boolean>()
+        result[SLARDAR_LOG_ROLLENCE_KEY] = shouldSendToSlardarApm(context)
+        return result
+    }
+
+    /**
+     * Need to manually get rollence value from cache
+     * Circular dependency when implementing remote config module
+     */
+    private fun shouldSendToSlardarApm(context: Context): Boolean {
+        return try {
+            val sharedPreferences = context.getSharedPreferences(
+                SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
+            val cacheValue: String = sharedPreferences.getString(SLARDAR_LOG_ROLLENCE_KEY, "") ?: ""
+            cacheValue == SLARDAR_LOG_ROLLENCE_KEY
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            false
+        }
+    }
+
     companion object {
 
         const val PRIORITY_LENGTH = 2
+        const val SLARDAR_LOG_ROLLENCE_KEY = "android_slardar_log"
+        private const val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
 
         var queryLimits: List<Int> = mutableListOf(5, 5)
 

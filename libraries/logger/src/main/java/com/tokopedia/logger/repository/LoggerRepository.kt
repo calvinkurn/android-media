@@ -3,6 +3,7 @@ package com.tokopedia.logger.repository
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
@@ -39,6 +40,7 @@ class LoggerRepository(
     private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
     private val loggerCloudSlardarApmDataSource: LoggerCloudSlardarApmDataSource,
     private val scalyrConfigs: List<ScalyrConfig>,
+    private val rollenceMap: Map<String, Boolean>,
     private val encrypt: ((String) -> (String))? = null,
     val decrypt: ((String) -> (String))? = null,
     private val decryptNrKey: ((String) -> (String))? = null,
@@ -150,10 +152,12 @@ class LoggerRepository(
                     jobList.add(jobEmbrace)
                 }
 
-                val jobApmSlardar = async {
-                    sendSlardarApmLogToServer(newRelicMessageSdkList, newRelicMessageApiList)
+                if (rollenceMap.get(LogManager.SLARDAR_LOG_ROLLENCE_KEY) == true) {
+                    val jobApmSlardar = async {
+                        sendSlardarApmLogToServer(newRelicMessageSdkList, newRelicMessageApiList)
+                    }
+                    jobList.add(jobApmSlardar)
                 }
-                jobList.add(jobApmSlardar)
 
                 val isSuccess = jobList.toList().awaitAll().any { it }
                 if (isSuccess) {
@@ -179,14 +183,16 @@ class LoggerRepository(
         newRelicSdkList: List<NewRelicBodySdk>,
         newRelicApiMap: Map<String, NewRelicBodyApi>
     ): Boolean {
-        var resultSdkList = false
-        if (newRelicSdkList.isNotEmpty()) {
-            resultSdkList = loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicSdkList)
+        val resultSdkList = if (newRelicSdkList.isNotEmpty()) {
+            loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicSdkList)
+        } else {
+            true
         }
 
-        var resultApiList = false
-        if (newRelicApiMap.isNotEmpty()) {
-            resultApiList = loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicApiMap)
+        val resultApiList = if (newRelicApiMap.isNotEmpty()) {
+            loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicApiMap)
+        } else {
+            true
         }
 
         return resultSdkList && resultApiList
