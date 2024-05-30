@@ -1,6 +1,5 @@
 package com.tokopedia.media.loaderfresco.tracker
 
-import android.util.Log
 import com.bytedance.apm.ApmAgent
 import com.optimize.statistics.FrescoMonitor
 import com.optimize.statistics.FrescoMonitorConst
@@ -15,7 +14,6 @@ object FrescoLogger {
                 requestId: String?,
                 jsonObject: JSONObject?
             ) {
-                Log.d("Sampled", "Image Called")
                 ApmAgent.monitorCommonLog(FrescoMonitorConst.MONITOR_IMAGE_V2, jsonObject)
             }
 
