@@ -227,8 +227,8 @@ class ScreenRecordService : Service(), CoroutineScope {
     private fun buildPendingIntent(action: String): PendingIntent? {
         val i = Intent(applicationContext, javaClass)
         i.action = action
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getService(applicationContext, 0, i,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getService(applicationContext, 0, i,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         } else {
             PendingIntent.getService(applicationContext, 0, i, 0)
         }
@@ -367,15 +367,15 @@ class ScreenRecordService : Service(), CoroutineScope {
     }
 
     private fun getOpenVideoResultPendingIntent(resultPath: String): PendingIntent {
-
         val uri = FileProvider.getUriForFile(applicationContext,
                 applicationContext.packageName + ".provider", File(resultPath))
 
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(uri, "video/*")
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getActivity(applicationContext, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getActivity(applicationContext, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         } else {
             PendingIntent.getActivity(applicationContext, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
