@@ -164,7 +164,7 @@ data class DataItem(
     @SerializedName("alternate_background_url_mobile")
     val alternateBackgroundUrlMobile: String? = "",
 
-    @SerializedName("box_color", alternate = ["background_color", "header_color"])
+    @SerializedName("box_color", alternate = ["background_color"])
     val boxColor: String? = "",
 
     @SerializedName(
@@ -635,6 +635,33 @@ data class DataItem(
     @SerializedName("inactive_text_color")
     val inactiveFontColor: String? = "",
 
+    /**
+     * calendar improvement START
+     * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/1717436428/Calendar
+     */
+
+    @SerializedName("header_color")
+    val headerColor: String? = "",
+
+    @SerializedName("text_header_color")
+    val textHeaderColor: String? = "",
+
+    @SerializedName("text_content_color")
+    val textContentColor: String? = "",
+
+    @SerializedName("calendar_image_url")
+    val calendarImageUrl: String? = "",
+
+    @SerializedName("cta_text")
+    val ctaText: String? = "",
+
+    @SerializedName("notified_cta_text")
+    val notifiedCtaText: String? = "",
+
+    /**
+     * calendar improvement END
+     */
+
     @SerializedName("topads_creative_id")
     val topAdsCreativeId: String? = "",
 
@@ -685,6 +712,8 @@ data class DataItem(
     var itemPosition: Int = 0,
 
     var topLevelTab: TopLevelTab = UnknownTab
+
+
 ) {
 
     var gtmItemName: String = ""

@@ -173,7 +173,19 @@ class MenuSettingAdapter(
                     )
 
                 }),
-            DividerUiModel(DividerType.THICK)
+            DividerUiModel(DividerType.THIN_INDENTED),
+            IndentedSettingTitleUiModel(context?.getString(sellermenucommonR.string.seller_content_settings_header).orEmpty()),
+            MenuItemUiModel(
+                context?.getString(sellermenucommonR.string.seller_content_settings_body)
+                    .orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                clickAction = {
+                    goToApplinkWhenAccessAuthorized(
+                        true, //checker is inside page
+                        ApplinkConst.CONTENT_SETTINGS
+                    )
+                }),
+            DividerUiModel(DividerType.THICK),
         )
 
     private fun goToApplinkWhenAccessAuthorized(isEligible: Boolean, applink: String) {
