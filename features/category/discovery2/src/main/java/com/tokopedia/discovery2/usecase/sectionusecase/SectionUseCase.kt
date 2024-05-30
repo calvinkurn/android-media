@@ -288,9 +288,7 @@ class SectionUseCase @Inject constructor(
                 }
             }
         }
-        if (ProductCardExperiment.isReimagine()) {
-            queryParameterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
-        }
+        queryParameterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
         return Utils.getQueryString(queryParameterMap)
     }
 

@@ -38,7 +38,11 @@ class DiscoveryDataGQLRepository @Inject constructor(
             ).data
     }
 
-    private fun getQueryMap(pageIdentifier: String, extraParams: Map<String, Any>?, additionalQueryParamsString: String): Map<String, Any> {
+    private fun getQueryMap(
+        pageIdentifier: String,
+        extraParams: Map<String, Any>?,
+        additionalQueryParamsString: String
+    ): Map<String, Any> {
         val queryMap = mutableMapOf(
             IDENTIFIER to pageIdentifier,
             VERSION to GlobalConfig.VERSION_NAME,
@@ -50,9 +54,7 @@ class DiscoveryDataGQLRepository @Inject constructor(
                 (Utils.addAddressQueryMapWithWareHouse(localCacheModel) as? MutableMap<String, Any>)
             val filterMap = addMap ?: mutableMapOf()
             filterMap[ACCEPT_SECTION] = true
-            if (ProductCardExperiment.isReimagine()) {
-                filterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
-            }
+            filterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
             var finalQueryString = Utils.getQueryString(filterMap)
             if (it.containsKey(QUERY_PARAMS_KEY) && !(it[QUERY_PARAMS_KEY] as? String).isNullOrEmpty()) {
                 finalQueryString = finalQueryString + "&" + it[QUERY_PARAMS_KEY] as String
@@ -65,7 +67,8 @@ class DiscoveryDataGQLRepository @Inject constructor(
         return queryMap
     }
 
-    private val queryDiscoveryData: String = """query DiscoPageLayoutQuery(${'$'}identifier: String!, ${'$'}version: String!, ${'$'}device: String!, ${'$'}filters: String) {
+    private val queryDiscoveryData: String =
+        """query DiscoPageLayoutQuery(${'$'}identifier: String!, ${'$'}version: String!, ${'$'}device: String!, ${'$'}filters: String) {
   discoveryPageInfo(identifier: ${'$'}identifier, version: ${'$'}version, device: ${'$'}device,filters: ${'$'}filters) {
     data {
       title

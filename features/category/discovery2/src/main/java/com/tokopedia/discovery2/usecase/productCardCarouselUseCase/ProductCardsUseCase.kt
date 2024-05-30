@@ -287,9 +287,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
-        if (ProductCardExperiment.isReimagine()) {
         queryParameterMap[PARAM_L_NAME] = VALUE_L_NAME_SRE
-        }
         return queryParameterMap
     }
 
