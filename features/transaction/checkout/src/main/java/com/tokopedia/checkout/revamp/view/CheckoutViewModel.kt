@@ -3643,13 +3643,12 @@ class CheckoutViewModel @Inject constructor(
             } else {
                 newQty = newValue
             }
-            val newProduct = product.copy(
+            checkoutItems[itemIndex] = product.copy(
                 shouldShowMaxQtyError = showMaxQtyError,
                 shouldShowMinQtyError = showMinQtyError,
                 quantity = newQty,
                 prevQuantity = newQty
             )
-            checkoutItems[itemIndex] = newProduct
             listData.value = checkoutItems
             viewModelScope.launch(dispatchers.io) {
                 doUpdateCartAndReload(checkoutItems, cartId)

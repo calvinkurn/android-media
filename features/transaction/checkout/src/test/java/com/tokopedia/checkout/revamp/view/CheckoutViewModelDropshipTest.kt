@@ -458,7 +458,7 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -541,7 +541,7 @@ class CheckoutViewModelDropshipTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 

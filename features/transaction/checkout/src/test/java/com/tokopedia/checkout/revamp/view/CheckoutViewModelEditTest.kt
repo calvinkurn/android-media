@@ -2,6 +2,11 @@ package com.tokopedia.checkout.revamp.view
 
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -161,5 +166,88 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
 
         // THEN
         assertEquals(false, (viewModel.listData.value[4] as CheckoutProductModel).shouldShowLottieNotes)
+    }
+
+    @Test
+    fun `GIVEN success update quantity WHEN change quantity product THEN should set quantity product`() {
+        // GIVEN
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartId = 12, quantity = 1, invenageValue = 999, minOrder = 1, maxOrder = 30000, switchInvenage = 1),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        val responseSaf = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product(
+                                            cartId = 12,
+                                            productQuantity = 5,
+                                            productInvenageValue = 999,
+                                            productMinOrder = 1,
+                                            productMaxOrder = 30000,
+                                            productSwitchInvenage = 1
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns responseSaf
+
+        // when
+        /*viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutPageState.Success(responseSaf),
+            viewModel.pageState.value
+        )*/
+
+        // WHEN
+        viewModel.updateQuantityProduct(12, 5)
+
+        // THEN
+        assertEquals(5, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
     }
 }

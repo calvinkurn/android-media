@@ -2361,6 +2361,7 @@ class CheckoutFragment :
                 setOverlayClose(false)
 
                 setPrimaryCTAClickListener {
+                    dismiss()
                     processingToPayment(true)
                 }
                 setSecondaryCTAClickListener {

@@ -105,7 +105,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -161,7 +161,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -220,7 +220,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -293,7 +293,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         )
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -358,7 +358,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -434,7 +434,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         )
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -512,7 +512,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         )
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -594,7 +594,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         )
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -644,7 +644,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         )
 
         // When
-        viewModel.checkout("", { }, {})
+        viewModel.checkout(false, "", { }, {})
 
         // Then
         assertEquals(
@@ -716,7 +716,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // When
         var triggerEpharmacyTracker: Boolean? = null
-        viewModel.checkout("", {
+        viewModel.checkout(false, "", {
             triggerEpharmacyTracker = it
         }, {})
 
@@ -799,7 +799,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // When
         var triggerEpharmacyTracker: Boolean? = null
-        viewModel.checkout("", {
+        viewModel.checkout(false, "", {
             triggerEpharmacyTracker = it
         }, {})
 
@@ -880,7 +880,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // When
         var triggerEpharmacyTracker: Boolean? = null
-        viewModel.checkout("", {
+        viewModel.checkout(false, "", {
             triggerEpharmacyTracker = it
         }, {})
 
@@ -997,7 +997,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1122,7 +1122,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1202,7 +1202,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1257,7 +1257,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1340,7 +1340,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1416,7 +1416,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1476,7 +1476,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1542,7 +1542,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1608,7 +1608,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
@@ -1674,7 +1674,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         var invokeSuccess = false
 
         // When
-        viewModel.checkout("", { }, {
+        viewModel.checkout(false, "", { }, {
             invokeSuccess = true
         })
 
