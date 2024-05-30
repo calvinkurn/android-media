@@ -201,7 +201,7 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
         tools:text="Daftar Transaksi"/>
-v
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/primaryButton"
         android:layout_width="0dp"
