@@ -57,6 +57,7 @@ import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
@@ -94,6 +95,8 @@ class LoginEmailPhoneViewModelTest {
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
     val getShopStatusUseCase = mockk<GetShopStatusUseCase>(relaxed = true)
+
+    val getUserInfoAndSaveSessionUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
 
     val authorizeSdkUseCase = mockk<AuthorizeSdkUseCase>(relaxed = true)
     val validateClientUseCase = mockk<ValidateClientUseCase>(relaxed = true)
@@ -161,6 +164,7 @@ class LoginEmailPhoneViewModelTest {
             loginTokenUseCase,
             tickerInfoUseCase,
             getAdminTypeUseCase,
+            getUserInfoAndSaveSessionUseCase,
             loginTokenV2UseCase,
             loginSdkConsentUseCase,
             validateClientUseCase,
