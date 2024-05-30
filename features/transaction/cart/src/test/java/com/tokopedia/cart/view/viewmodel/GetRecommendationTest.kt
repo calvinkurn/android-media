@@ -33,7 +33,7 @@ class GetRecommendationTest : BaseCartViewModelTest() {
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
         // WHEN
-        cartViewModel.processGetRecommendationData(CartViewModel.PAGE_NAME_RECOMMENDATION)
+        cartViewModel.processGetRecommendationData()
 
         // THEN
         assertEquals(
@@ -48,7 +48,7 @@ class GetRecommendationTest : BaseCartViewModelTest() {
         coEvery { getRecommendationUseCase.getData(any()) } throws IllegalStateException()
 
         // WHEN
-        cartViewModel.processGetRecommendationData(CartViewModel.PAGE_NAME_RECOMMENDATION)
+        cartViewModel.processGetRecommendationData()
 
         // THEN
         // THEN
