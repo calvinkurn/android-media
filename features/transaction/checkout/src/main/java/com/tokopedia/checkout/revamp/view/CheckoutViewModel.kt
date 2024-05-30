@@ -3656,7 +3656,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private suspend fun doUpdateCartAndReload(
+    suspend fun doUpdateCartAndReload(
         checkoutItems: MutableList<CheckoutItem>,
         cartId: Long
     ) {

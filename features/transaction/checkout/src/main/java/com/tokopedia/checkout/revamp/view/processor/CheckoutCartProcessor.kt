@@ -486,7 +486,8 @@ class CheckoutCartProcessor @Inject constructor(
                 is CheckoutProductModel -> {
                     val currPairingCheckoutItem = prevCheckoutProducts.firstOrNull { it.cartId == checkoutItem.cartId }
                     val newCheckoutItem = checkoutItem.copy(
-                        shouldShowMaxQtyError = currPairingCheckoutItem?.shouldShowMaxQtyError ?: false
+                        shouldShowMaxQtyError = currPairingCheckoutItem?.shouldShowMaxQtyError ?: false,
+                        shouldShowMinQtyError = currPairingCheckoutItem?.shouldShowMinQtyError ?: false
                     )
                     modifiedCheckoutItems.add(newCheckoutItem)
                 }
