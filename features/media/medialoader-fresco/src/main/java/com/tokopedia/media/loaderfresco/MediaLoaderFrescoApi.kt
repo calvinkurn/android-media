@@ -79,8 +79,6 @@ internal object MediaLoaderFrescoApi {
             }) { command ->
                 command.run()
             }
-
-            FrescoLogger.loggerSlardarFresco()
         } else {
             imageView.loadImage(properties.generateFrescoUrl()) {
                 setRoundedRadius(properties.roundedRadius)

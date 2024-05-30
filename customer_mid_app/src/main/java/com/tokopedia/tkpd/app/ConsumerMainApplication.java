@@ -99,6 +99,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
+import com.tokopedia.media.loaderfresco.tracker.FrescoLogger;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
@@ -263,6 +264,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         ImagePipelineFactory.initialize(imagePipelineBuilder.build());
         Fresco.initialize(context, imagePipelineBuilder.build());
+        FrescoLogger.INSTANCE.loggerSlardarFresco();
     }
 
     private void initByteIOPlatform() {
