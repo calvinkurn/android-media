@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
@@ -275,7 +276,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
                 if (!editted.getOrNull(index).orTrue()) {
                     val picture = pictureList.find {
-                            pict -> pict.urlOriginal == cleanResult.getOrNull(index).orEmpty()
+                            pict ->
+                        pict.urlOriginal == cleanResult.getOrNull(index).orEmpty()
                     }?.urlThumbnail.orEmpty()
                     if (picture.isNotBlank()) {
                         return@mapIndexed picture
@@ -422,8 +424,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             errorMessage = resourceProvider.getInvalidPhotoCountErrorMessage() ?: ""
         }
 
-
-        if (variantInputModel.sizecharts.urlOriginal.isEmpty()) {
+        if (variantInputModel.sizecharts.urlOriginal.isEmpty() && GlobalConfig.isSellerApp()) {
             errorMessage = resourceProvider.getSizeChartErrorMessage() ?: ""
         }
 
