@@ -1146,16 +1146,20 @@ class CartViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun processGetRecommendationData(pageName: String) {
+    fun processGetRecommendationData() {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
+                val isAvailableGroupEmpty = cartModel.cartListData?.availableSection?.availableGroupGroups?.isEmpty() == true
+                val isUnavailableGroupEmpty = cartModel.cartListData?.unavailableSections?.isEmpty() == true
+                val isCartEmpty = isAvailableGroupEmpty && isUnavailableGroupEmpty
+                val pageNameRecommendation = if (isCartEmpty) PAGE_NAME_RECOMMENDATION_EMPTY else PAGE_NAME_RECOMMENDATION
                 val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
                         xSource = RECOMMENDATION_XSOURCE,
-                        pageName = pageName,
+                        pageName = pageNameRecommendation,
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true
