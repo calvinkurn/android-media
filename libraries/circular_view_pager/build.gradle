@@ -37,7 +37,6 @@ dependencies {
             exclude group: it
         }
     }
-    implementation rootProject.ext.networkDependencies.glide
 }
 
 

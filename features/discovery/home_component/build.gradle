@@ -72,7 +72,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.questWidget)
 
-    implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.homeComponentHeader)

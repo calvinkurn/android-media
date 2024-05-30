@@ -112,7 +112,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.coreKtx
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.workManager
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

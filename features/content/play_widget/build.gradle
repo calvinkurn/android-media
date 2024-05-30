@@ -59,8 +59,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
