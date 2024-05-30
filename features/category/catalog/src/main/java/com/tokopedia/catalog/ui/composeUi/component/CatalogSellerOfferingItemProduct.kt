@@ -2,7 +2,6 @@
 
 package com.tokopedia.catalog.ui.composeUi.component
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,10 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -27,14 +26,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.layoutId
 import androidx.core.content.ContextCompat
 import com.tokopedia.catalog.R
+import com.tokopedia.catalog.ui.model.CatalogProductListState
 import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
@@ -47,8 +45,6 @@ import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
-import com.tokopedia.nest.principles.utils.ImpressionHolder
-import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.compose.NestProgressBar
 import com.tokopedia.catalogcommon.R as catalogcommonR
@@ -57,12 +53,10 @@ import com.tokopedia.catalogcommon.R as catalogcommonR
 fun ItemProduct(
     onClickItem: (CatalogProductListUiModel.CatalogProductUiModel) -> Unit,
     onClickAtc: (CatalogProductListUiModel.CatalogProductUiModel) -> Unit,
-    catalogProduct: CatalogProductListUiModel.CatalogProductUiModel,
-    onImpressionProduct: () -> Unit,
-    listState: LazyListState
+    catalogProductState: MutableState<CatalogProductListState>,
+    index: Int
 ) {
-    val context = LocalContext.current
-
+    val catalogProduct = catalogProductState.value.data.orEmpty()[index]
     val productBenefit = catalogProduct.labelGroups.find {
         it.position == "ri_product_benefit"
     }
@@ -81,23 +75,16 @@ fun ItemProduct(
 
     Column(
         Modifier
-            .addImpression(
-                catalogProduct.productID, state = listState,
-                onItemViewed = {
-                    onImpressionProduct.invoke()
-                },
-                impressionState = ImpressionHolder()
-            )
             .clickable {
                 onClickItem.invoke(catalogProduct)
-            }) {
+            }
+    ) {
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             Modifier
                 .background(colorResource(id = R.color.catalog_dms_light_color)),
             verticalAlignment = Alignment.CenterVertically
-        )
-        {
+        ) {
             Spacer(modifier = Modifier.width(16.dp))
             if (catalogProduct.stock.isHidden) {
                 ProductVisualWithoutStock(
@@ -107,7 +94,6 @@ fun ItemProduct(
                 )
             } else {
                 ProductVisualWithStock(
-                    context = context,
                     productImage = catalogProduct.mediaUrl.image,
                     freeOngkir = freeOngkir?.url.orEmpty(),
                     stock = catalogProduct.stock.soldPercentage,
@@ -131,7 +117,7 @@ fun ItemProduct(
                 Spacer(modifier = Modifier.height(6.dp))
                 ProductPriceRow(catalogProduct.price.text, catalogProduct.price.original)
                 Spacer(modifier = Modifier.height(4.dp))
-                if (productBenefit?.title.orEmpty().isNotEmpty() || productOffer?.title.orEmpty().isNotEmpty()){
+                if (productBenefit?.title.orEmpty().isNotEmpty() || productOffer?.title.orEmpty().isNotEmpty()) {
                     ProductOfferAndBenefit(
                         productBenefit?.title.orEmpty(),
                         productOffer?.title.orEmpty()
@@ -240,13 +226,13 @@ private fun ProductVisualWithoutStock(
 
 @Composable
 private fun ProductVisualWithStock(
-    context: Context,
     productImage: String,
     freeOngkir: String,
     stock: Int,
     wordingStock: String,
     modifier: Modifier
 ) {
+    val context = LocalContext.current
     NestCard(
         modifier = modifier,
         type = NestCardType.NoBorder
@@ -276,7 +262,7 @@ private fun ProductVisualWithStock(
                     NestImage(
                         source = ImageSource.Remote(freeOngkir),
                         type = NestImageType.Rect(0.dp),
-                        alignment =  Alignment.BottomStart,
+                        alignment = Alignment.BottomStart,
                         modifier = Modifier
                             .height(25.dp)
                             .width(48.dp)
@@ -297,8 +283,8 @@ private fun ProductVisualWithStock(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.testTag("divStockBar").semantics {
-                        this.testTagsAsResourceId = true
-                    }
+                    this.testTagsAsResourceId = true
+                }
             ) {
                 NestTypography(
                     text = wordingStock,
@@ -320,7 +306,7 @@ private fun ProductVisualWithStock(
                             catalogcommonR.drawable.catalog_ic_stockbar_progress_top
                         ),
                         height = ProgressBarUnify.SIZE_SMALL,
-                        trackColor = ContextCompat.getColor(context, R.color.catalog_dms_misty_blue),
+                        trackColor = ContextCompat.getColor(context, R.color.catalog_dms_misty_blue)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -334,13 +320,13 @@ private fun ShopInfoRow(shopName: String, shopLocation: String, badge: String) {
     val maxCharShopName = 20
     val maxCharShopLocation = 15
     val shopNameTruncate = if (shopName.length > maxCharShopName) {
-        shopName.substring(Int.ZERO,maxCharShopName) + "....."
+        shopName.substring(Int.ZERO, maxCharShopName) + "....."
     } else {
         shopName
     }
 
     val shopLocationTruncate = if (shopLocation.length > maxCharShopLocation) {
-        shopLocation.substring(Int.ZERO,maxCharShopLocation) + "....."
+        shopLocation.substring(Int.ZERO, maxCharShopLocation) + "....."
     } else {
         shopLocation
     }
@@ -358,7 +344,7 @@ private fun ShopInfoRow(shopName: String, shopLocation: String, badge: String) {
                 color = colorResource(
                     id = R.color.catalog_dms_light_color_text_description
                 ),
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Normal
             ),
             maxLines = 1,
             modifier = Modifier.testTag("txtShopName").semantics {
@@ -543,7 +529,7 @@ private fun ShopCredibilityRow(rating: String, ratingCount: String, totalSold: S
                     color = colorResource(
                         id = R.color.catalog_dms_light_color_text_common
                     ),
-                    fontWeight = FontWeight.Normal,
+                    fontWeight = FontWeight.Normal
                 ),
                 modifier = Modifier.testTag("txtSoldQty").semantics {
                     this.testTagsAsResourceId = true

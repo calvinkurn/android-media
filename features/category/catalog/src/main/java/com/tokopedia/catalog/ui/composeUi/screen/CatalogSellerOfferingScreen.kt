@@ -34,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -64,13 +63,11 @@ import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
-import com.tokopedia.nest.principles.ui.NestColor
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.sortfilter.compose.NestSortFilterAdvanced
 import com.tokopedia.sortfilter.compose.Size
-import com.tokopedia.sortfilter.compose.SortFilter
 import kotlinx.coroutines.delay
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -87,8 +84,7 @@ fun CatalogSellerOfferingScreen(
     productListState: MutableState<CatalogProductListState>,
     countFilter: Int,
     throwable: Throwable?,
-    listener: ChooseAddressWidget.ChooseAddressWidgetListener? = null,
-    lcaListener: (ChooseAddressWidget) -> Unit = {},
+    lcaListener: (ChooseAddressWidget) -> Unit,
     onClickVariant: () -> Unit,
     onToolbarBackIconPressed: () -> Unit,
     onClickActionButtonCart: () -> Unit,
@@ -100,10 +96,10 @@ fun CatalogSellerOfferingScreen(
     onClickItemProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
     hasNextPage: MutableState<Boolean>,
     onImpressionProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
-    onRefresh:() -> Unit,
+    onRefresh: () -> Unit,
     isRefreshing: Boolean,
     clickFilter: Boolean = false,
-    resetFilter:() -> Unit,
+    resetFilter: () -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -113,6 +109,7 @@ fun CatalogSellerOfferingScreen(
         }
     }
 
+    val rememberedLcaListener = remember { lcaListener }
 
     val pullRefreshState = rememberPullRefreshState(isRefreshing, onRefresh)
 
@@ -130,7 +127,8 @@ fun CatalogSellerOfferingScreen(
         Box(
             Modifier
                 .pullRefresh(pullRefreshState)
-                .fillMaxSize()) {
+                .fillMaxSize()
+        ) {
             Box(
                 Modifier
                     .fillMaxWidth()
@@ -155,7 +153,7 @@ fun CatalogSellerOfferingScreen(
                     )
                 }
                 CatalogSellerOfferingBody(
-                    listState, listener, background, lcaListener, sortFilter,
+                    listState, background, rememberedLcaListener, sortFilter,
                     onClickMoreFilter, onClickAtc, onClickItemProduct,
                     productListState, countFilter, hasNextPage, throwable, onErrorRefresh,
                     onImpressionProduct, clickFilter, resetFilter, isRefreshing, pullRefreshState
@@ -169,7 +167,6 @@ fun CatalogSellerOfferingScreen(
 @Composable
 fun CatalogSellerOfferingBody(
     listState: LazyListState,
-    listener: ChooseAddressWidget.ChooseAddressWidgetListener?,
     background: Int,
     lcaListener: (ChooseAddressWidget) -> Unit,
     sortFilterState: MutableState<CatalogFilterProductListState>,
@@ -191,7 +188,6 @@ fun CatalogSellerOfferingBody(
         item {
             Box(Modifier.background(Color.Transparent)) {
                 CatalogSellerOfferingHeader(
-                    listener = listener,
                     background,
                     lcaListener
                 )
@@ -213,7 +209,7 @@ fun CatalogSellerOfferingBody(
                 NestGlobalError(
                     type = errorType,
                     onClickAction = {
-                        //TODO
+                        // TODO
                         onErrorRefresh.invoke()
                     },
                     onClickSecondaryAction =
@@ -222,7 +218,9 @@ fun CatalogSellerOfferingBody(
                             val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                             currentContext.startActivity(intent)
                         }
-                    } else null,
+                    } else {
+                        null
+                    },
                     secondaryActionText = "Ke Pengaturan"
                 )
             }
@@ -237,13 +235,12 @@ fun CatalogSellerOfferingBody(
                         FilterLoadingState()
                     } else {
                         Filter(
-                            sortFilterState.value.data.orEmpty(),
+                            sortFilterState,
                             Size.DEFAULT,
                             onPrefixClicked = onClickMoreFilter,
                             countFilter = countFilter
                         )
                     }
-
                 }
             }
 
@@ -253,25 +250,25 @@ fun CatalogSellerOfferingBody(
                 }
             } else {
                 val productList = productListState.value.data.orEmpty()
-                if (productList.isEmpty()){
+                if (productList.isEmpty()) {
                     item {
                         EmptyState(isFilter = filterClick, resetFilter)
                     }
-                }else{
+                } else {
                     items(productList.size) { index ->
+
                         onImpressionProduct.invoke(productList[index], index)
+
                         ItemProduct(onClickItem = {
                             onClickItemProduct.invoke(it, index)
                         }, onClickAtc = {
-                            onClickAtc.invoke(it, index)
-                        }, productList[index], onImpressionProduct = {
-                            onImpressionProduct.invoke(productList[index], index)
-                        }, listState)
+                                onClickAtc.invoke(it, index)
+                            }, productListState, index)
                         if (index != productList.size - 1) {
                             Divider(
                                 Modifier
                                     .fillMaxWidth(),
-                                color= NestNN.light._50
+                                color = NestNN.light._50
                             )
                         }
                         if (index == productList.size - 1 && hasNextPage.value) {
@@ -286,19 +283,18 @@ fun CatalogSellerOfferingBody(
                 }
             }
         }
-
     })
 }
 
 @Composable
 fun Filter(
-    advItems: List<SortFilter>,
+    advItems: MutableState<CatalogFilterProductListState>,
     size: Size,
     onPrefixClicked: () -> Unit,
     countFilter: Int
 ) {
     NestSortFilterAdvanced(
-        items = advItems,
+        items = advItems.value.data.orEmpty(),
         size = size,
         modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
         onPrefixClicked = onPrefixClicked,
@@ -306,7 +302,6 @@ fun Filter(
         onItemClicked = {}
     )
 }
-
 
 @Composable
 @Preview
@@ -443,27 +438,29 @@ fun ProductListLoadingState() {
                 )
             }
         }
-
     }
     Divider(Modifier.height(1.dp))
 }
 
 @Composable
-private fun EmptyState(isFilter: Boolean, resetFilter: () -> Unit){
-    val wordingTitle = if (isFilter){
+private fun EmptyState(isFilter: Boolean, resetFilter: () -> Unit) {
+    val wordingTitle = if (isFilter) {
         stringResource(id = R.string.text_empty_product_list)
-    }else{
+    } else {
         stringResource(id = R.string.catalog_no_products_title)
     }
 
-    val wordingDescription = if (isFilter){
+    val wordingDescription = if (isFilter) {
         stringResource(id = R.string.text_empty_state_desc)
-    }else{
+    } else {
         stringResource(id = R.string.catalog_no_products_body)
     }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize().padding(16.dp)
+    ) {
         NestImage(
             source = ImageSource.Remote(TokopediaImageUrl.ILLUSTRATION_EMPTY_CATALOG_PRODUCT_LIST),
             type = NestImageType.Rect(0.dp),
@@ -496,10 +493,14 @@ private fun EmptyState(isFilter: Boolean, resetFilter: () -> Unit){
             modifier = Modifier.width(328.dp)
         )
         Spacer(modifier = Modifier.height(12.dp))
-        if (isFilter){
-            NestButton(text = stringResource(id = R.string.text_reset_filter),
-                onClick = { resetFilter.invoke() },variant = ButtonVariant.FILLED,
-                size = ButtonSize.MEDIUM, modifier = Modifier.fillMaxWidth())
+        if (isFilter) {
+            NestButton(
+                text = stringResource(id = R.string.text_reset_filter),
+                onClick = { resetFilter.invoke() },
+                variant = ButtonVariant.FILLED,
+                size = ButtonSize.MEDIUM,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

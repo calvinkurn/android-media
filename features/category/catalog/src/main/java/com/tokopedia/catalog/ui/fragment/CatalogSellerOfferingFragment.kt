@@ -3,14 +3,12 @@ package com.tokopedia.catalog.ui.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -58,8 +56,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -90,6 +86,7 @@ class CatalogSellerOfferingFragment :
     private val seenTracker = mutableListOf<String>()
     private var refreshState = mutableStateOf(false)
     private var clickFilterState = mutableStateOf(false)
+
     @Inject
     lateinit var viewModel: CatalogSellerOfferingProductListViewModel
 
@@ -147,9 +144,9 @@ class CatalogSellerOfferingFragment :
                         productListState,
                         selectedMoreFilterCount.value,
                         throwableError.value,
-                        this@CatalogSellerOfferingFragment,
                         lcaListener = {
                             this@CatalogSellerOfferingFragment.chooseAddressWidget = it
+                            chooseAddressWidget?.bindChooseAddress(this@CatalogSellerOfferingFragment)
                         },
                         onClickVariant = {
                         },
@@ -232,7 +229,6 @@ class CatalogSellerOfferingFragment :
         return unifyprinciplesR.color.Unify_Static_White
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -240,6 +236,7 @@ class CatalogSellerOfferingFragment :
         }
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
             viewModel.refreshNotification()
+            goToCart()
         }
     }
 
@@ -328,10 +325,9 @@ class CatalogSellerOfferingFragment :
         }
 
         viewModel.textToaster.observe(viewLifecycleOwner) {
-            if (it != null) Toaster.build(view, it).show()
+            if (it != null) goToCart()
         }
         viewModel.selectedSortIndicatorCount.observe(viewLifecycleOwner) {
-            Log.d("TESS", selectedMoreFilterCount.value.toString())
             selectedMoreFilterCount.value = it
         }
     }
