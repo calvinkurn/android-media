@@ -15,10 +15,10 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.newrelic.agent.android.NewRelic;
-import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.PageName;
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -112,10 +112,10 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
     }
 
     private void setAdsLogData() {
-        AppLogAnalytics.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
-        AppLogAnalytics.currentPageName = PageName.FIND_PAGE;
-        AppLogAnalytics.putAdsPageData(this, PAGE_NAME, PageName.FIND_PAGE);
-        AppLogAnalytics.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
+        AppLogTopAds.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
+        AppLogTopAds.currentPageName = PageName.FIND_PAGE;
+        AppLogTopAds.putAdsPageData(this, PAGE_NAME, PageName.FIND_PAGE);
+        AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
     }
 
     private void initBranchIO(Context context) {

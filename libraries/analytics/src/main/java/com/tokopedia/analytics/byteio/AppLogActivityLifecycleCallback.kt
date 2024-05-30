@@ -12,6 +12,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -57,8 +58,8 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
 
     private fun setAdsPageData(activity: Activity) {
         if (activity is IAdsLog) {
-            AppLogAnalytics.currentPageName = activity.getAdsPageName()
-            AppLogAnalytics.putAdsPageData(activity, AppLogParam.PAGE_NAME, activity.getAdsPageName())
+            AppLogTopAds.currentPageName = activity.getAdsPageName()
+            AppLogTopAds.putAdsPageData(activity, AppLogParam.PAGE_NAME, activity.getAdsPageName())
         }
     }
 
@@ -142,7 +143,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         AppLogFirstTrackId.updateFirstTrackId()
 
         if (activity is IAdsLog) {
-            AppLogAnalytics.removeLastAdsPageData(activity)
+            AppLogTopAds.removeLastAdsPageData(activity)
         }
 
         if (activity is FragmentActivity) {
