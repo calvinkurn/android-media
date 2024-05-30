@@ -3,62 +3,56 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/transparent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/header_rounded_closeable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/fromtkpddesign_bg_header_rounded_closeable_bs_tokopoints"
-        android:orientation="horizontal"
         android:padding="8dp"
+        android:background="@drawable/t_bg_header_rounded_closeable_bs"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tray_close"
-            android:layout_width="28dp"
-            android:layout_height="4dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/fromtkpddesign_close_button_bottom_sheet_tokopoints" />
-
-        <com.tokopedia.iconunify.IconUnify
+        <ImageView
             android:id="@+id/close_button_rounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:visibility="gone"
+            android:padding="8dp"
+            android:contentDescription="@string/app_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:icon_name="CLOSE" />
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/t_ic_close_thin" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_closeable_rounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:layout_toEndOf="@+id/close_button_rounded"
-            android:layout_toRightOf="@+id/close_button_rounded"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:textColor="@color/Unify_NN950_68"
+            android:layout_toEndOf="@+id/close_button_rounded"
+            android:layout_toRightOf="@+id/close_button_rounded"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/sp_18"
+            android:layout_marginLeft="8dp"
+            android:textStyle="normal"
             android:visibility="gone"
-            app:typographyType="heading_3"
+            tools:visibility="visible"
             tools:text="Text Title"
-            tools:visibility="visible" />
+            />
     </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_rounded_closeable"
         tools:layout_height="40dp" />
