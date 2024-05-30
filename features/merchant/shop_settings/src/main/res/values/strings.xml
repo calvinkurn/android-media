@@ -240,4 +240,7 @@
     <string name="shop_page_setting_no_access_error">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     <string name="shop_operational_hour_ticker_auto_chat_reply">https://www.tokopedia.com/chat/setting/auto-reply</string>
 
+    <!--content-->
+    <string name="stories_settings_item_header">Konten</string>
+    <string name="stories_settings_item_body">Atur konten toko</string>
 </resources>

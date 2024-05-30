@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
@@ -47,6 +48,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         isHideable = true
         isSkipCollapseState = true
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
+        showHeader = false
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -58,6 +60,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                 ContentCreationView(
                     creationConfig = creationList.value,
                     selectedItem = selectedCreation.value,
+                    isOwner = shouldShowPerformanceAction,
                     onImpressBottomSheet = {
                         analytics?.eventImpressionContentCreationBottomSheet(
                             viewModel.authorType,
@@ -80,6 +83,25 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     },
                     onRetryClicked = {
                         viewModel.fetchConfig(widgetSource)
+                    },
+                    onCloseClicked = {
+                        dismiss()
+                    },
+                    onSeePerformanceClicked = {
+                        analytics?.eventClickPerformanceDashboard(
+                            viewModel.authorType,
+                            widgetSource
+                        )
+                        RouteManager.route(
+                            requireContext(),
+                            viewModel.getPerformanceDashboardApplink()
+                        )
+                    },
+                    onSettingsClicked = {
+                        RouteManager.route(
+                            requireContext(),
+                            ApplinkConst.CONTENT_SETTINGS
+                        )
                     }
                 )
             }
@@ -91,28 +113,7 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderHeaderView()
-    }
-
-    private fun renderHeaderView() {
-        context?.let {
-            setTitle(it.getString(R.string.content_creation_bottom_sheet_title))
-
-            if (shouldShowPerformanceAction) {
-                setAction(it.getString(R.string.content_creation_bottom_sheet_performance_action)) { _ ->
-                    analytics?.eventClickPerformanceDashboard(
-                        viewModel.authorType,
-                        widgetSource
-                    )
-                    RouteManager.route(
-                        it,
-                        viewModel.getPerformanceDashboardApplink()
-                    )
-                }
-            }
-
-            viewModel.fetchConfig(widgetSource, creationConfig)
-        }
+        viewModel.fetchConfig(widgetSource, creationConfig)
     }
 
     fun show(fragmentManager: FragmentManager) {

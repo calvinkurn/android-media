@@ -6,5 +6,6 @@ data class ShopSettingAccess(
         val isInfoAccessAuthorized: Boolean = true,
         val isNotesAccessAuthorized: Boolean = true,
         val isShipmentAccessAuthorized: Boolean = true,
-        val isProductManageAccessAuthorized: Boolean = true
+        val isProductManageAccessAuthorized: Boolean = true,
+        val isContentManageAccessAuthorized: Boolean = true,
 )
