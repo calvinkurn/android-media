@@ -131,9 +131,6 @@ class WishlistCollectionFragment :
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
     }
-    private val wishlistCollectionPref: WishlistCollectionPrefs? by lazy {
-        activity?.let { WishlistCollectionPrefs(it) }
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -410,8 +407,6 @@ class WishlistCollectionFragment :
                     if (result.data.status == OK) {
                         trackEnterPage()
                         showRvWishlistCollection()
-                        wishlistCollectionPref?.getHasClosed()
-                            ?.let { collectionAdapter.setTickerHasClosed(it) }
 
                         // check empty state
                         if (result.data.data.isEmptyState) {
@@ -754,8 +749,8 @@ class WishlistCollectionFragment :
     }
 
     override fun onCloseTicker() {
-        wishlistCollectionPref?.setHasClosed(true)
-        collectionAdapter.setTickerHasClosed(true)
+        collectionViewModel.closeTicker(true)
+        collectionAdapter.removeTicker()
         WishlistCollectionAnalytics.sendClickXOnIntroductionSectionEvent()
     }
 
