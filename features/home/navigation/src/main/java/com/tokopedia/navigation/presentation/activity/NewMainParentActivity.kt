@@ -80,7 +80,6 @@ import com.tokopedia.navigation.presentation.model.putQueryParams
 import com.tokopedia.navigation.presentation.model.putShouldShowGlobalNav
 import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
-import com.tokopedia.navigation.presentation.util.EmbraceNavAnalyticsProcessor
 import com.tokopedia.navigation.presentation.util.GlobalNavAnalyticsProcessor
 import com.tokopedia.navigation.presentation.util.TabSelectedListener
 import com.tokopedia.navigation.presentation.util.VisitFeedProcessor
@@ -172,7 +171,6 @@ class NewMainParentActivity :
         listOf(
             createTabSelectedListener(globalAnalyticsProcessor.get(), true, { !it }, { false }),
             createTabSelectedListener(visitFeedProcessor.get()),
-            createTabSelectedListener(EmbraceNavAnalyticsProcessor()),
             createTabSelectedListener { updateAppLogPageData(it.uniqueId, false) },
             createTabSelectedListener { sendEnterPage(it.uniqueId) },
             createTabSelectedListener { if (it.uniqueId != BottomNavHomeId) mePageCoachMark.get().forceDismiss() }

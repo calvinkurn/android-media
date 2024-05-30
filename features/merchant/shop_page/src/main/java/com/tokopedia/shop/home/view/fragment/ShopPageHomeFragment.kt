@@ -127,7 +127,6 @@ import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetA
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
-import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopPageRemoteConfigChecker
@@ -829,22 +828,6 @@ open class ShopPageHomeFragment :
                     is Fail -> {
                         val throwable = it.throwable
                         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                        if (throwable is ShopAsyncErrorException) {
-                            val actionName = when (throwable.asyncQueryType) {
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_GET_LAYOUT_V2 -> {
-                                    ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_PAGE_GET_LAYOUT_V2
-                                }
-
-                                else -> {
-                                    ""
-                                }
-                            }
-                            sendEmbraceBreadCrumbLogger(
-                                actionName,
-                                shopId,
-                                throwable.stackTraceToString()
-                            )
-                        }
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -1465,20 +1448,6 @@ open class ShopPageHomeFragment :
         viewModel?.updatedShopHomeWidgetQuantityData?.observe(viewLifecycleOwner, {
             shopHomeAdapter?.submitList(it.toList())
         })
-    }
-
-    private fun sendEmbraceBreadCrumbLogger(
-        actionName: String,
-        shopId: String,
-        stackTraceString: String
-    ) {
-        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
-            actionName,
-            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
-                shopId,
-                stackTraceString
-            )
-        )
     }
 
     private fun onSuccessGetShopProductFilterCount(

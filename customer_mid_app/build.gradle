@@ -285,8 +285,6 @@ dependencies {
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     //new relic sdk
     implementation rootProject.ext.miscDependencies.newRelic
