@@ -6,7 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.usecase.GetContentFormUseCase
 import com.tokopedia.imagepicker_insta.LiveDataResult
-import com.tokopedia.imagepicker_insta.models.*
+import com.tokopedia.imagepicker_insta.models.FolderData
+import com.tokopedia.imagepicker_insta.models.ImageAdapterData
+import com.tokopedia.imagepicker_insta.models.MediaImporterData
+import com.tokopedia.imagepicker_insta.models.MediaUseCaseData
+import com.tokopedia.imagepicker_insta.models.MediaVmMData
+import com.tokopedia.imagepicker_insta.models.QueryConfiguration
+import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
 import com.tokopedia.imagepicker_insta.usecase.FeedVideoDepreciationUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
@@ -19,7 +25,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
@@ -27,7 +32,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class PickerViewModel(
-    val app: Application,
+    val app: Application
 ) : BaseAndroidViewModel(app) {
 
     override val coroutineContext: CoroutineContext
@@ -53,7 +58,7 @@ class PickerViewModel(
 
     val photosFlow: MutableStateFlow<LiveDataResult<MediaVmMData>> = MutableStateFlow(LiveDataResult.loading())
     val selectedMediaUriLiveData: MutableLiveData<LiveDataResult<List<Uri>>> = MutableLiveData()
-    val folderFlow :MutableStateFlow<LiveDataResult<List<FolderData>>> = MutableStateFlow(LiveDataResult.loading())
+    val folderFlow: MutableStateFlow<LiveDataResult<List<FolderData>>> = MutableStateFlow(LiveDataResult.loading())
     private val folderDataList = arrayListOf<FolderData>()
     private val uriSet = HashSet<Uri>()
 
@@ -88,8 +93,8 @@ class PickerViewModel(
             folderDataList.addAll(list)
             folderFlow.emit(LiveDataResult.success(folderDataList))
         }, onError = {
-            folderFlow.emit(LiveDataResult.error(it))
-        })
+                folderFlow.emit(LiveDataResult.error(it))
+            })
     }
 
     fun handleFileAddedEvent(fileUriList: ArrayList<Uri>, queryConfiguration: QueryConfiguration) {
@@ -102,9 +107,8 @@ class PickerViewModel(
                     if (file.exists() && file.length() > 0) {
                         if (!uriSet.contains(fileUri)) {
                             val asset =
-                                photosUseCase.createAssetsFromFile(file, app.applicationContext,queryConfiguration)
+                                photosUseCase.createAssetsFromFile(file, app.applicationContext, queryConfiguration)
                             if (asset != null) {
-
                                 /**
                                  * 1. add item in imageadapterlist
                                  * 2. update folder item
@@ -119,29 +123,29 @@ class PickerViewModel(
                 }
             }
             if (imageAdapterList.isNotEmpty()) {
-                updateMediaCountInFolders(imageAdapterList.first().asset.contentUri,imageAdapterList.size, AlbumUtil.RECENTS)
-                updateMediaCountInFolders(imageAdapterList.first().asset.contentUri,imageAdapterList.size, StorageUtil.INTERNAL_FOLDER_NAME)
+                updateMediaCountInFolders(imageAdapterList.first().asset.contentUri, imageAdapterList.size, AlbumUtil.RECENTS)
+                updateMediaCountInFolders(imageAdapterList.first().asset.contentUri, imageAdapterList.size, StorageUtil.INTERNAL_FOLDER_NAME)
                 folderFlow.emit(LiveDataResult.success(folderDataList))
                 withContext(Dispatchers.Main) {
-                    photosFlow.emit (
-                            LiveDataResult.success(
-                                MediaVmMData(
-                                    MediaUseCaseData(
-                                        MediaImporterData(
-                                            imageAdapterList
-                                        )
-                                    ),
-                                    StorageUtil.INTERNAL_FOLDER_NAME,
-                                    isNewItem = true
-                                )
+                    photosFlow.emit(
+                        LiveDataResult.success(
+                            MediaVmMData(
+                                MediaUseCaseData(
+                                    MediaImporterData(
+                                        imageAdapterList
+                                    )
+                                ),
+                                StorageUtil.INTERNAL_FOLDER_NAME,
+                                isNewItem = true
                             )
-                            )
+                        )
+                    )
                 }
             }
         }, onError = {})
     }
 
-    private fun updateMediaCountInFolders(fileUri: Uri, mediaCount:Int, folderName: String) {
+    private fun updateMediaCountInFolders(fileUri: Uri, mediaCount: Int, folderName: String) {
         val internalFolderData: FolderData? = folderDataList.firstOrNull {
             it.folderTitle == folderName
         }
@@ -149,9 +153,10 @@ class PickerViewModel(
             val finalInternalFolderData = FolderData(
                 folderName,
                 CameraUtil.getMediaCountText(mediaCount),
-                fileUri, mediaCount
+                fileUri,
+                mediaCount
             )
-            //2
+            // 2
             folderDataList.add(finalInternalFolderData)
         } else {
             folderDataList.remove(internalFolderData)
@@ -162,33 +167,30 @@ class PickerViewModel(
                 fileUri,
                 internalFolderData.itemCount + mediaCount
             )
-            //2
+            // 2
             folderDataList.add(finalInternalFolderData)
         }
     }
 
-    fun getMediaByFolderName(folderName: String,queryConfiguration: QueryConfiguration) {
-
+    fun getMediaByFolderName(folderName: String, queryConfiguration: QueryConfiguration) {
         launchCatchError(block = {
             withContext(Dispatchers.Main) {
                 photosFlow.emit(LiveDataResult.loading())
             }
             photosUseCase.getMediaByFolderNameFlow(folderName, app, queryConfiguration)
                 .collect {
-                    withContext(Dispatchers.Main){
+                    withContext(Dispatchers.Main) {
                         photosFlow.emit(LiveDataResult.success(MediaVmMData(it, folderName)))
                     }
-
                 }
         }, onError = {
-            withContext(Dispatchers.Main){
-                photosFlow.emit(LiveDataResult.error(Exception("Unknown error")))
-            }
-        })
+                withContext(Dispatchers.Main) {
+                    photosFlow.emit(LiveDataResult.error(Exception("Unknown error")))
+                }
+            })
     }
 
     fun getPhotos(queryConfiguration: QueryConfiguration) {
-
         launchCatchError(block = {
             withContext(Dispatchers.Main) {
                 photosFlow.emit(LiveDataResult.loading())
@@ -196,25 +198,25 @@ class PickerViewModel(
             photosUseCase.getMediaByFolderNameFlow(AlbumUtil.RECENTS, app, queryConfiguration)
                 .collect {
                     uriSet.addAll(photosUseCase.getUriSetFromImageAdapterData(it.mediaImporterData.imageAdapterDataList))
-                    withContext(Dispatchers.Main){
+                    withContext(Dispatchers.Main) {
                         photosFlow.emit(LiveDataResult.success(MediaVmMData(it)))
                     }
                 }
         }, onError = {
-            withContext(Dispatchers.Main) {
-                photosFlow.emit(LiveDataResult.error(it))
-            }
-        })
+                withContext(Dispatchers.Main) {
+                    photosFlow.emit(LiveDataResult.error(it))
+                }
+            })
     }
 
-    fun getUriOfSelectedMedia(width: Int,height:Int, pairList: List<Pair<ImageAdapterData, ZoomInfo>>) {
+    fun getUriOfSelectedMedia(width: Int, height: Int, pairList: List<Pair<ImageAdapterData, ZoomInfo>>) {
         launchCatchError(block = {
             selectedMediaUriLiveData.postValue(LiveDataResult.loading())
             val uriList = cropUseCase.cropPhotos(app, width, height, pairList)
             selectedMediaUriLiveData.postValue(LiveDataResult.success(uriList))
         }, onError = {
-            selectedMediaUriLiveData.postValue(LiveDataResult.error(it))
-        })
+                selectedMediaUriLiveData.postValue(LiveDataResult.error(it))
+            })
     }
 
     fun getFeedAccountList(isCreatePostAsBuyer: Boolean) {
@@ -228,19 +230,21 @@ class PickerViewModel(
                     id = it.id,
                     name = it.name,
                     iconUrl = it.thumbnail,
-                    badge = it.badge,
                     type = it.type,
                     hasUsername = response.feedContentForm.hasUsername,
                     hasAcceptTnc = response.feedContentForm.hasAcceptTnc,
-                    enable = response.feedContentForm.hasAcceptTnc,
+                    enable = response.feedContentForm.hasAcceptTnc
                 )
             }
 
             _feedAccountListState.value = feedAccountList
 
-            if(feedAccountList.isNotEmpty()) {
-                _selectedFeedAccount.value = if(isCreatePostAsBuyer) feedAccountList.firstOrNull { it.isUser } ?: feedAccountList.first()
-                else feedAccountList.first()
+            if (feedAccountList.isNotEmpty()) {
+                _selectedFeedAccount.value = if (isCreatePostAsBuyer) {
+                    feedAccountList.firstOrNull { it.isUser } ?: feedAccountList.first()
+                } else {
+                    feedAccountList.first()
+                }
             }
         }, onError = {})
     }
@@ -248,7 +252,7 @@ class PickerViewModel(
     fun setSelectedFeedAccount(contentAccount: ContentAccountUiModel) {
         launchCatchError(block = {
             val current = _selectedFeedAccount.value
-            if(current.id != contentAccount.id) {
+            if (current.id != contentAccount.id) {
                 _selectedFeedAccount.value = contentAccount
             }
         }, onError = { })
@@ -257,7 +261,7 @@ class PickerViewModel(
     fun setSelectedFeedAccountId(feedAccountId: String) {
         launchCatchError(block = {
             val current = _selectedFeedAccount.value
-            if(current.id != feedAccountId) {
+            if (current.id != feedAccountId) {
                 _selectedFeedAccount.value = _feedAccountListState.value.firstOrNull {
                     it.id == feedAccountId
                 } ?: ContentAccountUiModel.Empty
