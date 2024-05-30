@@ -59,6 +59,7 @@ import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.IAdsLog;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -1446,7 +1447,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        AppLogAnalytics.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, getAdsPageName());
+        AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, getAdsPageName());
         updateAppLogPageData(position, false);
         sendEnterPage(position);
         return true;

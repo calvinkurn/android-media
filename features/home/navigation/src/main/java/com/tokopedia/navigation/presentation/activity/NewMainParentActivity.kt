@@ -36,7 +36,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.AppLogAnalytics.updateAdsFragmentPageData
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
@@ -44,6 +43,7 @@ import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -792,7 +792,7 @@ class NewMainParentActivity :
         val model = viewModel.getModelById(itemId)
         if (model != null) onTabSelected.forEach { it.onSelected(model) }
 
-        updateAdsFragmentPageData(this, PAGE_NAME, getAdsPageName())
+        AppLogTopAds.updateAdsFragmentPageData(this, PAGE_NAME, getAdsPageName())
 
         return true
     }

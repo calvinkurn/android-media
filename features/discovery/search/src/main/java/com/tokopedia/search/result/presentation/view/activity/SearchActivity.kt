@@ -32,6 +32,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRAN
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -164,12 +165,12 @@ class SearchActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        AppLogAnalytics.removeLastAdsPageData(this)
+        AppLogTopAds.removeLastAdsPageData(this)
     }
 
     private fun setAdsPageData() {
-        AppLogAnalytics.currentPageName = PageName.SEARCH_RESULT
-        AppLogAnalytics.putAdsPageData(this, AppLogParam.PAGE_NAME, PageName.SEARCH_RESULT)
+        AppLogTopAds.currentPageName = PageName.SEARCH_RESULT
+        AppLogTopAds.putAdsPageData(this, AppLogParam.PAGE_NAME, PageName.SEARCH_RESULT)
     }
 
     private fun observeSearchState() {
