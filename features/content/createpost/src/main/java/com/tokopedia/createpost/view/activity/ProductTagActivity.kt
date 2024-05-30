@@ -52,7 +52,7 @@ class ProductTagActivity : BaseActivity() {
         supportFragmentManager.beginTransaction()
             .replace(
                 binding.container.id,
-                getParentFragment(productTagList, shopBadge, authorId, authorType,),
+                getParentFragment(productTagList, shopBadge, authorId, authorType),
                 ProductTagParentFragment.TAG
             )
             .commit()
@@ -60,7 +60,7 @@ class ProductTagActivity : BaseActivity() {
 
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
-        when(fragment) {
+        when (fragment) {
             is ProductTagParentFragment -> {
                 fragment.setListener(object : ProductTagParentFragment.Listener {
                     override fun onCloseProductTag() {
@@ -70,7 +70,7 @@ class ProductTagActivity : BaseActivity() {
                     override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
                         val product = products.firstOrNull()
 
-                        if(product == null) {
+                        if (product == null) {
                             finish()
                             return
                         }
@@ -78,7 +78,7 @@ class ProductTagActivity : BaseActivity() {
                         val data = Intent().apply {
                             putExtra(RESULT_PRODUCT_ID, product.id)
                             putExtra(RESULT_PRODUCT_NAME, product.name)
-                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscount else product.price)
+                            putExtra(RESULT_PRODUCT_PRICE, if (product.isDiscount) product.priceDiscount else product.price)
                             putExtra(RESULT_PRODUCT_IMAGE, product.cover)
                             putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginal)
                             putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discount)
@@ -118,13 +118,12 @@ class ProductTagActivity : BaseActivity() {
         productTagList: String,
         shopBadge: String,
         authorId: String,
-        authorType: String,
+        authorType: String
     ): ProductTagParentFragment {
         return ProductTagParentFragment.getFragment(
             supportFragmentManager,
             classLoader,
             ContentProductTagArgument.Builder()
-                .setShopBadge(shopBadge)
                 .setAuthorId(authorId)
                 .setAuthorType(authorType)
                 .setProductTagSource(productTagList)

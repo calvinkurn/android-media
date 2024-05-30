@@ -10,18 +10,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
-import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_POST_ID
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_TYPE
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.util.ConnectionLiveData
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
@@ -32,7 +32,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
+abstract class BaseCreatePostFragmentNew :
+    BaseDaggerFragment(),
     CreatePostContract.View {
 
     @Inject
@@ -46,8 +47,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var createContentPostViewModel: CreateContentPostViewModel
-    private lateinit var sheet :FeedNetworkErrorBottomSheet
-
+    private lateinit var sheet: FeedNetworkErrorBottomSheet
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -59,7 +59,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         private const val VIEW_MODEL = "view_model"
     }
     abstract fun fetchContentForm()
-
 
     override fun initInjector() {
         DaggerCreatePostComponent.factory()
@@ -87,7 +86,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         initVar(savedInstanceState)
         fetchContentForm()
     }
-    private fun setUpConnectionListener(){
+    private fun setUpConnectionListener() {
         val connectionLiveData = context?.let { ConnectionLiveData(it) }
         if (!(::sheet.isInitialized)) {
             sheet = FeedNetworkErrorBottomSheet.newInstance(true)
@@ -99,8 +98,9 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                 }
                 sheet.show(childFragmentManager, "")
             } else {
-                if (sheet.isVisible)
+                if (sheet.isVisible) {
                     sheet.dismiss()
+                }
             }
         }
     }
@@ -123,9 +123,12 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        createContentPostViewModel._createPostViewModelData.observe(viewLifecycleOwner, Observer {
-            createPostModel = it
-        })
+        createContentPostViewModel._createPostViewModelData.observe(
+            viewLifecycleOwner,
+            Observer {
+                createPostModel = it
+            }
+        )
     }
 
     override fun onDestroy() {
@@ -142,24 +145,22 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     override fun onSuccessGetContentForm(
         feedContentForm: FeedContentForm,
-        isFromTemplateToken: Boolean,
+        isFromTemplateToken: Boolean
     ) {
         val feedAccountList = feedContentForm.authors.map {
             ContentAccountUiModel(
                 id = it.id,
                 name = it.name,
                 iconUrl = it.thumbnail,
-                badge = it.badge,
                 type = it.type,
                 hasUsername = feedContentForm.hasUsername,
                 hasAcceptTnc = feedContentForm.hasAcceptTnc,
-                enable = feedContentForm.hasAcceptTnc,
+                enable = feedContentForm.hasAcceptTnc
             )
         }
 
         activityListener?.setContentAccountList(feedAccountList)
         createPostModel.shopName = feedAccountList.firstOrNull { it.isShop }?.name ?: ""
-        createPostModel.shopBadge = feedAccountList.firstOrNull { it.isShop }?.badge ?: ""
         createPostModel.token = feedContentForm.token
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage
@@ -170,10 +171,14 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
         if (feedContentForm.media.media.isNotEmpty() && createPostModel.fileImageList.isEmpty()) {
             createPostModel.urlImageList.clear()
-            createPostModel.urlImageList.addAll(feedContentForm.media.media.map {
-                MediaModel(it.mediaUrl,
-                    it.type)
-            })
+            createPostModel.urlImageList.addAll(
+                feedContentForm.media.media.map {
+                    MediaModel(
+                        it.mediaUrl,
+                        it.type
+                    )
+                }
+            )
         }
         createPostModel.productTagSources = feedContentForm.productTagSources
         createContentPostViewModel.setNewContentData(createPostModel)
@@ -186,12 +191,10 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     override fun onErrorGetContentForm(message: String, throwable: Throwable?) {
         throwable?.let {
-            if (it is UnknownHostException || it is ConnectException || it is SocketTimeoutException){
+            if (it is UnknownHostException || it is ConnectException || it is SocketTimeoutException) {
                 context?.let { it1 -> showNoConnectionBottomSheet(it1) }
-
             }
         }
-
     }
 
     private fun showNoConnectionBottomSheet(context: Context) {
@@ -200,7 +203,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
             fetchContentForm()
         }
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
-
     }
 
     override fun getScreenName(): String {
