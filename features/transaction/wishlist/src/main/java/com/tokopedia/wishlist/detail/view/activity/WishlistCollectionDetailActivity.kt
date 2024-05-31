@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.wishlist.R
@@ -12,7 +13,7 @@ import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.EXTRA_CHA
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
 import com.tokopedia.wishlist.collection.view.fragment.WishlistCollectionDetailFragment
 
-class WishlistCollectionDetailActivity : BaseSimpleActivity(), AppLogInterface {
+class WishlistCollectionDetailActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     private var isNeedRefresh = false
     override fun getLayoutRes() = R.layout.activity_wishlist_collection_detail
 
@@ -61,6 +62,10 @@ class WishlistCollectionDetailActivity : BaseSimpleActivity(), AppLogInterface {
     }
 
     override fun getPageName(): String {
+        return PageName.WISHLIST
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.WISHLIST
     }
 }

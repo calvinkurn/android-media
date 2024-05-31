@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -57,7 +58,8 @@ class ShopPageHeaderActivity :
     HasSharedViewModel,
     ShopPageHeaderPerformanceMonitoringListener,
     ShopPageSharedListener,
-    AppLogInterface
+    AppLogInterface,
+    IAdsLog
 {
 
     companion object {
@@ -288,6 +290,10 @@ class ShopPageHeaderActivity :
     }
 
     override fun getPageName(): String {
+        return PageName.SHOP
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.SHOP
     }
 }

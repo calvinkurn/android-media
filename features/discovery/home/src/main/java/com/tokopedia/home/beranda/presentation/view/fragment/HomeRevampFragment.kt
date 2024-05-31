@@ -40,6 +40,7 @@ import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.search.AppLogSearch
@@ -281,7 +282,8 @@ open class HomeRevampFragment :
     CMHomeWidgetCallback,
     HomePayLaterWidgetListener,
     AppLogInterface,
-    AppLogGlidePageInterface {
+    AppLogGlidePageInterface,
+    IAdsLog {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -561,6 +563,10 @@ open class HomeRevampFragment :
     }
 
     override fun getPageName(): String {
+        return PageName.HOME
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.HOME
     }
 
@@ -3176,4 +3182,5 @@ open class HomeRevampFragment :
     override fun getDistanceToTop(): Int {
         return scrollPositionY
     }
+
 }
