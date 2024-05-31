@@ -424,8 +424,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
             errorMessage = resourceProvider.getInvalidPhotoCountErrorMessage() ?: ""
         }
 
-        if (variantInputModel.sizecharts.urlOriginal.isEmpty() && GlobalConfig.isSellerApp()) {
-            errorMessage = resourceProvider.getSizeChartErrorMessage() ?: ""
+        if (variantInputModel.hasVariant()) {
+            if (variantInputModel.sizecharts.urlOriginal.isEmpty() && variantInputModel.hasVariantSize() && GlobalConfig.isSellerApp()) {
+                errorMessage = resourceProvider.getSizeChartErrorMessage() ?: ""
+            }
         }
 
         // validate images already reached limit
