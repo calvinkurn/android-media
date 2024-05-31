@@ -32,6 +32,7 @@ import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -157,7 +158,9 @@ class ManageAddressFragment :
     private fun showToaster(throwable: Throwable) {
         if (throwable is MessageErrorException) {
             val message = throwable.message
-            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+            if (message != null) {
+                Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
         }
     }
 
