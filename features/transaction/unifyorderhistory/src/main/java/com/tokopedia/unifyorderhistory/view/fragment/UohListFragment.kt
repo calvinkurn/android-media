@@ -552,6 +552,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
             )
+            uohNavtoolbar.updateSearchBarStyle(showSearchBtn = false)
             val pageSource = if (activityOrderHistory != PARAM_HOME) {
                 uohNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.visibility = View.GONE

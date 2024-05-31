@@ -37,6 +37,10 @@ class AutoCompleteMicroInteraction internal constructor(
     private val sideIconView: View?
         get() = sideIconViewRef?.get()
 
+    private var searchBtnRef: WeakReference<View?>? = null
+    private val searchBtn: View?
+        get() = searchBtnRef?.get()
+
     private var searchBarMicroInteractionAttributes = SearchBarMicroInteractionAttributes()
     private var searchBarConstraintSet = ConstraintSet()
     private var homeIconList: List<IconUnify> = listOf()
@@ -53,17 +57,19 @@ class AutoCompleteMicroInteraction internal constructor(
         backButtonView: View?,
         searchBarView: View?,
         sideIconView: View?,
+        searchBtn: View?
     ) {
         this.containerViewGroupRef = WeakReference(containerViewGroup)
         this.backButtonViewRef = WeakReference(backButtonView)
         this.searchBarViewRef = WeakReference(searchBarView)
         this.sideIconViewRef = WeakReference(sideIconView)
+        this.searchBtnRef = WeakReference(searchBtn)
     }
 
-    fun animateSearchBar() {
-        preAnimate()
+    fun animateSearchBar(useSearchBtn: Boolean = false) {
+        preAnimate(useSearchBtn)
 
-        val searchBarAnimator = createSearchBarAnimator()
+        val searchBarAnimator = createSearchBarAnimator(useSearchBtn)
         val iconListAnimator = createHomeIconAnimator()
         val (backButtonAnimator, bouncingBackButtonAnimator) = createBackButtonAnimator()
         val (sideButtonAnimator, bouncingSideButtonAnimator) = createSideButtonAnimator()
@@ -72,7 +78,7 @@ class AutoCompleteMicroInteraction internal constructor(
             listOf(
                 backButtonAnimator,
                 searchBarAnimator,
-                sideButtonAnimator,
+                sideButtonAnimator
             )
 
         startAnimations {
@@ -81,13 +87,15 @@ class AutoCompleteMicroInteraction internal constructor(
             play(sideButtonAnimator).before(bouncingSideButtonAnimator)
             play(backButtonAnimator).before(bouncingBackButtonAnimator)
 
-            addListener(onAnimationEndListener {
-                postAnimate()
-            })
+            addListener(
+                onAnimationEndListener {
+                    postAnimate()
+                }
+            )
         }
     }
 
-    private fun preAnimate() {
+    private fun preAnimate(useSearchBtn: Boolean) {
         saveConstraintSet()
 
         hideNonSearchBarView()
@@ -95,7 +103,7 @@ class AutoCompleteMicroInteraction internal constructor(
         createHomeIconList()
         addHomeIconToContainer()
 
-        configurePreAnimateConstraint()
+        configurePreAnimateConstraint(useSearchBtn)
     }
 
     private fun saveConstraintSet() {
@@ -140,9 +148,10 @@ class AutoCompleteMicroInteraction internal constructor(
             )
         }
 
-    private fun configurePreAnimateConstraint() {
+    private fun configurePreAnimateConstraint(useSearchBtn: Boolean) {
         val searchBarView = searchBarView ?: return
         val searchBarViewId = searchBarView.id
+        val searchBtnId = searchBtn?.id
 
         containerViewGroup?.applyConstraintSet {
             constrainWidth(searchBarView.id, searchBarMicroInteractionAttributes.width.toInt())
@@ -152,13 +161,25 @@ class AutoCompleteMicroInteraction internal constructor(
                 ConstraintSet.START,
                 ConstraintSet.PARENT_ID,
                 ConstraintSet.START,
-                searchBarMicroInteractionAttributes.x.toInt(),
+                searchBarMicroInteractionAttributes.x.toInt()
             )
 
             clear(
                 searchBarViewId,
-                ConstraintSet.END,
+                ConstraintSet.END
             )
+
+            if (searchBtnId != null && useSearchBtn) {
+                val marginStart = 16.toPx()
+                connect(
+                    searchBtnId,
+                    ConstraintSet.START,
+                    searchBarViewId,
+                    ConstraintSet.END,
+                    marginStart
+                )
+                clear(searchBtnId, ConstraintSet.END)
+            }
 
             var previousViewStartId = searchBarViewId
 
@@ -175,14 +196,14 @@ class AutoCompleteMicroInteraction internal constructor(
                     iconUnify.id,
                     ConstraintSet.TOP,
                     searchBarViewId,
-                    ConstraintSet.TOP,
+                    ConstraintSet.TOP
                 )
 
                 connect(
                     iconUnify.id,
                     ConstraintSet.BOTTOM,
                     searchBarViewId,
-                    ConstraintSet.BOTTOM,
+                    ConstraintSet.BOTTOM
                 )
 
                 previousViewStartId = iconUnify.id
@@ -197,7 +218,7 @@ class AutoCompleteMicroInteraction internal constructor(
         constraintSet.applyTo(this)
     }
 
-    private fun createSearchBarAnimator(): ValueAnimator? {
+    private fun createSearchBarAnimator(useSearchBtn: Boolean): ValueAnimator? {
         val searchBarView = searchBarView ?: return null
         val searchBarLayoutParams = searchBarView.layoutParams as? ViewGroup.MarginLayoutParams ?: return null
         val initialMarginStart = searchBarMicroInteractionAttributes.x.toInt()
@@ -211,7 +232,11 @@ class AutoCompleteMicroInteraction internal constructor(
             SEARCH_BAR_ANIMATOR_END_VALUE,
             SEARCH_BAR_ANIMATOR_DURATION
         ) { valuePercentage ->
-            val widthIncrement = valuePercentage * fullWidthIncrement
+            val widthIncrement = if (useSearchBtn) {
+                valuePercentage
+            } else {
+                valuePercentage * fullWidthIncrement
+            }
             val marginIncrement = valuePercentage * fullMarginStartIncrement
 
             searchBarLayoutParams.width = initialWidth + widthIncrement.toInt()
@@ -231,7 +256,7 @@ class AutoCompleteMicroInteraction internal constructor(
             searchBarMicroInteractionAnimator(
                 start = HOME_ICON_ANIMATOR_START_VALUE,
                 end = HOME_ICON_ANIMATOR_END_VALUE,
-                duration = HOME_ICON_ANIMATOR_DURATION,
+                duration = HOME_ICON_ANIMATOR_DURATION
             ) {
                 iconView.scaleX = it
                 iconView.scaleY = it
@@ -244,13 +269,13 @@ class AutoCompleteMicroInteraction internal constructor(
         val bounceStartAnimator = scaleChangeAnimator(
             start = HIDE_BUTTON_SCALE_DP,
             end = scaleFactor,
-            duration = START_BOUNCING_DURATION,
+            duration = START_BOUNCING_DURATION
         )
 
         val bounceEndAnimator = scaleChangeAnimator(
             start = scaleFactor,
             end = SHOW_BUTTON_SCALE_DP,
-            duration = END_BOUNCING_DURATION,
+            duration = END_BOUNCING_DURATION
         )
 
         return Pair(bounceStartAnimator, bounceEndAnimator)
@@ -347,8 +372,8 @@ class AutoCompleteMicroInteraction internal constructor(
         private const val SEARCH_BAR_MARGIN_START_PARENT_DP = 44
         private const val SEARCH_BAR_ANIMATOR_START_VALUE = 0f
         private const val SEARCH_BAR_ANIMATOR_END_VALUE = 1f
-        private const val SEARCH_BAR_ANIMATOR_DURATION: Long = 250
         private const val SEARCH_BAR_HORIZONTAL_MARGIN_DP = 60
+        const val SEARCH_BAR_ANIMATOR_DURATION: Long = 250
 
         private const val HOME_ICON_MARGIN_START_DP = 11
         private const val HOME_ICON_ANIMATOR_DURATION: Long = 120
@@ -379,7 +404,7 @@ class AutoCompleteMicroInteraction internal constructor(
             IconUnify.MESSAGE,
             IconUnify.BELL,
             IconUnify.CART,
-            IconUnify.MENU_HAMBURGER,
+            IconUnify.MENU_HAMBURGER
         )
     }
 }
