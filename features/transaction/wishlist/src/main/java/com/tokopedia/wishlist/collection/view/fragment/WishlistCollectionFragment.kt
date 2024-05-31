@@ -151,7 +151,6 @@ class WishlistCollectionFragment :
 
     private var isAffiliateRegistered: Boolean = false
 
-    private var hasTrackEnterPage: Boolean = false
     private var hasApplogScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
@@ -161,6 +160,10 @@ class WishlistCollectionFragment :
     }
 
     override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
+
+    override fun shouldTrackEnterPage(): Boolean {
         return true
     }
 
@@ -361,12 +364,6 @@ class WishlistCollectionFragment :
         collectionViewModel.loadRecommendation(page)
     }
 
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
-    }
-
     private fun setToolbarTitle(title: String) {
         binding?.run {
             wishlistCollectionNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
@@ -398,7 +395,6 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
-                        trackEnterPage()
                         showRvWishlistCollection()
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }
