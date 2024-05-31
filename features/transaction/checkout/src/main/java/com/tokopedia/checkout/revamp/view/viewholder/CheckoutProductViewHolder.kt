@@ -81,6 +81,7 @@ class CheckoutProductViewHolder(
         LayoutCheckoutProductBmgmBinding.bind(binding.root)
 
     private var delayChangeCheckboxAddOnState: Job? = null
+    private var delayChangeQtyEditor: Job? = null
 
     init {
         productBinding.qtyEditorProduct.apply {
@@ -322,7 +323,13 @@ class CheckoutProductViewHolder(
                     val currentFocus = qtyState.value
                     if (currentFocus is QtyState.Focus && !focus.isFocused) {
                         val newQty = qtyValue.value
-                        listener.onCheckoutItemQuantityChanged(product, newQty)
+                        delayChangeQtyEditor?.cancel()
+                        delayChangeQtyEditor = GlobalScope.launch(Dispatchers.Main) {
+                            delay(DEBOUNCE_500MS)
+                            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                listener.onCheckoutItemQuantityChanged(product, newQty)
+                            }
+                        }
                         hideKeyboard()
                         listener.clearAllFocus()
                     }
@@ -340,32 +347,23 @@ class CheckoutProductViewHolder(
                 )
                 qtyValue.value = product.quantity
                 configState.value = configState.value.copy(
-                    qtyMinusButton = configState.value.qtyMinusButton.copy(
-                        onClick = {
-                            if (position != RecyclerView.NO_POSITION) {
-                                    /*sendAnalyticEvent(
-                                        CartProductAnalyticEvent.OnCartQuantityPlusClicked
-                                    )*/
-                            }
-                        }
-                    ),
-                    qtyPlusButton = configState.value.qtyPlusButton.copy(
-                        onClick = {
-                            if (position != RecyclerView.NO_POSITION) {
-                                    /*sendAnalyticEvent(
-                                        CartProductAnalyticEvent.OnCartQuantityPlusClicked
-                                    )*/
-                            }
-                        }
-                    ),
                     minInt = product.minOrder,
-                    maxInt = maxQty
+                    maxInt = maxQty,
+                    qtyField = configState.value.qtyField.copy(
+                        maxLine = 1
+                    )
                 )
 
                 onValueChanged = { qty ->
                     if (qtyState.value !is QtyState.Focus) {
                         if (qty != 0) {
-                            listener.onCheckoutItemQuantityChanged(product, qty)
+                            delayChangeQtyEditor?.cancel()
+                            delayChangeQtyEditor = GlobalScope.launch(Dispatchers.Main) {
+                                delay(DEBOUNCE_500MS)
+                                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                                    listener.onCheckoutItemQuantityChanged(product, qty)
+                                }
+                            }
                         }
                     } else {
                         qtyValue.value = qty
@@ -769,7 +767,7 @@ class CheckoutProductViewHolder(
                         cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                delay(DEBOUNCE_TIME_ADDON)
+                                delay(DEBOUNCE_500MS)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener.onCheckboxAddonProductListener(
                                         isChecked,
@@ -866,7 +864,7 @@ class CheckoutProductViewHolder(
                         cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                delay(DEBOUNCE_TIME_ADDON)
+                                delay(DEBOUNCE_500MS)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener.onCheckboxAddonProductListener(
                                         isChecked,
@@ -952,7 +950,7 @@ class CheckoutProductViewHolder(
                             cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                                 delayChangeCheckboxAddOnState?.cancel()
                                 delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                    delay(DEBOUNCE_TIME_ADDON)
+                                    delay(DEBOUNCE_500MS)
                                     if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                         listener.onCheckboxAddonProductListener(
                                             isChecked,
@@ -1287,7 +1285,7 @@ class CheckoutProductViewHolder(
 
         private const val VIEW_ALPHA_ENABLED = 1.0f
         private const val VIEW_ALPHA_DISABLED = 0.5f
-        private const val DEBOUNCE_TIME_ADDON = 500L
+        private const val DEBOUNCE_500MS = 500L
 
         private const val EPHARMACY_ICON_SIZE = 12
         private const val MARGIN_TOP_BMGM_CARD = 24

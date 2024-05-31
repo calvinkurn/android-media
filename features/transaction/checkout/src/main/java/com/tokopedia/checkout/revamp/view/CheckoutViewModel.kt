@@ -126,7 +126,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -3656,47 +3655,43 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    suspend fun doUpdateCartAndReload(
+    private suspend fun doUpdateCartAndReload(
         checkoutItems: MutableList<CheckoutItem>,
         cartId: Long
     ) {
-        debounceQtyJob?.cancel()
-        debounceQtyJob = viewModelScope.launch(dispatchers.immediate) {
-            delay(500L)
-            if (isActive) {
-                pageState.value = CheckoutPageState.Loading
-                val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(checkoutItems), UPDATE_CART_SOURCE_QUANTITY, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
-                if (!updateCartResult.isSuccess) {
-                    toasterProcessor.commonToaster.emit(
-                        CheckoutPageToaster(
-                            Toaster.TYPE_ERROR,
-                            updateCartResult.toasterMessage,
-                            updateCartResult.throwable,
-                            source = "update_quantity"
-                        )
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(checkoutItems), UPDATE_CART_SOURCE_QUANTITY, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
+            if (!updateCartResult.isSuccess) {
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update_quantity"
                     )
+                )
 
-                    pageState.value = CheckoutPageState.Normal
-                    val checkoutItemList = listData.value.toMutableList()
-                    val itemIndex =
-                        checkoutItemList.indexOfFirst { it is CheckoutProductModel && it.cartId == cartId }
-                    if (itemIndex > 0) {
-                        val product = checkoutItemList[itemIndex] as CheckoutProductModel
+                pageState.value = CheckoutPageState.Normal
+                val checkoutItemList = listData.value.toMutableList()
+                val itemIndex =
+                    checkoutItemList.indexOfFirst { it is CheckoutProductModel && it.cartId == cartId }
+                if (itemIndex > 0) {
+                    val product = checkoutItemList[itemIndex] as CheckoutProductModel
 
-                        val newProduct = product.copy(
-                            quantity = product.prevQuantity
-                        )
-                        checkoutItemList[itemIndex] = newProduct
-                        listData.value = checkoutItemList
-                    }
-                } else {
-                    loadSAF(
-                        isReloadData = true,
-                        skipUpdateOnboardingState = true,
-                        isReloadAfterPriceChangeHigher = false
-                    ) {
-                        cartProcessor.generateModifiedCheckoutItems(it, listData.value)
-                    }
+                    val newProduct = product.copy(
+                        quantity = product.prevQuantity
+                    )
+                    checkoutItemList[itemIndex] = newProduct
+                    listData.value = checkoutItemList
+                }
+            } else {
+                loadSAF(
+                    isReloadData = true,
+                    skipUpdateOnboardingState = true,
+                    isReloadAfterPriceChangeHigher = false
+                ) {
+                    cartProcessor.generateModifiedCheckoutItems(it, listData.value)
                 }
             }
         }
