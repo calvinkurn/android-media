@@ -46,7 +46,6 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
-import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -675,13 +674,7 @@ class FeedBaseFragment :
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                         launch {
-                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
-                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                            binding.containerFeedTopNav.uploadView.hide()
-                                        }
-
-                                        if (uploadResult.data.uploadType == CreationUploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
+                                            creationUploader.removeFailedContentFromQueue(uploadResult.data)
                                         }
                                     }
                                 })

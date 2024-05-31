@@ -21,4 +21,11 @@
             <enum name="always" value="2"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="LoginWidgetView">
+        <attr format="enum" name="backgroundType">
+            <enum name="clear" value="0"/>
+            <enum name="filled" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

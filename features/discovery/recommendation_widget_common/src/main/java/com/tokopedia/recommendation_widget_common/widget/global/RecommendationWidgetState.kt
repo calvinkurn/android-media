@@ -79,6 +79,7 @@ data class RecommendationWidgetState(
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
                 source = model.source,
+                appLogAdditionalParam = model.appLogAdditionalParam,
                 listener = model.listener,
                 userId = userId
             )
@@ -93,6 +94,7 @@ data class RecommendationWidgetState(
                 trackingModel = model.trackingModel,
                 widget = widget,
                 source = model.source,
+                appLogAdditionalParam = model.appLogAdditionalParam,
                 listener = model.listener,
                 userId = userId,
             )

@@ -35,4 +35,8 @@
     <string name="seller_transaction_not_chargeable">Bebeas biaya layanan untuk %d transaksi pertama.</string>
     <string name="seller_transaction_chargeable">Di atas %d transaksi akan dikenakan biaya layanan.</string>
 
+    <!--Konten -->
+    <string name="seller_content_settings_header">KONTEN</string>
+    <string name="seller_content_settings_body">Atur konten toko</string>
+
 </resources>

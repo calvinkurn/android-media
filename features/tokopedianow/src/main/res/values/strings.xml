@@ -3,7 +3,7 @@
     <string name="tokopedianow_home_title">Tokopedia NOW!</string>
 
     <string name="tokopedianow_common_empty_state_title">Tunggu Tokopedia NOW! hadir di lokasimu</string>
-    <string name="tokopedianow_common_empty_state_desc">Siap-siap nikmati layanan 2 jam tiba &amp; bebas ongkir. Nantikan kabar dari kami, ya!</string>
+    <string name="tokopedianow_common_empty_state_desc">Siap-siap nikmati layanan 1 jam tiba &amp; bebas ongkir. Nantikan kabar dari kami, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
     <string name="tokopedianow_common_error_state_button_back_to_tokonow_home_page">Ke Homepage Tokopedia NOW</string>
@@ -23,8 +23,8 @@
     <string name="tokopedianow_home_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="tokopedianow_home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
     <string name="tokopedianow_home_share_title">Belanja harian banyak pilihan di Tokopedia NOW! Bisa dikirim sekaligus!</string>
-    <string name="tokopedianow_home_share_desc">Nikmati pengalaman belanja kebutuhan harian online, banyak pilihan &amp; dikirim sekaligus. Ada BEBAS Ongkir, 2 jam tiba<sup>*</sup> (<sup>*</sup>Khusus Jadetabek). Hanya di Tokopedia NOW!</string>
-    <string name="tokopedianow_home_share_main_text">Yuk, belanja harian banyak pilihan di Tokopedia NOW! sampai dalam 2 jam<sup>*</sup>, lho! (<sup>*</sup>Khusus Jadetabek)</string>
+    <string name="tokopedianow_home_share_desc">Nikmati pengalaman belanja kebutuhan harian online, banyak pilihan &amp; dikirim sekaligus. Ada BEBAS Ongkir, 1 jam tiba<sup>*</sup> (<sup>*</sup>Khusus Jadetabek). Hanya di Tokopedia NOW!</string>
+    <string name="tokopedianow_home_share_main_text">Yuk, belanja harian banyak pilihan di Tokopedia NOW! sampai dalam 1 jam<sup>*</sup>, lho! (<sup>*</sup>Khusus Jadetabek)</string>
 
     <string name="tokopedianow_share_thumbnail_title">Tokopedia NOW!</string>
     <string name="tokopedianow_share_thumbnail_title_ss">Screenshot dan link tersimpan</string>
@@ -33,7 +33,7 @@
     <string name="tokopedianow_category_title_another_category">Kategori Lain</string>
     <string name="tokopedianow_category_l1_category_menu_title">Sekalian cek kebutuhan yang lain</string>
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
-    <string name="tokopedianow_2h_category_aisle_header">Lihat kategori lainnya di 2 jam tiba</string>
+    <string name="tokopedianow_2h_category_aisle_header">Lihat kategori lainnya di 1 jam tiba</string>
     <string name="tokopedianow_content_desc_image_empty_product">Image Empty Product</string>
     <string name="tokopedianow_find_item_in_tokopedia_now">Jelajahi Tokopedia NOW!</string>
     <string name="tokopedianow_feedback_widget_title">Produk yang kamu cari belum ada?</string>
@@ -65,10 +65,10 @@
     <!-- Educational Information / USP -->
     <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>%1$s tiba</b> dan <b>bebas ongkir!</b>]]></string>
     <string name="tokopedianow_home_sharing_education_button">Bagikan ke Temanmu</string>
-    <string name="tokopedianow_home_educational_information_2h_duration">Maks. 2 jam tiba</string>
+    <string name="tokopedianow_home_educational_information_2h_duration">Maks. 1 jam tiba</string>
     <string name="tokopedianow_home_educational_information_free_shipping">Bebas Ongkir</string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality">Kualitas terjamin</string>
-    <string name="tokopedianow_home_educational_information_2h_duration_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Maks. 2 jam tiba.</b></font> Pesanan langsung dikirim dengan estimasi waktu sesuai alamatmu, maks. 2 jam tiba setelah pembayaran.]]></string>
+    <string name="tokopedianow_home_educational_information_2h_duration_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Maks. 1 jam tiba.</b></font> Pesanan langsung dikirim dengan estimasi waktu sesuai alamatmu, maks. 1 jam tiba setelah pembayaran.]]></string>
     <string name="tokopedianow_home_educational_information_2h_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Bebas ongkir.</b></font> Belanja harian mudah & instan, gratis biaya pengiriman.]]></string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
     <string name="tokopedianow_home_educational_information_2h_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">di sini.</a></font>]]></string>
@@ -84,7 +84,7 @@
     <string name="tokopedianow_repurchase_category_menu_title">Cek kategori lainnya</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
     <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
-    <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
+    <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 1 jam!</string>
 
     <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
     <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
@@ -114,13 +114,13 @@
     <string name="tokopedianow_text_reset">Reset</string>
     <string name="tokopedianow_back_to_tokopedia">Kembali ke Tokopedia</string>
 
-    <string name="tokopedianow_2h_copy">2 jam</string>
+    <string name="tokopedianow_2h_copy">1 jam</string>
     <string name="tokopedianow_search_category_title">Belum nemu yang kamu cari?</string>
     <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
 
     <string name="tokopedianow_category_share_main_text">Belanja %1$s di Tokopedia NOW! banyak pilihan. Produk pasti tersedia, dikirim sekaligus.</string>
     <string name="tokopedianow_category_share_title">Belanja %1$s banyak pilihan di Tokopedia NOW! Bisa dikirim sekaligus!</string>
-    <string name="tokopedianow_category_share_desc">Belanja %1$s banyak pilihan 🛒💖 Promo tiap hari, BEBAS Ongkir, 2 jam sampai di tujuan<sup>*</sup> (<sup>*</sup>Khusus Jadetabek). ⚡</string>
+    <string name="tokopedianow_category_share_desc">Belanja %1$s banyak pilihan 🛒💖 Promo tiap hari, BEBAS Ongkir, 1 jam sampai di tujuan<sup>*</sup> (<sup>*</sup>Khusus Jadetabek). ⚡</string>
 
     <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu cobain belanja di NOW! <font color=\'%1$s\'>Selengkapnya</font>]]></string>
     <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Yuk, <b>%1$s</b> untuk pakai kuponnya sebelum hangus!]]></string>
@@ -222,7 +222,7 @@
     <string name="tokopedianow_benefit_section_title">Keuntungan pakai Tokopedia NOW!</string>
     <string name="tokopedianow_buyer_communication_schedule_benefit">Bebas Ongkir. Belanja harian mudah &amp; banyak pilihan, bebas biaya pengiriman.</string>
     <string name="tokopedianow_buyer_communication_delivery_benefit">Dikirim Sekaligus. Belanja harian ribuan produk bisa dikirim sekaligus.</string>
-    <string name="tokopedianow_buyer_communication_two_hour_benefit">2 Jam Tiba<sup>*</sup>. Butuh cepat? Nikmati pengiriman cepat, langsung ke alamatmu. (<sup>*</sup>Khusus Jadetabek)</string>
+    <string name="tokopedianow_buyer_communication_two_hour_benefit">1 Jam Tiba<sup>*</sup>. Butuh cepat? Nikmati pengiriman cepat, langsung ke alamatmu. (<sup>*</sup>Khusus Jadetabek)</string>
     <string name="tokopedianow_buyer_communication_tnc"><![CDATA[Dengan belanja, kamu menyetujui syarat & ketentuan.]]></string>
     <string name="tokopedianow_buyer_communication_tnc_label">syarat &amp; ketentuan.</string>
     <string name="tokopedianow_all_annotation_page_title">Semua brand</string>
@@ -266,4 +266,8 @@
     <string name="tokopedianow_shopping_list_cart_widget_title">produk ada di keranjang</string>
     <string name="tokopedianow_shopping_list_unavailable_widget_title">Stok habis</string>
     <string name="tokopedianow_shopping_list_retry_try_again_text">Coba Lagi</string>
+
+    <string name="tokopedianow_start_text">Mulai</string>
+    <string name="tokopedianow_start_quest_error_message">Terjadi kendala saat mulai misi. Coba lagi, ya.</string>
+    <string name="tokopedianow_start_quest_success_message">Misi dimulai, yuk transaksi di NOW! sekarang</string>
 </resources>

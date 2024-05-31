@@ -1191,7 +1191,8 @@ class ContentDetailFragment :
             if (feedXCard.isTypeLongVideo) {
                 viewModel.trackLongVideoView(feedXCard.id, rowNumber)
             } else {
-                viewModel.trackVisitChannel(feedXCard.playChannelID, rowNumber)
+                viewModel.trackVisitChannel(feedXCard.playChannelID, rowNumber, feedXCard.products)
+                viewModel.trackProduct(feedXCard.playChannelID, rowNumber, feedXCard.products)
             }
         }
     }
@@ -1711,6 +1712,7 @@ class ContentDetailFragment :
         if (adapter.getList().size > positionInFeed) {
             val item = adapter.getList()[positionInFeed]
             if (item.tags.isNotEmpty()) {
+                viewModel.trackProduct(item.playChannelID, positionInFeed, item.products)
                 analyticsTracker.sendClickProductSgcImageEvent(
                     ContentDetailPageAnalyticsDataModel(
                         activityId = item.id,
@@ -1738,7 +1740,6 @@ class ContentDetailFragment :
                 )
             }
         }
-
         onGoToLink(redirectUrl)
     }
 

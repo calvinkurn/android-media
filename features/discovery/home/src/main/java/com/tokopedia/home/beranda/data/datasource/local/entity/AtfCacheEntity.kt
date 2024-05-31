@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.constant.AtfKey
 
 @Entity
@@ -41,4 +42,7 @@ data class AtfCacheEntity(
     @SerializedName("lastUpdate")
     @Expose
     val lastUpdate: Long = System.currentTimeMillis(),
+    @SerializedName("style")
+    @Expose
+    val style: String = "",
 )

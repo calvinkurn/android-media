@@ -486,11 +486,7 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
-        sendProductClickAppLog(
-            model.asProductTrackModel(
-                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
-            )
-        )
+        sendProductClickAppLog(model.asProductTrackModel())
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {

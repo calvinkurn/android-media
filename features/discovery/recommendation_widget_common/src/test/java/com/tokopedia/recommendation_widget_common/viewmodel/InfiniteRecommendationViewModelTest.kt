@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingUiModel
@@ -46,7 +47,7 @@ class InfiniteRecommendationViewModelTest {
             getRecommendationUseCase.getData(params)
         } returns response
 
-        viewModel.init()
+        viewModel.init(AppLogAdditionalParam.None)
         viewModel.fetchComponents(params)
 
         val components = viewModel.components.value
@@ -84,7 +85,7 @@ class InfiniteRecommendationViewModelTest {
             getRecommendationUseCase.getData(params)
         } returns response
 
-        viewModel.init()
+        viewModel.init(AppLogAdditionalParam.None)
         viewModel.fetchComponents(params)
 
         val components = viewModel.components.value
@@ -102,7 +103,7 @@ class InfiniteRecommendationViewModelTest {
             getRecommendationUseCase.getData(params)
         } returns emptyList()
 
-        viewModel.init()
+        viewModel.init(AppLogAdditionalParam.None)
         viewModel.fetchComponents(params)
 
         val components = viewModel.components.value

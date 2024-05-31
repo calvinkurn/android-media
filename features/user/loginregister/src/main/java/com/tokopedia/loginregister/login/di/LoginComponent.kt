@@ -6,6 +6,7 @@ import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment
+import com.tokopedia.loginregister.login_sdk.LoginSdkConsentFragment
 import dagger.Component
 
 /**
@@ -26,4 +27,5 @@ interface LoginComponent {
     fun inject(fragment: SellerSeamlessLoginFragment)
     fun inject(getDefaultChosenAddressService: GetDefaultChosenAddressService?)
     fun inject(bottomSheet: NeedHelpBottomSheet)
+    fun inject(fragment: LoginSdkConsentFragment)
 }

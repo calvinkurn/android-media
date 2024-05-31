@@ -12,7 +12,6 @@ import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
-import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
@@ -133,25 +132,7 @@ class PlayEngagementAnalyticTest {
         )
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId, 5000, isYouTube = false)
-
-    @Test
-    fun clickVoucher_openBottomSheetCoupon () {
-        val tagItems = uiModelBuilder.buildTagItem(
-            voucher = uiModelBuilder.buildVoucherModel(
-                voucherList = listOf(uiModelBuilder.buildMerchantVoucher(), uiModelBuilder.buildMerchantVoucher(highlighted = true, id = "1234"))
-            )
-        )
-        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItems
-
-       val robot = createRobot()
-        with(robot) {
-            hasEngagement(isGame = false)
-            assertCassavaByEventAction("view - voucher widget")
-            clickEngagementWidget(0)
-            assertCassavaByEventAction("click - voucher widget")
-        }
-    }
+    private fun createRobot() = PlayActivityRobot(channelId, 1000, isYouTube = false)
 
     @Test
     fun bottomSheet_privateVoucher() {
@@ -172,8 +153,8 @@ class PlayEngagementAnalyticTest {
             hasVoucherInBottomSheet()
             clickVoucherInBottomSheet(0)
             assertCassavaByEventAction("view - toaster private voucher")
-//            clickToasterAction()
-//            assertCassavaByEventAction("click - lihat toaster private voucher")
+            clickToasterAction()
+            assertCassavaByEventAction("click - lihat toaster private voucher")
         }
     }
 

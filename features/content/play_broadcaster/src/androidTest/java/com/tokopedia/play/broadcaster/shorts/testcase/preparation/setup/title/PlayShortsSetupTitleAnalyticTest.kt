@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -15,6 +16,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -27,6 +29,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 13, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSetupTitleAnalyticTest {
 
     @get:Rule
@@ -45,6 +48,7 @@ class PlayShortsSetupTitleAnalyticTest {
     private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
@@ -54,6 +58,8 @@ class PlayShortsSetupTitleAnalyticTest {
     private val mockAccountUser = mockAccountList[1]
 
     init {
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any(), any()) } returns true
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         coEvery { mockAccountManager.switchAccount(any(), any()) } returns mockAccountUser
@@ -77,6 +83,7 @@ class PlayShortsSetupTitleAnalyticTest {
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
+                        mockCoachMarkSharedPref = mockCoachMarkSharedPref,
                     )
                 )
                 .build()
@@ -91,38 +98,21 @@ class PlayShortsSetupTitleAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickBackOnTitleForm() {
-        clickBackTitleForm()
+    fun testAnalytic_shorts_setupTitle() {
+        cassavaValidator.verifyOpenScreen("/play broadcast short - title page - ${mockAccountShop.id} - seller")
 
-        cassavaValidator.verify("click - back title page")
-    }
-
-    @Test
-    fun testAnalytic_clickTextFieldOnTitleForm() {
         inputTitle()
-
         cassavaValidator.verify("click - fill text title")
-    }
 
-    @Test
-    fun testAnalytic_clickSaveOnTitleForm() {
+        clearTitle()
+        cassavaValidator.verify("click - delete text title")
+
         inputTitle()
         submitTitle()
-
         cassavaValidator.verify("click - simpan")
-    }
 
-    @Test
-    fun testAnalytic_clickClearTextBoxOnTitleForm() {
-        inputTitle()
-        clearTitle()
-
-        cassavaValidator.verify("click - delete text title")
-    }
-
-    @Test
-    fun testAnalytic_openScreenTitleForm() {
-
-        cassavaValidator.verifyOpenScreen("/play broadcast short - title page - ${mockAccountShop.id} - seller")
+        clickMenuTitle()
+        clickBackTitleForm()
+        cassavaValidator.verify("click - back title page")
     }
 }

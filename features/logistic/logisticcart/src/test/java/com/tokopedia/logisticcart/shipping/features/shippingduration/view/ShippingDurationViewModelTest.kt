@@ -8,14 +8,16 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticcart.datamock.DummyProvider
 import com.tokopedia.logisticcart.datamock.DummyProvider.getRatesResponseWithPromo
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPaidSection
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoAndPreOrderModel
-import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
-import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaErrorAndTextEta
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceUiRatesHidden
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithoutEligibleCourierPromo
 import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
@@ -34,7 +36,6 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
@@ -348,6 +349,41 @@ class ShippingDurationViewModelTest {
     }
 
     @Test
+    fun `When paid section info title is not empty Then show paid section info`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPaidSection()
+        setRatesResponse(shippingRecommendationData)
+
+        // When
+        viewModel.loadDuration(0, 0, ratesParam, false, false)
+
+        // Then
+        val result = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
+        assert(result.any { it is PaidSectionInfoUiModel })
+        assert(result.indexOfFirst { it is PaidSectionInfoUiModel } < result.indexOfFirst { it is ShippingDurationUiModel })
+    }
+
+    @Test
+    fun `When onCollapseClicked Then change collapse flag and refresh list`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPaidSection()
+        setRatesResponse(shippingRecommendationData)
+        viewModel.loadDuration(0, 0, ratesParam, false, false)
+        val initialList = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
+
+        // When
+        viewModel.onCollapseClicked(
+            !shippingRecommendationData.paidSectionInfoUiModel.isCollapsed,
+            isOcc = false
+        )
+
+        // Then
+        val result = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
+        assert(initialList != result)
+        assert(!(result.find { it is PaidSectionInfoUiModel } as PaidSectionInfoUiModel).isCollapsed)
+    }
+
+    @Test
     fun `When rates v3 response has promo logistic Then show divider in bottomsheet`() {
         // Given
         val shippingRecommendationData = getShippingDataWithServiceUiRatesHidden()
@@ -395,9 +431,9 @@ class ShippingDurationViewModelTest {
     }
 
     @Test
-    fun `When in checkout and promo has eta error code Then initiate showcase`() {
+    fun `When in checkout and all paid shipping ETA is error Then show notifier model`() {
         // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaError()
+        val shippingRecommendationData = getShippingDataWithServiceError()
         setRatesResponse(shippingRecommendationData)
 
         // When
@@ -405,53 +441,7 @@ class ShippingDurationViewModelTest {
         val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
 
         // Then
-        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
-        assert(firstDuration.isShowShowCase)
-    }
-
-    @Test
-    fun `When in checkout and promo has eta error code but no services data Then do nothing`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaError()
-        shippingRecommendationData.shippingDurationUiModels = listOf()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, false)
-
-        // Then
-        val firstDuration = shippingRecommendationData.shippingDurationUiModels.firstOrNull()
-        assertNull(firstDuration?.isShowShowCase)
-    }
-
-    @Test
-    fun `When in checkout and promo has no eta text but error code is not true Then dont initiate showcase`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaErrorAndTextEta()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, false)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
-        assertFalse(firstDuration.isShowShowCase)
-    }
-
-    @Test
-    fun `When in occ and promo has eta error code Then dont initiate showcase`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithPromoEtaError()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, true)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
-        assertFalse(firstDuration.isShowShowCase)
+        assert(actual.find { it is NotifierModel } != null)
     }
 
     /*

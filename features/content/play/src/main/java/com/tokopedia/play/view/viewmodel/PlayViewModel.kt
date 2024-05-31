@@ -11,6 +11,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
+import com.tokopedia.content.common.track.usecase.ContentType
+import com.tokopedia.content.common.track.usecase.GetReportSummaryRequest
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -103,7 +107,7 @@ class PlayViewModel @AssistedInject constructor(
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    private val getReportSummariesUseCase: GetReportSummaryUseCase,
     private val playSocketToModelMapper: PlaySocketToModelMapper,
     private val playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -1336,10 +1340,15 @@ class PlayViewModel @AssistedInject constructor(
      * by getting the product ids of the given products
      * @param productList the product list which tracker will be sent to bro
      */
+    private val trackedProductIds = mutableListOf<String>()
     private fun sendProductTrackerToBro(productList: List<PlayProductUiModel.Product>) {
+        val hasChanged = productList.filterNot { trackedProductIds.contains(it.id) }.isNotEmpty()
+        if (hasChanged) {
+            trackedProductIds.clear()
+            productList.map { trackedProductIds.add(it.id) }
+        } else { return }
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val productIds = productList.map(PlayProductUiModel.Product::id)
-            repo.trackProducts(channelId, productIds)
+            repo.trackProducts(channelId, trackedProductIds)
         }) {}
     }
 
@@ -1569,12 +1578,12 @@ class PlayViewModel @AssistedInject constructor(
                 }
 
                 try {
-                    val report = deferredReportSummaries.await().data.first().channel.metrics
+                    val report = deferredReportSummaries.await().data.reportData.first().content.metrics
                     _channelReport.setValue {
                         copy(
-                            totalViewFmt = report.totalViewFmt,
-                            totalLike = report.totalLike.toLongOrZero(),
-                            totalLikeFmt = report.totalLikeFmt
+                            totalViewFmt = report.visitContent,
+                            totalLike = report.totalLikeRaw.toLongOrZero(),
+                            totalLikeFmt = report.totalLike
                         )
                     }
                     _isChannelReportLoaded.setValue { true }
@@ -1604,9 +1613,8 @@ class PlayViewModel @AssistedInject constructor(
         chatManager.addChat(chat)
     }
 
-    private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
-        getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
-        getReportSummariesUseCase.executeOnBackground()
+    private suspend fun getReportSummaries(channelId: String): GetReportSummaryResponse = withContext(dispatchers.io) {
+        getReportSummariesUseCase(GetReportSummaryRequest.create(channelId, ContentType.Play))
     }
 
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
@@ -1854,6 +1862,12 @@ class PlayViewModel @AssistedInject constructor(
                         resultState = mappedData.resultState
                     )
                 }
+
+                sendProductTrackerToBro(
+                    productList = newProduct.productSectionList
+                        .filterIsInstance<ProductSectionUiModel.Section>()
+                        .flatMap { it.productList }
+                )
             }
             is MerchantVoucher -> {
                 val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result, _partnerInfo.value.name)
@@ -2259,7 +2273,6 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
-            REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             REQUEST_CODE_LOGIN_CART -> openPage(ApplinkConstInternalMarketplace.CART)
             else -> {}
         }

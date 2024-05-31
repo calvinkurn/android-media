@@ -44,4 +44,7 @@
     <dimen name="for_you_inner_vertical_padding">8dp</dimen>
     <dimen name="for_you_inner_vertical_padding_with_internal_padding">-2dp</dimen>
     <dimen name="for_you_inner_horizontal_padding">8dp</dimen>
+
+    <dimen name="balance_widget_inner_margin">4dp</dimen>
+    <dimen name="balance_widget_outer_margin">16dp</dimen>
 </resources>

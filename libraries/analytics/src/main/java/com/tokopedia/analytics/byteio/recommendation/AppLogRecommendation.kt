@@ -59,19 +59,20 @@ object AppLogRecommendation {
     private fun AppLogRecommendationProductModel.setGlobalParams() {
         AppLogAnalytics.setGlobalParams(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataLast(ENTER_METHOD)?.toString(),
+            enterMethod = enterMethod ?: AppLogAnalytics.getDataBeforeStep(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
-            requestId = requestId,
+            requestId = requestId
         )
+        additionalParam.setAdditionalToGlobalParam()
     }
 
     private fun AppLogRecommendationCardModel.setGlobalParams() {
         AppLogAnalytics.setGlobalParams(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataLast(ENTER_METHOD)?.toString(),
+            enterMethod = enterMethod ?: AppLogAnalytics.getDataBeforeStep(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,

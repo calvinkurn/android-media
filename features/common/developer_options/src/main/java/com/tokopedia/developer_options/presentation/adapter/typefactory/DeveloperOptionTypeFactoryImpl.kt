@@ -31,6 +31,7 @@ import com.tokopedia.developer_options.presentation.model.LoggingToServerUiModel
 import com.tokopedia.developer_options.presentation.model.LoginHelperUiModel
 import com.tokopedia.developer_options.presentation.model.MsSdkUiModel
 import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.OkHttpTimeoutUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
@@ -93,6 +94,7 @@ import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListen
 import com.tokopedia.developer_options.presentation.viewholder.LoginHelperViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.MsSdkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.NetworkLogOnNotificationViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.OkHttpTimeoutViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.OpenScreenRecorderViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.PdpDevViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.PlayWebSocketSseLoggingViewHolder
@@ -211,6 +213,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
     override fun type(uiModel: SSOAuthorizationUiModel) = SSOAuthorizationViewHolder.LAYOUT
+    override fun type(uiModel: OkHttpTimeoutUiModel): Int = OkHttpTimeoutViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -275,6 +278,7 @@ class DeveloperOptionTypeFactoryImpl(
             ShopIdViewHolder.LAYOUT -> ShopIdViewHolder(view, shopIdListener)
             BannerEnvironmentViewHolder.LAYOUT -> BannerEnvironmentViewHolder(view)
             SSOAuthorizationViewHolder.LAYOUT -> SSOAuthorizationViewHolder(view, ssoListener)
+            OkHttpTimeoutViewHolder.LAYOUT -> OkHttpTimeoutViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

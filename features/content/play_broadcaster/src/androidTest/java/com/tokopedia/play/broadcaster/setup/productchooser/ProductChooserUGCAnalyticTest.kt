@@ -90,13 +90,8 @@ class ProductChooserUGCAnalyticTest {
         )
     )
 
-    @get:Rule
-    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
-
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val cassavaDao = CassavaDatabase.getInstance(context).cassavaDao()
-
-    private val analyticFile = "tracker/content/playbroadcaster/play_bro_product_picker_ugc.json"
 
     init {
         val mockPagedProducts = PagedDataUiModel(
@@ -158,185 +153,54 @@ class ProductChooserUGCAnalyticTest {
         }
     )
 
-
     @Test
-    fun testAnalytic_clickProductSource() {
-        val robot = createRobot()
+    fun testAnalytic_productChooserUGC() {
+        createRobot()
+            .selectProductSource()
+            .assertEventAction("click - product tagging source")
 
-        robot.selectProductSource()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - product tagging source")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickProductSourceOption_Tokopedia() {
-        val robot = createRobot()
-
-        robot.selectProductSource()
             .selectProductSourceOptionTokopedia()
+            .assertEventAction("click - product source tokopedia")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - product source tokopedia")
-        )
-    }
+            .selectSearchBar()
+            .assertEventAction("click - cari di tokopedia")
 
-    @Test
-    fun testAnalytic_clickSearchBar_lastTaggedProduct() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - cari di tokopedia")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickAdvancedFilterChips_inGlobalSearchProduct() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
             .typeInSearchBar("baju")
             .pressImeActionInGlobalSearchBar()
             .selectAdvancedFilterChipsInProductTab()
+            .assertEventAction("click - filter produk")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - filter produk")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickSaveAdvancedFilter() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-            .typeInSearchBar("baju")
-            .pressImeActionInGlobalSearchBar()
-            .selectAdvancedFilterChipsInProductTab()
             .await(300) //give time for recycler view to show properly
             .selectFilterInAdvancedFilterBottomSheet(0)
             .selectApplyInAdvancedFilterBottomSheet()
+            .assertEventAction("click - simpan filter produk")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - simpan filter produk")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickFilterChips_inGlobalSearchProduct() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-            .typeInSearchBar("baju")
-            .pressImeActionInGlobalSearchBar()
             .selectFilterChipsInProductTab(0)
+            .assertEventAction("click - chips di filter produk")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - chips di filter produk")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickShop_inGlobalSearchShop() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-            .typeInSearchBar("baju")
-            .pressImeActionInGlobalSearchBar()
-            .selectShopTabInGlobalSearch()
-            .selectShopInGlobalSearchShop(0)
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - toko")
-        )
-    }
-
-    @Test
-    fun testAnalytic_impressShop_inGlobalSearchShop() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-            .typeInSearchBar("baju")
-            .pressImeActionInGlobalSearchBar()
-            .selectShopTabInGlobalSearch()
-            .sendPendingImpressions()
-            .await(1000) //give time for impression to send
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("impression - toko")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickProductTab_inGlobalSearch() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-            .typeInSearchBar("baju")
-            .pressImeActionInGlobalSearchBar()
-            .selectShopTabInGlobalSearch()
-            .apply {
-                cassavaDao.deleteAll()
-            }
             .selectProductTabInGlobalSearch()
+            .assertEventAction("click - barang atau toko tab")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - barang atau toko tab")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickShopTab_inGlobalSearch() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-            .typeInSearchBar("baju")
-            .pressImeActionInGlobalSearchBar()
-            .selectShopTabInGlobalSearch()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - barang atau toko tab")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickProductCard_inGlobalSearchProduct() {
-        val robot = createRobot()
-
-        robot.selectSearchBar()
-            .typeInSearchBar("baju")
-            .pressImeActionInGlobalSearchBar()
-            .selectProductTabInGlobalSearch()
             .selectProductInGlobalSearchProduct(0)
+            .assertEventAction("click - product card tokopedia")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - product card tokopedia")
-        )
+            .selectShopTabInGlobalSearch()
+            .assertEventAction("click - barang atau toko tab")
+
+            .await(1000) //give time for impression to send
+            .assertEventAction("impression - toko")
+
+            .selectShopInGlobalSearchShop(0)
+            .assertEventAction("click - toko")
     }
 
     @Test
     fun testAnalytic_clickProductCard_inLastTaggedProduct() {
         val robot = createRobot()
 
-        robot.selectProductInLastTaggedProduct(0)
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - product card tokopedia")
-        )
+        robot
+            .selectProductInLastTaggedProduct(0)
+            .assertEventAction("click - product card tokopedia")
     }
 
     @Test
@@ -349,11 +213,7 @@ class ProductChooserUGCAnalyticTest {
             .selectProductTabInGlobalSearch()
             .sendPendingImpressions()
             .await(1000) //give time for impression to send
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("impression - product card tokopedia")
-        )
+            .assertEventAction("impression - product card tokopedia")
     }
 
     @Test
@@ -362,11 +222,7 @@ class ProductChooserUGCAnalyticTest {
 
         robot.sendPendingImpressions()
             .await(1000) //give time for impression to send
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("impression - product card tokopedia")
-        )
+            .assertEventAction("impression - product card tokopedia")
     }
 
     @Test
@@ -379,11 +235,7 @@ class ProductChooserUGCAnalyticTest {
             .selectShopTabInGlobalSearch()
             .selectShopInGlobalSearchShop(0)
             .clickBackButton()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - back pilih produk dari toko")
-        )
+            .assertEventAction("click - back pilih produk dari toko")
     }
 
     @Test
@@ -396,11 +248,7 @@ class ProductChooserUGCAnalyticTest {
             .selectShopTabInGlobalSearch()
             .selectShopInGlobalSearchShop(0)
             .selectSearchBarInShopProductPage()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - cari di toko")
-        )
+            .assertEventAction("click - cari di toko")
     }
 
     @Test
@@ -409,11 +257,7 @@ class ProductChooserUGCAnalyticTest {
 
         robot.selectProductInLastTaggedProduct(0)
             .clickSaveButton()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - simpan produk tokopedia")
-        )
+            .assertEventAction("click - simpan produk tokopedia")
     }
 
     @Test
@@ -426,11 +270,7 @@ class ProductChooserUGCAnalyticTest {
             .pressImeActionInGlobalSearchBar()
             .selectProductInGlobalSearchProduct(0)
             .clickSaveButton()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - simpan produk tokopedia")
-        )
+            .assertEventAction("click - simpan produk tokopedia")
     }
 
     //TODO("uncomment if last tagged product is enabled")

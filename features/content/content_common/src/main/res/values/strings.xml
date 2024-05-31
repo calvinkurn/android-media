@@ -372,5 +372,6 @@ produk eksklusif ini.</string>
     <string name="content_out_of_stock_label_text">Stok Habis</string>
     <string name="content_soon_label_text">Segera Hadir</string>
 
+    <string name="content_failed_product_load">Gagal menampilkan produk lainnya</string>
     <string name="content_test_tag_three_dots_screen">test_tag_three_dots_screen</string>
 </resources>

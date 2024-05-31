@@ -145,6 +145,7 @@ class ShareExBottomSheet :
             viewModel.bottomSheetArg = arg
             analytics.trackImpressionBottomSheet(
                 productId = it.productId,
+                shopId = it.shopId,
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
                 label = arg.trackerArg.labelImpressionBottomSheet
@@ -152,6 +153,7 @@ class ShareExBottomSheet :
             setCloseClickListener { _ ->
                 analytics.trackActionClickClose(
                     productId = it.productId,
+                    shopId = it.shopId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     label = it.trackerArg.labelActionCloseIcon
@@ -245,8 +247,8 @@ class ShareExBottomSheet :
             if (it.errorHistory.contains(ShareExIntentErrorEnum.AFFILIATE_ERROR) &&
                 it.shortLink.isNotBlank()
             ) {
-                dismiss()
                 listener?.onFailGenerateAffiliateLink(it.shortLink)
+                dismiss()
                 return@collect
             }
 
@@ -289,6 +291,7 @@ class ShareExBottomSheet :
             if (channelEnum != null) {
                 analytics.trackActionClickChannel(
                     productId = it.productId,
+                    shopId = it.shopId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     channel = channelEnum.label,

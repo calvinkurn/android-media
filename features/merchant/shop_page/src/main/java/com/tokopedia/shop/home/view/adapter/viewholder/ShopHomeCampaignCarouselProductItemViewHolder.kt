@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
@@ -13,6 +14,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -36,6 +38,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_carousel_product_card
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
+
         // currently set to 1, since there's a clickable area on which is a part of the carousel
         private const val NON_PRODUCT_CARD_ITEM = 1
     }
@@ -52,7 +55,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
         if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
             stockBarLabelColor = ShopUtil.getColorHexString(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                unifyprinciplesR.color.Unify_RN600
             )
         }
         productCard?.setProductModel(
@@ -62,7 +65,11 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                 shopHomeProductViewModel = shopHomeProductViewModel,
                 widgetName = shopHomeNewProductLaunchCampaignUiModel.name,
                 statusCampaign = shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.statusCampaign.orEmpty(),
-                forceLightModeColor = shopHomeCampaignNplWidgetListener.isForceLightModeColorOnCampaignNplWidget()
+                isOverrideTheme = shopHomeCampaignNplWidgetListener.isOverrideTheme(),
+                patternColorType = shopHomeCampaignNplWidgetListener.getPatternColorType(),
+                backgroundColor = shopHomeCampaignNplWidgetListener.getBackgroundColor(),
+                isFestivity = shopHomeNewProductLaunchCampaignUiModel.isFestivity.orFalse(),
+                atcVariantButtonText = productCard?.context?.getString(R.string.shop_atc).orEmpty()
             ).copy(
                 stockBarLabelColor = stockBarLabelColor
             )

@@ -23,7 +23,7 @@
                 android:padding="@dimen/dynamic_filter_item_padding"
                 android:background="@color/Unify_NN50">
 
-                <com.tokopedia.design.component.EditTextCompat
+                <EditText
                     android:id="@+id/filter_detail_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                     android:paddingStart="@dimen/filter_detail_search_padding_side"
                     android:paddingEnd="@dimen/filter_detail_search_padding_side"
                     android:background="@color/Unify_NN0"
-                    app:drawableLeftCompat="@drawable/ic_search_icon"
+                    app:drawableLeftCompat="@drawable/iconunify_search"
                     android:drawablePadding="16dp"
                     android:maxLines="1"
                     android:imeOptions="actionSearch" />
@@ -69,7 +69,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@drawable/top_bar_shadow" />
+                android:background="@drawable/filter_top_bar_shadow" />
+
+
 
         </RelativeLayout>
 

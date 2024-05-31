@@ -101,7 +101,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
         private const val PARAM_ACTIVITY_ID = "activityID"
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_CURSOR = "cursor"
-        private const val LIMIT_DETAIL = 99
+        private const val LIMIT_DETAIL = 5
         private const val PARAMS_WH_ID = "warehouseID"
     }
 }
