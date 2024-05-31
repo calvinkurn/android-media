@@ -308,9 +308,13 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                         }
                     )
                 },
-                badges = product.badge.map { badge ->
-                    ShopBadgeUiModel(title = badge.title, imageUrl = badge.imageUrl, show = false)
-                },
+                badges = listOf(
+                    ShopBadgeUiModel(
+                        title = product.badge.title,
+                        imageUrl = product.badge.imageUrl,
+                        show = product.badge.show
+                    ))
+                ,
                 id = product.productId,
                 overrideTheme = overrideTheme,
                 colorSchema = colorSchema,

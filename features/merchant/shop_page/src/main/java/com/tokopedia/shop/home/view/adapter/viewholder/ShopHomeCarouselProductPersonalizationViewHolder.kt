@@ -35,6 +35,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Compan
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import timber.log.Timber
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -130,7 +131,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
                     if (productItem.isEnableDirectPurchase) {
-                        saveScrollPosition()
+                        saveScrollPosition(element)
                         shopHomeCarouselProductListener.onProductAtcDefaultClick(
                             productItem,
                             productItem.minimumOrder,
@@ -138,6 +139,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         )
                     } else {
                         if (element.name == WidgetNameEnum.REMINDER.value) {
+                            saveScrollPosition(element)
                             shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
                                 bindingAdapterPosition,
                                 carouselProductCardPosition,
@@ -164,7 +166,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     carouselProductCardPosition: Int,
                     quantity: Int
                 ) {
-                    saveScrollPosition()
+                    saveScrollPosition(element)
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
                     shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
@@ -181,7 +183,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     productCardModel: ProductCardModel,
                     carouselProductCardPosition: Int
                 ) {
-                    saveScrollPosition()
+                    saveScrollPosition(element)
                     val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
                     shopHomeCarouselProductListener.onProductAtcVariantClick(productItem)
@@ -283,9 +285,11 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             element = element,
                             listShopHomeProductUiModel = element.productList,
                             listProductCardModel = carouselProductList,
-                            carouselProductCardOnItemAddToCartListener = productAddToCartListener,
+                            carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener,
+                            carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                            carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
                             productCardType = ShopHomeCarouselProductAdapterTypeFactory.ProductCardType.GRID
                         )
                         recyclerViewCarouselSingleOrDoubleProduct?.trackHorizontalScroll(element)
@@ -296,9 +300,11 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         carouselProductCardView?.bindCarouselProductCardViewGrid(
                             scrollToPosition = getScrollPosition(),
                             productCardModelList = carouselProductList,
-                            carouselProductCardOnItemAddToCartListener = productAddToCartListener,
+                            carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener,
+                            carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                            carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener,
                             customItemDecoration = itemSpacingDecorator
                         )
                         carouselProductCardView?.trackHorizontalScroll(element)
@@ -340,6 +346,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
             }
             WidgetNameEnum.BUY_AGAIN.value, WidgetNameEnum.REMINDER.value -> {
                 bindSingleOrDoubleProductCard(
+                    scrollToPosition = getScrollPosition(),
                     element = element,
                     listShopHomeProductUiModel = element.productList,
                     listProductCardModel = carouselProductList,
@@ -355,6 +362,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         }
     }
     private fun bindSingleOrDoubleProductCard(
+        scrollToPosition: Int = 0,
         element: ShopHomeCarousellProductUiModel,
         listShopHomeProductUiModel: List<ShopHomeProductUiModel>,
         listProductCardModel: List<ProductCardModel>,
@@ -395,6 +403,9 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         productCarouselSingleOrDoubleAdapter?.addElement(listShopHomeProductUiModel)
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
+        recyclerViewCarouselSingleOrDoubleProduct?.layoutManager.apply {
+            if (this is LinearLayoutManager) scrollToPositionWithOffset(scrollToPosition, 16)
+        }
         recyclerViewCarouselSingleOrDoubleProduct?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
     }
 
@@ -496,10 +507,19 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         element: ShopHomeCarousellProductUiModel?
     ): Boolean = (element?.header?.isATC == IS_ATC)
 
-    fun saveScrollPosition() {
+    fun saveScrollPosition(element: ShopHomeCarousellProductUiModel) {
+        val position = if (element.name == WidgetNameEnum.BUY_AGAIN.value || element.name == WidgetNameEnum.REMINDER.value) {
+            if (recyclerViewCarouselSingleOrDoubleProduct?.layoutManager is LinearLayoutManager) {
+                (recyclerViewCarouselSingleOrDoubleProduct?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+            } else {
+                Int.ZERO
+            }
+        } else {
+            carouselProductCardView?.getCurrentPosition().orZero()
+        }
         shopHomeListener.getWidgetCarouselPositionSavedState().put(
             bindingAdapterPosition,
-            carouselProductCardView?.getCurrentPosition().orZero()
+            position
         )
     }
 
