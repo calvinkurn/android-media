@@ -358,6 +358,10 @@ open class NotificationActivity :
         return PageName.NOTIFICATION
     }
 
+    override fun shouldTrackEnterPage(): Boolean {
+        return true
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }
