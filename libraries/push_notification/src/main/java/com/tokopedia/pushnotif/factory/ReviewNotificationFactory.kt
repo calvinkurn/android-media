@@ -1,5 +1,6 @@
 package com.tokopedia.pushnotif.factory
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -21,6 +22,7 @@ import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
 import com.tokopedia.pushnotif.services.ReviewNotificationBroadcastReceiver
 import com.tokopedia.pushnotif.util.PendingIntentUtil
 import java.util.concurrent.TimeUnit
+import com.tokopedia.resources.common.R as resourcescommonR
 
 class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(context) {
 
@@ -192,10 +194,11 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun loadImageBitmap(imgUrl: String, reviewPosition: Int) {
         Handler(Looper.getMainLooper()).post {
             imgUrl.getBitmapImageUrl(context, properties = {
-                setErrorDrawable(com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp)
+                setErrorDrawable(resourcescommonR.drawable.ic_big_notif_customerapp)
             }) { bitmap ->
                 notificationBuilder
                     .setCustomContentView(setupSimpleRemoteWithHandler(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc, bitmap))
