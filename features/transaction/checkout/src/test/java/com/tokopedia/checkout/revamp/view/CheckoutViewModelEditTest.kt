@@ -539,6 +539,80 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun `GIVEN success update quantity WHEN change invenage value is larger than maxOrder value THEN should set quantity product with min order value`() {
+        // GIVEN
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartId = 12, quantity = 1, invenageValue = 100, minOrder = 5, maxOrder = 50, switchInvenage = 1),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        val responseSaf = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product(
+                                            cartId = 12,
+                                            productQuantity = 50,
+                                            productInvenageValue = 300,
+                                            productMinOrder = 5,
+                                            productMaxOrder = 50,
+                                            productSwitchInvenage = 1
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
+
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns responseSaf
+
+        // WHEN
+        viewModel.updateQuantityProduct(12, 3)
+
+        // THEN
+        assertEquals(50, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
+    }
+
+    @Test
     fun `GIVEN failed update quantity WHEN change quantity product below min order value THEN should set quantity product with min order value`() {
         // GIVEN
         viewModel.listData.value = listOf(
@@ -577,6 +651,46 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
 
         // WHEN
         viewModel.updateQuantityProduct(12, 3)
+
+        // THEN
+        assertEquals(1, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
+    }
+
+    @Test
+    fun `GIVEN failed update quantity WHEN cart id is not found`() {
+        // GIVEN
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartId = 12, quantity = 1, prevQuantity = 1, invenageValue = 100, minOrder = 1, maxOrder = 300, switchInvenage = 1),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // WHEN
+        viewModel.updateQuantityProduct(10, 3)
 
         // THEN
         assertEquals(1, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
