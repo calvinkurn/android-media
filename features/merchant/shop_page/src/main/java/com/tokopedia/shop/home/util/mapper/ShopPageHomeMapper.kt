@@ -103,14 +103,13 @@ object ShopPageHomeMapper {
                 it.averageRating = stats.averageRating
                 it.isFulfillment = ShopUtil.isFulfillmentByGroupLabel(shopProduct.labelGroupList)
                 it.warehouseId = shopProduct.warehouseId
-                it.shopBadgeList =
-                    listOf(
-                        ShopBadgeUiModel(
+                it.shopBadgeList = shopProduct.badge.map { badge ->
+                    ShopBadgeUiModel(
                         title = badge.title,
                         imageUrl = badge.imageUrl,
                         show = true
                     )
-                )
+                }
             }
         }
 

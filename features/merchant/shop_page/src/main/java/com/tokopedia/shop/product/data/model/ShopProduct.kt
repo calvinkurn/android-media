@@ -70,7 +70,7 @@ data class ShopProduct(
 
     @SerializedName("badge")
     @Expose
-    val badge: Badge = Badge(),
+    val badge: List<Badge> = listOf(),
 
     @SerializedName("hasVariant")
     @Expose
