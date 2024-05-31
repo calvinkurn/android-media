@@ -74,12 +74,12 @@ class UploadMediaNotificationManager @Inject constructor(
                 putExtra(BROADCAST_FILE_PATH, file.absolutePath)
             }
 
-            val cancelPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val cancelPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 PendingIntent.getBroadcast(
                     context,
                     0,
                     intent,
-                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
+                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
             } else {
                 PendingIntent.getBroadcast(
