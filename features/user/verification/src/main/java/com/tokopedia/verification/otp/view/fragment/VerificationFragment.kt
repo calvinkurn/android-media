@@ -51,6 +51,8 @@ import com.tokopedia.verification.otp.view.viewbinding.VerificationViewBinding
 import com.tokopedia.verification.otp.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientName
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -130,6 +132,12 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             ?: true
         activity?.runOnUiThread {
             handler = Handler()
+        }
+
+        context?.let {
+            if (it.isLoginSdkFlow()) {
+                analytics.clientName = it.getClientName()
+            }
         }
     }
 

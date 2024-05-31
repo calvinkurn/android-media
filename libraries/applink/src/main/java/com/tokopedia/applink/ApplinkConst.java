@@ -13,6 +13,7 @@ public interface ApplinkConst {
     String APPLINK_CUSTOMER_SCHEME = "tokopedia";
     String HOME_NAVIGATION = "tokopedia://navigation/main";
     String HOME = "tokopedia://home";
+    String HOME_OLD = "tokopedia://home/old";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
     String HOME_ACCOUNT_SELLER = "tokopedia://home/account/seller";
@@ -376,6 +377,8 @@ public interface ApplinkConst {
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
     String INTERNAL_CONTENT_DETAIL = "tokopedia-android-internal://content/post-detail/{post_id}";
+
+    String CONTENT_SETTINGS = "tokopedia-android-internal://content/settings";
 
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";

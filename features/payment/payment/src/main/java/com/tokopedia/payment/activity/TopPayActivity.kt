@@ -43,6 +43,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.model.AdditionalDeviceInfo
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import com.tokopedia.fingerprint.FingerprintUtil
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.authentication.*
@@ -129,6 +130,8 @@ class TopPayActivity :
     private val paymentFingerprintDataLogger by lazy { PaymentFingerprintDataLogger() }
 
     private var reloadUrl = ""
+
+    private var loaderDialog: LoaderDialog? = null
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -543,11 +546,13 @@ class TopPayActivity :
     }
 
     private fun showCreditCardLoader() = activity_topay_container.post {
-        loaderCreditCardUnify?.visibility = View.VISIBLE
+        loaderDialog = LoaderDialog(this)
+        loaderDialog?.setLoadingText(resources.getString(R.string.toppay_cc_loader_text))
+        loaderDialog?.show()
     }
 
     private fun hideCreditCardLoader() = activity_topay_container.post {
-        loaderCreditCardUnify?.visibility = View.GONE
+        loaderDialog?.dismiss()
     }
 
     private fun routeToHomeCredit(appLink: String, overlayUrl: String?, headerText: String?) {

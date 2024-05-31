@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.header.compose.HeaderActionButton
 import com.tokopedia.header.compose.HeaderNotification
 import com.tokopedia.header.compose.NestHeader
@@ -47,23 +46,18 @@ import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
 
-
 @Preview
 @Composable
-fun CatalogSellerOfferingHeaderPreview(
-
-) {
+fun CatalogSellerOfferingHeaderPreview() {
     CatalogSellerOfferingHeader(
         backgroundColor = android.graphics.Color.WHITE,
         lcaListener = {
-
         }
     )
 }
 
 @Composable
 fun CatalogSellerOfferingHeader(
-    listener: ChooseAddressWidget.ChooseAddressWidgetListener? = null,
     backgroundColor: Int,
     lcaListener: (ChooseAddressWidget) -> Unit
 ) {
@@ -73,7 +67,7 @@ fun CatalogSellerOfferingHeader(
             .fillMaxWidth()
     ) {
         Column {
-            WidgetLCA(listener = listener, lcaListener)
+            WidgetLCA(lcaListener)
             HeaderSellerOffering()
         }
     }
@@ -98,7 +92,7 @@ fun CatalogSellerOfferingToolbar(
             content = {
                 Column(
                     horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     val textStyleTitle = if (subTitle.isNotEmpty()) {
                         NestTheme.typography.display3.copy(color = colorResource(id = catalogR.color.catalog_dms_light_color))
@@ -120,7 +114,8 @@ fun CatalogSellerOfferingToolbar(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
                                 onClickVariant.invoke()
-                            }) {
+                            }
+                        ) {
                             NestTypography(
                                 text = subTitle,
                                 textStyle = NestTheme.typography.display1.copy(
@@ -148,9 +143,11 @@ fun CatalogSellerOfferingToolbar(
                     },
                     contentDescription = "icAddToCartPage",
                     icon = IconSource.Nest(IconUnify.CART),
-                    notification = if (totalItemCart > Int.ZERO)
+                    notification = if (totalItemCart > Int.ZERO) {
                         HeaderNotification(totalItemCart.toString(), color = com.tokopedia.nest.components.Color.PRIMARY)
-                    else null,
+                    } else {
+                        null
+                    },
                     modifier = Modifier.semantics {
                         this.testTagsAsResourceId = true
                     }
@@ -172,7 +169,6 @@ fun CatalogSellerOfferingToolbar(
 
 @Composable
 fun WidgetLCA(
-    listener: ChooseAddressWidget.ChooseAddressWidgetListener?,
     lcaListener: (ChooseAddressWidget) -> Unit
 ) {
     AndroidView(factory = { context ->
@@ -181,9 +177,7 @@ fun WidgetLCA(
         lcaWidget.rootView.findViewById<IconUnify>(localizationchooseaddressR.id.icon_location)
             .setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
         lcaWidget
-    }, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 8.dp)) {
-        listener?.let { it1 -> it.bindChooseAddress(it1) }
-    }
+    }, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 8.dp))
 }
 
 @Composable
@@ -193,7 +187,8 @@ fun HeaderSellerOffering() {
         modifier = Modifier.padding(start = 10.dp, end = 16.dp, bottom = 10.dp)
     ) {
         NestImage(
-            source = ImageSource.Remote(CATALOG_SELLER_OFFERING_PRODUCT_LIST_ICON), modifier = Modifier
+            source = ImageSource.Remote(CATALOG_SELLER_OFFERING_PRODUCT_LIST_ICON),
+            modifier = Modifier
                 .height(66.dp)
                 .width(66.dp)
                 .padding(6.dp)
@@ -204,7 +199,7 @@ fun HeaderSellerOffering() {
                 text = stringResource(id = catalogR.string.catalog_text_title_seller_offering),
                 textStyle = NestTheme.typography.display1.copy(
                     color = colorResource(
-                        id = catalogR.color.catalog_dms_light_color,
+                        id = catalogR.color.catalog_dms_light_color
                     ),
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -218,10 +213,5 @@ fun HeaderSellerOffering() {
 }
 
 fun String.toColor(): Color {
-    return Color(android.graphics.Color.parseColor("#${this}"))
+    return Color(android.graphics.Color.parseColor("#$this"))
 }
-
-
-
-
-
