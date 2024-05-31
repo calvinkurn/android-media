@@ -151,8 +151,7 @@ class FeedDetailActivity : BaseActivity() {
                             binding.feedDetailHeader.setFeedSearchBar {
                                 analytic.clickSearchBar()
 
-                                val intent = router.getIntent(this@FeedDetailActivity, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
-                                intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
+                                val intent = router.getIntent(this@FeedDetailActivity, it.applink)
                                 startActivity(intent)
                             }
                         }
