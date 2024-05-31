@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/fromtkpddesign_bg_button_disabled_tokopoints_notification" android:state_enabled="false"/>
+    <item android:drawable="@drawable/fromtkpddesign_bg_button_green_enabled_tokopoints_notification" android:state_enabled="true"/>
+</selector>

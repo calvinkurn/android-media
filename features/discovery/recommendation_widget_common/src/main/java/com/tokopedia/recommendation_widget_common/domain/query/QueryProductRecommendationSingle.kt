@@ -103,6 +103,10 @@ internal object QueryProductRecommendationSingle {
         "                            value\n" +
         "                          }\n" +
         "                          recParam\n" +
+        "                          adsLog {\n"+
+        "                            creativeID\n" +
+        "                            logExtra\n" +
+        "                          }\n" +
         "                          parentID\n" +
         "                       }\n" +
         "                   }\n" +

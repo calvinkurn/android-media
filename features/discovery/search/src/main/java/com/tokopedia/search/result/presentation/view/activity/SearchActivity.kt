@@ -25,11 +25,14 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -158,7 +161,18 @@ class SearchActivity :
 
         SearchSessionId.update()
         AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance.value())
+        setAdsPageData()
         handleSearchHeaderThematic()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppLogTopAds.removeLastAdsPageData(this)
+    }
+
+    private fun setAdsPageData() {
+        AppLogTopAds.currentPageName = PageName.SEARCH_RESULT
+        AppLogTopAds.putAdsPageData(this, AppLogParam.PAGE_NAME, PageName.SEARCH_RESULT)
     }
 
     private fun fetchRollence() {
