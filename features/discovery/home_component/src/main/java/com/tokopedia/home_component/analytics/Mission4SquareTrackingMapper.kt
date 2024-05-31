@@ -10,7 +10,6 @@ object Mission4SquareTrackingMapper {
 
     fun Mission4SquareUiModel.asProductModel(
         isCache: Boolean = false,
-        enterMethod: String = "",
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = data.productID,
@@ -23,7 +22,6 @@ object Mission4SquareTrackingMapper {
             recSessionId = appLog.sessionId,
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
-            enterMethod = enterMethod,
             position = cardPosition,
             cardName = CardName.MISSION_PRODUCT_CARD.format(data.title),
         )
@@ -31,7 +29,6 @@ object Mission4SquareTrackingMapper {
 
     fun Mission4SquareUiModel.asCardModel(
         isCache: Boolean = false,
-        enterMethod: String = "",
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = data.id.toString(),
@@ -46,7 +43,6 @@ object Mission4SquareTrackingMapper {
             recSessionId = appLog.sessionId,
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
-            enterMethod = enterMethod,
             position = cardPosition,
         )
     }
