@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.data.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.data.source.cloud.model.ProductBadge
 import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
 
 data class ShopLayoutWidget(
@@ -79,7 +80,7 @@ data class ShopLayoutWidget(
                 @SerializedName("sessionID")
                 val sessionId: String = "",
                 @SerializedName("logID")
-                val logId: String = "",
+                val logId: String = ""
             )
         }
 
@@ -172,6 +173,8 @@ data class ShopLayoutWidget(
             val statusCampaign: String = "",
             @SerializedName("labelGroups")
             val labelGroups: List<LabelGroup> = listOf(),
+            @SerializedName("badge")
+            val badge: ProductBadge = ProductBadge(),
             @SerializedName("recommendationType")
             val recommendationType: String = "",
             @SerializedName("categoryBreadcrumbs")
@@ -232,7 +235,7 @@ data class ShopLayoutWidget(
             @SerializedName("recommendationPageName")
             val recommendationPageName: String = "",
             @SerializedName("recParam")
-            val recParam: String = "",
+            val recParam: String = ""
         ) {
             data class Component(
                 @SerializedName("componentID")

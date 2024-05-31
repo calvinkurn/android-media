@@ -8,8 +8,6 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.design.R;
-
 public class ColorSampleView extends View {
 
     private static final float OUTLINE_WIDTH = 2;

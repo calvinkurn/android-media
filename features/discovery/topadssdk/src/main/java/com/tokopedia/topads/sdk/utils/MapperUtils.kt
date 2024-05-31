@@ -1,13 +1,21 @@
 package com.tokopedia.topads.sdk.utils
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
+import com.tokopedia.productcard.reimagine.LabelGroupStyle
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
 import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.unifycomponents.R.color
 import com.tokopedia.unifycomponents.UnifyButton
+import java.util.*
 
 object MapperUtils {
+
+    private const val RATING_SCALE = 100.0
+    private const val MAX_RATING = 5.0
     fun getProductCardModels(products: List<Product>, hasAddProductToCartButton: Boolean): ArrayList<ProductCardModel> {
         return ArrayList<ProductCardModel>().apply {
             products.map {
@@ -53,7 +61,6 @@ object MapperUtils {
     ): ProductCardModel {
 
         val labelGroupList = mappingLabelGroupList(product)
-
         if (isAvailAble) {
             return if (!product.campaign.originalPrice.isNullOrEmpty()) {
                 productCardModel.copy(
@@ -66,21 +73,47 @@ object MapperUtils {
                 )
             }
         }
-
         return productCardModel.copy(
             slashedPrice = product.campaign.originalPrice,
-            countSoldRating = product.headlineProductRatingAverage,
+            countSoldRating = product.headlineProductRatingAverage.ifEmpty {
+                if (product.productRating > 0) {
+                    convertRatingScaleToString(product.productRating)
+                } else {
+                    String.EMPTY
+                }
+            },
             labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                 product.labelGroupList.map {
-                    add(
+                    if (it.position == "integrity") {
+                        add(
+                            ProductCardModel.LabelGroup(
+                                position = LABEL_REIMAGINE_CREDIBILITY,
+                                title = it.title,
+                                type = it.type,
+                                imageUrl = it.imageUrl,
+                                styleList = listOf(),
+                            )
+                        )
+                    } else add(
                         ProductCardModel.LabelGroup(
                             position = it.position,
                             title = it.title,
                             type = it.type,
                             imageUrl = it.imageUrl,
-                            styleList = it.styleList.map { style ->
-                                ProductCardModel.LabelGroup.Style(style.key, style.value)
-                            }
+                            styleList = listOf(
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.BACKGROUND_COLOR,
+                                    value = color.Unify_Static_Black.toString()
+                                ),
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.BACKGROUND_OPACITY,
+                                    value = LabelGroupStyle.BACKGROUND_OPACITY_VALUE
+                                ),
+                                ProductCardModel.LabelGroup.Style(
+                                    key = LabelGroupStyle.TEXT_COLOR,
+                                    value = color.Unify_Static_White.toString()
+                                )
+                            ),
                         )
                     )
                 }
@@ -113,4 +146,11 @@ object MapperUtils {
             it.position == TopAdsConstants.FULFILLMENT && it.title == TopAdsConstants.DILYANI_TOKOPEDIA
         } != null
     }
+
+    private fun convertRatingScaleToString(rating: Int): String {
+        val convertedRating = (rating / RATING_SCALE) * MAX_RATING
+        val result = String.format(Locale.US, "%.1f", convertedRating)
+        return result
+    }
+
 }

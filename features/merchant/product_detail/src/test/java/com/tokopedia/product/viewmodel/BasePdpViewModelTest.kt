@@ -13,7 +13,6 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
-import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
@@ -161,7 +160,6 @@ abstract class BasePdpViewModelTest {
         mockkStatic(GlobalConfig::class)
         mockkObject(ProductDetailServerLogger)
         mockkStatic(TrackApp::class)
-        mockkObject(ProductRollenceHelper)
         normalizeOs()
         spykViewModel = spyk(viewModel)
     }

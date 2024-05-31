@@ -42,7 +42,7 @@ object AppLogRecommendation {
         if (shouldSendRecTrigger(model.entranceForm, model.isEligibleForRecTrigger)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun sendCardShowAppLog(model: AppLogRecommendationCardModel) {
@@ -54,7 +54,7 @@ object AppLogRecommendation {
         if (shouldSendRecTrigger(model.entranceForm)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun sendEnterPageAppLog() {
@@ -87,10 +87,9 @@ object AppLogRecommendation {
         AppLogAnalytics.send(EventName.CONFIRM_CART_RESULT, model.toConfirmCartResultJson(product))
     }
 
-    private fun AppLogRecommendationProductModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+    private fun AppLogRecommendationProductModel.setGlobalParamOnClick() {
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataBeforeStep(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,
@@ -100,10 +99,9 @@ object AppLogRecommendation {
         additionalParam.setAdditionalToGlobalParam()
     }
 
-    private fun AppLogRecommendationCardModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+    private fun AppLogRecommendationCardModel.setGlobalParamOnClick() {
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataBeforeStep(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,

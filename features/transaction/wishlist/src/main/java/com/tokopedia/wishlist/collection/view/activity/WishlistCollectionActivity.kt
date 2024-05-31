@@ -24,5 +24,9 @@ class WishlistCollectionActivity : BaseSimpleActivity(), AppLogInterface {
 
     override fun getPageName(): String = PageName.WISHLIST
 
+    override fun shouldTrackEnterPage(): Boolean {
+        return true
+    }
+
     override fun isEnterFromWhitelisted() = true
 }

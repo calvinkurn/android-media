@@ -5,6 +5,10 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.TAB_TYPE_FEED
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.TAB_TYPE_HOME
+import com.tokopedia.applink.navigation.DeeplinkNavigationUtil
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
@@ -20,6 +24,8 @@ object DeeplinkMapperHome {
     const val TAB_POSITION_ACCOUNT = 4
     const val TAB_POSITION_OS = 2
     const val TAB_POSITION_RECOM = 5
+
+    private val deeplinkNavigationUtil by lazy { DeeplinkNavigationUtil() }
 
     fun isLoginAndHasShop(context: Context): Boolean {
         val userSession = UserSession(context)
@@ -38,13 +44,23 @@ object DeeplinkMapperHome {
 
         // tokopedia://home
         if (uri.host == Uri.parse(ApplinkConst.HOME).host && uri.pathSegments.isEmpty()) {
-            return ApplinkConsInternalHome.HOME_NAVIGATION
+            return if (deeplinkNavigationUtil.newHomeNavEnabled()) {
+                UriUtil.buildUriAppendParams(
+                    ApplinkConsInternalHome.HOME_NAVIGATION,
+                    mapOf(EXTRA_TAB_TYPE to TAB_TYPE_HOME)
+                )
+            } else {
+                ApplinkConsInternalHome.HOME_NAVIGATION_OLD
+            }
+        } else if (deeplink.startsWith(ApplinkConst.HOME_OLD) && uri.pathSegments.size == 1) {
+            return ApplinkConsInternalHome.HOME_NAVIGATION_OLD
         } else if (deeplink.startsWith(ApplinkConst.HOME_CATEGORY) && uri.pathSegments.size == 1) {
             return ApplinkConsInternalHome.HOME_NAVIGATION
         } else if (deeplink.startsWith(ApplinkConst.Navigation.MAIN_NAV)) {
             return ApplinkConsInternalNavigation.MAIN_NAVIGATION
         } else if (deeplink.startsWith(ApplinkConst.HOME_FEED) && uri.pathSegments.size == 1) {
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED))
+            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(
+                EXTRA_TAB_TYPE to TAB_TYPE_FEED))
         } else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT_SELLER) && uri.pathSegments.size == 2) {
             return ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
         } else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT) && uri.pathSegments.size == 1) {

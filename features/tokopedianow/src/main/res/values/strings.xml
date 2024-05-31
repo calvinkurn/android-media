@@ -266,4 +266,8 @@
     <string name="tokopedianow_shopping_list_cart_widget_title">produk ada di keranjang</string>
     <string name="tokopedianow_shopping_list_unavailable_widget_title">Stok habis</string>
     <string name="tokopedianow_shopping_list_retry_try_again_text">Coba Lagi</string>
+
+    <string name="tokopedianow_start_text">Mulai</string>
+    <string name="tokopedianow_start_quest_error_message">Terjadi kendala saat mulai misi. Coba lagi, ya.</string>
+    <string name="tokopedianow_start_quest_success_message">Misi dimulai, yuk transaksi di NOW! sekarang</string>
 </resources>

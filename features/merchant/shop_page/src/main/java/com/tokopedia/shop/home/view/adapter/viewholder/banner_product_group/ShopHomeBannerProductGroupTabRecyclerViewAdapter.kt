@@ -3,40 +3,41 @@ package com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.ShopUtilExt.setAdaptiveLabelDiscountColor
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
-import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupShimmerBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupVerticalBannerCardBinding
+import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupWithProductInfoBinding
+import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupWithoutProductInfoBinding
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper.toProductCardModel
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 
-class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopHomeBannerProductGroupTabRecyclerViewAdapter(
+    private val isOverrideTheme: Boolean,
+    private val backgroundColor: String,
+    private val patternColorType: String,
+    private val isFestivity: Boolean
+) : RecyclerView.Adapter<ViewHolder>() {
 
     private var items = mutableListOf<ShopHomeBannerProductGroupItemType>()
     private var onProductClick: (ProductItemType, Int) -> Unit = { _, _ -> }
     private var onVerticalBannerClick: (VerticalBannerItemType) -> Unit = {}
     private var onProductCardDrawn: (Int) -> Unit = {}
-    private var shouldRefreshVerticalBannerHeight = true
-
     companion object {
         private const val VIEW_TYPE_SHIMMER = 0
         private const val VIEW_TYPE_VERTICAL_BANNER = 1
-        private const val VIEW_TYPE_PRODUCT = 2
+        private const val VIEW_TYPE_PRODUCT_WITH_PRODUCT_INFO = 2
+        private const val VIEW_TYPE_PRODUCT_WITHOUT_PRODUCT_INFO = 3
         private const val CORNER_RADIUS = 12
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when(viewType) {
             VIEW_TYPE_SHIMMER -> {
                 val binding = ItemShopHomeBannerProductGroupShimmerBinding.inflate(
@@ -55,21 +56,29 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
                 )
                 VerticalBannerViewHolder(binding)
             }
-            VIEW_TYPE_PRODUCT -> {
-                val binding = ItemShopHomeBannerProductGroupProductInfoCardBinding.inflate(
+            VIEW_TYPE_PRODUCT_WITH_PRODUCT_INFO -> {
+                val binding = ItemShopHomeBannerProductGroupWithProductInfoBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-                ProductViewHolder(binding)
+                ProductWithInfoViewHolder(binding)
+            }
+            VIEW_TYPE_PRODUCT_WITHOUT_PRODUCT_INFO -> {
+                val binding = ItemShopHomeBannerProductGroupWithoutProductInfoBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ProductWithoutInfoViewHolder(binding)
             }
             else -> {
-                val binding = ItemShopHomeBannerProductGroupProductInfoCardBinding.inflate(
+                val binding = ItemShopHomeBannerProductGroupWithProductInfoBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-                ProductViewHolder(binding)
+                ProductWithInfoViewHolder(binding)
             }
         }
     }
@@ -77,25 +86,43 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
     override fun getItemCount() = items.size
 
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (val item = items[position]) {
             is ShimmerItemType -> (holder as ShimmerViewHolder).bind(item)
-            is ProductItemType -> (holder as ProductViewHolder).bind(item)
+            is ProductItemType -> bindProductCard(item, holder)
             is VerticalBannerItemType -> (holder as VerticalBannerViewHolder).bind(item)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(items[position]) {
+        return when(val item = items[position]) {
             is ShimmerItemType -> VIEW_TYPE_SHIMMER
             is VerticalBannerItemType -> VIEW_TYPE_VERTICAL_BANNER
-            is ProductItemType -> VIEW_TYPE_PRODUCT
+            is ProductItemType -> getProductViewType(item)
+        }
+    }
+
+    private fun bindProductCard(item: ProductItemType, holder: ViewHolder) {
+        val showProductInfo = item.showProductInfo
+        if (showProductInfo) {
+            (holder as ProductWithInfoViewHolder).bind(item)
+        } else {
+            (holder as ProductWithoutInfoViewHolder).bind(item)
+        }
+    }
+
+    private fun getProductViewType(item: ProductItemType): Int {
+        val showProductInfo = item.showProductInfo
+        return if (showProductInfo) {
+            VIEW_TYPE_PRODUCT_WITH_PRODUCT_INFO
+        } else {
+            VIEW_TYPE_PRODUCT_WITHOUT_PRODUCT_INFO
         }
     }
 
     inner class ShimmerViewHolder(
         private val binding: ItemShopHomeBannerProductGroupShimmerBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root) {
         fun bind(item: ShimmerItemType) {
             binding.shimmerMainBanner.isVisible = item.showShimmer
             binding.shimmerFirstProduct.root.isVisible = item.showShimmer
@@ -104,155 +131,59 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
         }
     }
 
-    inner class ProductViewHolder(
-        private val binding: ItemShopHomeBannerProductGroupProductInfoCardBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class ProductWithInfoViewHolder(
+        private val binding: ItemShopHomeBannerProductGroupWithProductInfoBinding
+    ) : ViewHolder(binding.root) {
 
         fun bind(item: ShopHomeBannerProductGroupItemType) {
-            val product = item as? ProductItemType
-            
-            product?.let {
-                renderProductImage(product)
-                renderProductName(product)
-                renderProductPrice(product)
-                renderSlashedProductPrice(product)
-                renderRatingAndSoldCount(product)
-
-                setupColors(item.overrideTheme, item.colorSchema)
-               
-                binding.root.setOnClickListener {
-                    val productIndex = bindingAdapterPosition.inc()    
-                    onProductClick(product, productIndex) 
-                }
-                
-                calculateProductCardHeight()
+            val product = (item as? ProductItemType) ?: return
+            renderProductCard(product)
+            binding.root.setOnClickListener {
+                val productIndex = bindingAdapterPosition.inc()
+                onProductClick(product, productIndex)
             }
         }
 
-        private fun calculateProductCardHeight() {
-            if (shouldRefreshVerticalBannerHeight) {
-                binding.productContainer.post {
-                    val productCardHeight = binding.productContainer.height
-                    onProductCardDrawn(productCardHeight)
-                }
-                shouldRefreshVerticalBannerHeight = false
+        private fun renderProductCard(product: ProductItemType) {
+            val productCardModel = product.toProductCardModel(
+                isOverrideTheme = isOverrideTheme,
+                patternColorType = patternColorType,
+                backgroundColor = backgroundColor,
+                isFestivity = isFestivity
+            )
+            binding.productCardGridView.setProductModel(productCardModel)
+        }
+    }
+
+    inner class ProductWithoutInfoViewHolder(
+        private val binding: ItemShopHomeBannerProductGroupWithoutProductInfoBinding
+    ) : ViewHolder(binding.root) {
+
+        fun bind(item: ShopHomeBannerProductGroupItemType) {
+            val product = (item as? ProductItemType) ?: return
+            renderProductImage(product)
+            binding.root.setOnClickListener {
+                val productIndex = bindingAdapterPosition.inc()
+                onProductClick(product, productIndex)
             }
         }
-        
+
         private fun renderProductImage(product: ProductItemType) {
             binding.imgProduct.loadImage(product.imageUrl)
             binding.imgProduct.cornerRadius = CORNER_RADIUS
-        }
-
-        private fun renderProductName(product: ProductItemType) {
-            if (product.showProductInfo) {
-                binding.tpgProductName.text = product.name
-            }
-            binding.tpgProductName.isVisible = product.showProductInfo
-        }
-
-        private fun renderProductPrice(product: ProductItemType) {
-            if (product.showProductInfo) {
-                binding.tpgProductPrice.text = product.price.replace(" ", "")
-            }
-            binding.tpgProductPrice.isVisible = product.showProductInfo
-        }
-
-        private fun renderSlashedProductPrice(product: ProductItemType) {
-            val isDiscounted = product.slashedPricePercent.isMoreThanZero()
-            val showSlashedPrice = product.showProductInfo && isDiscounted
-
-            binding.layoutSlashedPrice.isVisible = showSlashedPrice
-
-            if (showSlashedPrice) {
-                binding.tpgSlashedProductPrice.text = product.slashedPrice.replace(" ", "")
-                binding.tpgSlashedProductPrice.strikethrough()
-
-                val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
-                binding.labelDiscount.text = discountPercentage
-                binding.labelDiscount.setAdaptiveLabelDiscountColor(!product.overrideTheme)
-            }
-        }
-
-        private fun renderRatingAndSoldCount(product: ProductItemType) {
-            val hasRating = product.rating.isNotEmpty()
-            val showProductRating = product.showProductInfo && hasRating
-
-            val hasBeenPurchased = product.soldCount.isNotEmpty()
-            val showProductSoldCount = product.showProductInfo && hasBeenPurchased
-
-            val showLayoutRatingAndSoldCount = showProductRating || showProductSoldCount
-            binding.layoutRatingAndSoldCount.isVisible = showLayoutRatingAndSoldCount
-
-            renderProductRating(showProductRating, product.rating)
-            renderProductSoldCount(showProductSoldCount, product.soldCount)
-
-            val showBulletSeparator = hasBeenPurchased && hasRating && product.showProductInfo
-            renderBulletSeparator(showBulletSeparator)
-        }
-
-        private fun renderProductRating(showProductRating: Boolean, rating: String) {
-            binding.tpgRating.isVisible = showProductRating
-            binding.imgStar.isVisible = showProductRating
-
-            if (showProductRating) {
-                binding.tpgRating.text = rating
-            }
-        }
-
-        private fun renderProductSoldCount(showProductSoldCount: Boolean, soldCount: String) {
-            binding.tpgProductSoldCount.isVisible = showProductSoldCount
-
-            if (showProductSoldCount) {
-                binding.tpgProductSoldCount.text = soldCount
-            }
-        }
-
-        private fun renderBulletSeparator(showBulletSeparator: Boolean) {
-            binding.tpgBullet.isVisible = showBulletSeparator
-        }
-
-        private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
-            val highEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-            } else {
-                ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN950)
-            }
-
-            val lowEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
-            } else {
-                ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN600)
-            }
-
-            val disabledTextColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
-            } else {
-                ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN400)
-            }
-
-            binding.apply {
-                tpgProductName.setTextColor(highEmphasizeColor)
-                tpgProductPrice.setTextColor(highEmphasizeColor)
-
-                tpgSlashedProductPrice.setTextColor(disabledTextColor)
-
-                tpgRating.setTextColor(lowEmphasizeColor)
-                tpgProductSoldCount.setTextColor(lowEmphasizeColor)
-            }
         }
     }
 
     inner class VerticalBannerViewHolder(
         private val binding: ItemShopHomeBannerProductGroupVerticalBannerCardBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root) {
 
         fun bind(item: ShopHomeBannerProductGroupItemType) {
             val banner = item as? VerticalBannerItemType
 
             banner?.let {
                 binding.imgVerticalBanner.loadImage(banner.imageUrl)
-                
+
                 if (item.verticalBannerHeight.isMoreThanZero()) {
                     binding.imgVerticalBanner.height(item.verticalBannerHeight)
                 }
@@ -303,8 +234,8 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
     fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBannerItemType) -> Unit) {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
-    
+
     fun setOnProductCardDrawn(onProductCardDrawn: (Int) -> Unit) {
-        this.onProductCardDrawn = onProductCardDrawn 
+        this.onProductCardDrawn = onProductCardDrawn
     }
 }
