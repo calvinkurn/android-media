@@ -17,21 +17,28 @@ private const val VERSION = "version"
 private const val DEVICE = "device"
 private const val DEVICE_VALUE = "Android"
 private const val ACCEPT_SECTION = "accept_section"
+private const val REF = "ref"
 
-class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), DiscoveryPageRepository {
+class DiscoveryDataGQLRepository @Inject constructor(
+    val getGQLString: (Int) -> String,
+) : BaseRepository(), DiscoveryPageRepository {
     lateinit var userSession: UserSession
-    override suspend fun getDiscoveryPageData(pageIdentifier: String, extraParams: Map<String, Any>?): DiscoveryResponse {
+    override suspend fun getDiscoveryPageData(
+        pageIdentifier: String,
+        extraParams: Map<String, Any>?,
+        additionalQueryParamsString: String,
+    ): DiscoveryResponse {
         return (
             getGQLData(
                 queryDiscoveryData,
                 DataResponse::class.java,
-                getQueryMap(pageIdentifier, extraParams),
+                getQueryMap(pageIdentifier, extraParams, additionalQueryParamsString),
                 "discoveryPageInfo"
             ) as DataResponse
             ).data
     }
 
-    private fun getQueryMap(pageIdentifier: String, extraParams: Map<String, Any>?): Map<String, Any> {
+    private fun getQueryMap(pageIdentifier: String, extraParams: Map<String, Any>?, additionalQueryParamsString: String): Map<String, Any> {
         val queryMap = mutableMapOf(
             IDENTIFIER to pageIdentifier,
             VERSION to GlobalConfig.VERSION_NAME,
@@ -44,11 +51,14 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
             val filterMap = addMap ?: mutableMapOf()
             filterMap[ACCEPT_SECTION] = true
             if (ProductCardExperiment.isReimagine()) {
-            filterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
+                filterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
             }
             var finalQueryString = Utils.getQueryString(filterMap)
             if (it.containsKey(QUERY_PARAMS_KEY) && !(it[QUERY_PARAMS_KEY] as? String).isNullOrEmpty()) {
                 finalQueryString = finalQueryString + "&" + it[QUERY_PARAMS_KEY] as String
+            }
+            if (additionalQueryParamsString.isNotBlank()) {
+                finalQueryString = "$finalQueryString&$additionalQueryParamsString"
             }
             queryMap[Utils.FILTERS] = finalQueryString
         }

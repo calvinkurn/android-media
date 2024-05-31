@@ -6,6 +6,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.di.HomeAccountUserComponents
@@ -16,7 +18,7 @@ import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
  * Created by Yoris Prayogo on 10/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
+open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener, AppLogInterface {
 
     private var homeAccountUserComponents: HomeAccountUserComponents? = null
 
@@ -61,5 +63,13 @@ open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAcco
 
     companion object {
         val TAG = HomeAccountUserActivity::class.java.name
+    }
+
+    override fun getPageName(): String {
+        return PageName.ACCOUNT
+    }
+
+    override fun shouldTrackEnterPage(): Boolean {
+        return true
     }
 }

@@ -531,7 +531,7 @@ class LottieBottomNavbar : LinearLayout {
                             {
                                 rippleAnimator.addListener(
                                     onEnd = {
-                                        // if user up before enter animation finished,
+                                        // if user up before enter  animation finished,
                                         // do exit animation after enter animation finished
                                         if (currentRippleScale == SCALE_MAX_IMAGE) {
                                             scalingRipple(

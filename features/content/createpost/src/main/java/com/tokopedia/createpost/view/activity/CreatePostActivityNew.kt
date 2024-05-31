@@ -315,7 +315,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                         userSession.shopId
                     },
                     authorType = createPostViewModel.authorType,
-                    draftId = draftId
+                    token = createPostViewModel.token,
+                    caption = createPostViewModel.caption,
+                    mediaWidth = createPostViewModel.mediaWidth,
+                    mediaHeight = createPostViewModel.mediaHeight,
+                    mediaList = createPostViewModel.completeImageList.map {
+                        CreationUploadData.Post.Media(
+                            path = it.path,
+                            type = it.type,
+                            productIds = it.products.map { product -> product.id }
+                        )
+                    }
                 )
 
                 creationUploader.upload(uploadData)

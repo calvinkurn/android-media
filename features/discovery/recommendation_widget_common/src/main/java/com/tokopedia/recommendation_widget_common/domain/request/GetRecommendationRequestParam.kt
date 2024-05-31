@@ -23,7 +23,6 @@ data class GetRecommendationRequestParam(
     var hasNewProductCardEnabled: Boolean = false,
     val refreshType: RefreshType = RefreshType.UNKNOWN,
     val bytedanceSessionId: String = "",
-    val totalData: Int = 0,
 ) {
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()

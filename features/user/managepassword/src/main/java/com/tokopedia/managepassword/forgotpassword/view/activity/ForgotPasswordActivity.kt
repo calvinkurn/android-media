@@ -19,6 +19,7 @@ import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_URL
@@ -89,7 +90,11 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                 REQUEST_CODE_LOGIN -> gotoHome()
             }
         } else {
-            gotoHome()
+            if (isLoginSdkFlow()) {
+                backToLoginSdk()
+            } else {
+                gotoHome()
+            }
         }
     }
 
@@ -108,7 +113,22 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         startActivityForResult(intent, REQUEST_CODE_LOGOUT)
     }
 
+    private fun backToLoginSdk() {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGIN_SDK)
+        intent.putExtra("from_reset_password", true)
+        startActivity(intent)
+        finish()
+    }
+
     private fun gotoLogin(uri: Uri? = null) {
+        if (isLoginSdkFlow()) {
+            backToLoginSdk()
+        } else {
+            gotoLoginPage(uri)
+        }
+    }
+
+    private fun gotoLoginPage(uri: Uri?) {
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
         if(uri != null) {
             val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)

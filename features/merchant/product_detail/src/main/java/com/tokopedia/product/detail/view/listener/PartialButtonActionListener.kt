@@ -10,9 +10,8 @@ import rx.subscriptions.CompositeSubscription
 interface PartialButtonActionListener {
     fun advertiseProductClicked()
     fun rincianTopAdsClicked()
-    fun addToCartClick(buttonText: String)
-    fun buyNowClick(buttonText: String)
-    fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
+    fun onButtonFallbackClick(button: AvailableButton)
+    fun buttonCartTypeClick(button: AvailableButton)
 
     fun topChatButtonClicked()
     fun editProductButtonClicked()
