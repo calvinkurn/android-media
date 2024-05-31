@@ -91,6 +91,9 @@ object RollenceKey {
     // BCA Rollence
     const val BCA_ROLLENCE = "android_flazzrollout"
 
+    // Fresco Image
+    const val FRESCO_IMAGE = "android_fresco"
+
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
     const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"

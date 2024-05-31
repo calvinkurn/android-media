@@ -152,6 +152,7 @@ includeIfEnabled("features:media:mediapicker")
 includeIfEnabled("features:media:mediapicker-common")
 includeIfEnabled("features:media:universal-editor")
 includeIfEnabled("features:media:live-broadcaster")
+includeIfEnabled("features:media:medialoader-fresco")
 
 includeIfEnabled("features:merchant:gold_merchant_common")
 includeIfEnabled("features:merchant:power_merchant_subscribe")

@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardAdapterTypeFactory
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewholder.DigitalUnifyCardViewHolder
 import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
@@ -76,7 +76,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
-            parallaxImage.loadImage(section.mediaUrl)
+            parallaxImage.loadImageFresco(section.mediaUrl)
 
             if (section.title.isNotEmpty()) {
                 tvSectionTitle.text = section.title
