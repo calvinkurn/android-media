@@ -163,10 +163,6 @@ class WishlistCollectionFragment :
         return true
     }
 
-    override fun shouldTrackEnterPage(): Boolean {
-        return true
-    }
-
     override fun initInjector() {
         activity?.let { activity ->
             DaggerWishlistCollectionComponent.builder()
