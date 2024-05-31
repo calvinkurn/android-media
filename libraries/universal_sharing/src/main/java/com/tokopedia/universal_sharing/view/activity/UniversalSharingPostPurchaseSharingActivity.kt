@@ -2,21 +2,20 @@ package com.tokopedia.universal_sharing.view.activity
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication.PAGE_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalShare
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
-import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX_TY
-import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
-import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
-import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
@@ -45,8 +44,7 @@ class UniversalSharingPostPurchaseSharingActivity :
 
     private var bottomSheet: UniversalSharingPostPurchaseBottomSheet? = null
     private var source: String = ""
-
-    private var shareExInitializer: ShareExInitializer? = null
+    private var pageType: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,16 +71,10 @@ class UniversalSharingPostPurchaseSharingActivity :
             intent.getParcelableExtra(ApplinkConstInternalCommunication.PRODUCT_LIST_DATA)
                 ?: UniversalSharingPostPurchaseModel()
         }
+        pageType = intent.getStringExtra(PAGE_TYPE).orEmpty()
 
         bottomSheet = UniversalSharingPostPurchaseBottomSheet.newInstance(data)
         bottomSheet?.setListener(this)
-        setupShareExBottomSheet()
-    }
-
-    private fun setupShareExBottomSheet() {
-        if (isUsingShareEx()) {
-            shareExInitializer = ShareExInitializer(this)
-        }
     }
 
     private fun showBottomSheet() {
@@ -101,25 +93,30 @@ class UniversalSharingPostPurchaseSharingActivity :
         product: UniversalSharingPostPurchaseProductResponse
     ) {
         if (isUsingShareEx()) {
-            openShareEx(product)
+            openShareEx(product, orderId)
         } else {
             openUniversalShareBottomSheet(orderId, shopName, product)
         }
     }
 
     private fun openShareEx(
-        product: UniversalSharingPostPurchaseProductResponse
+        product: UniversalSharingPostPurchaseProductResponse,
+        orderId: String
     ) {
         currentFocus?.hideKeyboard()
-        val trackerArg = ShareExTrackerArg("utmCampaign")
-        val shareExArg = ShareExBottomSheetArg.Builder(
-            ShareExPageTypeEnum.THANK_YOU_PRODUCT,
-            product.url,
-            trackerArg
-        )
-            .withProductId(product.productId)
-            .build()
-        shareExInitializer?.openShareBottomSheet(shareExArg)
+        val intent = RouteManager.getIntent(this, getShareExApplink())
+        intent.putExtra(ApplinkConstInternalShare.Param.DEFAULT_URL, product.url)
+        intent.putExtra(ApplinkConstInternalShare.Param.PRODUCT_ID, product.productId)
+        intent.putExtra(ApplinkConstInternalShare.Param.UTM_CAMPAIGN, "Thankyou - {share_id} - $orderId - $pageType")
+        intent.putExtra(ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_AFFILIATE_REGISTRATION, "{share_id} - ${product.productId} - $orderId - $pageType")
+        intent.putExtra(ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CLOSE_ICON, "{share_id} - ${product.productId} - $orderId - $pageType")
+        intent.putExtra(ApplinkConstInternalShare.Param.LABEL_ACTION_CLICK_CHANNEL, "{channel} - {share_id} - ${product.productId} - $orderId - $pageType")
+        intent.putExtra(ApplinkConstInternalShare.Param.LABEL_IMPRESSION_BOTTOMSHEET, "{share_id} - ${product.productId} - $orderId - $pageType")
+        startActivityForResult(intent, REQUEST_SHARE_EXPERIENCE)
+    }
+
+    private fun getShareExApplink(): String {
+        return "${ApplinkConst.ShareExperience.SHARE_EXPERIENCE}?${ApplinkConstInternalShare.Param.PAGE_TYPE}=$PAGE_TYPE_THANK_YOU"
     }
 
     private fun openUniversalShareBottomSheet(
@@ -229,8 +226,37 @@ class UniversalSharingPostPurchaseSharingActivity :
 
     private fun isUsingShareEx(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            ROLLENCE_SHARE_EX_TY,
+            ROLLENCE_SHARE_EX_TY_PAGE,
             ""
-        ) == ROLLENCE_SHARE_EX_TY
+        ) == ROLLENCE_SHARE_EX_TY_PAGE
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_SHARE_EXPERIENCE) {
+            forwardIntentResult(resultCode, data)
+            finish()
+        }
+    }
+
+    private fun forwardIntentResult(resultCode: Int, intent: Intent?) {
+        val message = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK).orEmpty()
+        val errorMessage = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK).orEmpty()
+        val action = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK).orEmpty()
+        val shortLink = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_FALLBACK_SHORT_LINK).orEmpty()
+
+        val intentResult = Intent()
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK, message)
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK, errorMessage)
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK, action)
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_FALLBACK_SHORT_LINK, shortLink)
+        setResult(resultCode, intentResult)
+        finish()
+    }
+
+    companion object {
+        private const val PAGE_TYPE_THANK_YOU = 8
+        private const val REQUEST_SHARE_EXPERIENCE = 101
+        private const val ROLLENCE_SHARE_EX_TY_PAGE = "shareex_an_typv1"
     }
 }

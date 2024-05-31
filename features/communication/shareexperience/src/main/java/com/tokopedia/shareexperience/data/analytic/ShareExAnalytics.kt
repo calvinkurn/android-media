@@ -19,6 +19,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackActionClickIconShare(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -49,6 +50,11 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50464
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45653
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -59,6 +65,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackActionClickClose(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -89,6 +96,15 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50465
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45654
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
+            }
+            ShareExPageTypeEnum.THANK_YOU_PRODUCT -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45899
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.THANK_YOU_PAGE
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -99,6 +115,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackActionClickChannel(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         channel: String,
@@ -133,6 +150,15 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50466
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45655
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
+            }
+            ShareExPageTypeEnum.THANK_YOU_PRODUCT -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45900
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.THANK_YOU_PAGE
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -143,6 +169,7 @@ class ShareExAnalytics @Inject constructor(
 
     fun trackImpressionBottomSheet(
         productId: String = "",
+        shopId: String = "",
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
@@ -173,6 +200,15 @@ class ShareExAnalytics @Inject constructor(
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50467
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.GOPAYLATER_REFERRAL
             }
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45656
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.SHOP_ID] = shopId
+            }
+            ShareExPageTypeEnum.THANK_YOU_PRODUCT -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_45901
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.THANK_YOU_PAGE
+            }
             else -> Unit
         }
         if (userSession.isLoggedIn) {
@@ -186,6 +222,66 @@ class ShareExAnalytics @Inject constructor(
         pageTypeEnum: ShareExPageTypeEnum,
         shareId: String?,
         label: String
+    ) {
+        when (pageTypeEnum) {
+            ShareExPageTypeEnum.PDP -> {
+                trackImpressionTickerAffiliateEnhancedEcommerce(
+                    label,
+                    shareId,
+                    pageTypeEnum,
+                    identifier
+                )
+            }
+
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                trackImpressionTickerAffiliateGeneralEvent(
+                    identifier,
+                    pageTypeEnum,
+                    shareId,
+                    label
+                )
+            }
+
+            else -> Unit
+        }
+    }
+
+    private fun trackImpressionTickerAffiliateGeneralEvent(
+        identifier: String,
+        pageTypeEnum: ShareExPageTypeEnum,
+        shareId: String?,
+        label: String
+    ) {
+        val updatedLabel = updateLabel(
+            label = label,
+            shareId = shareId.toString()
+        )
+        val map: MutableMap<String, Any> = DataLayer.mapOf(
+            ShareExAnalyticsConst.Key.EVENT, ShareExAnalyticsConst.Event.VIEW_COMMUNICATION,
+            ShareExAnalyticsConst.Key.EVENT_ACTION, ShareExAnalyticsConst.Action.IMPRESSION_TICKER_AFFILIATE,
+            ShareExAnalyticsConst.Key.EVENT_LABEL, updatedLabel,
+            ShareExAnalyticsConst.Key.BUSINESS_UNIT, ShareExAnalyticsConst.Default.SHARING_EXPERIENCE,
+            ShareExAnalyticsConst.Key.CURRENT_SITE, ShareExAnalyticsConst.Default.TOKOPEDIA_MARKETPLACE
+        )
+        when (pageTypeEnum) {
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50278
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+            }
+            else -> Unit
+        }
+        if (userSession.isLoggedIn) {
+            map[ShareExAnalyticsConst.Key.USER_ID] = userSession.userId
+        }
+        tracker.sendGeneralEvent(map)
+    }
+
+    private fun trackImpressionTickerAffiliateEnhancedEcommerce(
+        label: String,
+        shareId: String?,
+        pageTypeEnum: ShareExPageTypeEnum,
+        identifier: String
     ) {
         val updatedLabel = updateLabel(
             label = label,
@@ -251,6 +347,16 @@ class ShareExAnalytics @Inject constructor(
             ShareExPageTypeEnum.PDP -> {
                 map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_31186
                 map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.PDP
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+            }
+            ShareExPageTypeEnum.ORDER_DETAIL -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50279
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.ORDER_DETAIL
+                map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
+            }
+            ShareExPageTypeEnum.THANK_YOU_PRODUCT -> {
+                map[ShareExAnalyticsConst.Key.TRACKER_ID] = ShareExAnalyticsConst.Tracker.ID_50879
+                map[ShareExAnalyticsConst.Key.EVENT_CATEGORY] = ShareExAnalyticsConst.Category.THANK_YOU_PAGE
                 map[ShareExAnalyticsConst.Key.PRODUCT_ID] = identifier
             }
             else -> Unit

@@ -213,12 +213,15 @@ class ShareExInitializer(
 
     private fun trackClickIconShare(result: ShareExBottomSheetResultArg) {
         bottomSheetArg?.let {
-            analytics.trackActionClickIconShare(
-                productId = it.productId,
-                pageTypeEnum = it.pageTypeEnum,
-                shareId = result.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
-                label = it.trackerArg.labelActionClickShareIcon
-            )
+            if (it.trackerArg.labelActionClickShareIcon.isNotBlank()) {
+                analytics.trackActionClickIconShare(
+                    productId = it.productId,
+                    shopId = it.shopId,
+                    pageTypeEnum = it.pageTypeEnum,
+                    shareId = result.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
+                    label = it.trackerArg.labelActionClickShareIcon
+                )
+            }
         }
     }
 
@@ -250,16 +253,19 @@ class ShareExInitializer(
     }
 
     override fun onSuccessCopyLink() {
-        dismissListener?.onDismissAfterCopyLink()
-        weakContext.get()?.let { context ->
-            val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
-            contentView?.let { view ->
-                showToaster(
-                    view = view,
-                    text = context.getString(R.string.shareex_success_copy_link),
-                    duration = Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_NORMAL
-                )
+        if (dismissListener != null) {
+            dismissListener?.onSuccessCopyLink()
+        } else {
+            weakContext.get()?.let { context ->
+                val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
+                contentView?.let { view ->
+                    showToaster(
+                        view = view,
+                        text = context.getString(R.string.shareex_success_copy_link),
+                        duration = Toaster.LENGTH_SHORT,
+                        type = Toaster.TYPE_NORMAL
+                    )
+                }
             }
         }
     }
@@ -270,22 +276,26 @@ class ShareExInitializer(
     }
 
     override fun onFailGenerateAffiliateLink(shortLink: String) {
-        weakContext.get()?.let { context ->
-            val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
-            contentView?.let { view ->
-                showToaster(
-                    view = contentView,
-                    text = context.getString(R.string.shareex_fail_generate_affiliate_link),
-                    duration = Toaster.LENGTH_LONG,
-                    type = Toaster.TYPE_ERROR,
-                    actionText = context.getString(R.string.shareex_action_copy_link),
-                    clickListener = {
-                        val isSuccessCopy = view.context.copyTextToClipboard(shortLink)
-                        if (isSuccessCopy) {
-                            onSuccessCopyLink()
+        if (dismissListener != null) {
+            dismissListener?.onFailGenerateAffiliateLink(shortLink)
+        } else {
+            weakContext.get()?.let { context ->
+                val contentView: View? = (context as? Activity)?.findViewById(android.R.id.content)
+                contentView?.let { view ->
+                    showToaster(
+                        view = contentView,
+                        text = context.getString(R.string.shareex_fail_generate_affiliate_link),
+                        duration = Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_ERROR,
+                        actionText = context.getString(R.string.shareex_action_copy_link),
+                        clickListener = {
+                            val isSuccessCopy = view.context.copyTextToClipboard(shortLink)
+                            if (isSuccessCopy) {
+                                onSuccessCopyLink()
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }

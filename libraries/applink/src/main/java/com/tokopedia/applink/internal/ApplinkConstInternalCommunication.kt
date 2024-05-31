@@ -20,6 +20,7 @@ object ApplinkConstInternalCommunication {
 
     // Sharing Experience
     const val PRODUCT_LIST_DATA = "product_list_data"
+    const val PAGE_TYPE = "page_type"
 
     // TokoChat BottomSheet Type
     const val GUIDE_CHAT = "guide-chat"

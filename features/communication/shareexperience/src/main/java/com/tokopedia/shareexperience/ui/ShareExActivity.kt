@@ -123,15 +123,26 @@ class ShareExActivity : BaseSimpleActivity(), DismissListener {
         finish()
     }
 
-    override fun onDismissAfterCopyLink() {
+    override fun onSuccessCopyLink() {
         val intentResult = Intent()
-        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE, getString(R.string.shareex_success_copy_link))
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK, getString(R.string.shareex_success_copy_link))
         setResult(ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK, intentResult)
+        finish()
+    }
+
+    override fun onFailGenerateAffiliateLink(fallbackShortLink: String) {
+        val intentResult = Intent()
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK, getString(R.string.shareex_fail_generate_affiliate_link))
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK, getString(R.string.shareex_success_copy_link))
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK, getString(R.string.shareex_action_copy_link))
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_FALLBACK_SHORT_LINK, fallbackShortLink)
+        setResult(ApplinkConstInternalShare.ActivityResult.RESULT_CODE_FAIL_GENERATE_AFFILIATE_LINK, intentResult)
         finish()
     }
 }
 
 interface DismissListener {
     fun onDismiss()
-    fun onDismissAfterCopyLink()
+    fun onSuccessCopyLink()
+    fun onFailGenerateAffiliateLink(fallbackShortLink: String)
 }

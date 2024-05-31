@@ -62,10 +62,4 @@ object UniversalShareConst {
         const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
         const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
     }
-
-    object ShopTypeIcon {
-        const val OFFICIAL_STORE = "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png"
-        const val PM = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
-        const val PM_PRO = "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png"
-    }
 }

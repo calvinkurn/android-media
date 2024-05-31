@@ -1,8 +1,11 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -13,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import androidx.transition.R.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -22,11 +24,10 @@ import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalShare
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -66,7 +67,7 @@ import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFrag
 import com.tokopedia.thankyou_native.presentation.fragment.ThankYouBaseFragment
 import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
-import com.tokopedia.unifycomponents.fade
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.UnifyMotion
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import timber.log.Timber
@@ -84,6 +85,8 @@ private const val GLOBAL_NAV_HINT = "Cari di Tokopedia"
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 private const val KEY_ROLLENCE_SHARE = "share_thankyoupage"
 private const val VALUE_MERCHANT_TOKOPEDIA = "tokopedia"
+
+private const val REQUEST_SHARE_EXPERIENCE = 101
 
 class ThankYouPageActivity :
     BaseSimpleActivity(),
@@ -464,15 +467,17 @@ class ThankYouPageActivity :
             )
             postPurchaseShareHelper.get().goToSharePostPurchase(
                 this,
-                thanksPageData.shopOrder
+                REQUEST_SHARE_EXPERIENCE,
+                thanksPageData.shopOrder,
+                thanksPageData.pageType
             )
         }
-        .addIcon(IconList.ID_CART) {
-            // no-op
-        }
-        .addIcon(IconList.ID_NAV_GLOBAL) {
-            // no-op
-        }
+            .addIcon(IconList.ID_CART) {
+                // no-op
+            }
+            .addIcon(IconList.ID_NAV_GLOBAL) {
+                // no-op
+            }
     }
 
     private fun getDefaultIconBuilder(): IconBuilder {
@@ -486,7 +491,6 @@ class ThankYouPageActivity :
     }
 
     private fun isV2Enabled(): Boolean {
-        return true
         return try {
             val remoteConfig = FirebaseRemoteConfigImpl(this)
             return remoteConfig.getBoolean(ANDROID_ENABLE_THANKYOUPAGE_V2, true)
@@ -505,7 +509,6 @@ class ThankYouPageActivity :
     }
 
     private fun hideStatusBar() {
-
         rootView.apply {
             fitsSystemWindows = false
             requestApplyInsets()
@@ -526,5 +529,55 @@ class ThankYouPageActivity :
 
     override fun getPageName(): String {
         return PageName.ORDER_SUBMIT
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_SHARE_EXPERIENCE) {
+            handleResultFromShare(data, resultCode)
+        }
+    }
+
+    private fun handleResultFromShare(intent: Intent?, resultCode: Int) {
+        val view: View? = findViewById(android.R.id.content)
+        view?.let { rootView ->
+            when (resultCode) {
+                ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK -> {
+                    val message = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK).orEmpty()
+                    Toaster.build(rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                }
+                ApplinkConstInternalShare.ActivityResult.RESULT_CODE_FAIL_GENERATE_AFFILIATE_LINK -> {
+                    val message = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK).orEmpty()
+                    val errorMessage = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK).orEmpty()
+                    val action = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK).orEmpty()
+                    val shortLink = intent?.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_FALLBACK_SHORT_LINK).orEmpty()
+                    Toaster.buildWithAction(
+                        rootView,
+                        errorMessage,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        action,
+                        clickListener = {
+                            val isSuccessCopy = copyTextToClipboard(shortLink)
+                            if (isSuccessCopy) {
+                                Toaster.build(rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                            }
+                        }
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun copyTextToClipboard(text: String): Boolean {
+        return try {
+            val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+            val clip = ClipData.newPlainText(getString(R.string.thankyou_postpurchase_share_copy_link), text)
+            clipboard?.setPrimaryClip(clip)
+            true
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            false
+        }
     }
 }
