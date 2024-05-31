@@ -46,7 +46,7 @@ interface AppLogAdditionalParam {
 
         override fun setAdditionalToGlobalParam() {
             super.setAdditionalToGlobalParam()
-            AppLogAnalytics.setGlobalParams(
+            AppLogAnalytics.setGlobalParamOnClick(
                 parentProductId = productId
             )
         }
