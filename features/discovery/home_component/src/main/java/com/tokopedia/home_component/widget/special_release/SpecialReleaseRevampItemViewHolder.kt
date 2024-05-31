@@ -3,6 +3,7 @@ package com.tokopedia.home_component.widget.special_release
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
@@ -11,10 +12,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 
 /**
@@ -118,22 +119,25 @@ class SpecialReleaseRevampItemViewHolder(
     }
 
     private fun HomeComponentSpecialReleaseRevampItemBinding.setProductListener(element: SpecialReleaseRevampItemDataModel) {
-        val productClickListener = View.OnClickListener {
-            if(element.grid.isTopads){
-                TopAdsUrlHitter(itemView.context).hitClickUrl(
-                    className,
-                    element.grid.impression,
-                    element.grid.id,
-                    element.grid.name,
-                    element.grid.imageUrl
+        val productClickListener = object: ProductCardClickListener {
+
+            override fun onClick(v: View) {
+                if(element.grid.isTopads){
+                    TopAdsUrlHitter(itemView.context).hitClickUrl(
+                        className,
+                        element.grid.impression,
+                        element.grid.id,
+                        element.grid.name,
+                        element.grid.imageUrl
+                    )
+                }
+                listener.onProductCardClicked(
+                    element.trackingAttributionModel,
+                    element.grid,
+                    element.grid.position,
+                    element.grid.applink
                 )
             }
-            listener.onProductCardClicked(
-                element.trackingAttributionModel,
-                element.grid,
-                element.grid.position,
-                element.grid.applink
-            )
         }
         productCard.run {
             setOnClickListener(productClickListener)

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
@@ -28,7 +29,7 @@ import com.tokopedia.unifycomponents.NotificationUnify
 import javax.inject.Inject
 
 class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInboxComponent>,
-    AppLogInterface {
+    AppLogInterface, IAdsLog {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -158,6 +159,10 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
     }
 
     override fun getPageName(): String {
+        return PageName.INBOX
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.INBOX
     }
 

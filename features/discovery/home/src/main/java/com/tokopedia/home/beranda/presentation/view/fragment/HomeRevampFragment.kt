@@ -40,6 +40,7 @@ import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.search.AppLogSearch
@@ -281,7 +282,8 @@ open class HomeRevampFragment :
     CMHomeWidgetCallback,
     HomePayLaterWidgetListener,
     AppLogInterface,
-    AppLogGlidePageInterface {
+    AppLogGlidePageInterface,
+    IAdsLog {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -307,6 +309,7 @@ open class HomeRevampFragment :
         private const val SOURCE_ACCOUNT = "account"
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
+        private const val KEY_SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
         private const val CLICK_TIME_INTERVAL: Long = 500
 
         private const val PARAM_APPLINK_AUTOCOMPLETE =
@@ -346,10 +349,11 @@ open class HomeRevampFragment :
         private const val FPS_TRACER_HOME = "Home Scene"
 
         @JvmStatic
-        fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
+        fun newInstance(scrollToRecommendList: Boolean, shouldShowGlobalNav: Boolean): HomeRevampFragment {
             val fragment = HomeRevampFragment()
             val args = Bundle()
             args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList)
+            args.putBoolean(KEY_SHOULD_SHOW_GLOBAL_NAV, shouldShowGlobalNav)
             fragment.arguments = args
             return fragment
         }
@@ -562,6 +566,10 @@ open class HomeRevampFragment :
         return PageName.HOME
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.HOME
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }
@@ -684,7 +692,7 @@ open class HomeRevampFragment :
             icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_NOTIFICATION_HOMEPAGE) }
             icons.apply {
                 addIcon(IconList.ID_CART) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_CART_ICON_HOMEPAGE) }
-                addIcon(IconList.ID_NAV_GLOBAL) {}
+                if (arguments?.getBoolean(KEY_SHOULD_SHOW_GLOBAL_NAV, true) != false) addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
             it.setupMicroInteraction(navToolbarMicroInteraction)
@@ -3174,4 +3182,5 @@ open class HomeRevampFragment :
     override fun getDistanceToTop(): Int {
         return scrollPositionY
     }
+
 }

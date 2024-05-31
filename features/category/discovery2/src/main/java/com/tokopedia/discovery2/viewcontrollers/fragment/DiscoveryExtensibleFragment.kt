@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.viewmodel.BaseLifeCycleObserver
@@ -20,7 +21,7 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 @Keep
-class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface {
+class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface, IAdsLog {
     private var tempViewModel: DiscoveryViewModel? = null
 
     @JvmField
@@ -81,6 +82,10 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface {
     }
 
     override fun getPageName(): String {
+        return PageName.OFFICIAL_STORE
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.OFFICIAL_STORE
     }
 

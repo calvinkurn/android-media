@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/bg_button_orange_dynamic"
+            android:background="@drawable/fromtkpddesign_bg_button_orange_dynamic"
             android:enabled="false"
             android:gravity="center"
             android:text="@string/tp_label_send"

@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.product.requestparamgenerator
 
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.CAROUSEL_TYPE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MINUS_IDS
@@ -140,6 +141,7 @@ class RequestParamsGenerator @Inject constructor(
         putRequestParamsChooseAddress(requestParams, chooseAddressParams)
         putRequestParamsLastClickedProductId(requestParams)
         requestParams.putAll(searchParameter)
+        requestParams.putString(SearchApiConst.CHANNEL, AppLogTopAds.getChannelNameParam())
 
         return requestParams
     }

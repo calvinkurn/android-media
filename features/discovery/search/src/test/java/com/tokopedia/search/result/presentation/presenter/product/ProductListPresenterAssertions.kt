@@ -43,7 +43,7 @@ fun MockKVerificationScope.verifyProcessingData(
     productListView.setDefaultLayoutType(ViewType.SMALL_GRID.value)
     productListView.removeLoading()
     productListView.setProductList(capture(visitableListSlot))
-    productListView.backToTop()
+    productListView.immediateMoveToTop()
     productListView.addLoading()
 }
 

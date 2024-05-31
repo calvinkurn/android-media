@@ -59,6 +59,10 @@ const val REWARDS_PRODUCT_RECOM_WIDGET_QUERY = """
         recommendationType
         stock
         isTopads
+        adsLog {
+           creativeID
+           logExtra
+        }
       }
     }
   }

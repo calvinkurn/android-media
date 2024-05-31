@@ -13,7 +13,7 @@ class RecommendationByteIoUseCase {
             } else {
                 RefreshType.OPEN
             }.also {
-                updateMap(inputParameter.pageName, sessionId = "")
+                requestedRecommendation.remove(inputParameter.pageName)
             }
         } else {
             RefreshType.LOAD_MORE
@@ -27,16 +27,16 @@ class RecommendationByteIoUseCase {
 
     fun updateMap(
         pageName: String,
-        sessionId: String? = null,
-        totalData: Int? = null,
+        sessionId: String,
+        totalData: Int,
     ) {
         val currentData = requestedRecommendation[pageName]
         requestedRecommendation[pageName] = currentData?.copy(
-            sessionId = sessionId ?: currentData.sessionId,
-            totalData = totalData ?: currentData.totalData
+            sessionId = sessionId,
+            totalData = totalData + currentData.totalData
         ) ?: RecommendationByteIoParam(
-            sessionId = "",
-            totalData = 0
+            sessionId = sessionId,
+            totalData = totalData
         )
     }
 

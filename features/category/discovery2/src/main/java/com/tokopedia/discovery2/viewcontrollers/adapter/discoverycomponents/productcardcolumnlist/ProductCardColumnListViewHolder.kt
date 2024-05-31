@@ -106,7 +106,7 @@ class ProductCardColumnListViewHolder(
     override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
         viewModel?.apply {
             val product = getProduct(itemPosition)?.also {
-                if(it.isEligibleToTrack()) {
+                if (it.isEligibleToTrack()) {
                     AppLogRecommendation.sendProductClickAppLog(
                         it.asProductTrackModel(
                             it.parentComponentName.orEmpty()
@@ -114,6 +114,7 @@ class ProductCardColumnListViewHolder(
                     )
                 }
             }
+
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(
                     componentsItems = components.getComponentItem(itemPosition) ?: ComponentsItem(),

@@ -34,6 +34,8 @@ internal object QueryDynamicChannelV2 {
         "        label\n" +
         "        stock\n" +
         "        param\n" +
+        "        creativeID\n" +
+        "        logExtra\n" +
         "        rating\n" +
         "        badges {\n" +
         "          title\n" +

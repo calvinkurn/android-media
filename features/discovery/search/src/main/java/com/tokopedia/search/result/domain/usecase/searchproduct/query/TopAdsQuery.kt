@@ -27,6 +27,8 @@ object TopAdsQuery {
                     redirect
                     sticker_id
                     sticker_image
+                    creative_id
+                    log_extra
                     product_click_url
                     product_wishlist_url
                     shop_click_url
