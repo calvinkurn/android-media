@@ -17,6 +17,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 
 class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -27,6 +29,7 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private val carouselRecyclerViewDecorator =
         CarouselProductCardItemDecorator(itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_8))
+
     init {
         calendarCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
@@ -39,7 +42,9 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
         calendarWidgetCarouselViewModel?.let { calendarWidgetCarouselViewModel ->
             getSubComponent().inject(calendarWidgetCarouselViewModel)
             addDecorator()
-            if (mDiscoveryRecycleAdapter.itemCount == 0 || calendarWidgetCarouselViewModel.getCalendarList().isNullOrEmpty()) {
+            if (mDiscoveryRecycleAdapter.itemCount == 0 || calendarWidgetCarouselViewModel.getCalendarList()
+                    .isNullOrEmpty()
+            ) {
                 addShimmer()
             }
             handleCarouselPagination()
@@ -48,11 +53,12 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun addDecorator() {
         calendarWidgetCarouselViewModel?.components?.properties?.let {
+            calendarCarouselRecyclerView.setPadding(0, 0, 0, 0)
+            calendarCarouselRecyclerView.setMargin(0, 0, 0, 0)
+            calendarCarouselRecyclerView.removeItemDecoration(carouselRecyclerViewDecorator)
             if (it.calendarType == Constant.Calendar.DYNAMIC || it.calendarLayout == CAROUSEL) {
-                if (calendarCarouselRecyclerView.itemDecorationCount > 0) {
-                    calendarCarouselRecyclerView.removeItemDecorationAt(0)
-                }
                 calendarCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
+                calendarCarouselRecyclerView.setPadding(4.toPx(), 0, 4.toPx(), 0)
             } else {
                 calendarCarouselRecyclerView.setMargin(
                     itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
@@ -85,19 +91,40 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerCalendarWidget.componentName, properties = calendarWidgetCarouselViewModel?.components?.properties))
+        list.add(
+            ComponentsItem(
+                name = ComponentNames.ShimmerCalendarWidget.componentName,
+                properties = calendarWidgetCarouselViewModel?.components?.properties
+            )
+        )
+        list.add(
+            ComponentsItem(
+                name = ComponentNames.ShimmerCalendarWidget.componentName,
+                properties = calendarWidgetCarouselViewModel?.components?.properties
+            )
+        )
+        list.add(
+            ComponentsItem(
+                name = ComponentNames.ShimmerCalendarWidget.componentName,
+                properties = calendarWidgetCarouselViewModel?.components?.properties
+            )
+        )
+        list.add(
+            ComponentsItem(
+                name = ComponentNames.ShimmerCalendarWidget.componentName,
+                properties = calendarWidgetCarouselViewModel?.components?.properties
+            )
+        )
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            calendarWidgetCarouselViewModel?.getCalendarCarouselItemsListData()?.observe(it) { item ->
-                mDiscoveryRecycleAdapter.setDataList(item)
-            }
+            calendarWidgetCarouselViewModel?.getCalendarCarouselItemsListData()
+                ?.observe(it) { item ->
+                    mDiscoveryRecycleAdapter.setDataList(item)
+                }
             calendarWidgetCarouselViewModel?.syncData?.observe(it) { sync ->
                 if (sync) {
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()

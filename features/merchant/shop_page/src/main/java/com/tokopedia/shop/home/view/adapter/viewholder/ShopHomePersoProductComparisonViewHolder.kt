@@ -3,6 +3,12 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
+import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
+import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonColorConfig
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
@@ -22,7 +28,7 @@ class ShopHomePersoProductComparisonViewHolder(
     itemView: View,
     private val listener: ShopHomePersoProductComparisonViewHolderListener,
     private val shopHomeListener: ShopHomeListener
-) : AbstractViewHolder<ShopHomePersoProductComparisonUiModel>(itemView), ComparisonWidgetInterface {
+) : AbstractViewHolder<ShopHomePersoProductComparisonUiModel>(itemView), ComparisonWidgetInterface, AdsViewListener, AdsItemClickListener {
 
     companion object {
         @LayoutRes
@@ -55,6 +61,8 @@ class ShopHomePersoProductComparisonViewHolder(
            
             comparisonWidget?.setComparisonWidgetData(
                 it,
+                this,
+                this,
                 this,
                 RecommendationTrackingModel(
                     "",
@@ -106,5 +114,25 @@ class ShopHomePersoProductComparisonViewHolder(
         position: Int
     ) {
         listener.onProductCardComparisonClicked(recommendationItem, comparisonListModel, position)
+    }
+
+    override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+    }
+
+    override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+    }
+
+    override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+    }
+
+    override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendShowAdsByteIo(itemView.context)
+    }
+
+    override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
+        recomItem.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
     }
 }

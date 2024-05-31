@@ -146,13 +146,17 @@ object PageName {
     const val NOTIFICATION = "notification"
     const val PDP = "product_detail"
     const val SEARCH_RESULT = "search_result"
+    const val DISCOVERY = "discovery"
+    const val FIND_PAGE = "find_page"
     const val CART = "cart"
     const val SHOP = "shop"
     const val SKU = "sku"
     const val ORDER_SUBMIT = "order_submit"
     const val EXTERNAL_PROMO = "external_promo"
     const val RECOMMENDATION = "recommendation"
+    const val REWARD = "reward"
     const val ACCOUNT = "account"
+    const val BUYER_ORDER_MANAGEMENT = "buyer_order_management"
 }
 
 object QuitType {

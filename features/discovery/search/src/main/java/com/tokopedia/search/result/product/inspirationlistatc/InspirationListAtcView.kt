@@ -18,6 +18,10 @@ interface InspirationListAtcView {
         product: InspirationCarouselDataView.Option.Product,
     )
 
+    fun trackAtcClicked(
+        product: InspirationCarouselDataView.Option.Product,
+    )
+
     fun openAddToCartToaster(message: String, isSuccess: Boolean)
 
     fun openVariantBottomSheet(

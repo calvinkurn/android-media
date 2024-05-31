@@ -7,6 +7,7 @@ internal data class CarouselProductCardModel(
         val productCardModel: ProductCardModel,
         var carouselProductCardListenerInfo: CarouselProductCardListenerInfo
 ) : BaseCarouselCardModel {
+    fun getOnViewListener() = carouselProductCardListenerInfo.onViewListener
     fun getOnItemClickListener() = carouselProductCardListenerInfo.onItemClickListener
     fun getOnItemAddToCartListener() = carouselProductCardListenerInfo.onItemAddToCartListener
     fun getOnItemImpressedListener() = carouselProductCardListenerInfo.onItemImpressedListener

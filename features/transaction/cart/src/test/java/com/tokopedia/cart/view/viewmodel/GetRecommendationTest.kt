@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.viewmodel
 
 import com.google.gson.Gson
+import com.tokopedia.cart.view.CartViewModel
 import com.tokopedia.cart.view.uimodel.LoadRecommendationState
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import io.mockk.coEvery

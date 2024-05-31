@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.widget.productcard.carousel.m
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.productcard.common.RecomCarouselDiffUtilComparable
 import com.tokopedia.recommendation_widget_common.widget.productcard.common.RecomCommonProductCardListener

@@ -70,6 +70,7 @@ internal enum class DevopsFeature {
     USE_SCP,
     ENABLE_NEW_TYPO_GUIDE,
     ENABLE_BANNER,
+    ENABLE_PERCENT_VIEW,
     FORCE_DARKMODE,
     ROUTEMANAGER_ROUTE,
     VIEW_APPLINK_LIST,

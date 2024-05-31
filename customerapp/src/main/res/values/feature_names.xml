@@ -71,9 +71,6 @@
     <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
     <string name="title_base_login_fingerprint">Masuk dengan Sidik Jari</string>
 
-    <!--    Change Phone Number-->
-    <string name="change_phone_number_app_module_name">changephonenumber</string>
-
     <!-- Dynamic feature for Change Password -->
     <string name="change_password_app_name">Ubah Kata Sandi</string>
 

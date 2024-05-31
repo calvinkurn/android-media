@@ -7,6 +7,7 @@ import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingItemLayoutBinding
 import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ProductCardListViewHolder(
@@ -35,9 +36,11 @@ internal class ProductCardListViewHolder(
                 }
             }
         )
-        binding?.carouselPagingProductCardListView?.setOnClickListener {
-            element.listener.onItemClick(element.group, element.productIndex)
-        }
+        binding?.carouselPagingProductCardListView?.setOnClickListener(object: ProductCardClickListener {
+            override fun onClick(v: View) {
+                element.listener.onItemClick(element.group, element.productIndex)
+            }
+        })
     }
 
     override fun onViewRecycled() {
