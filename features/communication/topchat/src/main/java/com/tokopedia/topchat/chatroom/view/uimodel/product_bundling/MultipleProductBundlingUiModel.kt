@@ -7,11 +7,11 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingData
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 class MultipleProductBundlingUiModel constructor(
     builder: Builder
-) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), Visitable<TopChatRoomTypeFactory>, DeferredAttachment {
 
     var listBundling: ArrayList<ProductBundlingUiModel> = builder.listProductBundling
         private set
@@ -20,7 +20,7 @@ class MultipleProductBundlingUiModel constructor(
     override var isError: Boolean = false
     override val id: String = attachmentId
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

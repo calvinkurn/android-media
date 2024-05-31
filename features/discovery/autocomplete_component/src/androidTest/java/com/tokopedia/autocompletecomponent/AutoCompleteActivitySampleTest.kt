@@ -45,11 +45,12 @@ class AutoCompleteActivitySampleTest {
     private fun getSearchBarEditText() = onView(isAssignableFrom(EditText::class.java))
     private fun getInitialStateContainer() = onView(withId(R.id.search_initial_state_container))
     private fun getSuggestionContainer() = onView(withId(R.id.search_suggestion_container))
+    private fun getUnificationContainer() = onView(withId(R.id.autocomplete_unification_container))
 
     @Test
     fun open_auto_complete_will_initially_show_search_bar_and_initial_state() {
         getSearchBar().isDisplayed()
-        getInitialStateContainer().isDisplayed()
+        getUnificationContainer().isDisplayed()
     }
 
     @Test
@@ -58,7 +59,7 @@ class AutoCompleteActivitySampleTest {
 
         Thread.sleep(SearchBarView.SEARCH_BAR_DELAY_MS + 100)
 
-        getSuggestionContainer().isDisplayed()
+        getUnificationContainer().isDisplayed()
     }
 
     @After

@@ -11,10 +11,15 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.merchantvoucher.common.gql.data.*
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherAmount
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherBanner
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherStatus
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherType
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.voucher.TopChatRoomVoucherUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentData
 
@@ -120,13 +125,11 @@ class SendableVoucherPreviewUiModel(
         roomMetaData: RoomMetaData,
         message: String
     ): SendableUiModel {
-        return TopChatVoucherUiModel.Builder()
+        return TopChatRoomVoucherUiModel.Builder()
             .withRoomMetaData(roomMetaData)
             .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
             .withAttachmentType(AttachmentType.Companion.TYPE_VOUCHER)
-            .withVoucherModel(voucher)
-            .withIsPublic(voucherPreview.isPublic)
-            .withIsLockToProduct(voucherPreview.isLockToProduct)
+            .withMerchantVoucherModel(voucher, voucherPreview.isLockToProduct, voucherPreview.isPublic)
             .build()
     }
 

@@ -372,6 +372,10 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
         ShippingBottomSheetAnalytic.sendClickBebasOngkirShippingOptionEvent(userId = userSession.userId, cartId = ratesParam?.unique_id.orEmpty(), bebasOngkir = data, shopId = ratesParam?.shop_id.orEmpty(), products = ratesParam?.products.orEmpty())
     }
 
+    override fun onCollapseClicked(isCollapsed: Boolean) {
+        viewModel.onCollapseClicked(isCollapsed, isOcc)
+    }
+
     companion object {
         private const val CHOOSE_COURIER_TRACE = "mp_choose_courier"
         private const val TAG = "Shipping Duration Bottom Sheet"

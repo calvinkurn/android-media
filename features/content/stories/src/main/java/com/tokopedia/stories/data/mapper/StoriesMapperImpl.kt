@@ -84,6 +84,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
             selectedDetailPosition = storiesSelectedPos,
             selectedDetailPositionCached = storiesSelectedPos,
             detailItems = storiesItem.map { stories ->
+                val author = buildAuthor(stories.author)
                 StoriesDetailItem(
                     id = stories.id,
                     event = StoriesDetailItemUiEvent.PAUSE,
@@ -102,7 +103,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     ),
                     resetValue = -1,
                     isContentLoaded = false,
-                    author = buildAuthor(stories.author),
+                    author = author,
                     category = StoriesDetailItem.StoryCategory.getByValue(stories.category),
                     categoryName = stories.categoryName,
                     publishedAt = stories.publishedAt,
@@ -126,7 +127,8 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         activityTracker = stories.meta.activityTracker,
                         templateTracker = stories.meta.templateTracker
                     ),
-                    status = StoriesDetailItem.StoryStatus.getByValue(stories.status)
+                    status = StoriesDetailItem.StoryStatus.getByValue(stories.status),
+                    performanceLink = buildPerformanceLink(author, stories.id),
                 )
             }
         )
@@ -140,23 +142,29 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
         author: ContentStoriesDetails.Stories.Author
     ) =
         buildList {
-            when {
-                !isOwner(author) && template.reportable -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.WARNING,
-                        name = storiesR.string.stories_report,
-                        type = ContentMenuIdentifier.Report
-                    )
+            if (!isOwner(author) && template.reportable) add(
+                ContentMenuItem(
+                    iconUnify = IconUnify.WARNING,
+                    name = storiesR.string.stories_report,
+                    type = ContentMenuIdentifier.Report
                 )
+            )
 
-                isOwner(author) && template.deletable -> add(
-                    ContentMenuItem(
-                        iconUnify = IconUnify.DELETE,
-                        name = storiesR.string.stories_delete_story_title,
-                        type = ContentMenuIdentifier.Delete
-                    )
+            if (isOwner(author)) add(
+                ContentMenuItem(
+                    iconUnify = IconUnify.GRAPH,
+                    name = storiesR.string.stories_performance,
+                    type = ContentMenuIdentifier.SeePerformance
                 )
-            }
+            )
+
+            if (isOwner(author) && template.deletable) add(
+                ContentMenuItem(
+                    iconUnify = IconUnify.DELETE,
+                    name = storiesR.string.stories_delete_story_title,
+                    type = ContentMenuIdentifier.Delete
+                )
+            )
         }
 
     private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
@@ -190,7 +198,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 userName = name,
                 userId = author.id,
                 avatarUrl = author.thumbnailURL,
-                appLink = author.appLink
+                appLink = author.appLink,
             )
         } else {
             StoryAuthor.Shop(
@@ -202,6 +210,12 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
             )
         }
     }
+
+    /**
+     * https://www.tokopedia.com/stories/{authorType}/{shopId/userId}/statistic/{storyId} -> use tokopedia web
+     */
+    private fun buildPerformanceLink(author: StoryAuthor, storyId: String) =
+        "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fstories%2F${author.type.type}%2F${author.id}%2Fstatistic%2F$storyId"
 
     companion object {
         private const val DEFAULT_DURATION = 7 * 1000

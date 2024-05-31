@@ -7,37 +7,48 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.constant.AtfKey
 
 data class AtfData(
-        @SerializedName("id")
-        @SuppressLint("Invalid Data Type")
-        @Expose
-        val id: Int = 0,
-        @SerializedName("name")
-        @Expose
-        val name: String = "",
-        @SerializedName("component")
-        @Expose
-        val component: String = "",
-        @SerializedName("param")
-        @Expose
-        val param: String = "",
-        @SerializedName("isOptional")
-        @Expose
-        val isOptional: Boolean = false,
-        @SerializedName("content")
-        @Expose
-        var content: String? = "",
-        @SerializedName("status")
-        @Expose
-        var status: Int = AtfKey.STATUS_LOADING,
-        @SerializedName("error")
-        @Expose
-        var errorString: String = "",
-        @SerializedName("isShimmer")
-        @Expose
-        val isShimmer: Boolean = true,
+    @SerializedName("id")
+    @SuppressLint("Invalid Data Type")
+    @Expose
+    val id: Int = 0,
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("component")
+    @Expose
+    val component: String = "",
+    @SerializedName("param")
+    @Expose
+    val param: String = "",
+    @SerializedName("isOptional")
+    @Expose
+    val isOptional: Boolean = false,
+    @SerializedName("content")
+    @Expose
+    var content: String? = "",
+    @SerializedName("status")
+    @Expose
+    var status: Int = AtfKey.STATUS_LOADING,
+    @SerializedName("error")
+    @Expose
+    var errorString: String = "",
+    @SerializedName("isShimmer")
+    @Expose
+    val isShimmer: Boolean = true,
+    @SerializedName("style")
+    @Expose
+    val style: AtfStyle? = null,
 ) {
-        inline fun <reified T> getAtfContent(): T? {
-                val gson = Gson()
-                return gson.fromJson(content, T::class.java)
-        }
+
+    inline fun <reified T> getAtfContent(): T? {
+        val gson = Gson()
+        return gson.fromJson(content, T::class.java)
+    }
+
+    data class AtfStyle(
+        @SerializedName("isBleeding") val isBleeding: Boolean = false,
+        @SerializedName("heightRatio") val heightRatio: Int = 0,
+        @SerializedName("widthRatio") val widthRatio: Int = 0,
+        @SerializedName("gradientColor") val gradientColor: List<String> = emptyList(),
+    )
 }

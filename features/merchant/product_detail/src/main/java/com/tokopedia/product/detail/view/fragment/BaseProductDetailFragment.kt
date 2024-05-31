@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -14,7 +15,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -24,8 +24,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTabletLeftSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTabletRightSectionDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TabletPosition
@@ -38,7 +36,8 @@ import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
-import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
+import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommendationAdapter
+import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -57,6 +56,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     var productAdapter: ProductDetailAdapter? = null
+    var concatAdapter: ConcatAdapter? = null
     var productDaggerComponent: ProductDetailComponent? = null
 
     @Inject
@@ -64,7 +64,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     private var rvPdp: RecyclerView? = null
     private var swipeToRefresh: SwipeRefreshLayout? = null
-    protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
     protected abstract fun createAdapterInstance(): ProductDetailAdapter
 
@@ -91,6 +90,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
         setHasOptionsMenu(true)
         productAdapter = createAdapterInstance()
+        concatAdapter = ConcatAdapter(productAdapter)
     }
 
     override fun onCreateView(
@@ -299,7 +299,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
-    fun hideSwipeLoading() {
+    private fun hideSwipeLoading() {
         swipeToRefresh?.let {
             it.isEnabled = true
             it.isRefreshing = false
@@ -317,8 +317,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             } else {
                 initStaggeredLayoutManager(view.context)
             }
-            adapter = productAdapter
-            addItemDecoration(RecommendationItemDecoration())
+            adapter = concatAdapter
         }
         rvPdp = rv
     }
@@ -343,54 +342,34 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         val isPageError = productAdapter?.currentList.orEmpty().any {
             it is PageErrorDataModel || it is ProductLoadingDataModel
         }
-        val isVerticalRecommendationViewHolder =
-            productAdapter?.currentList.orEmpty()
-                .getOrNull(position) is ProductRecommendationVerticalDataModel
 
-        val isVerticalPlaceholderRecommendationViewHolder =
-            productAdapter?.currentList.orEmpty()
-                .getOrNull(position) is ProductRecommendationVerticalPlaceholderDataModel
+        /**
+         * Infinite recom needs to treat differently when deciding span,
+         * because the default implementation is only for StaggeredGridLayoutManager
+         *
+         * It needs to be manually decide the span here as GridLayoutManager
+         */
+        val infiniteAdapter = concatAdapter?.adapters?.last() as? InfiniteRecommendationAdapter
+        if (infiniteAdapter != null &&
+            position > productAdapter?.currentList?.size?.dec().orZero()
+        ) {
+            val infinitePosition = position - productAdapter?.currentList?.size.orZero()
+            val data =
+                infiniteAdapter.currentList
+                    .getOrNull(infinitePosition) as InfiniteRecommendationUiModel
 
-        if (isVerticalRecommendationViewHolder) {
-            return 1
+            return if (data.isFullSpan) {
+                2
+            } else {
+                1
+            }
         }
 
-        return if (position > 1 || isPageError || isVerticalPlaceholderRecommendationViewHolder) {
+        return if (position > 1 || isPageError) {
             2
         } else {
             1
         }
-    }
-
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && productAdapter?.shouldRedrawLayout == true) {
-                rvPdp?.post {
-                    (recyclerView.layoutManager as? CenterLayoutManager)?.invalidateSpanAssignments()
-                    recyclerView.invalidateItemDecorations()
-                }
-            }
-        }
-    }
-
-    protected fun addEndlessScrollListener(loadMore: (page: Int) -> Unit) {
-        if (endlessScrollListener != null) return
-
-        val rv = rvPdp ?: return
-        endlessScrollListener = object : EndlessRecyclerViewScrollListener(rv.layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                loadMore.invoke(page)
-            }
-        }.also { rv.addOnScrollListener(it) }
-        rv.addOnScrollListener(scrollListener)
-    }
-
-    protected fun removeEndlessScrollListener() {
-        val rv = rvPdp ?: return
-        val scrollListener = endlessScrollListener ?: return
-        rv.removeOnScrollListener(scrollListener)
-        endlessScrollListener = null
     }
 
     protected fun getProductDetailActivity() = activity as? ProductDetailActivity

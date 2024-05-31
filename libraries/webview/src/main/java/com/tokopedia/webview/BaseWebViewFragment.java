@@ -523,7 +523,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void handleResultFromShare(Intent intent, int resultCode) {
         if (resultCode == ApplinkConstInternalShare.ActivityResult.RESULT_CODE_COPY_LINK) {
-            String message = intent.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE);
+            String message = intent.getStringExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK);
             View view = getView();
             if (view != null && !TextUtils.isEmpty(message)) {
                 Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();

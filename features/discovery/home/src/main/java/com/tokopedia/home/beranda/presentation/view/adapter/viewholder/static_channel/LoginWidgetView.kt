@@ -1,12 +1,15 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.R
+import com.tokopedia.home.R as homeR
 import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.media.loader.loadImage
@@ -28,43 +31,66 @@ class LoginWidgetView : FrameLayout {
     private val itemContext: Context
     private var listener: HomeCategoryListener? = null
 
+    private var container: ConstraintLayout? = null
     private var image: ImageUnify? = null
     private var title: Typography? = null
     private var subtitle: Typography? = null
     private var button: UnifyButton? = null
 
+    private val defaultHomeThematicUtil by lazy { HomeThematicUtil(context) }
+
+    private var type: Int = TYPE_CLEAR
+
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initWithAttrs(attrs)
+    }
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    )
-
-    init {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_login_widget, this)
-        this.itemView = view
-        this.itemContext = view.context
-        this.image = itemView.findViewById(R.id.home_login_widget_image)
-        this.title = itemView.findViewById(R.id.home_login_widget_title)
-        this.subtitle = itemView.findViewById(R.id.home_login_widget_subtitle)
-        this.button = itemView.findViewById(R.id.home_login_widget_button)
+    ) {
+        initWithAttrs(attrs)
     }
 
-    fun bind(listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil) {
+    private fun initWithAttrs(attrs: AttributeSet?) {
+        val attributes: TypedArray = context.obtainStyledAttributes(attrs, homeR.styleable.LoginWidgetView)
+        try {
+            type = attributes.getInt(
+                homeR.styleable.LoginWidgetView_backgroundType,
+                TYPE_CLEAR
+            )
+        } finally {
+            attributes.recycle()
+        }
+    }
+
+    init {
+        val view = LayoutInflater.from(context).inflate(homeR.layout.layout_login_widget, this)
+        this.itemView = view
+        this.itemContext = view.context
+        this.container = itemView.findViewById(homeR.id.containerLoginWidget)
+        this.image = itemView.findViewById(homeR.id.home_login_widget_image)
+        this.title = itemView.findViewById(homeR.id.home_login_widget_title)
+        this.subtitle = itemView.findViewById(homeR.id.home_login_widget_subtitle)
+        this.button = itemView.findViewById(homeR.id.home_login_widget_button)
+    }
+
+    fun bind(listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil? = null) {
         this.listener = listener
-        renderWidget(homeThematicUtil)
+        renderWidget(homeThematicUtil ?: defaultHomeThematicUtil)
     }
 
     private fun renderWidget(homeThematicUtil: HomeThematicUtil) {
         setClickListener()
+        setupBackground()
         val (name, profilePicture) = getAccountData()
         if(!name.isNullOrEmpty() && !profilePicture.isNullOrEmpty()) {
             renderTitle(name)
-            renderSubtitle(R.string.login_widget_subtitle_saved)
+            renderSubtitle(homeR.string.login_widget_subtitle_saved)
         } else {
-            renderTitle(context.resources.getString(R.string.login_widget_name_default))
-            renderSubtitle(R.string.login_widget_subtitle_non_saved)
+            renderTitle(context.resources.getString(homeR.string.login_widget_name_default))
+            renderSubtitle(homeR.string.login_widget_subtitle_non_saved)
         }
         renderImage(profilePicture)
         renderTextColor(homeThematicUtil)
@@ -87,8 +113,15 @@ class LoginWidgetView : FrameLayout {
         return (name to profilePicture)
     }
 
+    private fun setupBackground() {
+        when(type) {
+            TYPE_CLEAR -> container?.backgroundTintList = ContextCompat.getColorStateList(context, android.R.color.transparent)
+            TYPE_FILLED -> container?.backgroundTintList = ContextCompat.getColorStateList(context, homeR.color.home_dms_login_widget_background)
+        }
+    }
+
     private fun renderTitle(name: String) {
-        val titleFormat = context.resources.getString(R.string.login_widget_title)
+        val titleFormat = context.resources.getString(homeR.string.login_widget_title)
         this.title?.text = titleFormat.format(name.ifEmpty { name })
     }
 
@@ -98,7 +131,7 @@ class LoginWidgetView : FrameLayout {
 
     private fun renderImage(profilePicture: String?) {
         if(profilePicture.isNullOrEmpty()) {
-            this.image?.loadImage(R.drawable.ic_login_widget_default)
+            this.image?.loadImage(homeR.drawable.ic_login_widget_default)
         } else {
             this.image?.loadImage(profilePicture)
         }
@@ -107,5 +140,10 @@ class LoginWidgetView : FrameLayout {
     fun renderTextColor(homeThematicUtil: HomeThematicUtil) {
         this.title?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN950, itemView.context))
         this.subtitle?.setTextColor(homeThematicUtil.getThematicColor(unifyprinciplesR.color.Unify_NN600, itemView.context))
+    }
+
+    companion object {
+        private const val TYPE_CLEAR = 0
+        private const val TYPE_FILLED = 1
     }
 }

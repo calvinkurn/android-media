@@ -31,10 +31,14 @@ data class DynamicOneLinerUiModel(
         val status: String = "",
         val chevronPos: String = "",
         private val paddingTop: Int = 0,
-        private val paddingBottom: Int = 0
+        private val paddingBottom: Int = 0,
+        private val imageWidth: Int = 0,
+        private val imageHeight: Int = 0
     ) {
         val paddingTopPx = paddingTop.toPx()
         val paddingBottomPx = paddingBottom.toPx()
+        val imageWidthPx = imageWidth.toPx()
+        val imageHeightPx = imageHeight.toPx()
 
         val shouldShowSeparatorTop
             get() = separator == ProductCustomInfoDataModel.SEPARATOR_BOTH ||

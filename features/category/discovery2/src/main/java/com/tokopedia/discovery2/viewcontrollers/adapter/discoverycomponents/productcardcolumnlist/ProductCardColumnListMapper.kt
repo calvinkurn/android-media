@@ -5,6 +5,7 @@ import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.Badges
@@ -39,7 +40,7 @@ object ProductCardColumnListMapper {
                     } else {
                         item.discountPercentage.orEmpty()
                     },
-                    isInBackground = it.properties?.cardType.equals("v2_with_background", true),
+                    isInBackground = it.properties.isReimagineProductCardInBackground(),
                     countSoldRating = item.averageRating,
                     isTopAds = item.isTopads ?: false,
                     freeOngkir = ProductCardModel.FreeOngkir(

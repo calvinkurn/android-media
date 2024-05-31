@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
@@ -70,9 +71,11 @@ interface ContentDetailRepository {
         rowNumber: Int,
     ): ReportContentModel
 
-    suspend fun trackVisitChannel(
+    suspend fun trackPerformance(
         channelId: String,
         rowNumber: Int,
+        productIds: List<String>,
+        event: BroadcasterReportTrackViewerUseCase.Companion.Event,
     ): VisitContentModel
 
     suspend fun trackViewer(

@@ -13,7 +13,7 @@ data class HomeHeaderDataModel(
     var needToShowChooseAddress: Boolean = true,
     var headerDataModel: HeaderDataModel? = HeaderDataModel()
 ) : ImpressHolder(),
-    HomeVisitable,
+    HeaderInterface,
     LoadableComponent by BlocksLoadableComponent(
         {
             if (headerDataModel?.isUserLogin == false) {

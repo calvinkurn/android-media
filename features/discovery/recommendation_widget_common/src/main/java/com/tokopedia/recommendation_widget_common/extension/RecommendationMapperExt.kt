@@ -23,9 +23,9 @@ import com.tokopedia.unifycomponents.UnifyButton
  * Created by Lukas on 2/15/21.
  */
 
-fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel(): List<RecommendationWidget> {
+fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel(startIndex: Int = 0): List<RecommendationWidget> {
     return map { recommendationData ->
-        recommendationData.toRecommendationWidget()
+        recommendationData.toRecommendationWidget(startIndex)
     }
 }
 
@@ -38,7 +38,7 @@ fun RecommendationEntity.AppLog.toAppLogModel(recParam: String = ""): Recommenda
     )
 }
 
-fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
+fun RecommendationEntity.RecommendationData.toRecommendationWidget(startIndex: Int = 0): RecommendationWidget {
     return RecommendationWidget(
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
             val badges = if (isTokonow()) {
@@ -76,7 +76,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 slashedPriceInt = recommendation.slashedPriceInt,
                 discountPercentage = if (recommendation.discountPercentage > 0) "${recommendation.discountPercentage}%" else "",
                 discountPercentageInt = recommendation.discountPercentage,
-                position = index,
+                position = startIndex + index,
                 shopId = recommendation.shop.id,
                 shopName = recommendation.shop.name,
                 warehouseId = recommendation.warehouseId,

@@ -20,7 +20,8 @@ private const val DESIGN_2 = 2.1
 private const val ASPECT_RATIO_3_TO_1 = 3
 private const val ASPECT_RATIO_2_TO_1 = 2
 
-class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) :
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var myCouponItemViewModel: MyCouponItemViewModel? = null
     private val myCouponImage: ImageUnify = itemView.findViewById(R.id.image_my_coupon)
@@ -73,7 +74,15 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
                 }
             }
             layoutParams.width = (
-                (displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap)) /
+                (
+                    displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
+                        if (defaultDesign == DESIGN_1) {
+                            R.dimen.dp_42
+                        } else {
+                            R.dimen.my_coupon_gap
+                        }
+                    )
+                    ) /
                     defaultDesign
                 ).toInt()
             layoutParams.height = (layoutParams.width / aspectRatio)

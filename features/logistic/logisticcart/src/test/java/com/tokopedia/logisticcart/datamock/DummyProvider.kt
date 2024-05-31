@@ -7,6 +7,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Estim
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.logisticcart.FileUtils
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
+import com.tokopedia.logisticcart.shipping.model.PaidSectionInfoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
@@ -65,6 +66,13 @@ internal object DummyProvider {
         return shippingRecomData
     }
 
+    fun getShippingDataWithPaidSection(): ShippingRecommendationData {
+        val ratesData = getRatesResponseWithPromo()
+        val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
+        shippingRecomData.paidSectionInfoUiModel = PaidSectionInfoUiModel(title = "Pengiriman tanpa Bebas Ongkir", isCollapsed = true)
+        return shippingRecomData
+    }
+
     fun getShippingDataWithoutEligibleCourierPromo(): ShippingRecommendationData {
         val ratesData = getRatesResponseWithPromo()
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
@@ -85,8 +93,7 @@ internal object DummyProvider {
     fun getShippingDataWithServiceError(errorCode: Int = 1): ShippingRecommendationData {
         val ratesData = getRatesResponseWithPromo()
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
-        val errorService = shippingRecomData.shippingDurationUiModels.first()
-        errorService.etaErrorCode = errorCode
+        shippingRecomData.shippingDurationUiModels.forEach { it.etaErrorCode = errorCode }
         return shippingRecomData
     }
 

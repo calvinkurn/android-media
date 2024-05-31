@@ -40,11 +40,15 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogFirstTrackId
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.byteio.pdp.AtcBuyType
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.perf.bindFpsTracer
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -212,9 +216,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ARG_AFFILIATE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ARG_AFFILIATE_SUB_IDS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PLAY_CAROUSEL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
@@ -308,8 +310,10 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
 import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
+import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommendationManager
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -571,7 +575,6 @@ open class ProductDetailFragment :
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
-    private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
     private var campaignId: String = ""
     private var variantId: String = ""
     private var prefetchCacheId: String = ""
@@ -601,12 +604,16 @@ open class ProductDetailFragment :
             pdpCallback = this
         )
     }
+
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> =
             AsyncDifferConfig.Builder(ProductDetailDiffUtilCallback())
                 .build()
         ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
     }
+
+    private var infiniteRecommManager :InfiniteRecommendationManager? = null
+
     private var navToolbar: NavToolbar? = null
 
     private var buttonActionType: Int = 0
@@ -816,7 +823,6 @@ open class ProductDetailFragment :
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
-        observeVerticalRecommendation()
         observeOneTimeMethod()
         observeProductMediaRecomData()
         observeBottomSheetEdu()
@@ -3173,6 +3179,8 @@ open class ProductDetailFragment :
                         isCampaign = viewModel.getProductInfoP1?.isCampaign
                     )
                 }
+
+                appendInfiniteRecomm()
             }, {
                 handleObserverP1Error(error = it)
             })
@@ -3181,6 +3189,35 @@ open class ProductDetailFragment :
                 stopPLTRenderPageAndMonitoringP1()
             }
         }
+    }
+
+    private fun appendInfiniteRecomm() {
+        infiniteRecommManager = InfiniteRecommendationManager(
+            context = requireContext(),
+            additionalAppLogParam = getAppLogAdditionalParam(),
+            enableSeparator = true
+        )
+        getRecyclerView()?.addOneTimeGlobalLayoutListener {
+            infiniteRecommManager?.let {
+                val hasInfinite = viewModel.getProductInfoP1?.hasInfiniteRecommendation ?: false
+                if (hasInfinite && concatAdapter?.adapters?.size != 2) {
+                    concatAdapter?.addAdapter(it.adapter)
+                }
+
+                if (hasInfinite) {
+                    it.requestParam = GetRecommendationRequestParam(
+                        pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
+                        productIds = listOf(productId.orEmpty()),
+                        queryParam = viewModel.getP1()?.infiniteRecommendationQueryParam.orEmpty()
+                    )
+                }
+            }
+        }
+    }
+
+    override fun getAppLogAdditionalParam(): AppLogAdditionalParam.PDP {
+        return pdpUiUpdater?.getAppLogAdditionalParam(viewModel.getP1())
+            ?: AppLogAdditionalParam.PDP()
     }
 
     private fun handleObserverP1Error(error: Throwable) {
@@ -3438,55 +3475,6 @@ open class ProductDetailFragment :
             }
 
         view?.showToasterSuccess(if (isNplFollowerType) getString(productdetailcommonR.string.merchant_product_detail_success_follow_shop_npl) else message)
-    }
-
-    /**
-     * When Vertical Recommendation Exists, will attach endless scroll listener
-     * otherwise, the listener will be remove from recyclerView
-     */
-    private fun observeVerticalRecommendation() {
-        viewLifecycleOwner.observe(viewModel.verticalRecommendation) { data ->
-            data.doSuccessOrFail({
-                successFetchRecommendationVertical(it.data)
-            }, {
-                removeRecommendationVertical()
-            })
-            updateUi()
-        }
-    }
-
-    private fun successFetchRecommendationVertical(recommendationWidget: RecommendationWidget) {
-        if (recommendationWidget.currentPage == DEFAULT_PAGE_NUMBER && recommendationWidget.recommendationItemList.isEmpty()) {
-            pdpUiUpdater?.removeEmptyRecommendation(recommendationWidget)
-            return
-        }
-
-        pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
-        endlessScrollListener?.updateStateAfterGetData()
-
-        if (recommendationWidget.hasNext) {
-            addEndlessScrollListener {
-                val page =
-                    pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
-                val placeholderData =
-                    pdpUiUpdater?.getVerticalRecommendationPlaceholder(recommendationWidget.pageName)
-
-                viewModel.getVerticalRecommendationData(
-                    recommendationWidget.pageName,
-                    page,
-                    productId,
-                    queryParam = placeholderData?.queryParam.orEmpty(),
-                    thematicId = placeholderData?.thematicId.orEmpty()
-                )
-            }
-        } else {
-            removeRecommendationVertical()
-        }
-    }
-
-    private fun removeRecommendationVertical() {
-        pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
-        removeEndlessScrollListener()
     }
 
     private fun showAtcSuccessToaster(result: AddToCartDataModel) {
@@ -6217,25 +6205,6 @@ open class ProductDetailFragment :
         shopDomain.orEmpty(),
         productKey.orEmpty()
     )
-
-    override fun startVerticalRecommendation(
-        pageName: String,
-        queryParam: String,
-        thematicId: String
-    ) {
-        viewModel.getVerticalRecommendationData(
-            pageName = pageName,
-            productId = productId,
-            queryParam = queryParam,
-            thematicId = thematicId
-        )
-    }
-
-    override fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel) {
-        verticalRecommendationTrackDataModel = componentTrackDataModel
-    }
-
-    override fun getRecommendationVerticalTrackData() = verticalRecommendationTrackDataModel
 
     override fun onViewToViewImpressed(
         data: ViewToViewItemData,

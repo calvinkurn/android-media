@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_paid_shipping_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Pengiriman tanpa Bebas Ongkir"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_paid_shipping_collapse"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_NN950"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+</LinearLayout>

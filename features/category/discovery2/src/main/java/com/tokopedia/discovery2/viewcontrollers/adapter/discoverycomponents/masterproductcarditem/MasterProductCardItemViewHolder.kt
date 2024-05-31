@@ -7,15 +7,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCart
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
 import com.tokopedia.discovery2.data.DataItem
@@ -242,33 +247,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun populateData(productCardModel: ProductCardModel) {
-        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
-            productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
-            productCardName == ComponentNames.ProductCardCarouselItemList.componentName ||
-            productCardName == ComponentNames.ProductCardCarouselItemReimagine.componentName ||
-            productCardName == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName ||
-            productCardName == ComponentNames.ProductCardCarouselItemListReimagine.componentName ||
-            productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
-        ) {
-            masterProductCardGridView?.let {
-                it.applyCarousel()
-                productCardView?.layoutParams?.width =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            }
-            masterProductCardListView?.let {
-                it.applyCarousel()
-                productCardView?.layoutParams?.width =
-                    Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                        R.dimen.dp_70
-                    )
-                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            }
-        } else {
-            setProductViewDimens()
-        }
+        adjustLayoutDimens()
         masterProductCardGridView?.setProductModel(productCardModel)
         masterProductCardListView?.setProductModel(productCardModel)
         updateNotifyMeState(dataItem?.notifyMe)
@@ -279,6 +258,36 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         setSimilarProductWishlist(dataItem)
         checkProductIsFulfillment(productCardModel)
         setButtonATCOnClickListener()
+    }
+
+    private fun adjustLayoutDimens() {
+        val oldVersionCard = masterProductCardItemViewModel?.components?.properties.isOldProductCardType()
+        if (!oldVersionCard) return
+
+        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
+                productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
+                productCardName == ComponentNames.ProductCardCarouselItemList.componentName ||
+                productCardName == ComponentNames.ShopOfferHeroBrandProductItem.componentName
+        ) {
+            masterProductCardGridView?.let {
+                it.applyCarousel()
+                productCardView?.layoutParams?.width =
+                        itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            masterProductCardListView?.let {
+                it.applyCarousel()
+                productCardView?.layoutParams?.width =
+                        Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
+                            R.dimen.dp_70
+                        )
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+        } else {
+            setProductViewDimens()
+        }
     }
 
     private fun setButtonATCOnClickListener() {
@@ -411,7 +420,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem?.let {
             if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(productCardName)
+                    it.asProductTrackModel(productCardName),
+                    ClickAreaType.PRODUCT
                 )
             }
         }
@@ -508,9 +518,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                     quantity = quantity,
                                     shopId = if (isGeneralCartATC) productItem.shopId else null,
                                     isGeneralCartATC = isGeneralCartATC,
-                                    requestingComponent = masterProductCardItemViewModel.components
+                                    requestingComponent = masterProductCardItemViewModel.components,
+                                    appLogParam = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
                                 )
                             )
+
+                            if (productItem.isEligibleToTrack()) {
+                                productItem.trackConfirmCartAppLog()
+                            }
                         }
                     }
                 }
@@ -519,6 +534,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 (fragment as DiscoveryFragment).openLoginScreen()
             }
         }
+    }
+
+    private fun DataItem.trackConfirmCartAppLog() {
+        val productTrackModel = asProductTrackModel(productCardName)
+        AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, asTrackConfirmCart())
     }
 
     companion object {

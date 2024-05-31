@@ -5,27 +5,28 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.databinding.ViewPlayGridBinding
-import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
 import com.tokopedia.play.ui.explorewidget.viewholder.PlayExploreWidgetViewHolder
-import com.tokopedia.play.view.uimodel.ExploreWidgetPlaceholder
-import com.tokopedia.play.view.uimodel.ExploreWidgetItemUiModel
-import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.widget.ui.adapter.viewholder.placeholder.PlayWidgetCardPlaceholderViewHolder
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
 import com.tokopedia.play.R as playR
-import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 02/12/22
  */
 class WidgetAdapterDelegate private constructor() {
     internal class Widget(
-        private val coordinator: PlayExploreWidgetCoordinator
-    ) : TypedAdapterDelegate<ExploreWidgetItemUiModel, WidgetUiModel, PlayExploreWidgetViewHolder.Widget>(playR.layout.view_play_grid) {
+        private val listener: PlayExploreWidgetViewHolder.Widget.Listener
+    ) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetItemUiModel, PlayExploreWidgetViewHolder.Widget>(
+        playR.layout.view_play_grid
+    ) {
+
         override fun onBindViewHolder(
-            item: ExploreWidgetItemUiModel,
+            item: PlayWidgetChannelUiModel,
             holder: PlayExploreWidgetViewHolder.Widget
         ) {
-            holder.bind(item.item)
+            holder.bind(item)
         }
 
         override fun onCreateViewHolder(
@@ -34,23 +35,23 @@ class WidgetAdapterDelegate private constructor() {
         ): PlayExploreWidgetViewHolder.Widget {
             val binding =
                 ViewPlayGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return PlayExploreWidgetViewHolder.Widget.create(binding, coordinator)
+            return PlayExploreWidgetViewHolder.Widget.create(binding, listener)
         }
     }
 
     internal class Shimmering :
-        TypedAdapterDelegate<ExploreWidgetPlaceholder, WidgetUiModel, PlayWidgetCardPlaceholderViewHolder>(
+        TypedAdapterDelegate<PlayWidgetShimmerUiModel, PlayWidgetItemUiModel, PlayWidgetCardPlaceholderViewHolder>(
             PlayWidgetCardPlaceholderViewHolder.layout
         ) {
+
         override fun onBindViewHolder(
-            item: ExploreWidgetPlaceholder,
+            item: PlayWidgetShimmerUiModel,
             holder: PlayWidgetCardPlaceholderViewHolder
         ) {
-            val space8 = holder.itemView.resources.getDimensionPixelSize(unifyR.dimen.unify_space_8)
             holder.bind()
-            holder.itemView.setPadding(space8, space8, space8, space8)
             holder.setType(PlayWidgetCardPlaceholderViewHolder.Type.MEDIUM)
         }
+
 
         override fun onCreateViewHolder(
             parent: ViewGroup,

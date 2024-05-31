@@ -23,6 +23,10 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         error_id
         error_message
       }
+      paid_section_info {
+        is_collapsed
+        label_text
+      }
       services {
         service_name
         service_id
@@ -293,6 +297,10 @@ internal fun ratesQuery() = """
           error {
             error_id
             error_message
+          }
+          paid_section_info {
+            is_collapsed
+            label_text
           }
           services {
             service_name

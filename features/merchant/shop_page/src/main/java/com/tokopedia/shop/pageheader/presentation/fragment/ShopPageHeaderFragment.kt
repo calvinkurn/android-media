@@ -447,6 +447,9 @@ class ShopPageHeaderFragment :
         null
     private var shopPageFeedTabSharedViewModel: ShopPageFeedTabSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
+    private val mockDataSharedPreferences by lazy {
+        activity?.getSharedPreferences(ShopPageConstant.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+    }
     private var isGeneralShareBottomSheet = false
     var selectedPosition = -1
     val isMyShop: Boolean
@@ -2192,7 +2195,11 @@ class ShopPageHeaderFragment :
                     ).apply {
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
-                        setHomeTabLottieUrl(it.lottieUrl)
+                        setHomeTabLottieUrl(
+                            it.lottieUrl.ifEmpty {
+                                mockDataSharedPreferences?.getString(ShopPageConstant.SHARED_PREF_MOCK_LOTTIE_URL_DATA, null).orEmpty()
+                            }
+                        )
                     }
                 }
 

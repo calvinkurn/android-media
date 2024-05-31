@@ -118,7 +118,7 @@
         app:layout_constraintStart_toEndOf="@id/image_icon"
         app:layout_constraintTop_toBottomOf="@id/text_title"
         app:typographyType="display_3"
-        tools:text="Bisa 2 jam tiba (+1 opsi lain)" />
+        tools:text="Bisa 1 jam tiba (+1 opsi lain)" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/image_chevron_down"

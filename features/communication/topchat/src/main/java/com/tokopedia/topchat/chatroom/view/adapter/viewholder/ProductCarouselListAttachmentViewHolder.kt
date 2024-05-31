@@ -15,7 +15,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.Prod
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.TopChatRoomProductCarouselUiModel
 
 class ProductCarouselListAttachmentViewHolder constructor(
     itemView: View?,
@@ -25,7 +25,7 @@ class ProductCarouselListAttachmentViewHolder constructor(
     private val searchListener: SearchListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener
-) : BaseChatViewHolder<ProductCarouselUiModel>(itemView) {
+) : BaseChatViewHolder<TopChatRoomProductCarouselUiModel>(itemView) {
 
     interface Listener {
         fun saveProductCarouselState(position: Int, state: Parcelable?)
@@ -51,7 +51,7 @@ class ProductCarouselListAttachmentViewHolder constructor(
         )
     }
 
-    override fun bind(carousel: ProductCarouselUiModel, payloads: MutableList<Any>) {
+    override fun bind(carousel: TopChatRoomProductCarouselUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (val payload = payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED, Payload.REBIND -> {
@@ -66,7 +66,7 @@ class ProductCarouselListAttachmentViewHolder constructor(
         }
     }
 
-    override fun bind(carousel: ProductCarouselUiModel) {
+    override fun bind(carousel: TopChatRoomProductCarouselUiModel) {
         super.bind(carousel)
         ProductCarouselListAttachmentViewHolderBinder.updateParentMetaData(
             carousel,

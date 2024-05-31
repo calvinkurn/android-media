@@ -96,6 +96,7 @@ internal fun FeedProductLabel(
                     textStyle = NestTheme.typography.display3.copy(
                         color = NestTheme.colors.NN._0
                     ),
+                    maxLines = 1,
                     modifier = Modifier
                         .wrapContentSize()
                         .widthIn(0.dp, 240.dp)

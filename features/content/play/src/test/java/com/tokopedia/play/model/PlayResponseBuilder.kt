@@ -1,8 +1,6 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.tokopedia.play.data.ReportSummaries
-import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 
 /**
@@ -324,32 +322,8 @@ class PlayResponseBuilder {
         }
     """.trimIndent()
 
-    fun buildReportSummariesResponse(): ReportSummaries {
-        return gson.fromJson(reportSummariesResponse, ReportSummaries.Response::class.java).reportSummaries
-    }
 
     fun buildChannelDetailsWithRecomResponse(): ChannelDetailsWithRecomResponse {
         return gson.fromJson(channelJsonWithRecomResponse, ChannelDetailsWithRecomResponse::class.java)
-    }
-
-    fun buildPartnerInfoResponse(): ShopInfo {
-        return gson.fromJson(partnerInfoResponse, ShopInfo.Response::class.java).result.data.first()
-    }
-
-    fun buildCustomReportSummariesReponse(totalLike: String, totalView: String): ReportSummaries {
-        return ReportSummaries(
-                listOf(
-                        ReportSummaries.Data(
-                                ReportSummaries.Channel(
-                                        ReportSummaries.Metric(
-                                                totalLike = totalLike,
-                                                totalLikeFmt = totalLike,
-                                                totalView = totalView,
-                                                totalViewFmt = totalView
-                                        )
-                                )
-                        )
-                )
-        )
     }
 }

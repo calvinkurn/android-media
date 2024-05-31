@@ -1,15 +1,20 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.util.spacelessParam
 import com.tokopedia.analytics.byteio.util.underscoredParam
+import com.tokopedia.kotlin.extensions.view.orZero
 import org.json.JSONObject
 
 /**
@@ -38,6 +43,7 @@ data class AppLogRecommendationProductModel(
     val groupId: String,
     val cardName: String,
     val isEligibleForRecTrigger: Boolean,
+    val additionalParam: AppLogAdditionalParam,
 ) {
 
     val trackId = constructTrackId(null, productId, requestId, itemOrder, cardName)
@@ -66,9 +72,10 @@ data class AppLogRecommendationProductModel(
         rate = rate,
         volume = volume,
         authorId = authorId,
+        additionalParam = additionalParam,
     )
 
-    fun toShowClickJson() = JSONObject().apply {
+    fun toShowClickJson() = JSONObject(additionalParam.parameters).apply {
         addPage()
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
@@ -95,7 +102,7 @@ data class AppLogRecommendationProductModel(
         //TODO P1: group_id, main_video_id
     }
 
-    fun toRecTriggerJson() = JSONObject().apply {
+    fun toRecTriggerJson() = JSONObject(additionalParam.parameters).apply {
         addPage()
         addEnterFrom()
         put(AppLogParam.LIST_NAME, listName)
@@ -105,6 +112,74 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.GLIDE_DISTANCE, 0)
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REQUEST_ID, requestId)
+    }
+
+    fun toConfirmCartJson(product: TrackConfirmCart) = JSONObject().apply {
+        addPage()
+        addEnterFrom()
+        put(
+            AppLogParam.ENTRANCE_INFO,
+            generateEntranceInfoJson(sourceModule).toString()
+        )
+
+        put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
+
+        put(AppLogParam.PRODUCT_ID, product.productId)
+        put("product_category", product.productCategory)
+        put("product_type", product.productType.type)
+        put("original_price_value", product.originalPrice)
+        put("sale_price_value", product.salePrice)
+        put("button_type", "able_to_cart")
+        put("sku_id", product.skuId)
+        put("currency", "IDR")
+        put("add_sku_num", product.addSkuNum)
+        put("buy_type", 1) // ATC will use code 1, otherwise Buy Now use 0
+    }
+
+    fun toConfirmCartResultJson(product: TrackConfirmCartResult) = JSONObject().apply {
+        addPage()
+        addEnterFrom()
+        put(
+            AppLogParam.ENTRANCE_INFO,
+            generateEntranceInfoJson(sourceModule).toString()
+        )
+
+        put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
+
+        put(AppLogParam.PRODUCT_ID, product.productId)
+        put("product_category", product.productCategory)
+        put("product_type", product.productType.type)
+        put("original_price_value", product.originalPrice)
+        put("sale_price_value", product.salePrice)
+        put("button_type", "able_to_cart")
+        put("sku_id", product.skuId)
+        put("currency", "IDR")
+        put("add_sku_num", product.addSkuNum)
+        put("buy_type", 1) // ATC will use code 1, otherwise Buy Now use 0
+        put("cart_item_id", product.cartItemId)
+        put("is_success", product.isSuccess?.intValue.orZero())
+        put("fail_reason", product.failReason)
+    }
+
+    private fun generateEntranceInfoJson(sourceModule: String): JSONObject {
+        return JSONObject().also {
+            it.put(AppLogParam.SOURCE_MODULE, sourceModule)
+            it.put(AppLogParam.ENTRANCE_FORM, entranceForm)
+            it.put(AppLogParam.IS_AD, AppLogAnalytics.getLastData(AppLogParam.IS_AD))
+            it.put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+            it.put(AppLogParam.REQUEST_ID, requestId)
+            it.put(AppLogParam.TRACK_ID, trackId)
+            it.addEnterMethod()
+            it.addEnterFromInfo()
+        }
     }
 
     companion object {
@@ -132,6 +207,7 @@ data class AppLogRecommendationProductModel(
             cardName: String = CardName.REC_GOODS_CARD,
             isTrackAsHorizontalSourceModule : Boolean = false,
             isEligibleForRecTrigger: Boolean = false,
+            additionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = getProductId(productId, parentProductId),
@@ -156,6 +232,7 @@ data class AppLogRecommendationProductModel(
                 groupId = groupId.zeroAsEmpty(),
                 cardName = getCardName(cardName, isAd).spacelessParam(),
                 isEligibleForRecTrigger = isEligibleForRecTrigger,
+                additionalParam = additionalParam,
             )
         }
     }

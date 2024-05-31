@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Primary constructor, use [Builder] class to create this instance.
@@ -52,6 +53,7 @@ open class ProductAttachmentUiModel protected constructor(
     var minOrder: Int = builder.minOrder
     var variants: List<AttachmentVariant> = builder.variants
     var remainingStock: Int = builder.remainingStock
+    var sold: String = builder.sold
     var status: Int = builder.status
     var wishList: Boolean = builder.wishList
     var rating: TopchatProductRating = builder.rating
@@ -72,6 +74,7 @@ open class ProductAttachmentUiModel protected constructor(
         }
     val stringBlastId: String get() = blastId
     var campaignId: String = builder.campaignId
+    var campaign: TopChatCampaign = builder.campaign
     var isFulfillment: Boolean = builder.isFulfillment
     var urlTokocabang: String = builder.urlTokoCabang
     var descTokoCabang: String = builder.descTokoCabang
@@ -89,6 +92,8 @@ open class ProductAttachmentUiModel protected constructor(
     var locationStock: LocationStock = builder.locationStock
     var androidUrl: String = builder.androidUrl
     var iosUrl: String = builder.iosUrl
+
+    val impressHolder = ImpressHolder()
 
     init {
         if (variants.isNotEmpty()) {
@@ -121,12 +126,14 @@ open class ProductAttachmentUiModel protected constructor(
             playStoreData = attribute.productProfile.playStoreData
             minOrder = attribute.productProfile.minOrder
             remainingStock = attribute.productProfile.remainingStock
+            sold = attribute.productProfile.sold.orEmpty()
             status = attribute.productProfile.status
             wishList = attribute.productProfile.wishList
             images = attribute.productProfile.images
             rating = attribute.productProfile.rating
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
+            campaign = attribute.productProfile.campaign ?: TopChatCampaign()
             isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
             descTokoCabang = attribute.productProfile.descTokocabang
@@ -210,6 +217,10 @@ open class ProductAttachmentUiModel protected constructor(
 
     fun isProductArchived(): Boolean {
         return status == statusArchived
+    }
+
+    fun isProductDummySeeMore(): Boolean {
+        return status == statusSeeMoreDummy
     }
 
     fun getStringProductId(): String {
@@ -326,6 +337,7 @@ open class ProductAttachmentUiModel protected constructor(
         const val statusActive = 1
         const val statusWarehouse = 3
         const val statusArchived = 99
+        const val statusSeeMoreDummy = -100
 
         const val NO_PRODUCT_ID = "0"
     }
@@ -349,6 +361,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var playStoreData: PlayStoreData = PlayStoreData()
         internal var minOrder: Int = 1
         internal var remainingStock: Int = 0
+        internal var sold: String = ""
         internal var status: Int = 0
         internal var rating: TopchatProductRating = TopchatProductRating()
         internal var variants: List<AttachmentVariant> = emptyList()
@@ -358,6 +371,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var needSync: Boolean = true
         internal var isSupportVariant: Boolean = false
         internal var campaignId: String = "0"
+        internal var campaign: TopChatCampaign = TopChatCampaign()
         internal var locationStock: LocationStock = LocationStock()
         internal var isUpcomingCampaign: Boolean = false
         internal var isFulfillment: Boolean = false
@@ -384,12 +398,14 @@ open class ProductAttachmentUiModel protected constructor(
             withPlayStoreData(product.productProfile.playStoreData)
             withMinOrder(product.productProfile.minOrder)
             withRemainingStock(product.productProfile.remainingStock)
+            withSold(product.productProfile.sold)
             withStatus(product.productProfile.status)
             withWishList(product.productProfile.wishList)
             withImages(product.productProfile.images)
             withRating(product.productProfile.rating)
             withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
+            withCampaign(product.productProfile.campaign ?: TopChatCampaign())
             withIsPreOrder(product.productProfile.isPreOrder)
             withLocationStock(product.productProfile.locationStock)
             withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
@@ -486,6 +502,10 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
+        fun withSold(sold: String?) = apply {
+            this.sold = sold.orEmpty()
+        }
+
         fun withStatus(status: Int): Builder {
             this.status = status
             return self()
@@ -529,6 +549,10 @@ open class ProductAttachmentUiModel protected constructor(
         fun withCampaignId(campaignId: String): Builder {
             this.campaignId = campaignId
             return self()
+        }
+
+        fun withCampaign(campaign: TopChatCampaign) = apply {
+            this.campaign = campaign
         }
 
         fun withLocationStock(locationStock: LocationStock): Builder {

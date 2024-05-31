@@ -5,11 +5,11 @@ import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingData
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 class ProductBundlingUiModel constructor(
     builder: Builder
-) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), Visitable<TopChatRoomTypeFactory>, DeferredAttachment {
 
     var productBundling: ProductBundlingData = builder.productBundling
         private set
@@ -22,7 +22,7 @@ class ProductBundlingUiModel constructor(
     override var isError: Boolean = false
     override val id: String = attachmentId
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

@@ -13,8 +13,17 @@ data class AtfData(
     val atfStatus: Int = AtfKey.STATUS_LOADING,
     val isCache: Boolean = true,
     val lastUpdate: Long = System.currentTimeMillis(),
+    val style: AtfStyle = AtfStyle()
 ) {
+
     fun getAtfContentAsJson(): String {
         return Gson().toJson(atfContent)
     }
+
+    data class AtfStyle(
+        val isBleeding: Boolean = false,
+        val heightRatio: Int = 0,
+        val widthRatio: Int = 0,
+        val gradientColor: List<String> = emptyList(),
+    )
 }

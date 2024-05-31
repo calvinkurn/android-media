@@ -1,6 +1,8 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 
@@ -21,6 +23,7 @@ data class GetRecommendationRequestParam(
     var hasNewProductCardEnabled: Boolean = false,
     val refreshType: RefreshType = RefreshType.UNKNOWN,
     val bytedanceSessionId: String = "",
+    val totalData: Int = 0,
 ) {
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
@@ -50,34 +53,8 @@ data class GetRecommendationRequestParam(
             requestMap[REFRESH_TYPE] = refreshType.value.toString()
         }
         requestMap[CURRENT_SESSION_ID] = bytedanceSessionId
-        return requestMap
-    }
-
-    fun toViewToViewGqlRequest(): Map<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-
-        requestMap[PRODUCT_CARD_VERSION] = getProductCardReimagineVersion()
-        requestMap[PAGE_NUMBER] = pageNumber
-        requestMap[QUERY_PARAM] = queryParam
-        if (userId != 0) {
-            requestMap[USER_ID] = userId
-        }
-        if (productIds.isNotEmpty())
-            requestMap[PRODUCT_IDS] = TextUtils.join(",", productIds)
-        if (categoryIds.isNotEmpty())
-            requestMap[CATEGORY_IDS] = TextUtils.join(",", categoryIds)
-        if (xSource.isNotEmpty()) requestMap[X_SOURCE] = xSource
-        if (xDevice.isNotEmpty()) requestMap[X_DEVICE] = xDevice
-        if (criteriaThematicIDs.isNotEmpty()) {
-            requestMap[CRITERIA_THEMATIC_IDS] = criteriaThematicIDs.joinToString(",")
-        }
-
-        if(refreshType != RefreshType.UNKNOWN) {
-            requestMap[REFRESH_TYPE] = refreshType.value.toString()
-        }
-        if(bytedanceSessionId.isNotEmpty()) {
-            requestMap[CURRENT_SESSION_ID] = bytedanceSessionId
-        }
+        requestMap[ENTER_FROM] = AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)?.toString().orEmpty()
+        requestMap[SOURCE_PAGE_TYPE] = AppLogAnalytics.getLastData(AppLogParam.SOURCE_PAGE_TYPE)?.toString().orEmpty()
         return requestMap
     }
 
@@ -106,6 +83,8 @@ data class GetRecommendationRequestParam(
         private const val CRITERIA_THEMATIC_IDS = "criteriaThematicIDs"
         private const val REFRESH_TYPE = "refreshType"
         private const val CURRENT_SESSION_ID = "currentSessionID"
+        private const val ENTER_FROM = "enterFrom"
+        private const val SOURCE_PAGE_TYPE = "sourcePageType"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0

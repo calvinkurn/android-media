@@ -1,0 +1,2397 @@
+[
+  {
+    "playGetWidgetV2": {
+      "data": [
+        {
+          "__typename": "PlayWidgetChannel",
+          "ID": "2771145",
+          "title": "Coba Kelembutan Baru Zwitsal!",
+          "widgetType": "LIVE",
+          "appLink": "tokopedia://play/2771145?source_id=11871050&source_type=SHOP",
+          "webLink": "https://www.tokopedia.com/play/channel/2771145",
+          "startTime": "2024-05-02T13:13:43+07:00",
+          "widgetSortingMethod": "PINNED",
+          "recommendationType": "",
+          "config": {
+            "hasPromo": true,
+            "isReminderSet": false,
+            "promo_labels": [
+              {
+                "text": "Kejar Diskon",
+                "type": "ONLY_LIVE"
+              }
+            ]
+          },
+          "partner": {
+            "ID": "11871050",
+            "name": "Unilever Mall",
+            "type": "shop",
+            "thumbnailURL": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/7/12/3d9c32c6-7cf2-400e-a1aa-e803b32ac53b.jpg",
+            "badgeURL": "https://images.tokopedia.net/img/official_store/badge_os.png",
+            "appLink": "tokopedia://shop/11871050"
+          },
+          "video": {
+            "ID": "3264592",
+            "type": "live",
+            "coverUrl": "https://images.tokopedia.net/img/cache/296/jJtrdn/2024/5/2/3c27fe8b-3133-4073-9ee5-9bf13cca1b1c.jpg?b=UiSN_Bj%5EkEaeTaWXa%24e%3AvvWUW9jco%7Dk9k8bH",
+            "streamSource": "https://live-stream.tokopedia.net/live/v0.2/play_20240502061215_ec4a947c-084a-11ef-8fc7-42010a2947ce/live/abr.m3u8",
+            "isShowTotalView": true,
+            "isLive": true
+          },
+          "stats": {
+            "view": {
+              "formatted": "128"
+            }
+          },
+          "share": {
+            "text": "Udah pada nonton \"Coba Kelembutan Baru Zwitsal!\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n${url}",
+            "redirect_url": "https://www.tokopedia.com/play/channel/2771145",
+            "use_short_url": false,
+            "meta_title": "Tonton Unilever Mall di Tokopedia Play",
+            "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Unilever Mall di Tokopedia Play!",
+            "is_show_button": true
+          },
+          "performanceSummaryPageLink": "",
+          "pinnedProducts": [
+            {
+              "id": "3360760746",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4266639513",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "13150911012",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3371125467",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3637763683",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12027593780",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "11950212660",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "11950198130",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360357619",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241050206",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "6023972938",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241027427",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "5213829998",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12456317343",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241257675",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3292528085",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360432860",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3767156624",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241194408",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3371109677",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4315630334",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360564631",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "10283468113",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241283967",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3292512541",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241075889",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241214209",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7657347473",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360542587",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3919434847",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360664035",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360677549",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3480119271",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360772972",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9308017625",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9307994611",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3371100506",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360627173",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360639904",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "6768940405",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9636256760",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3360652354",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241376478",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3317769397",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3241422390",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3317755623",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            }
+          ]
+        },
+        {
+          "__typename": "PlayWidgetChannel",
+          "ID": "2771123",
+          "title": "Perawatan Rambut Lengkap Disc To 30%",
+          "widgetType": "COMING_SOON",
+          "appLink": "tokopedia://play/2771123?source_id=11871050&source_type=SHOP",
+          "webLink": "https://www.tokopedia.com/play/channel/2771123",
+          "startTime": "2024-05-02T15:00:25+07:00",
+          "widgetSortingMethod": "PINNED",
+          "recommendationType": "",
+          "config": {
+            "hasPromo": true,
+            "isReminderSet": false,
+            "promo_labels": [
+              {
+                "text": "Diskon 47%",
+                "type": "DEFAULT"
+              }
+            ]
+          },
+          "partner": {
+            "ID": "11871050",
+            "name": "Unilever Mall",
+            "type": "shop",
+            "thumbnailURL": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/7/12/3d9c32c6-7cf2-400e-a1aa-e803b32ac53b.jpg",
+            "badgeURL": "https://images.tokopedia.net/img/official_store/badge_os.png",
+            "appLink": "tokopedia://shop/11871050"
+          },
+          "video": {
+            "ID": "0",
+            "type": "",
+            "coverUrl": "https://images.tokopedia.net/img/cache/296/jJtrdn/2024/5/2/df793fd0-150c-4c6c-8b10-43ce4580dbb0.jpg?b=UMDK%3Bsj%5E9YjI%253n%24WTWV0cRk-qaxEJaLkCkB",
+            "streamSource": "",
+            "isShowTotalView": true,
+            "isLive": false
+          },
+          "stats": {
+            "view": {
+              "formatted": "0"
+            }
+          },
+          "share": {
+            "text": "Aku lagi nungguin Perawatan Rambut Lengkap Disc To 30% di Tokopedia Play, lho! Bakal seru sih ini, jadi nggak sabar mau cepet nonton.\n${url}",
+            "redirect_url": "https://www.tokopedia.com/play/channel/2771123",
+            "use_short_url": false,
+            "meta_title": "Tonton Unilever Mall di Tokopedia Play",
+            "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Unilever Mall di Tokopedia Play!",
+            "is_show_button": true
+          },
+          "performanceSummaryPageLink": "",
+          "pinnedProducts": [
+            {
+              "id": "6129362169",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884135849",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884059880",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9883984272",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884309992",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8102869267",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2423207336",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12851992078",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2428261802",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453745",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "5070029122",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8899502319",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7215046998",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12380863040",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4893902609",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3296787849",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2747718906",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4893484333",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12653101936",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12380946931",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2925192503",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2453348995",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2184474953",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2067804834",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2044747719",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3487506312",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2448040356",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2448049303",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12332726934",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12332713455",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12744818369",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9248516790",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7409971355",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12685468566",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2458018361",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2433040416",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453695",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453778",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "6789058567",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2041045696",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2041053899",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2184530995",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7409970801",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7296778817",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "6711972748",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8355747117",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7410435470",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2561741774",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7758898247",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2428173953",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            }
+          ]
+        },
+        {
+          "__typename": "PlayWidgetChannel",
+          "ID": "2771128",
+          "title": "Perawatan Rambut Keluarga Disc To 30%",
+          "widgetType": "COMING_SOON",
+          "appLink": "tokopedia://play/2771128?source_id=11871050&source_type=SHOP",
+          "webLink": "https://www.tokopedia.com/play/channel/2771128",
+          "startTime": "2024-05-02T19:00:50+07:00",
+          "widgetSortingMethod": "PINNED",
+          "recommendationType": "",
+          "config": {
+            "hasPromo": true,
+            "isReminderSet": false,
+            "promo_labels": [
+              {
+                "text": "Diskon 47%",
+                "type": "DEFAULT"
+              }
+            ]
+          },
+          "partner": {
+            "ID": "11871050",
+            "name": "Unilever Mall",
+            "type": "shop",
+            "thumbnailURL": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/7/12/3d9c32c6-7cf2-400e-a1aa-e803b32ac53b.jpg",
+            "badgeURL": "https://images.tokopedia.net/img/official_store/badge_os.png",
+            "appLink": "tokopedia://shop/11871050"
+          },
+          "video": {
+            "ID": "0",
+            "type": "",
+            "coverUrl": "https://images.tokopedia.net/img/cache/296/jJtrdn/2024/5/2/8b45b407-82b8-4c32-a434-62ccba600fb6.jpg?b=UbKxetM_wF9bIVS0Ria~0cogJB-o-VoLV%40xb",
+            "streamSource": "",
+            "isShowTotalView": true,
+            "isLive": false
+          },
+          "stats": {
+            "view": {
+              "formatted": "0"
+            }
+          },
+          "share": {
+            "text": "Aku lagi nungguin Perawatan Rambut Keluarga Disc To 30% di Tokopedia Play, lho! Bakal seru sih ini, jadi nggak sabar mau cepet nonton.\n${url}",
+            "redirect_url": "https://www.tokopedia.com/play/channel/2771128",
+            "use_short_url": false,
+            "meta_title": "Tonton Unilever Mall di Tokopedia Play",
+            "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Unilever Mall di Tokopedia Play!",
+            "is_show_button": true
+          },
+          "performanceSummaryPageLink": "",
+          "pinnedProducts": [
+            {
+              "id": "6129362169",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884135849",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884059880",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9883984272",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884309992",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8102869267",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2423207336",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2428261802",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12851992078",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453745",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8899502319",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "5070029122",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12380863040",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7215046998",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4893902609",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3296787849",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2747718906",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4893484333",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12653101936",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12380946931",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2925192503",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2453348995",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2184474953",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2067804834",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2044747719",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3487506312",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2448040356",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2448049303",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "13150936985",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12332726934",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12332713455",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12744818369",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9248516790",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7409971355",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2458009673",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12685468566",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2458018361",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2433040416",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453695",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453778",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "6789058567",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2041045696",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2041053899",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2184530995",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7409970801",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7296778817",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "6711972748",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8355747117",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "11527028450",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "11526982770",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            }
+          ]
+        },
+        {
+          "__typename": "PlayWidgetChannel",
+          "ID": "2771134",
+          "title": "Perawatan Rambut Ala Salon Disc To 30%",
+          "widgetType": "COMING_SOON",
+          "appLink": "tokopedia://play/2771134?source_id=11871050&source_type=SHOP",
+          "webLink": "https://www.tokopedia.com/play/channel/2771134",
+          "startTime": "2024-05-02T23:00:06+07:00",
+          "widgetSortingMethod": "PINNED",
+          "recommendationType": "",
+          "config": {
+            "hasPromo": true,
+            "isReminderSet": false,
+            "promo_labels": [
+              {
+                "text": "Diskon 47%",
+                "type": "DEFAULT"
+              }
+            ]
+          },
+          "partner": {
+            "ID": "11871050",
+            "name": "Unilever Mall",
+            "type": "shop",
+            "thumbnailURL": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/7/12/3d9c32c6-7cf2-400e-a1aa-e803b32ac53b.jpg",
+            "badgeURL": "https://images.tokopedia.net/img/official_store/badge_os.png",
+            "appLink": "tokopedia://shop/11871050"
+          },
+          "video": {
+            "ID": "0",
+            "type": "",
+            "coverUrl": "https://images.tokopedia.net/img/cache/296/jJtrdn/2024/5/2/b9f392ec-59c3-4771-97c3-49e35b312c1a.jpg?b=UcIOUiogOFa%234-fhjYfP1vWBslj%3F%2CxflX9bH",
+            "streamSource": "",
+            "isShowTotalView": true,
+            "isLive": false
+          },
+          "stats": {
+            "view": {
+              "formatted": "0"
+            }
+          },
+          "share": {
+            "text": "Aku lagi nungguin Perawatan Rambut Ala Salon Disc To 30% di Tokopedia Play, lho! Bakal seru sih ini, jadi nggak sabar mau cepet nonton.\n${url}",
+            "redirect_url": "https://www.tokopedia.com/play/channel/2771134",
+            "use_short_url": false,
+            "meta_title": "Tonton Unilever Mall di Tokopedia Play",
+            "meta_description": "Aku punya obat anti-bosen buatmu. Ayo nonton Unilever Mall di Tokopedia Play!",
+            "is_show_button": true
+          },
+          "performanceSummaryPageLink": "",
+          "pinnedProducts": [
+            {
+              "id": "6129362169",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884135849",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884059880",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9883984272",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9884309992",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8102869267",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2423207336",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "13114622460",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12851992078",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "8899502319",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "5070029122",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12380863040",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7215046998",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4893902609",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3296787849",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2747718906",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4893484333",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12653101936",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12380946931",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2925192503",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2453348995",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2184474953",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2067804834",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2044747719",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3487506312",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2448040356",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2448049303",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "11527028450",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "11526982770",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12455945669",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3929001823",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "5474281785",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3222371263",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "3370577443",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "13150936985",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12332726934",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "12332713455",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7409970969",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "9248516790",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7409971355",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2458009673",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2458018361",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2433040416",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453695",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "4810453778",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "6789058567",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2041045696",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2041053899",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "2184530995",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            },
+            {
+              "id": "7409970801",
+              "name": "",
+              "image_url": "",
+              "discount": 0,
+              "original_price": "0",
+              "original_price_fmt": "0",
+              "price": "0",
+              "price_fmt": "0",
+              "app_link": ""
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "isAutoRefresh": true,
+        "autoRefreshTimer": 30,
+        "widgetTitle": "Video pilihan toko ini",
+        "buttonText": "Lihat Semua",
+        "widgetBackground": "",
+        "autoplayAmount": 2,
+        "autoplay": true,
+        "buttonApplink": "tokopedia://webview?pull_to_refresh=true&titlebar=false&autoplay=true&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Funilevermall",
+        "buttonWeblink": "https://www.tokopedia.com/play/shop/unilevermall",
+        "overlayImage": "",
+        "overlayImageAppLink": "",
+        "overlayImageWebLink": "",
+        "gradient": [],
+        "serverTimeOffset": "1714635632",
+        "maxAutoplayCell": 30,
+        "maxAutoplayWifi": 300,
+        "template": "MEDIUM",
+        "isButtonVisible": true,
+        "businessWidgetPosition": 0
+      }
+    }
+  }
+]

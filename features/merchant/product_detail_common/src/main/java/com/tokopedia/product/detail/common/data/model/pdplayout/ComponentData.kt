@@ -177,6 +177,8 @@ data class ComponentData(
     val chevronPos: String = "",
     @SerializedName("padding")
     val padding: Padding = Padding(),
+    @SerializedName("imageSize")
+    val imageSize: ImageSize = ImageSize(),
 
     // region a plus content data
     @SerializedName("contentMedia")
@@ -305,4 +307,11 @@ data class Padding(
     val top: Int = 0,
     @SerializedName("b")
     val bottom: Int = 0
+)
+
+data class ImageSize(
+    @SerializedName("w")
+    val width: Int = 0,
+    @SerializedName("h")
+    val height: Int = 0
 )
