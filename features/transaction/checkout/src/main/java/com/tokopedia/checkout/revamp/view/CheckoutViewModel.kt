@@ -3646,7 +3646,7 @@ class CheckoutViewModel @Inject constructor(
                 shouldShowMaxQtyError = showMaxQtyError,
                 shouldShowMinQtyError = showMinQtyError,
                 quantity = newQty,
-                prevQuantity = newQty
+                prevQuantity = product.prevQuantity
             )
             listData.value = checkoutItems
             viewModelScope.launch(dispatchers.io) {

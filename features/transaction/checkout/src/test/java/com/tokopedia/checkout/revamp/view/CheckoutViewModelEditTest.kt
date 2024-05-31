@@ -286,7 +286,7 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
                                     products = listOf(
                                         Product(
                                             cartId = 12,
-                                            productQuantity = 105,
+                                            productQuantity = 100,
                                             productInvenageValue = 100,
                                             productMinOrder = 1,
                                             productMaxOrder = 300,
@@ -360,7 +360,7 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
                                     products = listOf(
                                         Product(
                                             cartId = 12,
-                                            productQuantity = 50,
+                                            productQuantity = 30,
                                             productInvenageValue = 999,
                                             productMinOrder = 1,
                                             productMaxOrder = 30,
@@ -434,7 +434,7 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
                                     products = listOf(
                                         Product(
                                             cartId = 12,
-                                            productQuantity = 105,
+                                            productQuantity = 100,
                                             productInvenageValue = 300,
                                             productMinOrder = 1,
                                             productMaxOrder = 100,
@@ -508,7 +508,7 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
                                     products = listOf(
                                         Product(
                                             cartId = 12,
-                                            productQuantity = 3,
+                                            productQuantity = 5,
                                             productInvenageValue = 300,
                                             productMinOrder = 5,
                                             productMaxOrder = 100,
@@ -536,5 +536,49 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
 
         // THEN
         assertEquals(5, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
+    }
+
+    @Test
+    fun `GIVEN failed update quantity WHEN change quantity product below min order value THEN should set quantity product with min order value`() {
+        // GIVEN
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartId = 12, quantity = 1, prevQuantity = 1, invenageValue = 100, minOrder = 1, maxOrder = 300, switchInvenage = 1),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            updateCartUseCase.get().executeOnBackground()
+        } returns UpdateCartV2Data(status = "ERROR", data = Data(status = false))
+
+        // WHEN
+        viewModel.updateQuantityProduct(12, 3)
+
+        // THEN
+        assertEquals(1, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
     }
 }
