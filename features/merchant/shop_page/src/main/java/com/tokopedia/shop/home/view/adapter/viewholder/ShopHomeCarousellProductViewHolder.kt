@@ -352,7 +352,8 @@ class ShopHomeCarousellProductViewHolder(
                     carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
                     carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
                     carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
-                    isOverrideWidgetTheme = isOverrideWidgetTheme
+                    isOverrideWidgetTheme = isOverrideWidgetTheme,
+                    productCardType = ShopHomeCarouselProductAdapterTypeFactory.ProductCardType.GRID
                 )
             )
             val totalProductSize = shopHomeProductViewModelList.size
