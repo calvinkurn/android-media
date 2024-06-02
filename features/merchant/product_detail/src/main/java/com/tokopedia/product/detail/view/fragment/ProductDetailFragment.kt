@@ -3185,8 +3185,7 @@ open class ProductDetailFragment :
     private fun appendInfiniteRecomm() {
         infiniteRecommManager = InfiniteRecommendationManager(
             context = requireContext(),
-            additionalAppLogParam = getAppLogAdditionalParam(),
-            enableSeparator = true
+            additionalAppLogParam = getAppLogAdditionalParam()
         )
         getRecyclerView()?.addOneTimeGlobalLayoutListener {
             infiniteRecommManager?.let {
