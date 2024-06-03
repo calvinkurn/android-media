@@ -147,7 +147,7 @@ class AccountHeaderViewHolder(itemView: View,
         btnSettings.visible()
 
         layoutLoginHeader.setOnClickListener {
-            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_USER_ACCOUNT, ApplinkConst.ACCOUNT)
+            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_USER_ACCOUNT, ApplinkConst.User.ACCOUNT)
         }
 
         /**

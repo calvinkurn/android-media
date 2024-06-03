@@ -3,7 +3,6 @@ package com.tokopedia.applink
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist
-import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
 import com.tokopedia.applink.category.DeeplinkMapperMoneyIn
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot
@@ -78,7 +77,7 @@ object DeeplinkMainApp {
     val deeplinkPatternTokopediaSchemeListv2: Map<String, MutableList<DLP>> = mapOf(
         "account" to mutableListOf(
             DLP.goTo { deeplink: String ->
-                DeeplinkMapperAccount.getAccountInternalApplink(deeplink)
+                DeeplinkMapperUser.getAccountInternalApplink(deeplink)
             }
         ),
         "add-phone" to mutableListOf(
@@ -92,8 +91,8 @@ object DeeplinkMainApp {
             }
         ),
         "addname" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.MANAGE_NAME
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "addon" to mutableListOf(
@@ -147,8 +146,8 @@ object DeeplinkMainApp {
             DLP.goToLink { ApplinkConstInternalGlobal.BROWSER }
         ),
         "buka-toko-online-gratis" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "buyer" to mutableListOf(
@@ -461,12 +460,14 @@ object DeeplinkMainApp {
             }
         ),
         "kyc" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.KYC_INFO_BASE
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getKYCInternalApplink()
             }
         ),
         "kyc-form" to mutableListOf(
-            DLP.goToLink { ApplinkConstInternalUserPlatform.KYC_FORM_BASE }
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getKYCFormInternalApplink()
+            }
         ),
         "layanan-finansial" to mutableListOf(
             DLP.goTo { deeplink: String ->
@@ -474,8 +475,8 @@ object DeeplinkMainApp {
             }
         ),
         "login" to mutableListOf(
-            DLP.startsWith("qr") { _: String ->
-                ApplinkConstInternalUserPlatform.QR_LOGIN
+            DLP.startsWith("qr") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             },
             DLP.matchPattern("") { deeplink: String ->
                 DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
@@ -658,8 +659,8 @@ object DeeplinkMainApp {
             }
         ),
         "otp-verify" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_RECEIVER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "ovoqrthanks" to mutableListOf(
@@ -835,8 +836,8 @@ object DeeplinkMainApp {
             }
         ),
         "profilecompletion" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.PROFILE_COMPLETION
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "promo" to mutableListOf(
@@ -873,8 +874,8 @@ object DeeplinkMainApp {
             }
         ),
         "resetpassword" to mutableListOf(
-            DLP.goTo { _: String ->
-                ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "resolution" to mutableListOf(
@@ -1033,8 +1034,8 @@ object DeeplinkMainApp {
             DLP.matchPattern("payment") { _: String ->
                 ApplinkConstInternalUserPlatform.PAYMENT_SETTING
             },
-            DLP.matchPattern("account") { _: String ->
-                ApplinkConstInternalUserPlatform.ACCOUNT_SETTING
+            DLP.matchPattern("account") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "settings" to mutableListOf(
@@ -1053,8 +1054,8 @@ object DeeplinkMainApp {
             DLP.matchPattern("bankaccount") { _: String ->
                 ApplinkConstInternalGlobal.SETTING_BANK
             },
-            DLP.matchPattern("haspassword") { _: String ->
-                ApplinkConstInternalUserPlatform.HAS_PASSWORD
+            DLP.matchPattern("haspassword") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "share" to mutableListOf(

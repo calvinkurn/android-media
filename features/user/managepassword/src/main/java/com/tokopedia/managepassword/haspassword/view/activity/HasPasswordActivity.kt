@@ -29,7 +29,7 @@ import javax.inject.Inject
  * @team: @minion-kevin
  *
  * For navigate :
- * External : [com.tokopedia.applink.ApplinkConst.HAS_PASSWORD]
+ * External : [com.tokopedia.applink.ApplinkConst.User.HAS_PASSWORD]
  * Internal : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.HAS_PASSWORD]
  *
  */

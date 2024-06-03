@@ -299,7 +299,7 @@ class PushController(val context: Context) : CoroutineScope {
                 !keyguardManager.isKeyguardLocked &&
             isAutoRedirect
         ) {
-            applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
+            applink?.startsWith(ApplinkConst.User.OTP_PUSH_NOTIF_RECEIVER) == true
         } else {
             false
         }
