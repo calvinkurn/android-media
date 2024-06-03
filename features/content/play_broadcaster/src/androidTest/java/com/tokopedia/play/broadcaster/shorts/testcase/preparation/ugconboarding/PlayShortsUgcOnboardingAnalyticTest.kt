@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -15,6 +16,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -27,6 +29,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 13, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsUgcOnboardingAnalyticTest {
 
     @get:Rule
@@ -45,6 +48,7 @@ class PlayShortsUgcOnboardingAnalyticTest {
     private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
@@ -54,6 +58,8 @@ class PlayShortsUgcOnboardingAnalyticTest {
     private val mockAccountUser = mockAccountList[1]
 
     init {
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any(), any()) } returns true
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         coEvery { mockAccountManager.switchAccount(any(), any()) } returns mockAccountUser
@@ -80,6 +86,7 @@ class PlayShortsUgcOnboardingAnalyticTest {
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
+                        mockCoachMarkSharedPref = mockCoachMarkSharedPref,
                     )
                 )
                 .build()
@@ -90,48 +97,30 @@ class PlayShortsUgcOnboardingAnalyticTest {
     fun setUp() {
         launcher.launchActivity()
 
-        clickToolbar()
-        clickUserAccount()
+        openOnboardingUgcBottomSheet()
     }
 
     @Test
-    fun testAnalytic_clickCancelOnboardingUGC() {
+    fun testAnalytic_shorts_onboardingUGC() {
+        cassavaValidator.verify("view - register user profile")
 
         clickCloseBottomSheet()
-
         cassavaValidator.verify("click - x register user profile")
-    }
 
-    @Test
-    fun testAnalytic_clickTextFieldUsernameOnboardingUGC() {
-
-        clickTextFieldUsername()
-
-        cassavaValidator.verify("click - type user profile name")
-    }
-
-    @Test
-    fun testAnalytic_clickAcceptTncOnboardingUGC() {
-
-        clickAcceptTnc()
-
-        cassavaValidator.verify("click - accept t&c")
-    }
-
-    @Test
-    fun testAnalytic_viewOnboardingUGC() {
-
-        cassavaValidator.verify("view - register user profile")
-    }
-
-    @Test
-    fun testAnalytic_clickContinueOnboardingUGC() {
-
+        openOnboardingUgcBottomSheet()
         clickTextFieldUsername()
         inputUsername()
-        clickAcceptTnc()
-        clickSubmitUgcOnboarding()
+        cassavaValidator.verify("click - type user profile name")
 
+        clickAcceptTnc()
+        cassavaValidator.verify("click - accept t&c")
+
+        clickSubmitUgcOnboarding()
         cassavaValidator.verify("click - lanjut register user profile")
+    }
+
+    private fun openOnboardingUgcBottomSheet() {
+        clickToolbar()
+        clickUserAccount()
     }
 }

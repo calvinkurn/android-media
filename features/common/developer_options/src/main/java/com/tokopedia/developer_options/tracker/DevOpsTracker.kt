@@ -103,5 +103,6 @@ internal enum class DevopsFeature {
     VIEW_TOPCHAT_WEBSOCKET_LOG,
     ENABLE_FPI_MONITORING,
     USER_ID,
-    SHOP_ID
+    SHOP_ID,
+    OK_HTTP_TIMEOUT_HANDLER
 }

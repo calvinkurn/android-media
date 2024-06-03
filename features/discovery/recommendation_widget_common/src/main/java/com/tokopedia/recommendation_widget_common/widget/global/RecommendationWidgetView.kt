@@ -47,6 +47,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
 
     private var eligibleToTrack = false
     private var recTriggerObject = RecommendationTriggerObject()
+
     private fun init() { }
 
     fun bind(

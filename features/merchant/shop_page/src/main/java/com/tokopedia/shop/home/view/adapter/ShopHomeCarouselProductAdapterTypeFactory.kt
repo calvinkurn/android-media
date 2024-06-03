@@ -8,6 +8,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductItemBigGridViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductItemListScrollableViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductItemListViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
@@ -20,17 +21,29 @@ class ShopHomeCarouselProductAdapterTypeFactory(
     private val carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener?,
     private val carouselProductCardOnItemATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener?,
     private val carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener?,
-    private val isOverrideWidgetTheme: Boolean
+    private val isOverrideWidgetTheme: Boolean,
+    private val productCardType: ProductCardType
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHomeProductCarousel {
 
+    companion object {
+        private const val TWO_PRODUCT = 2
+    }
+    enum class ProductCardType  {
+        LIST,
+        GRID
+    }
+
     override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
-        return when(shopHomeCarouselProductUiModel.productList.size){
-            Int.ONE -> {
+        return when{
+            shopHomeCarouselProductUiModel.productList.size == Int.ONE -> {
                 ShopHomeCarouselProductItemListViewHolder.LAYOUT
             }
-            else -> {
+            shopHomeCarouselProductUiModel.productList.size == TWO_PRODUCT -> {
                 ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT
             }
+            productCardType == ProductCardType.GRID -> ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT
+            productCardType == ProductCardType.LIST -> ShopHomeCarouselProductItemListScrollableViewHolder.LAYOUT
+            else -> ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT
         }
     }
 
@@ -50,6 +63,18 @@ class ShopHomeCarouselProductAdapterTypeFactory(
             }
             ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT -> {
                 ShopHomeCarouselProductItemBigGridViewHolder(
+                    itemView = parent,
+                    listProductCardModel = listProductCardModel,
+                    carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                    carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                    carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
+                    carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
+                    isOverrideWidgetTheme = isOverrideWidgetTheme
+                )
+            }
+            ShopHomeCarouselProductItemListScrollableViewHolder.LAYOUT -> {
+                ShopHomeCarouselProductItemListScrollableViewHolder(
                     itemView = parent,
                     listProductCardModel = listProductCardModel,
                     carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,

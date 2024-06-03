@@ -196,6 +196,10 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         return PageName.RECOMMENDATION
     }
 
+    override fun shouldTrackEnterPage(): Boolean {
+        return true
+    }
+
     override fun getAdsPageName(): String {
         return PageName.RECOMMENDATION
     }

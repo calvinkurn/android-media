@@ -58,12 +58,35 @@ data class CreationUploadQueueEntity(
 ) {
 
     data class Post(
-        @SerializedName("draft_id")
-        val draftId: String = "",
-
         @SerializedName("activity_id")
         val activityId: String = "",
-    )
+
+        @SerializedName("token")
+        val token: String = "",
+
+        @SerializedName("caption")
+        val caption: String = "",
+
+        @SerializedName("media_width")
+        val mediaWidth: Int = 0,
+
+        @SerializedName("media_height")
+        val mediaHeight: Int = 0,
+
+        @SerializedName("media_list")
+        val mediaList: List<Media> = emptyList(),
+    ) {
+        data class Media(
+            @SerializedName("path")
+            val path: String = "",
+
+            @SerializedName("type")
+            val type: String = "",
+
+            @SerializedName("product_ids")
+            val productIds: List<String> = emptyList(),
+        )
+    }
 
     data class Shorts(
         @SerializedName("media_uri_list")

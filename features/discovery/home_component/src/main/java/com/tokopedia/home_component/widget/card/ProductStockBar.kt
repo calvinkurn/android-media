@@ -13,6 +13,10 @@ class ProductStockBar(private val view: View) {
     private val stockBarInActive = view.findViewById<View>(R.id.stockbar_inactive)
     private val icFire = view.findViewById<ImageView>(R.id.ic_fire)
 
+    init {
+        stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_foreground)
+    }
+
     fun shouldShowStockBar(isStockBarSupported: Boolean, model: SmallProductModel.StockBar) {
         if (!isStockBarSupported) {
             hideStockBar()
@@ -25,13 +29,10 @@ class ProductStockBar(private val view: View) {
 
             setStockBarActiveLength(width)
 
-            when (model.shouldHandleFireIconVisibility()) {
-                is SmallProductModel.StockBar.Type.Inactive -> showInactiveStockBar()
-                is SmallProductModel.StockBar.Type.ActiveWithoutFire -> {
-                    val needRounded = model.percentage > SmallProductModel.StockBar.MAX_THRESHOLD
-                    showStockBar(needRounded)
-                }
-                is SmallProductModel.StockBar.Type.ActiveWithFire -> showStockBarWithFire()
+            when (forceMaxPercentageThreshold) {
+                0 -> showInactiveStockBar()
+                in 1 until SmallProductModel.StockBar.MIN_THRESHOLD -> showStockBarWithoutFire()
+                else -> showStockBarWithFire()
             }
         }
     }
@@ -50,34 +51,18 @@ class ProductStockBar(private val view: View) {
         stockBarActive.setLayoutWidth(size)
     }
 
-    private fun setRectangleBackgroundActiveBar() {
-        stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_shape_foreground)
-    }
-
-    private fun setRoundedBackgroundActiveBar() {
-        stockBarActive.setBackgroundResource(R.drawable.bg_spc_stockbar_foreground)
-    }
-
-    private fun showStockBar(shouldRounded: Boolean) {
-        if (shouldRounded) {
-            setRoundedBackgroundActiveBar()
-        } else {
-            setRectangleBackgroundActiveBar()
-        }
-
+    private fun showStockBarWithFire() {
         stockBarActive.show()
         stockBarInActive.show()
-        icFire.gone()
+        icFire.show()
 
         stockBarActive.requestLayout()
     }
 
-    private fun showStockBarWithFire() {
-        setRoundedBackgroundActiveBar()
-
+    private fun showStockBarWithoutFire() {
         stockBarActive.show()
         stockBarInActive.show()
-        icFire.show()
+        icFire.gone()
 
         stockBarActive.requestLayout()
     }

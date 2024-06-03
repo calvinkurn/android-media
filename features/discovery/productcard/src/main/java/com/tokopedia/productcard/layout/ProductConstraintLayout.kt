@@ -1,8 +1,10 @@
 package com.tokopedia.productcard.layout
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +12,8 @@ import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.updateLayoutParams
-import com.tokopedia.productcard.R
+import androidx.appcompat.R as appcompatR
 import com.tokopedia.productcard.R as productcardR
 
 open class ProductConstraintLayout :
@@ -33,6 +34,7 @@ open class ProductConstraintLayout :
     private var debugTextView: TextView? = null
 
     private val rectf: Rect by lazy { Rect() }
+    private val screen: Rect by lazy { Rect(0, actionBarHeight, getScreenWidth(), getScreenHeight()) }
 
     constructor(context: Context) : super(context) {
         inflateView()
@@ -78,7 +80,6 @@ open class ProductConstraintLayout :
             NOWHERE
         }
 
-        val isVisible = isVisible()
         val heightPixels: Int = height + top - bottom
         val widthPixels: Int = width + left - right
 
@@ -98,7 +99,7 @@ open class ProductConstraintLayout :
                 if (maxAreaPercentage < areaPercentage) {
                     maxAreaPercentage = areaPercentage
                 }
-                setScrollChangedEvents(areaPercentage, isVisible)
+                setScrollChangedEvents(areaPercentage)
                 when (alignment) {
                     TOP -> toBottom()
                     BOTTOM -> toTop()
@@ -106,13 +107,12 @@ open class ProductConstraintLayout :
                     LEFT -> toRight()
                     else -> toCenter()
                 }
-                debugTextView?.text = "$maxAreaPercentage%"
             }
         }
     }
 
-    private fun setScrollChangedEvents(areaPercentage: Int, isVisible: Boolean) {
-        val isShown = areaPercentage > 0 && isVisible
+    private fun setScrollChangedEvents(areaPercentage: Int) {
+        val isShown = areaPercentage > 0 && isVisible()
         if (isShown) {
             onShow()
         } else {
@@ -224,7 +224,7 @@ open class ProductConstraintLayout :
     }
 
     override fun onViewAttachedToWindow(p0: View) {
-        onShow()
+        post { calculateVisibility(isFromGlobal = true) }
     }
 
     override fun onViewDetachedFromWindow(p0: View) {
@@ -237,19 +237,36 @@ open class ProductConstraintLayout :
         }
     }
 
+    private val actionBarHeight =
+        with(TypedValue().also { context.theme.resolveAttribute(appcompatR.attr.actionBarSize, it, true) }) {
+            TypedValue.complexToDimensionPixelSize(this.data, resources.displayMetrics)
+        }
+
+    fun getScreenWidth(): Int {
+        return Resources.getSystem().displayMetrics.widthPixels
+    }
+
+    fun getScreenHeight(): Int {
+        return Resources.getSystem().displayMetrics.heightPixels
+    }
+
     fun isVisible(): Boolean {
         return if (isShown) {
-            getGlobalVisibleRect(rectf)
+            val actualPosition = Rect()
+            getGlobalVisibleRect(actualPosition)
+            actualPosition.offset(0, -actionBarHeight)
+            actualPosition.intersect(screen)
         } else {
             false
         }
     }
 
     private fun onShow() {
-        if (viewDetachedFromWindows && isVisible()) {
+        if (viewDetachedFromWindows && maxAreaPercentage > 0) {
             mPercentageListener?.onShow()
             viewDetachedFromWindows = false
         }
+        debugTextView?.text = "$maxAreaPercentage%"
     }
 
     private fun onShowOver() {
@@ -258,6 +275,7 @@ open class ProductConstraintLayout :
             viewDetachedFromWindows = true
         }
         maxAreaPercentage = 0
+        debugTextView?.text = "$maxAreaPercentage%"
     }
 
     private fun inflateView() {

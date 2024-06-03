@@ -18,8 +18,6 @@ import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
@@ -28,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
+import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
 
 @SuppressLint("Invalid Data Type")
 data class DataItem(
@@ -164,7 +163,7 @@ data class DataItem(
     @SerializedName("alternate_background_url_mobile")
     val alternateBackgroundUrlMobile: String? = "",
 
-    @SerializedName("box_color", alternate = ["background_color", "header_color"])
+    @SerializedName("box_color", alternate = ["background_color"])
     val boxColor: String? = "",
 
     @SerializedName(
@@ -635,6 +634,36 @@ data class DataItem(
     @SerializedName("inactive_text_color")
     val inactiveFontColor: String? = "",
 
+    @SerializedName("anchor_product_id")
+    val anchorProductId: String? = "",
+
+    /**
+     * calendar improvement START
+     * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/1717436428/Calendar
+     */
+
+    @SerializedName("header_color")
+    val headerColor: String? = "",
+
+    @SerializedName("text_header_color")
+    val textHeaderColor: String? = "",
+
+    @SerializedName("text_content_color")
+    val textContentColor: String? = "",
+
+    @SerializedName("calendar_image_url")
+    val calendarImageUrl: String? = "",
+
+    @SerializedName("cta_text")
+    val ctaText: String? = "",
+
+    @SerializedName("notified_cta_text")
+    val notifiedCtaText: String? = "",
+
+    /**
+     * calendar improvement END
+     */
+
     @SerializedName("topads_creative_id")
     val topAdsCreativeId: String? = "",
 
@@ -685,6 +714,8 @@ data class DataItem(
     var itemPosition: Int = 0,
 
     var topLevelTab: TopLevelTab = UnknownTab
+
+
 ) {
 
     var gtmItemName: String = ""

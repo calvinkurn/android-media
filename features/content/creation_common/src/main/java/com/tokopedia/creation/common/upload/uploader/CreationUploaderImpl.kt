@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
+import com.tokopedia.creation.common.upload.domain.usecase.post.DeleteMediaPostCacheUseCase
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
@@ -26,6 +27,7 @@ class CreationUploaderImpl @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val workManager: WorkManager,
     private val creationUploadQueueRepository: CreationUploadQueueRepository,
+    private val deleteMediaPostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val logger: CreationUploadLogger,
     private val gson: Gson,
 ) : CreationUploader {
@@ -87,6 +89,18 @@ class CreationUploaderImpl @Inject constructor(
 
     override suspend fun deleteQueueAndChannel(data: CreationUploadData) {
         creationUploadQueueRepository.deleteQueueAndChannel(data)
+    }
+
+    override suspend fun removeFailedContentFromQueue(data: CreationUploadData) {
+        creationUploadQueueRepository.deleteQueueAndChannel(data)
+        retry(data.notificationIdAfterUpload)
+
+        when (data) {
+            is CreationUploadData.Post -> {
+                deleteMediaPostCacheUseCase(data.mediaList.map { it.path }.toSet())
+            }
+            else -> {}
+        }
     }
 
     private suspend fun isTopQueueFailed(): Boolean {

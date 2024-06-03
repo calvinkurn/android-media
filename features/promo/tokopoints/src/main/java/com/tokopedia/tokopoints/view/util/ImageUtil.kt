@@ -5,6 +5,7 @@ import android.graphics.ColorMatrixColorFilter
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.tokopoints.R
 
 object ImageUtil {
     fun dimImage(imageView: ImageView?) {
@@ -26,8 +27,8 @@ object ImageUtil {
             Glide.with(imageView.context)
                 .load(url)
                 .dontAnimate()
-                .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
-                .error(com.tokopedia.design.R.drawable.ic_loading_image)
+                .placeholder(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
+                .error(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
                 .override(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL)
                 .into(imageView)
         } catch (e: Exception) {

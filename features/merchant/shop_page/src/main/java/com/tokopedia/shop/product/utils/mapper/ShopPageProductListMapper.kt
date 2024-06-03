@@ -22,6 +22,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
+import com.tokopedia.unifycomponents.UnifyButton
 import java.text.NumberFormat
 
 object ShopPageProductListMapper {
@@ -29,7 +30,7 @@ object ShopPageProductListMapper {
     private const val POSTFIX_VIEW_COUNT = "%1s orang"
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
-    
+
     private val productCardColorHelper = ShopProductCardColorHelper()
 
     fun mapToShopProductEtalaseListDataModel(
@@ -83,7 +84,7 @@ object ShopPageProductListMapper {
                 it.isShowFreeOngkir = freeOngkir.isActive
                 it.freeOngkirPromoIcon = freeOngkir.imgUrl
                 it.etalaseId = etalaseId
-                it.badge = badge.map { badge -> ShopBadgeUiModel(title = badge.title, imageUrl = badge.imageUrl) }
+                it.badge = badge.map { badge->  ShopBadgeUiModel(title = badge.title, imageUrl = badge.imageUrl, show = true) }
                 it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.etalaseType = etalaseType
                 it.stock = stock.toLong()
@@ -222,7 +223,8 @@ object ShopPageProductListMapper {
         isForceLightMode: Boolean = false,
         patternType: String = "",
         backgroundColor: String = "",
-        isDeviceOnDarkModeTheme: Boolean = false
+        makeProductCardTransparent: Boolean,
+        atcVariantButtonText: String
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -244,7 +246,7 @@ object ShopPageProductListMapper {
                 title = it.title
             )
         }
-        
+
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopProductUiModel.imageUrl ?: "",
             productName = shopProductUiModel.name ?: "",
@@ -265,17 +267,19 @@ object ShopPageProductListMapper {
             forceLightModeColor = isForceLightMode,
             shopBadgeList = badges,
             colorMode = productCardColorHelper.determineProductCardColorMode(
-                isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
+                isFestivity = false,
                 shouldOverrideTheme = isForceLightMode,
                 patternColorType = patternType,
-                backgroundColor = backgroundColor
+                backgroundColor = backgroundColor,
+                makeProductCardTransparent = makeProductCardTransparent
             )
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {
                 createProductCardWithVariantAtcModel(
                     shopProductUiModel,
-                    baseProductCardModel
+                    baseProductCardModel,
+                    atcVariantButtonText
                 )
             } else {
                 if (shopProductUiModel.productInCart.isZero()) {
@@ -311,11 +315,17 @@ object ShopPageProductListMapper {
 
     private fun createProductCardWithVariantAtcModel(
         shopProductUiModel: ShopProductUiModel,
-        baseProductCardModel: ProductCardModel
+        baseProductCardModel: ProductCardModel,
+        atcVariantButtonText: String
     ): ProductCardModel {
         return baseProductCardModel.copy(
             variant = ProductCardModel.Variant(
                 shopProductUiModel.productInCart
+            ),
+            productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                copyWriting = atcVariantButtonText,
+                mainButtonVariant = UnifyButton.Variant.GHOST,
+                mainButtonType = UnifyButton.Type.MAIN
             )
         )
     }

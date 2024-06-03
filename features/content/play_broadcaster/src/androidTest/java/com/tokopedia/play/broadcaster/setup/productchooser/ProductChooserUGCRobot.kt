@@ -13,6 +13,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
@@ -35,6 +36,7 @@ import com.tokopedia.content.test.espresso.clickOnViewChild
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
+import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productUGCViewModel
@@ -45,6 +47,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.hamcrest.core.AllOf
+import org.junit.Rule
 import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.empty_state.R as empty_stateR
 import com.tokopedia.filter.R as filterR
@@ -66,6 +69,11 @@ class ProductChooserUGCRobot(
         )
     }
 ) {
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+
+    private val analyticFile = "tracker/content/playbroadcaster/play_bro_product_picker_ugc.json"
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -375,6 +383,13 @@ class ProductChooserUGCRobot(
 
     fun await(durationInMs: Long) = chainable {
         delay(durationInMs)
+    }
+
+    fun assertEventAction(eventAction: String) = chainable {
+        ViewMatchers.assertThat(
+            cassavaTestRule.validate(analyticFile),
+            containsEventAction(eventAction)
+        )
     }
 
     private fun chainable(fn: () -> Unit): ProductChooserUGCRobot {

@@ -153,7 +153,6 @@ class WishlistCollectionFragment :
 
     private var isAffiliateRegistered: Boolean = false
 
-    private var hasTrackEnterPage: Boolean = false
     private var hasApplogScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
@@ -193,6 +192,7 @@ class WishlistCollectionFragment :
         const val DEFAULT_TITLE = "Wishlist"
         const val OK = "OK"
         private const val PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection"
+        private const val ARGS_SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
         const val PARAM_HOME = "home"
         private const val COACHMARK_WISHLIST_ONBOARDING = "coachmark-wishlist-onboarding"
         private const val COACHMARK_WISHLIST = "coachmark-wishlist"
@@ -302,7 +302,7 @@ class WishlistCollectionFragment :
                 wishlistCollectionNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.WISHLIST)).apply {
                     addIcon(IconList.ID_CART) {}
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                    if (arguments?.getBoolean(ARGS_SHOULD_SHOW_GLOBAL_NAV, true) != false) addIcon(IconList.ID_NAV_GLOBAL) {}
                 }
             } else {
                 wishlistCollectionNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
@@ -310,7 +310,7 @@ class WishlistCollectionFragment :
                     addIcon(IconList.ID_MESSAGE) {}
                     addIcon(IconList.ID_NOTIFICATION) {}
                     addIcon(IconList.ID_CART) {}
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                    if (arguments?.getBoolean(ARGS_SHOULD_SHOW_GLOBAL_NAV, true) != false) addIcon(IconList.ID_NAV_GLOBAL) {}
                 }
             }
             wishlistCollectionNavtoolbar.setIcon(icons)
@@ -366,12 +366,6 @@ class WishlistCollectionFragment :
         collectionViewModel.loadRecommendation(page)
     }
 
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
-    }
-
     private fun setToolbarTitle(title: String) {
         binding?.run {
             wishlistCollectionNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
@@ -407,7 +401,6 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
-                        trackEnterPage()
                         showRvWishlistCollection()
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }

@@ -74,12 +74,35 @@ sealed interface CreationUploadData {
         @SerializedName(KEY_AUTHOR_TYPE)
         override val authorType: String,
 
-        @SerializedName(KEY_DRAFT_ID)
-        val draftId: String,
-
         @SerializedName(KEY_ACTIVITY_ID)
         val activityId: String,
+
+        @SerializedName("token")
+        val token: String,
+
+        @SerializedName("caption")
+        val caption: String,
+
+        @SerializedName("mediaWidth")
+        val mediaWidth: Int,
+
+        @SerializedName("mediaHeight")
+        val mediaHeight: Int,
+
+        @SerializedName("mediaList")
+        val mediaList: List<Media>,
     ) : CreationUploadData {
+
+        data class Media(
+            @SerializedName("path")
+            val path: String,
+
+            @SerializedName("type")
+            val type: String,
+
+            @SerializedName("productIds")
+            val productIds: List<String>,
+        )
 
         override val notificationCover: String
             get() = coverUri
@@ -102,8 +125,18 @@ sealed interface CreationUploadData {
         override fun mapDataToJson(gson: Gson): String {
             return gson.toJson(
                 CreationUploadQueueEntity.Post(
-                    draftId = draftId,
                     activityId = activityId,
+                    token = token,
+                    caption = caption,
+                    mediaWidth = mediaWidth,
+                    mediaHeight = mediaHeight,
+                    mediaList = mediaList.map { media ->
+                        CreationUploadQueueEntity.Post.Media(
+                            path = media.path,
+                            type = media.type,
+                            productIds = media.productIds
+                        )
+                    }
                 )
             )
         }
@@ -276,7 +309,6 @@ sealed interface CreationUploadData {
         private const val KEY_SOURCE_ID = "sourceId"
         private const val KEY_IMAGE_SOURCE_ID = "image_source_id"
         private const val KEY_VIDEO_SOURCE_ID = "video_source_id"
-        private const val KEY_DRAFT_ID = "draftId"
         private const val KEY_ACTIVITY_ID = "activityId"
         private const val KEY_APPLINK = "applink"
         private const val KEY_IS_INTERSPERSED = "is_interspersed"
@@ -314,8 +346,18 @@ sealed interface CreationUploadData {
                         coverUri = entity.coverUri,
                         authorId = entity.authorId,
                         authorType = entity.authorType,
-                        draftId = postEntity.draftId,
                         activityId = postEntity.activityId,
+                        token = postEntity.token,
+                        caption = postEntity.caption,
+                        mediaWidth = postEntity.mediaWidth,
+                        mediaHeight = postEntity.mediaHeight,
+                        mediaList = postEntity.mediaList.map { media ->
+                            Post.Media(
+                                path = media.path,
+                                type = media.type,
+                                productIds = media.productIds,
+                            )
+                        }
                     )
                 }
                 CreationUploadType.Shorts -> {
@@ -371,7 +413,11 @@ sealed interface CreationUploadData {
             coverUri: String,
             authorId: String,
             authorType: String,
-            draftId: String,
+            token: String,
+            caption: String,
+            mediaWidth: Int,
+            mediaHeight: Int,
+            mediaList: List<Post.Media>,
         ): CreationUploadData {
             return Post(
                 queueId = 0,
@@ -383,8 +429,12 @@ sealed interface CreationUploadData {
                 coverUri = coverUri,
                 authorId = authorId,
                 authorType = authorType,
-                draftId = draftId,
                 activityId = "",
+                token = token,
+                caption = caption,
+                mediaWidth = mediaWidth,
+                mediaHeight = mediaHeight,
+                mediaList = mediaList,
             )
         }
 

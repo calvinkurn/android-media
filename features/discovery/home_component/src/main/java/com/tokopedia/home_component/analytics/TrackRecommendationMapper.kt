@@ -16,7 +16,6 @@ object TrackRecommendationMapper {
 
     fun CarouselMissionWidgetDataModel.asProductTrackModel(
         isCache: Boolean = false,
-        enterMethod: String = "",
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = data.productID,
@@ -29,7 +28,6 @@ object TrackRecommendationMapper {
             recSessionId = appLog.sessionId,
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
-            enterMethod = enterMethod,
             position = cardPosition,
             cardName = CardName.MISSION_PRODUCT_CARD.format(data.title),
         )
@@ -37,7 +35,6 @@ object TrackRecommendationMapper {
 
     fun CarouselMissionWidgetDataModel.asCardTrackModel(
         isCache: Boolean = false,
-        enterMethod: String = "",
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = data.id.toString(),
@@ -52,7 +49,6 @@ object TrackRecommendationMapper {
             recSessionId = appLog.sessionId,
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
-            enterMethod = enterMethod,
             position = cardPosition,
         )
     }

@@ -2,7 +2,7 @@ package com.tokopedia.play.model.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.domain.GetReportSummariesUseCase
+import com.tokopedia.content.common.track.usecase.GetReportSummaryUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.mapper.MapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
@@ -39,7 +39,7 @@ class ViewModelBuilderImpl(
         videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory = mockk(relaxed = true),
         channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory = mockk(relaxed = true),
         videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true),
-        getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
+        getReportSummariesUseCase: GetReportSummaryUseCase = mockk(relaxed = true),
         userSession: UserSessionInterface = mockk(relaxed = true),
         socketMapper: PlaySocketToModelMapper = mapperBuilder.createSocketMapper(
             userSession = userSession,

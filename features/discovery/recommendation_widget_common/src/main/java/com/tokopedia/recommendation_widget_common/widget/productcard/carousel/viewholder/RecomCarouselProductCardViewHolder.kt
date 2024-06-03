@@ -26,7 +26,6 @@ class RecomCarouselProductCardViewHolder (view: View,
     }
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
-
     override fun bind(element: RecomCarouselProductCardDataModel) {
         setLayout(element)
         setupListener(itemView.context, element)

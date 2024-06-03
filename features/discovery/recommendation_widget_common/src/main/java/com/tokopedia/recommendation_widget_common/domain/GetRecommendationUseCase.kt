@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.byteio.RecommendationByteIoUseCase
@@ -43,9 +44,15 @@ constructor(
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
             .map { graphqlResponse ->
                 val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
-                entity?.productRecommendationWidget?.data?.mappingToRecommendationModel().also { data ->
+                entity?.productRecommendationWidget?.data?.mappingToRecommendationModel(
+                    byteIoUseCase.getTotalData(requestParams.parameters[PAGE_NAME]?.toString().orEmpty())
+                ).also { data ->
                     requestParams.parameters[PAGE_NAME]?.toString()?.let { pageName ->
-                        byteIoUseCase.updateSessionId(pageName, data?.firstOrNull()?.appLog?.sessionId.orEmpty())
+                        byteIoUseCase.updateMap(
+                            pageName,
+                            sessionId = data?.firstOrNull()?.appLog?.sessionId.orEmpty(),
+                            totalData = data?.firstOrNull()?.recommendationItemList?.size.orZero()
+                        )
                     }
                 }
             }

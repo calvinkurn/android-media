@@ -115,6 +115,10 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.features.contentTest)
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

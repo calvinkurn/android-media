@@ -11,8 +11,6 @@ import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -164,6 +162,8 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantR
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton.Companion.buttonText
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -378,7 +378,6 @@ import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.ceil
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -839,15 +838,6 @@ open class ProductDetailFragment :
     }
 
     private fun observeOneTimeMethod() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.successAtcAndAnimation.collectLatest {
-                val atcData = viewModel.addToCartLiveData.value as? Success ?: return@collectLatest
-                showAddToCartDoneBottomSheet(
-                    atcData.data.data
-                )
-            }
-        }
-
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.oneTimeMethodState.collect {
                 when (it.event) {
@@ -1934,7 +1924,7 @@ open class ProductDetailFragment :
         applink: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
-        AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(recommendationWidget.pageName))
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(recommendationWidget.pageName))
         ProductDetailTracking.Click.eventClickSeeMoreRecomWidget(
             recommendationWidget,
             pageName,
@@ -2733,7 +2723,7 @@ open class ProductDetailFragment :
         viewModel.playWidgetModel.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> handlePlayWidgetUiModel(it.data)
-                is Fail -> pdpUiUpdater?.removeComponent(ProductDetailConstant.PLAY_CAROUSEL)
+                is Fail -> pdpUiUpdater?.removeComponent(PLAY_CAROUSEL)
             }
             updateUi()
         }
@@ -3070,40 +3060,41 @@ open class ProductDetailFragment :
     }
 
     private fun observeAddToCart() {
-        viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
-            actionButtonView.hideLoading()
+        lifecycleScope.launchWhenStarted {
+            viewModel.addToCartResultState.collectLatest { data ->
+                actionButtonView.hideLoading()
 
-            var cartId = ""
-            var success = false
-            var reason = ""
+                var cartId = ""
+                var success = false
+                var reason = ""
 
-            data.doSuccessOrFail({
-                if (it.data.errorReporter.eligible) {
-                    view?.showToasterError(
-                        it.data.errorReporter.texts.submitTitle,
-                        ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                data.doSuccessOrFail({
+                    if (it.data.errorReporter.eligible) {
+                        view?.showToasterError(
+                            it.data.errorReporter.texts.submitTitle,
+                            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                        )
+                    } else {
+                        success = true
+                        onSuccessAtc(it.data)
+                        ProductDetailServerLogger.logBreadCrumbAtc(
+                            isSuccess = true,
+                            errorMessage = it.data.getAtcErrorMessage() ?: "",
+                            atcType = buttonActionType
+                        )
+                    }
+                    cartId = it.data.data.cartId
+                }, {
+                    ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
+                        it.message.orEmpty(),
+                        viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
+                        viewModel.userId
                     )
-                } else {
-                    success = true
-                    onSuccessAtc(it.data)
-                    ProductDetailServerLogger.logBreadCrumbAtc(
-                        isSuccess = true,
-                        errorMessage = it.data.getAtcErrorMessage() ?: "",
-                        atcType = buttonActionType
-                    )
-                }
-                cartId = it.data.data.cartId
-            }, {
-                viewModel.onFinishAtc()
-                ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
-                    it.message.orEmpty(),
-                    viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
-                    viewModel.userId
-                )
-                handleAtcError(it)
-                reason = it.message.orEmpty()
-            })
-            sendConfirmResultByteIoTracker(cartId, reason, success)
+                    handleAtcError(it)
+                    reason = it.message.orEmpty()
+                })
+                sendConfirmResultByteIoTracker(cartId, reason, success)
+            }
         }
     }
 
@@ -3201,6 +3192,9 @@ open class ProductDetailFragment :
                 val hasInfinite = viewModel.getProductInfoP1?.hasInfiniteRecommendation ?: false
                 if (hasInfinite && concatAdapter?.adapters?.size != 2) {
                     concatAdapter?.addAdapter(it.adapter)
+                }
+
+                if (hasInfinite) {
                     it.requestParam = GetRecommendationRequestParam(
                         pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
                         productIds = listOf(productId.orEmpty()),
@@ -3484,6 +3478,7 @@ open class ProductDetailFragment :
 
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
+
         if (viewModel.getProductInfoP1?.basic?.isTokoNow == true) {
             showAtcSuccessToaster(result)
             return
@@ -3524,7 +3519,7 @@ open class ProductDetailFragment :
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
                 navToolbar?.updateNotification()
-                viewModel.onFinishAtc()
+                showAddToCartDoneBottomSheet(cartDataModel = result.data)
             }
 
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
@@ -3625,11 +3620,8 @@ open class ProductDetailFragment :
     }
 
     private fun goToCartCheckout(cartId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
-        intent?.run {
-            putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
-            startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
-        }
+        val activity = activity ?: return
+        ProductCartHelper.goToCartCheckout(activity, cartId)
     }
 
     override fun updateUi() {
@@ -4074,7 +4066,25 @@ open class ProductDetailFragment :
         val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
         val postAtcLayout = cartRedirData?.postAtcLayout ?: PostAtcLayout()
 
-        showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
+        if (postAtcLayout.showPostAtc) {
+            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
+        } else {
+            showAtcSuccessToaster(cartDataModel = cartDataModel)
+        }
+    }
+
+    private fun showAtcSuccessToaster(cartDataModel: DataModel) {
+        val message = context?.getString(
+            productdetailcommonR.string.merchant_product_detail_success_atc_default
+        ) ?: return
+
+        view?.showToasterSuccess(
+            message = message,
+            ctaText = getString(productdetailcommonR.string.cta_text_atc_success),
+            ctaListener = {
+                goToCartCheckout(cartId = cartDataModel.cartId)
+            }
+        )
     }
 
     private fun showGlobalPostATC(
@@ -4879,26 +4889,15 @@ open class ProductDetailFragment :
         }
     }
 
-    override fun addToCartClick(buttonText: String) {
-        viewModel.buttonActionText = buttonText
-        viewModel.getProductInfoP1?.let {
-            doAtc(ProductDetailCommonConstant.ATC_BUTTON)
-        }
+    override fun onButtonFallbackClick(button: AvailableButton) {
+        viewModel.buttonActionText = button.buttonText
+        doAtc(button)
     }
 
-    override fun buyNowClick(buttonText: String) {
-        viewModel.buttonActionText = buttonText
-        // buy now / buy / preorder
-        viewModel.getProductInfoP1?.let {
-            doAtc(ProductDetailCommonConstant.BUY_BUTTON)
-        }
-    }
-
-    override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        viewModel.buttonActionText = buttonText
-        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-        trackOnButtonClick(cartType)
-        doAtc(atcKey)
+    override fun buttonCartTypeClick(button: AvailableButton) {
+        viewModel.buttonActionText = button.buttonText
+        trackOnButtonClick(button.cartType)
+        doAtc(button)
     }
 
     override fun topChatButtonClicked() {
@@ -5026,19 +5025,8 @@ open class ProductDetailFragment :
         }
     }
 
-    private fun getStatusBarHeight(context: Context): Int {
-        val resources = context.resources
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resourceId > 0) {
-            resources.getDimensionPixelSize(resourceId)
-        } else {
-            ceil(((if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density).toDouble())
-                .toInt()
-        }
-    }
-
-    private fun doAtc(buttonAction: Int) {
-        buttonActionType = buttonAction
+    private fun doAtc(button: AvailableButton) {
+        buttonActionType = button.atcKey
         context?.let {
             val isVariant = viewModel.getProductInfoP1?.data?.variant?.isVariant ?: false
             if (isVariant && pdpUiUpdater?.productSingleVariant != null) {
@@ -5074,7 +5062,7 @@ open class ProductDetailFragment :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            hitAtc(buttonAction)
+            hitAtc(button = button)
         }
     }
 
@@ -5092,11 +5080,11 @@ open class ProductDetailFragment :
     private fun buyAfterTradeinDiagnose(deviceId: String) {
         buttonActionType = ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE
         viewModel.tradeinDeviceId = deviceId
-        hitAtc(ProductDetailCommonConstant.OCS_BUTTON)
+        hitAtc(AvailableButton.createOCSButton())
     }
 
-    private fun hitAtc(actionButton: Int) {
-        if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
+    private fun hitAtc(button: AvailableButton) {
+        if (button.atcKey == ProductDetailCommonConstant.ATC_BUTTON) {
             EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
         }
 
@@ -5105,10 +5093,10 @@ open class ProductDetailFragment :
         viewModel.getProductInfoP1?.let { data ->
             atcAnimation.runAtcAnimation(
                 binding,
-                actionButton == ProductDetailCommonConstant.ATC_BUTTON
+                button.showAnimation
             )
             actionButtonView.showLoading()
-            when (actionButton) {
+            when (button.atcKey) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                         productId = data.basic.productID

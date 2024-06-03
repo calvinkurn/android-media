@@ -103,7 +103,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="18dp"
         android:layout_weight="1"
-        android:background="@drawable/bg_button_green"
+        android:background="@drawable/fromtkpddesign_bg_button_green_tokopoints_notification"
         android:gravity="center"
         android:textAllCaps="false"
         android:textColor="@color/Unify_NN0"

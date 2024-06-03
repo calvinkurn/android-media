@@ -67,26 +67,16 @@ data class SmallProductModel(
         val percentage: Int = 0
     ) {
 
-        fun shouldHandleFireIconVisibility(): Type {
-            return when(percentage) {
-                0 -> Type.Inactive
-                in MIN_THRESHOLD..MAX_THRESHOLD -> Type.ActiveWithFire
-                else -> Type.ActiveWithoutFire
-            }
-        }
-
-        fun percentageOnFireRange() =
-            percentage in MIN_THRESHOLD..MAX_THRESHOLD
+        fun percentageOnFireRange() = percentage in MIN_THRESHOLD..MAX_THRESHOLD
 
         sealed class Type {
-            object ActiveWithFire : Type()
             object ActiveWithoutFire : Type()
             object Inactive : Type()
         }
 
         companion object {
             const val MIN_THRESHOLD = 20
-            const val MAX_THRESHOLD = 95
+            const val MAX_THRESHOLD = 82
         }
     }
 

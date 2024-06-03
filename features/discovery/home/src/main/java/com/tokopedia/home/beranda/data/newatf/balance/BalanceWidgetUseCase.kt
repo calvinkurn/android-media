@@ -157,7 +157,7 @@ class BalanceWidgetUseCase @Inject constructor(
                     throw IllegalStateException(ERROR_UNABLE_TO_PARSE_WALLET)
                 }
             } catch (e: Exception) {
-                updateState(state = DataStatus.ERROR, type = type)
+                updateState(state = BalanceItemModel.STATE_ERROR, type = type)
                 e.recordCrashlytics()
             }
         }
@@ -172,9 +172,9 @@ class BalanceWidgetUseCase @Inject constructor(
                 rewardsData.tokopointsDrawerList.drawerList.firstOrNull()?.let {
                     val balanceItemModel = balanceWidgetMapper.mapToBalanceItemModel(it, type) ?: return@let
                     updateBalanceItem(balanceItemModel, type)
-                } ?: updateState(state = DataStatus.ERROR, type = type)
+                } ?: updateState(state = BalanceItemModel.STATE_ERROR, type = type)
             } catch (e: Exception) {
-                updateState(state = DataStatus.ERROR, type = type)
+                updateState(state = BalanceItemModel.STATE_ERROR, type = type)
                 e.recordCrashlytics()
             }
         }
@@ -191,16 +191,16 @@ class BalanceWidgetUseCase @Inject constructor(
 
     private fun GetHomeBalanceItem.loading(): BalanceItemModel {
         return BalanceItemModel(
-            state = DataStatus.LOADING,
+            state = BalanceItemModel.STATE_LOADING,
             type = type
         )
     }
 
     private suspend fun conditionalLoading(type: String) {
         val currentData = getItem(type) ?: return
-        if(currentData.state.isError()) {
+        if(currentData.state == BalanceItemModel.STATE_ERROR) {
             updateState(
-                state = DataStatus.LOADING,
+                state = BalanceItemModel.STATE_LOADING,
                 type = type
             )
         }
@@ -238,7 +238,7 @@ class BalanceWidgetUseCase @Inject constructor(
     }
 
     private suspend fun updateState(
-        state: DataStatus,
+        state: Int,
         type: String
     ) {
         val atfData = flow.value.firstOrNull() ?: return

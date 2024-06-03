@@ -125,7 +125,7 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeReimagineShowcaseNavigationListener: ShopHomeReimagineShowcaseNavigationListener,
     private val shopHomeReimagineShowcaseNavigationDependencyProvider: ShopHomeReimagineShowcaseNavigationDependencyProvider,
     private val shopHomeDisplayBannerProductHotspotListener: ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener,
-    private val shopHomeReimagineTerlarisViewHolderListener: ShopHomeReimagineTerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    private val shopHomeReimagineTerlarisViewHolderListener: ShopHomeReimagineTerlarisViewHolder.Listener,
     private val shopBannerProductGroupListener: ShopBannerProductGroupListener,
     private val shopBannerProductGroupWidgetTabDependencyProvider: ShopBannerProductGroupWidgetTabDependencyProvider,
     private val shopHomeDisplayAdvanceCarouselBannerWidgetListener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
@@ -519,7 +519,7 @@ open class ShopHomeAdapterTypeFactory(
             )
             // ========= Shop Home Revamp V4 - New widgets ========= //
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
-            ShopHomeReimagineTerlarisViewHolder.LAYOUT -> ShopHomeReimagineTerlarisViewHolder(parent, shopHomeReimagineTerlarisViewHolderListener, recyclerviewPoolListener)
+            ShopHomeReimagineTerlarisViewHolder.LAYOUT -> ShopHomeReimagineTerlarisViewHolder(parent, shopHomeReimagineTerlarisViewHolderListener)
             ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT -> ShopHomeDirectPurchasedByEtalaseViewHolder(
                 parent,
                 shopHomeListener,

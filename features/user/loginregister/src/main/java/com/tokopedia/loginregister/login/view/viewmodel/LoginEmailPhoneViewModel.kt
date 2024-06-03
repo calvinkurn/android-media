@@ -28,6 +28,15 @@ import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
+import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
+import com.tokopedia.loginregister.login_sdk.data.SdkAuthorizeParam
+import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
+import com.tokopedia.loginregister.login_sdk.data.SdkConsentParam
+import com.tokopedia.loginregister.login_sdk.data.ValidateClientData
+import com.tokopedia.loginregister.login_sdk.data.ValidateClientParam
+import com.tokopedia.loginregister.login_sdk.usecase.AuthorizeSdkUseCase
+import com.tokopedia.loginregister.login_sdk.usecase.LoginSdkConsentUseCase
+import com.tokopedia.loginregister.login_sdk.usecase.ValidateClientUseCase
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -42,6 +51,7 @@ import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.FingerPrintGqlParam
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2GqlParam
@@ -62,7 +72,11 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val loginTokenUseCase: LoginTokenUseCase,
     private val tickerInfoUseCase: TickerInfoUseCase,
     private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
+    private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
+    private val loginSdkConsentUseCase: LoginSdkConsentUseCase,
+    private val validateClientUseCase: ValidateClientUseCase,
+    private val authorizeSdkUseCase: AuthorizeSdkUseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val dynamicBannerUseCase: DynamicBannerUseCase,
     private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
@@ -103,6 +117,18 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val mutableProfileResponse = MutableLiveData<Result<ProfilePojo>>()
     val profileResponse: LiveData<Result<ProfilePojo>>
         get() = mutableProfileResponse
+
+    private val mutableConsent = MutableLiveData<Result<SdkConsentData>>()
+    val sdkConsent: LiveData<Result<SdkConsentData>>
+        get() = mutableConsent
+
+    private val mutableValidateClient = MutableLiveData<Result<ValidateClientData>>()
+    val validateClient: LiveData<Result<ValidateClientData>>
+        get() = mutableValidateClient
+
+    private val mutableAuthorizeResponse = MutableLiveData<Result<AuthorizeData>>()
+    val authorizeResponse: LiveData<Result<AuthorizeData>>
+        get() = mutableAuthorizeResponse
 
     private val mutableShowPopup = MutableLiveData<PopupError>()
     val showPopup: LiveData<PopupError>
@@ -164,6 +190,12 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val shopStatus: LiveData<ShopStatus>
         get() = _shopStatus
 
+    private var isLoginSdkFlow: Boolean = false
+
+    fun setAsLoginSdkFlow() {
+        isLoginSdkFlow = true
+    }
+
     fun registerCheck(id: String) {
         launchCatchError(block = {
             val params = RegisterCheckParam(id)
@@ -197,31 +229,50 @@ class LoginEmailPhoneViewModel @Inject constructor(
         })
     }
 
-    fun getUserInfo() {
+    fun getUserInfoOnly() {
         launch {
             try {
-                if(GlobalConfig.isSellerApp()) {
-                    getShopStatus()
-                }
-                when (val admin = getProfileAndAdmin(Unit)) {
-                    is AdminResult.AdminResultOnSuccessGetProfile -> {
-                        mutableProfileResponse.value = Success(admin.profile)
-                    }
-                    is AdminResult.AdminResultOnLocationAdminRedirection -> {
-                        mutableAdminRedirection.value = Success(true)
-                    }
-                    is AdminResult.AdminResultShowLocationPopup -> {
-                        mutableShowLocationAdminPopUp.value = Success(true)
-                    }
-                    is AdminResult.AdminResultOnErrorGetProfile -> {
-                        mutableProfileResponse.value = Fail(admin.error)
-                    }
-                    is AdminResult.AdminResultOnErrorGetAdmin -> {
-                        mutableShowLocationAdminPopUp.value = Fail(admin.error)
-                    }
-                }
+                val userInfo = userProfileAndSaveSessionUseCase(Unit)
+                mutableProfileResponse.value = userInfo
             } catch (e: Exception) {
                 mutableProfileResponse.value = Fail(e)
+            }
+        }
+    }
+
+    fun getUserInfo() {
+        if (isLoginSdkFlow) {
+            getUserInfoOnly()
+        } else {
+            launch {
+                try {
+                    if (GlobalConfig.isSellerApp()) {
+                        getShopStatus()
+                    }
+                    when (val admin = getProfileAndAdmin(Unit)) {
+                        is AdminResult.AdminResultOnSuccessGetProfile -> {
+                            mutableProfileResponse.value = Success(admin.profile)
+                        }
+
+                        is AdminResult.AdminResultOnLocationAdminRedirection -> {
+                            mutableAdminRedirection.value = Success(true)
+                        }
+
+                        is AdminResult.AdminResultShowLocationPopup -> {
+                            mutableShowLocationAdminPopUp.value = Success(true)
+                        }
+
+                        is AdminResult.AdminResultOnErrorGetProfile -> {
+                            mutableProfileResponse.value = Fail(admin.error)
+                        }
+
+                        is AdminResult.AdminResultOnErrorGetAdmin -> {
+                            mutableShowLocationAdminPopUp.value = Fail(admin.error)
+                        }
+                    }
+                } catch (e: Exception) {
+                    mutableProfileResponse.value = Fail(e)
+                }
             }
         }
     }
@@ -474,6 +525,58 @@ class LoginEmailPhoneViewModel @Inject constructor(
             _shopStatus.value = resp
         } catch (e: Exception) {
             _shopStatus.value = ShopStatus.Error(e)
+        }
+    }
+
+
+    fun getConsent(clientId: String, scopes: String, lang: String = "") {
+        launch {
+            try {
+                val result = loginSdkConsentUseCase(
+                    SdkConsentParam(clientId, scopes, lang)
+                )
+                mutableConsent.value = Success(result.data)
+            } catch (e: Exception) {
+                mutableConsent.value = Fail(e)
+            }
+        }
+    }
+
+    fun validateClient(clientId: String, signature: String, packageName: String, redirectUri: String) {
+        launch {
+            try {
+                val param = ValidateClientParam (
+                    clientId = clientId,
+                    signature = signature,
+                    packageName = packageName,
+                    redirectUri = redirectUri
+                )
+                mutableValidateClient.value = Success(validateClientUseCase(param).data)
+            } catch (e: Exception) {
+                mutableValidateClient.value = Fail(e)
+            }
+        }
+    }
+
+    fun authorizeSdk(clientId: String, redirectUri: String, codeChallenge: String) {
+        launch {
+            try {
+                val result = authorizeSdkUseCase(
+                    SdkAuthorizeParam(
+                        clientId = clientId,
+                        redirectUri = redirectUri,
+                        responseType = "code",
+                        codeChallenge = codeChallenge
+                    )
+                )
+                if (result.data.isSuccess) {
+                    mutableAuthorizeResponse.value = Success(result.data)
+                } else {
+                    mutableAuthorizeResponse.value = Fail(MessageErrorException(result.data.error))
+                }
+            } catch (e: Exception) {
+                mutableAuthorizeResponse.value = Fail(e)
+            }
         }
     }
 

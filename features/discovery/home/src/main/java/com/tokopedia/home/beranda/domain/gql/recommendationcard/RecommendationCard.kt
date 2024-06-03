@@ -127,7 +127,10 @@ data class RecommendationCard(
                 )
             },
             recParam = recParam,
-            recommendationAdsLog = RecommendationAdsLog(creativeID = creativeID, logExtra = logExtra)
+            recommendationAdsLog = RecommendationAdsLog(
+                creativeID = creativeID,
+                logExtra = logExtra
+            )
         )
     }
 
@@ -166,7 +169,10 @@ data class RecommendationCard(
                 name = shop.name,
                 reputation = shop.reputation,
             ),
-            recommendationAdsLog = RecommendationAdsLog(creativeID = creativeID, logExtra = logExtra)
+            recommendationAdsLog = RecommendationAdsLog(
+                creativeID = creativeID,
+                logExtra = logExtra
+            )
         )
     }
 

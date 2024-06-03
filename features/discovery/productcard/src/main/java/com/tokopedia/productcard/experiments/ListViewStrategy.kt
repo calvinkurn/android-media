@@ -405,6 +405,7 @@ internal class ListViewStrategy(
         textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
         progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
         buttonAddToCart?.applyColorMode(ColorMode.LIGHT_MODE)
+        buttonAddVariant?.applyColorMode(ColorMode.LIGHT_MODE)
     }
 
     override fun setOnClickListener(l: View.OnClickListener?) {

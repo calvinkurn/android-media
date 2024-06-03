@@ -12,12 +12,14 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
@@ -57,13 +59,13 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
 
     private fun setAdsPageData(activity: Activity) {
         if (activity is IAdsLog) {
-            AppLogAnalytics.currentPageName = activity.getAdsPageName()
-            AppLogAnalytics.putAdsPageData(activity, AppLogParam.PAGE_NAME, activity.getAdsPageName())
+            AppLogTopAds.currentPageName = activity.getAdsPageName()
+            AppLogTopAds.putAdsPageData(activity, AppLogParam.PAGE_NAME, activity.getAdsPageName())
         }
     }
 
     override fun onActivityStarted(activity: Activity) {
-        // no op
+        Timber.d("Activity started $activity")
     }
 
     private fun setCurrent(activity: Activity) {
@@ -73,6 +75,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     }
 
     override fun onActivityResumed(activity: Activity) {
+        Timber.d("Activity resumed $activity")
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
             // in case the activity is resuming, we start the startTime in onResume, not onCreate
             if (activity.startTime == 0L) {
@@ -93,6 +96,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     ) {
         if (product == null) return
         if (isFinishing) {
+            AppLogAnalytics.clearGlobalParamsOnClick(hash)
             sendStayProductDetail(durationInMs, product, QuitType.RETURN, hash)
             return
         }
@@ -142,7 +146,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         AppLogFirstTrackId.updateFirstTrackId()
 
         if (activity is IAdsLog) {
-            AppLogAnalytics.removeLastAdsPageData(activity)
+            AppLogTopAds.removeLastAdsPageData(activity)
         }
 
         if (activity is FragmentActivity) {

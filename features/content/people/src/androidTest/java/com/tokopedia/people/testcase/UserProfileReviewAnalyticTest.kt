@@ -32,6 +32,7 @@ class UserProfileReviewAnalyticTest {
             .clickReviewTab()
             .performDelay(300)
             .verifyEventAction("click - review tab")
+            .performDelay()
             .verifyEventAction("impression - review")
             .clickProfileOptionButton()
             .verifyEventAction("click - gear icon")

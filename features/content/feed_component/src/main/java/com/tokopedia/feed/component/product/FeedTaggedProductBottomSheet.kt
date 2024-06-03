@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
@@ -17,6 +19,7 @@ import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAd
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -31,6 +34,7 @@ import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.views.bottomsheets.MvcDetailBottomSheet
+import com.tokopedia.play_common.view.BottomSheetHeader
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Result
@@ -38,6 +42,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R as contentcommonR
@@ -177,7 +183,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = BottomSheetFeedTaggedProductBinding.inflate(inflater, container, false)
-        setTitle(getString(contentcommonR.string.content_product_bs_title))
+        clearContentPadding = true
         setChild(binding.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -185,6 +191,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupHeader()
         showLoading(true)
         renderError()
 
@@ -288,6 +295,47 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun setupHeader() {
+        val header = BottomSheetHeader(requireContext()).apply {
+            layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+
+            setTitle(getString(contentcommonR.string.content_product_bs_title))
+            setIconNotification(IconUnify.CART)
+            setIconNotificationText("")
+            setListener(object : BottomSheetHeader.Listener {
+                override fun onCloseClicked(view: BottomSheetHeader) {
+                    dismiss()
+                }
+
+                override fun onIconClicked(view: BottomSheetHeader) {
+                    listener?.onCartClicked()
+                }
+
+                override fun impressIcon(view: BottomSheetHeader) {
+                    /** No implementation */
+                }
+            })
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    listener?.cartCount?.collectLatest {
+                        setIconNotificationText(getCartCountText(it))
+                    }
+                }
+            }
+        }
+
+        bottomSheetHeader.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        bottomSheetHeader.removeAllViews()
+        bottomSheetHeader.addView(header)
+    }
+
+    private fun getCartCountText(cartCount: Int): String {
+        return if (cartCount <= 0) ""
+        else if (cartCount >= 100) "99+"
+        else cartCount.toString()
+    }
+
     interface Listener {
         fun onProductCardClicked(
             product: ContentTaggedProductUiModel,
@@ -306,8 +354,13 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
         fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>)
 
+        fun onCartClicked()
+
         val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
+
         val productListLiveData: Flow<FeedProductPaging>
+
+        val cartCount: StateFlow<Int>
 
         fun onFeedProductNextPage(
             activityId: String,

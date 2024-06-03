@@ -68,4 +68,8 @@ class WishlistCollectionDetailActivity : BaseSimpleActivity(), AppLogInterface, 
     override fun getAdsPageName(): String {
         return PageName.WISHLIST
     }
+
+    override fun shouldTrackEnterPage(): Boolean {
+        return true
+    }
 }

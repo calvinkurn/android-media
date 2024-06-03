@@ -43,10 +43,6 @@
         <attr name="isEditable" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="DynamicBackgroundSeekBar">
-        <attr name="dbsb_background_color" format="color" />
-        <attr name="dbsb_foreground_color" format="color" />
-    </declare-styleable>
 
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />
     <attr name="bottomSheetBuilderItemTextColor" format="color" />

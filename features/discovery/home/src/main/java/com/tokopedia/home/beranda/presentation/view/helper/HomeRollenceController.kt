@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 
 /**
  * Created by frenzel on 09/05/22.
@@ -14,7 +15,6 @@ object HomeRollenceController {
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
     var shouldGlobalComponentRecomEnabled: Boolean = false
-    var iconJumperSREValue: String = ""
     var isMegaTabEnabled = false
 
     fun fetchHomeRollenceValue() {
@@ -22,6 +22,7 @@ object HomeRollenceController {
         fetchAtfCacheRollenceValue()
         fetchHomeMegaTabRollenceValue()
         HomeComponentFeatureFlag.fetchMissionRollenceValue()
+        SearchRollenceController.fetchInboxNotifTopNavValue()
     }
 
     @JvmStatic
@@ -30,7 +31,6 @@ object HomeRollenceController {
             RollenceKey.ICON_JUMPER,
             RollenceKey.ICON_JUMPER_DEFAULT
         )
-        iconJumperSREValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ICON_JUMPER_SRE_KEY)
     }
 
     private fun fetchLoadTimeRollenceValue() {
@@ -72,18 +72,16 @@ object HomeRollenceController {
         isMegaTabEnabled = megaTab.isNotEmpty()
     }
 
+    fun shouldCombineInboxNotif(): Boolean {
+        return SearchRollenceController.shouldCombineInboxNotif()
+    }
+
     fun isLoadAtfFromCache(): Boolean {
         return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
     }
 
     @JvmStatic
     fun isIconJumper(): Boolean {
-        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP ||
-            iconJumperSREValue == RollenceKey.ICON_JUMPER_SRE_VALUE
-    }
-
-    @JvmStatic
-    fun isIconJumperSRE(): Boolean {
-        return iconJumperSREValue == RollenceKey.ICON_JUMPER_SRE_VALUE
+        return iconJumperValue == RollenceKey.ICON_JUMPER_EXP
     }
 }

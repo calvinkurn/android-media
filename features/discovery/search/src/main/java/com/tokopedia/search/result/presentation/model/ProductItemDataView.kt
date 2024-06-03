@@ -349,6 +349,7 @@ class ProductItemDataView:
             item.showButtonAtc = showButtonAtc
             item.parentId = topAds.product.parentId
             item.byteIOTrackingData = byteIOTrackingData
+            item.recommendationAdsLog = RecommendationAdsLog(topAds.creativeId, topAds.logExtra)
             return item
         }
 
