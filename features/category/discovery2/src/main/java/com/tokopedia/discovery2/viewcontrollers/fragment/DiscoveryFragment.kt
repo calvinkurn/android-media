@@ -41,6 +41,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.IAdsLog
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -177,6 +179,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -229,7 +232,8 @@ open class DiscoveryFragment :
     ScreenShotListener,
     PermissionListener,
     MiniCartWidgetListener,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var bmGmDataParam: BmGmDataParam? = null
     private var recyclerViewPaddingResetNeeded: Boolean = false
@@ -354,6 +358,11 @@ open class DiscoveryFragment :
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        SearchRollenceController.fetchInboxNotifTopNavValue()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -449,7 +458,18 @@ open class DiscoveryFragment :
                         )
                     }
             )
+            configureSearchStyle()
         }
+    }
+
+    private fun configureSearchStyle() {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        val searchStyle = if (enableSearchRedesign) {
+            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
+        } else {
+            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
+        }
+        navToolbar.setSearchStyle(searchStyle, showSearchBtn = false)
     }
 
     @SuppressLint("RestrictedApi")
@@ -2734,6 +2754,10 @@ open class DiscoveryFragment :
 
     override fun getPageName(): String {
         return pageInfoHolder?.label?.trackingPagename.orEmpty()
+    }
+
+    override fun getAdsPageName(): String {
+        return PageName.DISCOVERY
     }
 
     fun setCurrentTabPosition(tabPosition: Int) {

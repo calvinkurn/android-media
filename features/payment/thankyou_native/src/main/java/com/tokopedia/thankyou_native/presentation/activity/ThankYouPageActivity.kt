@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -89,7 +90,8 @@ class ThankYouPageActivity :
     BaseSimpleActivity(),
     HasComponent<ThankYouPageComponent>,
     ThankYouPageDataLoadCallback,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     @Inject
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
@@ -524,6 +526,10 @@ class ThankYouPageActivity :
     }
 
     override fun getPageName(): String {
+        return PageName.ORDER_SUBMIT
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.ORDER_SUBMIT
     }
 }

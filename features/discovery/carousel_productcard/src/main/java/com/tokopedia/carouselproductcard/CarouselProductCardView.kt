@@ -21,6 +21,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemThree
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnSeeMoreClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnSeeOtherProductClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnViewAllCardClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnViewListener
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
@@ -106,6 +107,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         scrollToPosition: Int = 0,
         showSeeMoreCard: Boolean = false,
         carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+        carouselProductCardOnItemViewListener: OnViewListener? = null,
         carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
         carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
         carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
@@ -124,6 +126,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
             carouselProductCardOnItemClickListener,
+            carouselProductCardOnItemViewListener,
             carouselProductCardOnItemImpressedListener,
             carouselProductCardOnItemAddToCartListener,
             carouselProductCardOnItemThreeDotsClickListener,
@@ -165,6 +168,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
     private fun createCarouselProductCardListenerInfo(
             carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+            carouselProductCardOnItemViewListener: OnViewListener? = null,
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
@@ -178,6 +182,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
 
         carouselProductCardListenerInfo.onItemClickListener = carouselProductCardOnItemClickListener
+        carouselProductCardListenerInfo.onViewListener = carouselProductCardOnItemViewListener
         carouselProductCardListenerInfo.onItemImpressedListener = carouselProductCardOnItemImpressedListener
         carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
         carouselProductCardListenerInfo.onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
@@ -327,6 +332,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     fun bindCarouselProductCardViewList(
             productCardModelList: List<ProductCardModel>,
             carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+            carouselProductCardOnItemViewListener: OnViewListener? = null,
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
@@ -345,6 +351,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemViewListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
                 carouselProductCardOnItemThreeDotsClickListener,

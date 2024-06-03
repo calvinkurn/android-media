@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardCartExtension
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderProductCardContent
@@ -207,6 +208,15 @@ internal class GridViewStrategy(
     private val buttonAddToCart: UnifyButton? by lazy(NONE) {
         findViewById(R.id.buttonAddToCart)
     }
+
+    private val labelPriceReposition: Label? by lazy(NONE) {
+        findViewById(R.id.labelPriceReposition)
+    }
+
+    private val textViewShopLocation: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewShopLocation)
+    }
+
     private var forceWidthPx: Int = 0
 
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
@@ -242,14 +252,15 @@ internal class GridViewStrategy(
     }
 
     private fun inflateFooterView() =
-        if (isUsingViewStub)
+        if (isUsingViewStub) {
             inflate(
                 context,
                 R.layout.product_card_footer_with_viewstub_layout,
                 null
             )
-        else
+        } else {
             inflate(context, R.layout.product_card_footer_layout, null)
+        }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         productCardModel.layoutStrategy.renderProductCardShadow(
@@ -453,11 +464,33 @@ internal class GridViewStrategy(
     override fun getShopBadgeView(): View? = imageShopBadge
 
     override fun getProductImageView(): ImageView? = imageProduct
+    override fun setProductImageOnClickListener(l: (View) -> Unit) {
+        imageProduct?.setOnClickListener(l)
+    }
+
+    override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
+        imageShopBadge?.setOnClickListener(l)
+        textViewShopLocation?.setOnClickListener(l)
+    }
 
     override fun getVideoPlayerController(): VideoPlayerController = video
 
     override fun setOnClickListener(l: View.OnClickListener?) {
         cardViewProductCard?.setOnClickListener(l)
+    }
+    override fun setOnClickListener(l: ProductCardClickListener) {
+        cardViewProductCard?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
     }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {

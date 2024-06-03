@@ -17,6 +17,8 @@ private const val KEY_SHOP = "shop"
 private const val KEY_PRODUCT = "product"
 private const val KEY_APPLINKS = "applinks"
 private const val KEY_TAG = "tag"
+private const val KEY_CREATIVE_ID = "creative_id"
+private const val KEY_LOG_EXTRA = "log_extra"
 
 @Parcelize
 data class Data(
@@ -67,5 +69,11 @@ data class Data(
     @SerializedName(KEY_APPLINKS)
     @Expose
     var applinks: String = "",
-    var isFavorit: Boolean = false
+    var isFavorit: Boolean = false,
+
+    @SerializedName(KEY_CREATIVE_ID)
+    val creativeId: String = "",
+
+    @SerializedName(KEY_LOG_EXTRA)
+    val logExtra: String = ""
 ) : Parcelable

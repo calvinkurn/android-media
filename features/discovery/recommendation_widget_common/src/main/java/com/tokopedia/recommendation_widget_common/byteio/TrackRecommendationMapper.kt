@@ -7,7 +7,12 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.CardName
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
@@ -16,6 +21,62 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 object TrackRecommendationMapper {
+
+    fun RecommendationItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(refer,
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogRealtimeClickModel.AdExtraData(
+                productId = productId.orZero().toString(),
+                productName = name,
+            ))
+    }
+
+    fun RecommendationItem.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowOverModel.AdExtraData(productId = productId.orZero().toString(), productName = name, sizePercent = visiblePercentage.toString()))
+    }
+
+    fun RecommendationItem.asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowModel.AdExtraData(
+            productId = productId.orZero().toString(),
+            productName = name,
+        ))
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(refer,
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogRealtimeClickModel.AdExtraData(
+            productId = id,
+            productName = name,
+        ))
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowOverModel.AdExtraData(
+            productId = id,
+            sizePercent = visiblePercentage.toString(),
+            productName = name,
+        ))
+    }
+
+    fun RecommendationCardModel.ProductItem.asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowModel.AdExtraData(productId = id, productName = name)
+        )
+    }
 
     fun RecommendationItem.asProductTrackModel(
         isCache: Boolean = false,
@@ -40,7 +101,7 @@ object TrackRecommendationMapper {
             tabPosition = tabPosition,
             rate = ratingAverage.toFloatOrZero(),
             volume = countSold,
-            originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
+            originalPrice = (if (slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
             salesPrice = priceInt.toFloat(),
             additionalParam = additionalParam ?: AppLogAdditionalParam.None,
         )
@@ -62,13 +123,11 @@ object TrackRecommendationMapper {
             recSessionId = appLog.sessionId,
             shopId = recommendationProductItem.shop.id,
             entranceForm = getEntranceForm(),
-            originalPrice = (
-                if (recommendationProductItem.slashedPriceInt > 0) {
-                    recommendationProductItem.slashedPriceInt
-                } else {
-                    recommendationProductItem.priceInt
-                }
-                ).toFloat(),
+            originalPrice = (if (recommendationProductItem.slashedPriceInt > 0) {
+                recommendationProductItem.slashedPriceInt
+            } else {
+                recommendationProductItem.priceInt
+            }).toFloat(),
             salesPrice = recommendationProductItem.priceInt.toFloat(),
             position = position,
             volume = recommendationProductItem.countSold,

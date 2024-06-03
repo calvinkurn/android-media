@@ -69,4 +69,6 @@
     <string name="suggestion_keyword_arrow_coach_mark_message">Kamu bisa klik ↖ biar kata kunci pilihanmu langsung masuk ke kolom pencarian.</string>
 
     <string name="suggestion_exceed_keyword_limit_message">Cari maks. 3 produk, jika lebih dari itu nggak akan muncul di hasil pencarianmu.</string>
+
+    <string name="search_cta_text">Cari</string>
 </resources>
