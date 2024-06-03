@@ -3,7 +3,10 @@ package com.tokopedia.recommendation_widget_common.widget.comparison
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.home.AppLogHomeChannel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -101,6 +104,7 @@ class ComparisonReimagineWidgetItemViewHolder(
                         product.imageUrl
                     )
                 }
+
                 // GTM tracker
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     ProductRecommendationTracking.getClickProductTracking(

@@ -3,9 +3,15 @@ package com.tokopedia.recommendation_widget_common.widget.comparison.comparedite
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
+import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonComparedWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
@@ -48,6 +54,14 @@ class ComparisonWidgetComparedItemViewHolder(
         if (comparisonModel.isClickable) {
             binding?.productCardView?.setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
+                    // ByteIO tracker
+                    AppLogRecommendation.sendProductClickAppLog(
+                        comparisonModel.recommendationItem.asProductTrackModel(
+                            entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                            additionalParam = comparisonListModel.appLogAdditionalParam,
+                        )
+                    )
+
                     if (comparisonModel.recommendationItem.isTopAds) {
                         val product = comparisonModel.recommendationItem
                         TopAdsUrlHitter(context).hitClickUrl(
@@ -96,6 +110,13 @@ class ComparisonWidgetComparedItemViewHolder(
             }
         })
         binding?.productCardView?.addOnImpressionListener(comparisonModel) {
+            AppLogRecommendation.sendProductShowAppLog(
+                comparisonModel.recommendationItem.asProductTrackModel(
+                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                    additionalParam = comparisonListModel.appLogAdditionalParam,
+                )
+            )
+
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
                 TopAdsUrlHitter(context).hitImpressionUrl(
