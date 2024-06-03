@@ -768,7 +768,7 @@ data class DataItem(
             topAdsLogExtra.orEmpty(),
             AdsLogRealtimeClickModel.AdExtraData(
             productId = productIdByteIo,
-            productName = productName.orEmpty(),
+            productName = getRealProductName(),
         ))
     }
 
@@ -778,7 +778,7 @@ data class DataItem(
             topAdsLogExtra.orEmpty(),
             AdsLogShowOverModel.AdExtraData(
                 productId = productIdByteIo,
-                productName = productName.orEmpty(),
+                productName = getRealProductName(),
                 sizePercent = visiblePercentage.toString())
         )
     }
@@ -789,7 +789,7 @@ data class DataItem(
             topAdsLogExtra.orEmpty(),
             AdsLogShowModel.AdExtraData(
                 productId = productIdByteIo,
-                productName = productName.orEmpty(),
+                productName = getRealProductName(),
         ))
     }
 

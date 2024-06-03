@@ -63,6 +63,9 @@ data class RecommendationItem(
     val recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
 ) : ImpressHolder() {
 
+    val productIdByteIo: String
+        get() = if (parentID == 0L) productId.toString() else parentID.toString()
+
     enum class AddToCartType {
         DirectAtc,
         QuantityEditor,
@@ -224,8 +227,6 @@ data class RecommendationItem(
 
     fun isUseQuantityEditor(): Boolean = addToCartType == AddToCartType.QuantityEditor
 
-    val productIdByteIo: String
-        get() = if (parentID == 0L) productId.toString() else parentID.toString()
 }
 
 data class RecommendationSpecificationLabels(
