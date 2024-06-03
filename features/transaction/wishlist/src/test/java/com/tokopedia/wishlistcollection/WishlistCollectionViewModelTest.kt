@@ -20,6 +20,7 @@ import com.tokopedia.wishlist.collection.domain.AffiliateUserDetailOnBoardingBot
 import com.tokopedia.wishlist.collection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionUseCase
+import com.tokopedia.wishlist.collection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlist.collection.view.viewmodel.WishlistCollectionViewModel
 import com.tokopedia.wishlist.detail.data.model.WishlistCollectionState
 import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
@@ -33,6 +34,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
 import io.mockk.spyk
+import io.mockk.verify
 import org.assertj.core.api.SoftAssertions
 import org.junit.Before
 import org.junit.Rule
@@ -72,6 +74,9 @@ class WishlistCollectionViewModelTest {
 
     @RelaxedMockK
     lateinit var affiliateUserDetailOnBoardingBottomSheetUseCase: AffiliateUserDetailOnBoardingBottomSheetUseCase
+
+    @RelaxedMockK
+    lateinit var wishlistCollectionPrefs: WishlistCollectionPrefs
 
     private var collectionWishlistResponseDataStatusOkErrorEmpty = GetWishlistCollectionResponse(
         getWishlistCollections = GetWishlistCollectionResponse.GetWishlistCollections(status = "OK", errorMessage = emptyList())
@@ -210,7 +215,8 @@ class WishlistCollectionViewModelTest {
                 deleteWishlistProgressUseCase,
                 getWishlistCollectionSharingDataUseCase,
                 affiliateUserDetailOnBoardingBottomSheetUseCase,
-                updateWishlistCollectionUseCase
+                updateWishlistCollectionUseCase,
+                wishlistCollectionPrefs
             )
         )
         val badges = arrayListOf<RecommendationItem.Badge>()
@@ -863,4 +869,19 @@ class WishlistCollectionViewModelTest {
         assert(wishlistCollectionViewModel.collections.value is Fail)
     }
 
+    @Test
+    fun `When Close Ticker, setHasClosed() Should Be Called`() {
+        // given
+        every {
+            wishlistCollectionPrefs.setHasClosed(true)
+        } returns Unit
+
+        // when
+        wishlistCollectionViewModel.closeTicker(true)
+
+        // then
+        verify {
+            wishlistCollectionPrefs.setHasClosed(true)
+        }
+    }
 }
