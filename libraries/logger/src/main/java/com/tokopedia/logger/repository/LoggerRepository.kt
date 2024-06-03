@@ -152,7 +152,7 @@ class LoggerRepository(
                     jobList.add(jobEmbrace)
                 }
 
-                if (rollenceMap.get(LogManager.SLARDAR_LOG_ROLLENCE_KEY) == true) {
+                if (rollenceMap[LogManager.SLARDAR_LOG_ROLLENCE_KEY] == true) {
                     val jobApmSlardar = async {
                         sendSlardarApmLogToServer(newRelicMessageSdkList, newRelicMessageApiList)
                     }
