@@ -36,7 +36,7 @@ class PlayShortsTestActivity : BasePlayShortsActivity() {
                 val curr = it.value
 
                 if (prev?.config?.shortsId.isNullOrEmpty() && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
-                    viewModel.submitAction(PlayShortsAction.SetMedia("123"))
+                    viewModel.submitAction(PlayShortsAction.SetMedia("https://picsum.photos/200"))
                 }
             }
         }
