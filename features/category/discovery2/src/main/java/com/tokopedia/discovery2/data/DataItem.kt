@@ -762,6 +762,16 @@ data class DataItem(
         return appLog
     }
 
+    fun getAppLogSPUId(): String {
+        return parentProductId?.let {
+            if (it.isBlankOrZero()) {
+                productId.orEmpty()
+            } else {
+                it
+            }
+        } ?: productId.orEmpty()
+    }
+
     fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(refer,
             topAdsCreativeId.toLongOrZero(),
