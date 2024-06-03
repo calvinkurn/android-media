@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 interface DiscoveryPageRepository {
     suspend fun getDiscoveryPageData(
         pageIdentifier: String,
-        extraParams: Map<String, Any>? = null
+        extraParams: Map<String, Any>? = null,
+        additionalQueryParamsString: String = "",
     ): DiscoveryResponse
 }

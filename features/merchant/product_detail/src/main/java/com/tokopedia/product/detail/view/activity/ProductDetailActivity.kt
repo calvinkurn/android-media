@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.btm.BtmApi
 import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.IAppLogPdpActivity
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
@@ -44,12 +45,8 @@ import javax.inject.Inject
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-open class ProductDetailActivity :
-    BaseSimpleActivity(),
-    ProductDetailActivityInterface,
-    HasComponent<ProductDetailComponent>,
-    IAppLogPdpActivity,
-    AppLogInterface {
+open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface, HasComponent<ProductDetailComponent>,
+    IAppLogPdpActivity, AppLogInterface, IAdsLog {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -525,8 +522,13 @@ open class ProductDetailActivity :
         return PageName.PDP
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.PDP
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return false
+
     }
 }
 

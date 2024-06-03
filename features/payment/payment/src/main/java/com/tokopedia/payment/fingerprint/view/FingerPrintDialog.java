@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.design.component.BottomSheets;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.fingerprint.FingerprintUtil;
 import com.tokopedia.payment.R;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -36,7 +39,7 @@ import java.security.cert.CertificateException;
  */
 
 @TargetApi(Build.VERSION_CODES.M)
-public class FingerPrintDialog extends BottomSheets {
+public class FingerPrintDialog extends BottomSheetUnify {
 
     private TextView descFingerprint;
     private String textToEncrypt = "";
@@ -46,12 +49,8 @@ public class FingerPrintDialog extends BottomSheets {
     private CancellationSignal cancellationSignal;
     private Callback callback;
     private Context context;
-    private TextView textViewTitle;
 
-    @Override
-    public int getLayoutResourceId() {
-        return R.layout.bottom_sheet_fingerprint_view;
-    }
+    protected View inflatedView;
 
     public void setTextToEncrypt(String textToEncrypt) {
         this.textToEncrypt = textToEncrypt;
@@ -70,23 +69,32 @@ public class FingerPrintDialog extends BottomSheets {
     }
 
     @Override
-    protected void configView(View parentView) {
-        super.configView(parentView);
-        textViewTitle = parentView.findViewById(com.tokopedia.design.R.id.tv_title);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initBottomSheet();
     }
 
-    @Override
-    public void initView(View view) {
-        descFingerprint = view.findViewById(R.id.desc_fingerprint);
+    protected int getLayoutResourceId(){
+        return R.layout.bottom_sheet_fingerprint_view;
     }
 
-    @Override
-    protected String title() {
-        return getString(R.string.fingerprint_label_scan_your_fingerprint);
+    private void initBottomSheet() {
+        inflatedView = LayoutInflater.from(context).inflate(getLayoutResourceId(), null);
+        descFingerprint = inflatedView.findViewById(R.id.desc_fingerprint);
+        setTitle(getString(R.string.fingerprint_label_scan_your_fingerprint));
+        setChild(inflatedView);
+        initView(inflatedView);
+        onCloseButtonClick();
+    }
+
+    protected void onCloseButtonClick(){}
+
+    protected void initView(View view){
+
     }
 
     public void updateTitle(String title) {
-        textViewTitle.setText(title);
+        bottomSheetTitle.setText(title);
     }
 
     public void updateDesc(String title) {

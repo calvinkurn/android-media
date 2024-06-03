@@ -1555,6 +1555,7 @@ class FeedFragment :
                         is FeedMainEvent.ScrollToTop -> {
                             if (event.tabKey != data?.key) return@collect
                             binding.rvFeedPost.scrollToPosition(0)
+                            if (checkResume()) adapter.select(0)
                         }
 
                         else -> {}

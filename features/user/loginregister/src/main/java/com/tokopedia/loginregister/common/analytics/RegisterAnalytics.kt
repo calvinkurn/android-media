@@ -8,10 +8,10 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientLabelIfAvailable
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -24,13 +24,15 @@ class RegisterAnalytics @Inject constructor() {
     val MEDIUM_PHONE = "phone"
     val MEDIUM_GOOGLE = "google"
 
+    var clientName: String = ""
+
     //#R1
     fun trackClickTopSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_DAFTAR_TOP,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -40,7 +42,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_DAFTAR_BOTTOM,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -50,7 +52,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_BACK,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -60,7 +62,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_MASUK_TOP,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -70,7 +72,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -80,7 +82,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR,
-                LABEL_FAILED + failedMessage
+                LABEL_FAILED + failedMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -90,7 +92,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -100,7 +102,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
-                LABEL_SUCCESS
+                LABEL_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -110,7 +112,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
-                LABEL_FAILED + failedMessage
+                LABEL_FAILED + failedMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -120,7 +122,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
-                LABEL_FAILED_POPUP_EMAIL
+                LABEL_FAILED_POPUP_EMAIL + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -130,7 +132,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -140,7 +142,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
-                LABEL_FAILED + failedMessage
+                LABEL_FAILED + failedMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -150,7 +152,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
-                LABEL_FAILED_POPUP_PHONE
+                LABEL_FAILED_POPUP_PHONE + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -160,7 +162,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_GOOGLE,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
 
         val map = HashMap<String, Any>()
@@ -175,7 +177,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_MASUK_BOTTOM,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -185,7 +187,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_YA_MASUK_TERDAFTAR_EMAIL,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -195,7 +197,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_UBAH_TERDAFTAR_EMAIL,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -205,7 +207,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_WITH_EMAIL_PAGE,
                 ACTION_CLICK_ON_BUTTON_BACK,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -215,7 +217,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_YA_BENAR_PHONE,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -225,7 +227,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_UBAH_BENAR_PHONE,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -235,7 +237,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_YA_MASUK_TERDAFTAR_PHONE,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -245,7 +247,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_UBAH_TERDAFTAR_PHONE,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -255,7 +257,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_WITH_EMAIL_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -265,7 +267,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_WITH_EMAIL_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR,
-                LABEL_SUCCESS
+                LABEL_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -275,7 +277,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_WITH_EMAIL_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR,
-                LABEL_FAILED + failedMessage
+                LABEL_FAILED + failedMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -285,7 +287,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_WITH_EMAIL_PAGE,
                 ACTION_CLICK_SYARAT_DAN_KETENTUAN,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -295,7 +297,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_WITH_EMAIL_PAGE,
                 ACTION_CLICK_KEBIJAKAN_PRIVASI,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -305,7 +307,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_ON_BUTTON_BACK,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -315,7 +317,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_ON_BUTTON_AKTIVASI,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -325,7 +327,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_ON_BUTTON_AKTIVASI,
-                LABEL_SUCCESS
+                LABEL_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -335,7 +337,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_KIRIM_ULANG,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -345,7 +347,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_KIRIM_ULANG,
-                LABEL_SUCCESS
+                LABEL_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -355,7 +357,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_KIRIM_ULANG,
-                LABEL_FAILED + failedMessage
+                LABEL_FAILED + failedMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -365,7 +367,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_OK_KIRIM_ULANG,
-                LABEL_CLICK
+                LABEL_CLICK + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -375,7 +377,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_OK_KIRIM_ULANG,
-                LABEL_SUCCESS
+                LABEL_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -385,7 +387,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_OK_KIRIM_ULANG,
-                LABEL_FAILED + failedMessage
+                LABEL_FAILED + failedMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -395,7 +397,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_UBAH_EMAIL_ACTIVATION,
-                LABEL_EMPTY
+                LABEL_EMPTY + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -406,7 +408,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_ACTIVATION,
                 CATEGORY_ACTIVATION_PAGE,
                 ACTION_CLICK_ON_BUTTON_AKTIVASI,
-                LABEL_FAILED + failedMessage
+                LABEL_FAILED + failedMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -423,7 +425,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_GOOGLE,
-                LABEL_FAILED + errorMessage
+                LABEL_FAILED + errorMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -432,7 +434,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
-                LABEL_FAILED + errorMessage
+                LABEL_FAILED + errorMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -441,7 +443,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
-                LABEL_FAILED + errorMessage
+                LABEL_FAILED + errorMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -471,14 +473,14 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_GOOGLE,
-                LABEL_SUCCESS
+                LABEL_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
 
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
                 ACTION_REGISTER_SUCCESS,
-                LoginRegisterAnalytics.GOOGLE
+                LoginRegisterAnalytics.GOOGLE + getClientLabelIfAvailable(clientName)
         ))
         sendBranchRegisterEvent(userId, MEDIUM_GOOGLE)
     }
@@ -488,7 +490,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
-                LABEL_SUCCESS
+                LABEL_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
         sendBranchRegisterEvent(userId, MEDIUM_PHONE)
     }
@@ -499,7 +501,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
                 ACTION_REGISTER_SUCCESS,
-                LABEL_EMAIL
+                LABEL_EMAIL + getClientLabelIfAvailable(clientName)
         ))
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, EMAIL_METHOD)
@@ -522,7 +524,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_TICKER_LOGIN,
-                ""
+                getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -531,7 +533,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_TICKER_LINK,
-                link
+                link + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -540,7 +542,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_TICKER,
-                ""
+                "" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -549,7 +551,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_PHONE_NUMBER_SUGGESTION,
-                ""
+                "" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -558,7 +560,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_SOCMED,
-                ""
+                "" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -567,7 +569,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
-                ""
+                "" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -576,7 +578,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_VIEW_REGISTER_IRIS,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_VIEW_BANNER,
-                label
+                label + getClientLabelIfAvailable(clientName)
         ))
     }
 

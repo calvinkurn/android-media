@@ -76,15 +76,12 @@ class MissionWidgetClearItemViewHolder(
             containerMissionWidget.setOnClickListener {
                 if (element.isProduct()) {
                     AppLogRecommendation.sendProductClickAppLog(
-                        element.asProductTrackModel(
-                            isCache = element.isCache,
-                            enterMethod = "${element.data.pageName}_${element.cardPosition+1}"
-                        )
+                        element.asProductTrackModel(element.isCache)
                     )
                 } else {
                     AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
                 }
-                AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, "${element.data.pageName}_${element.cardPosition + 1}")
+                AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${element.data.pageName}_${element.cardPosition + 1}"))
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             containerMissionWidget.addOnImpressionListener(element) {

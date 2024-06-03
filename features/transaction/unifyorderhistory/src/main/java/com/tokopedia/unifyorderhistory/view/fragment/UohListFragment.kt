@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.analytics.btm.BtmApi
 import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.Transaction
@@ -229,7 +230,7 @@ import javax.inject.Inject
 import com.tokopedia.atc_common.R as atc_commonR
 
 @Keep
-open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener, AppLogInterface {
+open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener, AppLogInterface, IAdsLog {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -347,6 +348,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     companion object {
         const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
+        private const val PARAM_SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
         const val PARAM_HOME = "home"
         private var CATEGORIES_DIGITAL = ""
         private var CATEGORIES_MP = ""
@@ -557,6 +559,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
             )
+            uohNavtoolbar.updateSearchBarStyle(showSearchBtn = false)
             val pageSource = if (activityOrderHistory != PARAM_HOME) {
                 uohNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.visibility = View.GONE
@@ -571,7 +574,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                addIcon(IconList.ID_NAV_GLOBAL) {}
+                if (arguments?.getBoolean(PARAM_SHOULD_SHOW_GLOBAL_NAV, true) != false) addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             uohNavtoolbar.setIcon(icons)
         }
@@ -2017,6 +2020,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun getScreenName(): String = ""
 
     override fun getPageName(): String {
+        return PageName.UOH
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.UOH
     }
 

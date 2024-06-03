@@ -90,6 +90,10 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
               }
               parentID
               recParam
+              adsLog {
+                creativeID
+                logExtra
+              }
            }
        }
      }

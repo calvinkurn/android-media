@@ -77,9 +77,21 @@ object AppLogAnalytics {
     @JvmField
     var activityCount: Int = 0
 
+    private val GLOBAL_PARAMS_ONCLICK = listOf(
+        ENTRANCE_FORM, ENTER_METHOD, SOURCE_MODULE,
+        IS_AD, TRACK_ID, SOURCE_PAGE_TYPE, REQUEST_ID,
+        PARENT_PRODUCT_ID, PARENT_TRACK_ID, PARENT_REQUEST_ID
+    )
+
     private val lock = Any()
 
     private var remoteConfig: RemoteConfig? = null
+
+    fun clearGlobalParamsOnClick(hash: Int) {
+        removePageDataBeforeHash(hash, GLOBAL_PARAMS_ONCLICK)
+        AppLogFirstTrackId.removePageDataBeforeHash(hash, GLOBAL_PARAMS_ONCLICK)
+        AppLogFirstTrackId.updateFirstTrackId()
+    }
 
     internal fun addPageName(activity: Activity) {
         val actName = activity.javaClass.simpleName
@@ -113,19 +125,18 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, getLastData(ENTRANCE_FORM))
+        put(ENTRANCE_FORM, getPreviousDataFrom(PageName.PDP, ENTRANCE_FORM, true))
     }
 
-    private fun generateEntranceInfoJson(): JSONObject {
+    fun generateEntranceInfoJson(): JSONObject {
         return JSONObject().also {
             it.addEnterFromInfo()
             it.addEntranceForm()
             it.addSourcePageType()
             it.addTrackId()
-            it.put(IS_AD, getLastData(IS_AD))
+            it.put(IS_AD, getPreviousDataFrom(PageName.PDP, IS_AD, true))
             it.addRequestId()
             it.addSourceModulePdp()
-//            it.addEnterMethod()
             it.addEnterMethodPdp()
             it.addSourceContentId()
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
@@ -134,9 +145,9 @@ object AppLogAnalytics {
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
             it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
             it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
-            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID))
-            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID))
-            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID))
+            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true))
+            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID, true))
+            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID, true))
         }
     }
 
@@ -182,42 +193,27 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(SOURCE_PAGE_TYPE, getLastData(SOURCE_PAGE_TYPE))
+        put(SOURCE_PAGE_TYPE, getPreviousDataFrom(PageName.PDP, SOURCE_PAGE_TYPE, true))
     }
 
     internal fun JSONObject.addSourceModulePdp() {
-        val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataBeforeStep(SOURCE_MODULE, 2)
-        } else {
-            getDataBeforeStep(SOURCE_MODULE)
-        }
-        put(SOURCE_MODULE, sourceModule)
+        put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE, true))
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
-        val sourceModule = if (currentActivityName == "AtcVariantActivity") {
-            getDataBeforeStep(ENTER_METHOD, 2)
-        } else {
-            getDataBeforeStep(ENTER_METHOD)
-        }
-        put(ENTER_METHOD, sourceModule)
+        put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD, true))
     }
 
     internal fun JSONObject.addRequestId() {
-        put(REQUEST_ID, getLastData(REQUEST_ID))
+        put(REQUEST_ID, getPreviousDataFrom(PageName.PDP, REQUEST_ID, true))
     }
 
     internal fun JSONObject.addTrackId() {
-        put(TRACK_ID, getLastData(TRACK_ID))
+        put(TRACK_ID, getPreviousDataFrom(PageName.PDP, TRACK_ID, true))
     }
 
     internal fun JSONObject.addEnterMethod() {
-        val enterMethod = if (pageDataList.size > 1) {
-            getLastDataBeforeCurrent(ENTER_METHOD)
-        } else {
-            getLastData(ENTER_METHOD)
-        }
-        put(ENTER_METHOD, enterMethod)
+        put(ENTER_METHOD, getDataBeforeCurrent(ENTER_METHOD)?.toString().orEmpty())
     }
 
     internal fun JSONObject.addSourceContentId() {
@@ -303,6 +299,17 @@ object AppLogAnalytics {
         Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
+    fun removePageDataBeforeHash(hash: Int, listOfRemovedKey: List<String>) {
+        val pageDataIndex = _pageDataList
+            .withIndex()
+            .find { it.value[ACTIVITY_HASH_CODE] == hash }?.index?.minus(1)
+            ?: return
+
+        listOfRemovedKey.forEach {
+            _pageDataList[pageDataIndex].remove(it)
+        }
+    }
+
     // remove list of page data by hashcode
     fun removePageData(appLogInterface: AppLogInterface, listOfRemovedKey: List<String>) {
         val pageDataIndex = _pageDataList
@@ -318,7 +325,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-            ?.get(IS_SHADOW) == true
+                ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
@@ -464,7 +471,7 @@ object AppLogAnalytics {
         }
     }
 
-    fun setGlobalParams(
+    fun setGlobalParamOnClick(
         entranceForm: String? = null,
         enterMethod: String? = null,
         sourceModule: String? = null,
@@ -509,6 +516,14 @@ object AppLogAnalytics {
     }
 
     private fun putPageDataAndFirstTrackId(key: String, value: Any) {
+        if (!GLOBAL_PARAMS_ONCLICK.contains(key)) {
+            val msg = "please add the key to global param on click list"
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                throw IllegalArgumentException(msg)
+            } else {
+                Timber.w(msg)
+            }
+        }
         _pageDataList.lastOrNull()?.put(key, value)
         AppLogFirstTrackId.putPageData(key, value)
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
@@ -541,7 +556,7 @@ object AppLogAnalytics {
                                 if (buyType == AtcBuyType.ATC) {
                                     j.put(ENTRANCE_INFO, generateEntranceInfoCartJson())
                                 } else { // occ & ocs
-                                    j.put(ENTRANCE_INFO, getEntranceInfoJsonForCheckoutInstant())
+                                    j.put(ENTRANCE_INFO, generateEntranceInfoJson())
                                 }
                             }
                         )
@@ -552,43 +567,23 @@ object AppLogAnalytics {
     }
 
     /**
-     * This method should be refactored to the normal getEntranceInfoJson, this is separated
-     * to minimize changes and avoid regression during hotfix
-     * */
-    internal fun getEntranceInfoJsonForCheckoutInstant(): JSONObject {
-        return JSONObject().also {
-            it.addEnterFromInfo()
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.addTrackId()
-            it.put(IS_AD, getLastData(IS_AD))
-            it.addRequestId()
-            it.put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE))
-            it.put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD))
-            it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
-            it.put(SEARCH_ID, getLastData(SEARCH_ID))
-            it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
-            it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
-            it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
-            it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
-            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID))
-            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID))
-            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID))
-        }
-    }
-
-    /**
      * Starting from N-1, this method will start searching for a key after the current item is the anchor
+     * If isOneStep is true then it will always return N-1 data
      * */
-    fun getPreviousDataFrom(anchor: String, key: String): Any? {
+    fun getPreviousDataFrom(anchor: String, key: String, isOneStep: Boolean = false): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
         while (idx >= 0) {
             val map = _pageDataList[idx]
-            if (map.containsKey(key) && start) {
-                return map[key]
+            if (start) {
+                if (map.containsKey(key)) {
+                    return map[key]
+                } else if (isOneStep) {
+                    return null
+                }
             }
+
             if (map[PAGE_NAME] == anchor) {
                 start = true
             }

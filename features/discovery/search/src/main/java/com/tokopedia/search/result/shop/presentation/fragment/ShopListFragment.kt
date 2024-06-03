@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.btm.BtmApi
 import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
@@ -74,7 +75,8 @@ internal class ShopListFragment @Inject constructor(
     ChooseAddressListener,
     SortFilterBottomSheet.Callback,
     BackToTopView,
-    AppLogInterface by ShopPageNameDelegate() {
+    AppLogInterface by ShopPageNameDelegate(),
+    IAdsLog {
 
     companion object {
         private const val SHOP = "shop"
@@ -132,6 +134,14 @@ internal class ShopListFragment @Inject constructor(
         observeViewModelData()
 
         searchShopViewModel?.onViewCreated()
+    }
+
+    override fun getPageName(): String {
+        return AppLogSearch.ParamValue.STORE_SEARCH
+    }
+
+    override fun getAdsPageName(): String {
+        return AppLogSearch.ParamValue.STORE_SEARCH
     }
 
     private fun initViews() {

@@ -588,4 +588,17 @@ ext {
             abTest                  : "com.bytedance.dataplatform:abtest:0.10.1",
             abTestApt               : "com.bytedance.dataplatform:abtest_apt:0.5.1"
     ]
+
+    bytedanceFrescoVersion = "1.13.5.1"
+
+    bytedanceFrescoDependencies = [
+            fresco            : "com.bytedance.fresco:fresco:$bytedanceFrescoVersion",
+            animatedGif       : "com.bytedance.fresco:animated-gif:$bytedanceFrescoVersion",
+            animatedWebp      : "com.bytedance.fresco:animated-webp:$bytedanceFrescoVersion",
+            websupport        : "com.bytedance.fresco:webpsupport:$bytedanceFrescoVersion",
+            statistic         : "com.bytedance.fresco:statistics:$bytedanceFrescoVersion",
+            heif              : "com.bytedance.fresco:heif:$bytedanceFrescoVersion",
+            encoder           : "com.bytedance.fresco:encoder:$bytedanceFrescoVersion",
+            okhttp3           : "com.bytedance.fresco:imagepipeline-okhttp3:$bytedanceFrescoVersion"
+    ]
 }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
+import com.tokopedia.creation.common.upload.domain.usecase.post.DeleteMediaPostCacheUseCase
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
@@ -36,6 +37,9 @@ class CreationUploadReceiver : BroadcastReceiver() {
     @Inject
     lateinit var gson: Gson
 
+    @Inject
+    lateinit var deleteMediaPostCacheUseCase: DeleteMediaPostCacheUseCase
+
     override fun onReceive(context: Context, intent: Intent?) {
         inject(context)
 
@@ -57,8 +61,7 @@ class CreationUploadReceiver : BroadcastReceiver() {
             }
             Action.RemoveQueue.value -> {
                 scope.launch {
-                    uploadQueueRepository.deleteQueueAndChannel(uploadData)
-                    creationUploader.retry(uploadData.notificationIdAfterUpload)
+                    creationUploader.removeFailedContentFromQueue(uploadData)
                 }
             }
         }

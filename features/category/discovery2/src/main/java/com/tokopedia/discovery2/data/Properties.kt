@@ -72,7 +72,7 @@ data class Properties(
     val tokonowATCActive: Boolean = false,
 
     @SerializedName("calendar_layout")
-    val calendarLayout: String = "",
+    var calendarLayout: String = "",
 
     @SerializedName("calendar_type")
     val calendarType: String = "",

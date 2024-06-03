@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:layout_gravity="bottom"
-    tools:background="@drawable/header_bottom_sheet_rounded_white"
     tools:orientation="vertical">
 
     <View
@@ -14,7 +13,7 @@
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
-        android:background="@drawable/close_button_bottom_sheet" />
+        android:background="@drawable/close_button_bottom_sheet_gamification" />
 
     <ViewFlipper
         android:id="@+id/viewFlipper"

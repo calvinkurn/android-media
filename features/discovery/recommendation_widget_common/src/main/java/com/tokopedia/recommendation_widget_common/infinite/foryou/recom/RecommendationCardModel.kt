@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 
 data class RecommendationCardModel(
@@ -63,6 +64,7 @@ data class RecommendationCardModel(
         val wishListUrl: String = "",
         val shop: Shop = Shop(),
         val countSold: Int = 0,
+        val recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
     ) {
         data class LabelGroup(
             val position: String = "",
