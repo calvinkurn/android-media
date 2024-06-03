@@ -27,6 +27,7 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor;
 import com.tokopedia.graphql.interceptor.MockInterceptor;
+import com.tokopedia.graphql.interceptor.ShopPageWidgetMockInterceptor;
 import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
@@ -183,6 +184,9 @@ public class GraphqlClient {
             if (interceptor != null) {
                 tkpdOkHttpBuilder.addInterceptor(interceptor);
             }
+
+            tkpdOkHttpBuilder.addInterceptor(new ShopPageWidgetMockInterceptor(context));
+
         }
         return tkpdOkHttpBuilder;
     }

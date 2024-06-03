@@ -353,25 +353,7 @@ class ActivationPageFragment : BaseDaggerFragment() {
 
     private fun openDialogActivationPage(data: ShippingEditorModel) {
         if (data.x11 == 0) {
-            swipeRefreshLayout?.isRefreshing = false
-            context?.let { dialog ->
-                DialogUnify(dialog, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    val primaryText = HtmlLinkHelper(context, getString(R.string.dialog_description_active)).spannedString
-                    setTitle(getString(R.string.dialog_title_active))
-                    if (primaryText != null) {
-                        setDescription(primaryText)
-                    }
-                    setPrimaryCTAText(getString(R.string.dialog_primary_button_active))
-                    setSecondaryCTAText(getString(R.string.dialog_secondary_button_active))
-                    setPrimaryCTAClickListener {
-                        viewModel.updateShopFeature(true)
-                        dismiss()
-                    }
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                    }
-                }.show()
-            }
+            viewModel.updateShopFeature(true)
         } else {
             viewModel.updateShopFeature(true)
         }

@@ -9,11 +9,12 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 const val WALLET_CODE_GOPAY = "PEMUDA"
 const val WALLET_CODE_GOPAY_POINTS = "PEMUDAPOINTS"
 const val defaultActivationCta = "Sambungkan"
-private const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance return empty"
+const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance return empty"
 private const val ERROR_GOPAY_POINTS_EMPTY = "Wallet app is linked but gopay points return empty"
 private const val FIRST_WALLET_DATA = 0
 private const val TEXT_ATTRIBUTE_FIRST = 0
@@ -21,7 +22,7 @@ private const val TEXT_ATTRIBUTE_SECOND = 1
 private const val TAG_ATTRIBUTE_FIRST = 0
 private const val TAG_ATTRIBUTE_SECOND = 1
 private const val EMPTY_AMOUNT_RESERVE_BALANCE = 0
-private const val RESERVE_BALANCE_FORMAT = "%s Coins"
+const val RESERVE_BALANCE_FORMAT = "%s Coins"
 private const val TEXT_COLOR_GREEN = "green"
 private const val TEXT_COLOR_GRAY = "gray"
 private const val TEXT_COLOR_BLACK = "black"
@@ -156,10 +157,10 @@ fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
     return BalanceTextAttribute(
         colour = this.colour,
         colourRef = when (this.colour) {
-            TEXT_COLOR_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            TEXT_COLOR_GRAY -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            TEXT_COLOR_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            TEXT_COLOR_GREEN -> unifyprinciplesR.color.Unify_GN500
+            TEXT_COLOR_GRAY -> unifyprinciplesR.color.Unify_NN600
+            TEXT_COLOR_BLACK -> unifyprinciplesR.color.Unify_NN950
+            else -> unifyprinciplesR.color.Unify_NN600
         },
         text = text,
         isBold = this.isBold
@@ -170,10 +171,10 @@ fun SubscriptionsTextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribu
     return BalanceTextAttribute(
         colour = this.color,
         colourRef = when (this.color) {
-            TEXT_COLOR_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            TEXT_COLOR_GRAY -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            TEXT_COLOR_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            TEXT_COLOR_GREEN -> unifyprinciplesR.color.Unify_GN500
+            TEXT_COLOR_GRAY -> unifyprinciplesR.color.Unify_NN600
+            TEXT_COLOR_BLACK -> unifyprinciplesR.color.Unify_NN950
+            else -> unifyprinciplesR.color.Unify_GN500
         },
         text = text,
         isBold = this.isBold

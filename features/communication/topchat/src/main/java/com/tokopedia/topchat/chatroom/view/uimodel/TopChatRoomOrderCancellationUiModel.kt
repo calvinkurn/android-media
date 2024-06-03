@@ -2,11 +2,11 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 
 class TopChatRoomOrderCancellationUiModel private constructor(
     builder: Builder
-) : SendableUiModel(builder), Visitable<TopChatTypeFactory> {
+) : SendableUiModel(builder), Visitable<TopChatRoomTypeFactory> {
 
     val orderId = builder.orderId
     val orderStatus = builder.orderStatus
@@ -14,7 +14,7 @@ class TopChatRoomOrderCancellationUiModel private constructor(
     val title = builder.title
     val appLink = builder.appLink
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

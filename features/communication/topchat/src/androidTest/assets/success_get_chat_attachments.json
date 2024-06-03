@@ -60,6 +60,66 @@
           "html": "https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold"
         },
         "isActual": true
+      },
+      {
+        "id": 77000069,
+        "type": 1,
+        "attributes": "{\"is_hide_banner\":true,\"url\":\"https://www.tokopedia.com/10973651_serba_kopi?bc_target\u003dbroadcast-shop\",\"image_url\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"wording_end_state\":\"Campaign \\\"Koleksi Spesial\\\" telah berakhir. Nantikan campaign berikutnya, ya!\",\"is_campaign\":true,\"status_campaign\":4,\"start_date\":\"1714034580\",\"end_date\":\"1714120980\",\"campaign_label\":\"Rilisan Spesial berakhir dalam\"}",
+        "fallback": {
+          "message": "",
+          "html": ""
+        },
+        "isActual": true
+      },
+      {
+        "id": 77000000,
+        "type": 1,
+        "attributes": "{\"url\":\"https://www.tokopedia.com/10973651_serba_kopi?bc_target\u003dbroadcast-shop\",\"image_url\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/nYdSnP/2021/9/23/b43e159e-a459-4988-97c6-febcbea72dfc.jpg\",\"wording_end_state\":\"Campaign \\\"Koleksi Spesial\\\" telah berakhir. Nantikan campaign berikutnya, ya!\",\"is_campaign\":true,\"status_campaign\":4,\"start_date\":\"1714034580\",\"end_date\":\"1714120980\",\"campaign_label\":\"Rilisan Spesial berakhir dalam\"}",
+        "fallback": {
+          "message": "",
+          "html": ""
+        },
+        "isActual": true
+      },
+      {
+        "id": 77000001,
+        "type": 3,
+        "attributes": "{\"product_id\":215100001,\"product_profile\":{\"name\":\"Product Attachment 1\",\"parent_id\":0,\"price\":\"Rp10.000\",\"price_int\":10000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold\",\"android_url\":\"tokopedia://product/215100001?src=chat\",\"ios_url\":\"https://chat-staging.tokopedia.com/tc/v1/redirect/\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"50.000\",\"drop_percentage\":\"80\",\"shop_id\":6559467,\"status\":1,\"min_order\":1,\"category_id\":56,\"remaining_stock\":10,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\"],\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{\"rating\":5,\"rating_score\":5,\"count\":1},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"Setiabudi\",\"district_icon\":\"\",\"district_name_full_text\":\"Dikirim dari Setiabudi\",\"postal_code\":\"\",\"latlon\":\"\"},\"item_sold_format\":\"terjual 12rb\",\"campaign\":{}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://staging.tokopedia.com/comm-os/mainan-bubble-pop-it-bahan-plastik"
+        },
+        "isActual": true
+      },
+      {
+        "id": 77000002,
+        "type": 3,
+        "attributes": "{\"product_id\":215100002,\"product_profile\":{\"name\":\"Product Attachment 2\",\"is_preorder\":true,\"parent_id\":0,\"price\":\"Rp20.000\",\"price_int\":20000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold\",\"android_url\":\"tokopedia://product/215100002?src=chat\",\"ios_url\":\"https://chat-staging.tokopedia.com/tc/v1/redirect/\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":6559467,\"status\":1,\"min_order\":1,\"category_id\":56,\"remaining_stock\":5,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\"],\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{\"rating\":5,\"rating_score\":5,\"count\":1},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"Setiabudi\",\"district_icon\":\"\",\"district_name_full_text\":\"Dikirim dari Setiabudi\",\"postal_code\":\"\",\"latlon\":\"\"},\"item_sold_format\":\"\",\"campaign\":{}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://staging.tokopedia.com/comm-os/mainan-bubble-pop-it-bahan-plastik"
+        },
+        "isActual": true
+      },
+      {
+        "id": 77000003,
+        "type": 3,
+        "attributes": "{\"product_id\":215100003,\"product_profile\":{\"name\":\"Product Attachment 3\",\"parent_id\":0,\"price\":\"Rp30.000\",\"price_int\":30000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold\",\"android_url\":\"tokopedia://product/215100003?src=chat\",\"ios_url\":\"https://chat-staging.tokopedia.com/tc/v1/redirect/\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":6559467,\"status\":1,\"min_order\":1,\"category_id\":56,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\"],\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"Setiabudi\",\"district_icon\":\"\",\"district_name_full_text\":\"Dikirim dari Setiabudi\",\"postal_code\":\"\",\"latlon\":\"\"},\"item_sold_format\":\"terjual 12rb\",\"campaign\":{}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://staging.tokopedia.com/comm-os/mainan-bubble-pop-it-bahan-plastik"
+        },
+        "isActual": true
+      },
+      {
+        "id": 77000004,
+        "type": 3,
+        "attributes": "{\"product_id\":215100004,\"product_profile\":{\"name\":\"Product Attachment 4\",\"parent_id\":0,\"price\":\"Rp40.000\",\"price_int\":40000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-extraordinary-oil-gold\",\"android_url\":\"tokopedia://product/215100004?src=chat\",\"ios_url\":\"https://chat-staging.tokopedia.com/tc/v1/redirect/\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":6559467,\"status\":1,\"min_order\":1,\"category_id\":56,\"remaining_stock\":10,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/7/31/24c64a4f-5707-446d-84c6-dadf5345133e.jpg\"],\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"Setiabudi\",\"district_icon\":\"\",\"district_name_full_text\":\"Dikirim dari Setiabudi\",\"postal_code\":\"\",\"latlon\":\"\"},\"item_sold_format\":\"\",\"campaign\":{}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://staging.tokopedia.com/comm-os/mainan-bubble-pop-it-bahan-plastik"
+        },
+        "isActual": true
       }
     ]
   }

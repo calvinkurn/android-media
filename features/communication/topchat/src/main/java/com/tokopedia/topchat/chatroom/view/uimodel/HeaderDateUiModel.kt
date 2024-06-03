@@ -3,11 +3,11 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 import android.text.format.DateUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.adapter.typefactory.TopChatRoomTypeFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
+class HeaderDateUiModel : Visitable<TopChatRoomTypeFactory> {
 
     val date: String
 
@@ -39,7 +39,7 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
             }
         }
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatRoomTypeFactory): Int {
         return typeFactory.type(this)
     }
 

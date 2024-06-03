@@ -21,7 +21,6 @@ import io.mockk.coVerifyAll
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -151,8 +150,6 @@ class StatisticActivityViewModelTest {
 
         viewModel.getUserRole()
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             userSession.userId
         }
@@ -179,8 +176,6 @@ class StatisticActivityViewModelTest {
         } throws throwable
 
         viewModel.getUserRole()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             userSession.userId

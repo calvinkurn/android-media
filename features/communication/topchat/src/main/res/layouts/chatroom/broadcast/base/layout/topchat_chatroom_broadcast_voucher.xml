@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topchat_broadcast_tv_voucher_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Tambah murah pakai kupon!"/>
+
+    <com.tokopedia.topchat.chatroom.view.custom.voucher.TopChatRoomVoucherCarouselRecyclerView
+        android:id="@+id/topchat_broadcast_rv_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/topchat_broadcast_tv_voucher_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
+
+    <com.tokopedia.promousage.view.custom.simple.PromoSimpleView
+        android:id="@+id/topchat_broadcast_single_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/topchat_broadcast_tv_voucher_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/topchat_broadcast_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="topchat_broadcast_rv_voucher,topchat_broadcast_single_voucher" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topchat_broadcast_tv_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/topchat_broadcast_barrier"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        app:typographyType="small"
+        android:textColor="@color/Unify_NN400"
+        tools:text="Kupon bisa langsung dipakai di halaman Keranjang, ya."/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

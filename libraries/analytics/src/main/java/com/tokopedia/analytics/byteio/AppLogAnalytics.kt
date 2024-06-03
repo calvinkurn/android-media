@@ -10,9 +10,14 @@ import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_INFO
+import com.tokopedia.analytics.byteio.AppLogParam.FIRST_SOURCE_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.FIRST_TRACK_ID
 import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.PARENT_PRODUCT_ID
+import com.tokopedia.analytics.byteio.AppLogParam.PARENT_REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.PARENT_TRACK_ID
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_CONTENT_ID
@@ -125,6 +130,11 @@ object AppLogAnalytics {
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+            it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
+            it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
+            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID))
+            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID))
+            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID))
         }
     }
 
@@ -223,9 +233,9 @@ object AppLogAnalytics {
     fun send(event: String, params: JSONObject) {
         if (remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true) == true) {
             params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
-            Cassava.save(params, event, "ByteIO")
+            Cassava.save(params, event, "ByteIO", true)
             AppLog.onEventV3(event, params)
-            Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
+            Timber.d("($TAG) sending event ($event), value: ${params.toString(2)}")
         }
     }
 
@@ -253,7 +263,10 @@ object AppLogAnalytics {
     fun pushPageData() {
         val tempHashMap = HashMap<String, Any>()
         _pageDataList.add(tempHashMap)
-        Timber.d("Push _pageDataList: ${_pageDataList.printForLog()}")
+    }
+
+    fun removeLastPageData() {
+
     }
 
     /**
@@ -417,6 +430,7 @@ object AppLogAnalytics {
         pushPageData()
         putPageData(ACTIVITY_HASH_CODE, appLogInterface.hashCode())
         putAppLogInterfaceData(appLogInterface)
+        Timber.d("Push _pageDataList: \n${_pageDataList.printForLog()}")
     }
 
     fun updateCurrentPageData(appLogInterface: AppLogInterface) {
@@ -430,7 +444,7 @@ object AppLogAnalytics {
         if (appLogInterface.getPageName().isNotBlank()) {
             putPageData(PAGE_NAME, appLogInterface.getPageName())
             if (appLogInterface.isEnterFromWhitelisted()) {
-                putPageData(ENTER_FROM, appLogInterface.getPageName())
+                putPageData(ENTER_FROM, appLogInterface.getEnterFrom())
             }
         }
         if (appLogInterface.isShadow()) {
@@ -445,29 +459,47 @@ object AppLogAnalytics {
         isAd: Int? = null,
         trackId: String? = null,
         sourcePageType: String? = null,
-        requestId: String? = null
+        requestId: String? = null,
+        parentProductId: String? = null,
+        parentTrackId: String? = null,
+        parentRequestId: String? = null
     ) {
         entranceForm?.let {
-            putPageData(ENTRANCE_FORM, entranceForm)
+            putPageDataAndFirstTrackId(ENTRANCE_FORM, entranceForm)
         }
         enterMethod?.let {
-            putPageData(ENTER_METHOD, enterMethod)
+            putPageDataAndFirstTrackId(ENTER_METHOD, enterMethod)
         }
         sourceModule?.let {
-            putPageData(SOURCE_MODULE, sourceModule)
+            putPageDataAndFirstTrackId(SOURCE_MODULE, sourceModule)
         }
         isAd?.let {
-            putPageData(IS_AD, isAd)
+            putPageDataAndFirstTrackId(IS_AD, isAd)
         }
         trackId?.let {
-            putPageData(TRACK_ID, trackId)
+            putPageDataAndFirstTrackId(TRACK_ID, trackId)
         }
         sourcePageType?.let {
-            putPageData(SOURCE_PAGE_TYPE, sourcePageType)
+            putPageDataAndFirstTrackId(SOURCE_PAGE_TYPE, sourcePageType)
         }
         requestId?.let {
-            putPageData(REQUEST_ID, requestId)
+            putPageDataAndFirstTrackId(REQUEST_ID, requestId)
         }
+        parentProductId?.let {
+            putPageDataAndFirstTrackId(PARENT_PRODUCT_ID, parentProductId)
+        }
+        parentTrackId?.let {
+            putPageDataAndFirstTrackId(PARENT_TRACK_ID, parentTrackId)
+        }
+        parentRequestId?.let {
+            putPageDataAndFirstTrackId(PARENT_REQUEST_ID, parentRequestId)
+        }
+    }
+
+    private fun putPageDataAndFirstTrackId(key: String, value: Any) {
+        _pageDataList.lastOrNull()?.put(key, value)
+        AppLogFirstTrackId.putPageData(key, value)
+        Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
     private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
@@ -525,10 +557,18 @@ object AppLogAnalytics {
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+            it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
+            it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
+            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID))
+            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID))
+            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID))
         }
     }
 
-    fun getPreviousDataFrom(name: String, key: String): Any? {
+    /**
+     * Starting from N-1, this method will start searching for a key after the current item is the anchor
+     * */
+    fun getPreviousDataFrom(anchor: String, key: String): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
@@ -537,7 +577,7 @@ object AppLogAnalytics {
             if (map.containsKey(key) && start) {
                 return map[key]
             }
-            if (map[PAGE_NAME] == name) {
+            if (map[PAGE_NAME] == anchor) {
                 start = true
             }
             idx--

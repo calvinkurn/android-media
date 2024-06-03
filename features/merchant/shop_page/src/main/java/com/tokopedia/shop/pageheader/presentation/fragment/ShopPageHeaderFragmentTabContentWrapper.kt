@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -58,6 +59,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
@@ -159,6 +161,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var tabFragment: Fragment? = null
     private var initialShopLayoutData: HomeLayoutData? = null
     private var appbarOffsetRatio: Float = 0f
+    private val mockDataSharedPreferences by lazy {
+        activity?.getSharedPreferences(ShopPageConstant.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+    }
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -652,7 +657,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
                     ).apply {
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
-                        setHomeTabLottieUrl(it.lottieUrl)
+                        setHomeTabLottieUrl(
+                            it.lottieUrl.ifEmpty {
+                            mockDataSharedPreferences?.getString(ShopPageConstant.SHARED_PREF_MOCK_LOTTIE_URL_DATA, null).orEmpty()
+                        })
                         if (initialShopLayoutData != null) {
                             setListWidgetLayoutData(initialShopLayoutData)
                         }

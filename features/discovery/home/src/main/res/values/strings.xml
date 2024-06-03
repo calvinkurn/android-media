@@ -62,4 +62,6 @@
     <string name="login_widget_button">Masuk</string>
 
     <string name="title_activity_promo">Promo</string>
+
+    <string name="retry">Coba Lagi</string>
 </resources>

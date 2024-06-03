@@ -69,6 +69,16 @@
             android:label="@string/mssdk_dev"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".mock_dynamic_widget.MockDynamicWidgetActivity"
+            android:label="@string/mock_dynamic_widget_option_title"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".mock_dynamic_widget.shop_page.ShopPageMockWidgetActivity"
+            android:label="@string/shop_page_mock_dynamic_widget"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <activity
             android:name=".applink.presentation.activity.AppLinkListActivity"

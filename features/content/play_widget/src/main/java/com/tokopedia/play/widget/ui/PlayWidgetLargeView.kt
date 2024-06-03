@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.large.PlayWidgetLargeAnalyticListener
+import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetLargeItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetLargeListener
 import com.tokopedia.play.widget.ui.model.*
@@ -175,6 +176,7 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
      * Setup view
      */
     private fun setupView() {
+        recyclerViewItem.addItemDecoration(PlayWidgetLargeItemDecoration(context))
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
     }

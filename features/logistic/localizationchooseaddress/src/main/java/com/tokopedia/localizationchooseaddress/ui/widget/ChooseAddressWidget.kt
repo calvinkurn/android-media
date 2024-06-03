@@ -1,6 +1,7 @@
 package com.tokopedia.localizationchooseaddress.ui.widget
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.localizationchooseaddress.R
+import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
@@ -29,18 +30,29 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ChooseAddressWidget :
     ConstraintLayout,
     ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?) : super(context) {
+        init()
+    }
+    constructor(context: Context?, type: Int) : super(context) {
+        this.type = type
+        init()
+    }
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        initWithAttrs(attrs)
+    }
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        initWithAttrs(attrs)
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -54,24 +66,46 @@ class ChooseAddressWidget :
     private var textChosenAddress: Typography? = null
     private var iconChooseAddress: IconUnify? = null
     private var iconChevronChooseAddress: IconUnify? = null
-    private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var hasClicked: Boolean? = false
     private var isSupportWarehouseLoc: Boolean = true
+    private var type: Int = TYPE_NORMAL
 
-    init {
-        View.inflate(context, R.layout.choose_address_widget, this)
+    private fun initWithAttrs(attrs: AttributeSet?) {
+        val attributes: TypedArray = context.obtainStyledAttributes(attrs, localizationchooseaddressR.styleable.ChooseAddressWidget)
+        try {
+            type = attributes.getInt(
+                localizationchooseaddressR.styleable.ChooseAddressWidget_widgetType,
+                TYPE_NORMAL
+            )
+        } finally {
+            attributes.recycle()
+        }
+        init()
+    }
+
+    private fun init() {
+        inflateView()
         initInjector()
         initViews()
+    }
+
+    private fun inflateView() {
+        when(type) {
+            TYPE_SIMPLIFIED -> View.inflate(context, localizationchooseaddressR.layout.choose_address_widget_simplified, this)
+            else -> View.inflate(context, localizationchooseaddressR.layout.choose_address_widget, this)
+        }
     }
 
     private fun initViews() {
         chooseAddressPref = ChooseAddressSharePref(context)
 
-        textChosenAddress = findViewById(R.id.text_chosen_address)
-        buttonChooseAddress = findViewById(R.id.choose_address_widget)
-        iconChooseAddress = findViewById(R.id.icon_location)
-        iconChevronChooseAddress = findViewById(R.id.btn_arrow)
+        textChosenAddress = findViewById(localizationchooseaddressR.id.text_chosen_address)
+        iconChooseAddress = findViewById(localizationchooseaddressR.id.icon_location)
+
+        iconChevronChooseAddress = if(type == TYPE_NORMAL) {
+            findViewById(localizationchooseaddressR.id.btn_arrow)
+        } else null
 
         getLocalizingAddressData()
     }
@@ -210,7 +244,7 @@ class ChooseAddressWidget :
         if (data?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = data.label
         } else {
-            val label = context.getString(R.string.txt_send_to, data?.label)
+            val label = context.getString(localizationchooseaddressR.string.txt_send_to, data?.label)
             textChosenAddress?.text = HtmlLinkHelper(context, label).spannedString
         }
     }
@@ -251,7 +285,7 @@ class ChooseAddressWidget :
         isSupportWarehouseLoc = chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: true
         initChooseAddressFlow()
 
-        buttonChooseAddress?.setOnClickListener {
+        setOnClickListener {
             if (hasClicked == false) {
                 val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
                 val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
@@ -285,7 +319,7 @@ class ChooseAddressWidget :
         fragment?.view?.let {
             Toaster.build(
                 it,
-                context.getString(R.string.toaster_success_chosen_address),
+                context.getString(localizationchooseaddressR.string.toaster_success_chosen_address),
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL
             ).show()
@@ -323,7 +357,7 @@ class ChooseAddressWidget :
         fragment?.view?.let {
             Toaster.build(
                 it,
-                context.getString(R.string.toaster_failed_chosen_address),
+                context.getString(localizationchooseaddressR.string.toaster_failed_chosen_address),
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_ERROR
             ).show()
@@ -409,7 +443,7 @@ class ChooseAddressWidget :
          * Int Color for Text label
          */
         fun onChangeTextColor(): Int {
-            return com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            return unifyprinciplesR.color.Unify_NN950_96
         }
 
         /**
@@ -451,5 +485,10 @@ class ChooseAddressWidget :
         fun iconLocationColor(): Int {
             return onChangeTextColor()
         }
+    }
+
+    companion object {
+        const val TYPE_NORMAL = 0
+        const val TYPE_SIMPLIFIED = 1
     }
 }

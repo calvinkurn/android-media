@@ -35,8 +35,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
@@ -54,7 +52,6 @@ import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShop
 import com.tokopedia.product.detail.view.fragment.delegate.PdpCallbackDelegate
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
-import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetV2ViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.GlobalBundlingViewHolder
@@ -74,8 +71,6 @@ import com.tokopedia.product.detail.view.viewholder.ProductMerchantVoucherSummar
 import com.tokopedia.product.detail.view.viewholder.ProductMiniShopWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductReportViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductShimmeringViewHolder
@@ -98,6 +93,7 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.ProductNotifyMeV
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerUiModel
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerViewHolder
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPViewHolder
 import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
@@ -240,14 +236,6 @@ class ProductDetailAdapterFactoryImpl(
 
     override fun type(data: FintechWidgetV2DataModel): Int {
         return FintechWidgetV2ViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductRecommendationVerticalDataModel): Int {
-        return ProductRecommendationVerticalViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int {
-        return ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT
     }
 
     override fun type(data: LoadingDataModel): Int {
@@ -422,17 +410,6 @@ class ProductDetailAdapterFactoryImpl(
                     super.createViewHolder(view, type)
                 }
             }
-
-            ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(
-                view,
-                listener
-            )
-
-            ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(
-                view,
-                listener
-            )
-
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             GlobalBundlingViewHolder.LAYOUT -> GlobalBundlingViewHolder(view, listener)
             ProductShopAdditionalViewHolder.LAYOUT -> ProductShopAdditionalViewHolder(

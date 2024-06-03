@@ -298,11 +298,7 @@ class ProductListFragment :
     private var searchSortFilter: SortFilter? = null
     private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
-    private val enterFrom: String
-        get() {
-            val lastEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
-            return if (lastEnterFrom == HOMEPAGE) HOMEPAGE else ""
-        }
+
     private val searchEntrance: String
         get() = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty()
 
@@ -672,7 +668,7 @@ class ProductListFragment :
 
         presenter?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        AppLogSearch.updateSearchPageData(this)
+        if(isVisibleToUser) AppLogSearch.updateSearchPageData(this)
     }
 
     override fun trackScreenAuthenticated() {
@@ -1681,6 +1677,13 @@ class ProductListFragment :
         val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
             it.startPageDuration + it.networkRequestDuration
         }
+        val newSugSessionId = if(enterMethodShouldHaveSug(enterMethod))
+            AppLogAnalytics.getLastData(NEW_SUG_SESSION_ID)?.toString()
+        else null
+
+        val sugType = if(enterMethodShouldHaveSug(enterMethod))
+            AppLogAnalytics.getLastData(SUG_TYPE)?.toString()
+        else null
 
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
@@ -1698,8 +1701,8 @@ class ProductListFragment :
                 ecomFilterChosen = filterController.ecomFilterChoosen(),
                 ecomFilterType = AppLogAnalytics.getLastData(ECOM_FILTER_TYPE)?.toString()?.ifBlank { null },
 
-                sugType = AppLogAnalytics.getLastData(SUG_TYPE)?.toString(),
-                newSugSessionId = AppLogAnalytics.getLastData(NEW_SUG_SESSION_ID)?.toString()?.ifBlank { null },
+                sugType = sugType,
+                newSugSessionId = newSugSessionId,
                 preClickId = AppLogAnalytics.getLastData(PRE_CLICK_ID)?.toString(),
 
                 blankPageEnterFrom = AppLogAnalytics.getLastData(BLANKPAGE_ENTER_FROM)?.toString(),
@@ -1709,6 +1712,9 @@ class ProductListFragment :
 
         AppLogAnalytics.removePageData(ECOM_FILTER_TYPE)
     }
+
+    private fun enterMethodShouldHaveSug(enterMethod: String)
+        = AppLogSearch.sugEnterMethod.contains(enterMethod)
 
     private fun ecomSortName(): String? {
         val searchParameter = getSearchParameter()?.getSearchParameterHashMap() ?: mapOf()

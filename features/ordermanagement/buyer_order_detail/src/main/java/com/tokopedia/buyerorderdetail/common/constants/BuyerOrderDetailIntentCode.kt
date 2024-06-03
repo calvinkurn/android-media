@@ -8,4 +8,5 @@ object BuyerOrderDetailIntentCode {
     const val REQUEST_CODE_ORDER_EXTENSION = 109
     const val REQUEST_CODE_BRC_CSAT_FORM = 110
     const val REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT = 119
+    const val REQUEST_CODE_SHARE = 129
 }

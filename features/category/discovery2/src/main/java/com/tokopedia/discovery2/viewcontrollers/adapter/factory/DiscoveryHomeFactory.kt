@@ -664,6 +664,11 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ShopOfferHeroBrandProductItemReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
 
             initializeComponent(
                 ComponentsList.ShopOfferSupportingBrand,

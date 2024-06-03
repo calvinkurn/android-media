@@ -46,8 +46,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PullToRefreshDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.HomeServerLogger
@@ -64,8 +67,13 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.libra.LibraConst
+import com.tokopedia.libra.LibraInstance
+import com.tokopedia.libra.LibraOwner
+import com.tokopedia.libra.LibraState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
@@ -115,7 +123,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
     private val homeThematicUseCase: Lazy<ThematicUseCase>,
     private val claimCouponUseCase: Lazy<HomeClaimCouponUseCase>,
-    private val remoteConfig: Lazy<RemoteConfig>
+    private val remoteConfig: Lazy<RemoteConfig>,
+    private val libraInstance: Lazy<LibraInstance>,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -278,6 +287,18 @@ open class HomeRevampViewModel @Inject constructor(
                     homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel)
                 )
                 visitable?.let { updateWidget(visitable, index) }
+            }
+        }
+    }
+
+    fun refreshBalanceWidget(contentType: BalanceItemVisitable.ContentType? = null) {
+        val state = libraInstance.get().variantAsState(LibraOwner.Home, LibraConst.HOME_REVAMP_3_TYPE)
+        when(state) {
+            is LibraState.Control -> {
+                getBalanceWidgetData()
+            }
+            is LibraState.Variant -> {
+                homeAtfUseCase.get().refreshBalanceWidget(contentType)
             }
         }
     }
@@ -445,7 +466,7 @@ open class HomeRevampViewModel @Inject constructor(
             refreshHomeData(refreshType)
             _isNeedRefresh.value = Event(true)
         } else {
-            getBalanceWidgetData()
+            refreshBalanceWidget()
         }
         getSearchHint(isFirstInstall)
     }
@@ -853,6 +874,12 @@ open class HomeRevampViewModel @Inject constructor(
             }) {
                 updateWidget(cmHomeWidgetDataModel.copy(), index)
             }
+        }
+    }
+
+    fun refreshShortenWidget() {
+        findWidget<MultiTwoSquareWidgetUiModel> { model, _ ->
+            homeAtfUseCase.get().refreshData(model.id)
         }
     }
 

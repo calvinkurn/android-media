@@ -162,6 +162,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
         id = R.layout.master_product_card_item_layout,
         componentName = ComponentNames.ShopOfferHeroBrandProductItem.componentName
     ),
+    ShopOfferHeroBrandProductItemReimagine(
+        id = R.layout.master_product_card_carousel_item_layout_reimagine,
+        componentName = ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
+    ),
     ShopOfferSupportingBrand(
         id = R.layout.discovery_supporting_brand_layout,
         componentName = ComponentNames.ShopOfferSupportingBrand.componentName

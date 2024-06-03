@@ -198,7 +198,10 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductClickAppLog(
-                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
+                        productRecommendation.asProductTrackModel(
+                            entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                            additionalParam = listener.getAppLogAdditionalParam()
+                        )
                     )
 
                     view.context?.run {
@@ -242,7 +245,10 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductShowAppLog(
-                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
+                        productRecommendation.asProductTrackModel(
+                            entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                            additionalParam = listener.getAppLogAdditionalParam()
+                        )
                     )
                 }
             },
@@ -331,6 +337,7 @@ class ProductRecommendationViewHolder(
             SlideTrackObject(
                 moduleName = model.recomWidgetData?.pageName.orEmpty(),
                 barName = model.recomWidgetData?.pageName.orEmpty(),
+                additionalParams = listener.getAppLogAdditionalParam()
             )
         )
     }

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
@@ -66,6 +67,8 @@ interface ProductDetailListener {
 
     fun onShowProductMediaRecommendationClicked(componentTracker: ComponentTrackDataModel?)
     fun onProductMediaRecommendationImpressed(componentTracker: ComponentTrackDataModel?)
+
+    fun getAppLogAdditionalParam() : AppLogAdditionalParam.PDP
 
     /**
      * ProductSnapshotViewHolder
@@ -502,10 +505,6 @@ interface ProductDetailListener {
     fun onImpressProductDetailNavigation(labels: List<String>)
     fun onClickProductDetailnavigation(position: Int, label: String)
     fun updateNavigationTabPosition()
-
-    fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
-    fun startVerticalRecommendation(pageName: String, queryParam: String, thematicId: String)
-    fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
 
     /**
      * ViewToView widget recommendation

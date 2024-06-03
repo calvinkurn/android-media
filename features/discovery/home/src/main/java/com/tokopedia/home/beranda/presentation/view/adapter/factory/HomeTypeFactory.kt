@@ -13,6 +13,8 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
  */
 interface HomeTypeFactory {
 
+    fun type(pullToRefreshDataModel: PullToRefreshDataModel): Int
+
     fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int
 
     fun type(homepageBannerDataModel: HomepageBannerDataModel): Int

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    tools:orientation="horizontal"
+    tools:parentTag="androidx.appcompat.widget.LinearLayoutCompat"
+    tools:background="@color/Unify_RN600">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topchat_chatroom_broadcast_tv_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Berakhir dalam" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/topchat_chatroom_broadcasst_timer_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_status"
+        app:layout_constraintStart_toEndOf="@+id/tv_end_date"
+        app:layout_constraintTop_toTopOf="@+id/tv_status"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_textWidth="wrap"
+        app:timer_unify_single_type="auto" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/topchat_chatroom_broadcast_icon_start_date_countdown"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical"
+        app:icon_color_light_enable="@color/Unify_NN0"
+        app:icon_name="CLOCK" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topchat_chatroom_broadcast_tv_start_date_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:textColor="@color/Unify_NN0"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="17 Feb 2021" />
+</merge>

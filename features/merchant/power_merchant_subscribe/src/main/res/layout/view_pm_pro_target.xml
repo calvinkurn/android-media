@@ -99,53 +99,6 @@
         app:layout_constraintTop_toBottomOf="@+id/lblPmTargetNetIncome"
         app:typographyType="small" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/icPmTargetShopLevel"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="16dp"
-        android:padding="2dp"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_pm_checked"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/lblPmTargetShopLevel"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/lblPmTargetShopLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/icPmTargetShopLevel"
-        app:layout_constraintTop_toBottomOf="@+id/lblPmTargetNetIncomeDesc"
-        app:layout_goneMarginTop="24dp"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Level Toko : 3"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/lblPmTargetShopLevelDesc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pm_shop_level_desc"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/lblPmTargetShopLevel"
-        app:layout_constraintTop_toBottomOf="@+id/lblPmTargetShopLevel"
-        app:typographyType="small"
-        tools:visibility="visible" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icPmTargetShopLevelInfo"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="4dp"
-        app:icon_name="INFORMATION"
-        app:layout_constraintStart_toEndOf="@+id/lblPmTargetShopLevel"
-        app:layout_constraintTop_toTopOf="@+id/lblPmTargetShopLevel" />
-
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerVerPmTarget1"
         android:layout_width="1dp"
@@ -156,17 +109,4 @@
         app:layout_constraintEnd_toEndOf="@+id/icPmTargetNetIncome"
         app:layout_constraintStart_toStartOf="@+id/icPmTargetNetIncome"
         app:layout_constraintTop_toBottomOf="@+id/icPmTargetCompletedOrder" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/dividerVerPmTarget2"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/icPmTargetShopLevel"
-        app:layout_constraintEnd_toEndOf="@+id/dividerVerPmTarget1"
-        app:layout_constraintStart_toStartOf="@+id/dividerVerPmTarget1"
-        app:layout_constraintTop_toBottomOf="@+id/icPmTargetNetIncome"
-        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,8 +42,6 @@ class PMProTargetView : ConstraintLayout {
     fun showInfo(
         completedOrder: Long,
         netIncome: Long,
-        shopLevel: Int,
-        shopLevelInfoClicked: () -> Unit
     ) {
         binding.run {
             val eligibleColor = SpannableUtil.getColorHexString(
@@ -93,22 +91,13 @@ class PMProTargetView : ConstraintLayout {
                     neutralIconRes
                 }
             )
-
-            showShopLevel(shopLevel)
-
             tvPmTargetAchievement.setOnClickListener {
                 val isVisible = groupPmTargetAchievement.isVisible
                 setupExpandableView(isVisible)
-                showShopLevel(shopLevel, !isVisible)
             }
             icPmTargetChevron.setOnClickListener {
                 val isVisible = groupPmTargetAchievement.isVisible
                 setupExpandableView(isVisible)
-                showShopLevel(shopLevel, !isVisible)
-            }
-
-            icPmTargetShopLevelInfo.setOnClickListener {
-                shopLevelInfoClicked()
             }
         }
     }
@@ -128,25 +117,4 @@ class PMProTargetView : ConstraintLayout {
      * show the shop level info only for PM PRO Expert & Ultimate
      * which is, the shop level should be 3 or 4
      * */
-    private fun showShopLevel(shopLevel: Int, isExpanded: Boolean = true) {
-        binding.run {
-            if (shopLevel <= PMConstant.ShopLevel.TWO || !isExpanded) {
-                dividerVerPmTarget2.gone()
-                icPmTargetShopLevel.gone()
-                lblPmTargetShopLevel.gone()
-                lblPmTargetShopLevelDesc.gone()
-                icPmTargetShopLevelInfo.gone()
-            } else {
-                dividerVerPmTarget2.visible()
-                icPmTargetShopLevel.visible()
-                lblPmTargetShopLevel.visible()
-                lblPmTargetShopLevelDesc.visible()
-                icPmTargetShopLevelInfo.visible()
-
-                lblPmTargetShopLevel.text = root.context.getString(
-                    R.string.pm_shop_level, shopLevel.toString()
-                ).parseAsHtml()
-            }
-        }
-    }
 }

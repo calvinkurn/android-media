@@ -131,12 +131,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_NN600"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/rating_icon"
         app:layout_constraintTop_toBottomOf="@+id/category_info_typography"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:typographyType="small"
         tools:text="4.5" />
 
