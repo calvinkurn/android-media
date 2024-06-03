@@ -49,6 +49,7 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
         put(AppLogParam.SOURCE_PAGE_TYPE, sourcePageType)
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
         put(AppLogParam.AUTHOR_ID, authorId)
         put(AppLogParam.PRODUCT_ID, productId)
