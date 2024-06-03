@@ -16,4 +16,5 @@ object EventCategory {
 
     const val feedUserProfile = "feed user profile"
     const val unifiedViewPDP = "product detail page - unified content viewing"
+    const val automatedStory = "play automated story"
 }

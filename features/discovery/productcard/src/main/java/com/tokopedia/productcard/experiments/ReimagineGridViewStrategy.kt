@@ -6,6 +6,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -18,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
@@ -65,6 +68,12 @@ internal class ReimagineGridViewStrategy(
     private val guidelineStart by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
     private val guidelineEnd by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
     private val guidelineBottom by lazyView<Guideline?>(R.id.productCardGuidelineBottomContent)
+
+    private val productCardPriceContainer by lazyView<RelativeLayout?>(R.id.productCardPriceContainer)
+    private val productCardSlashedPrice by lazyView<Typography?>(R.id.productCardSlashedPrice)
+    private val productCardDiscount by lazyView<Typography?>(R.id.productCardDiscount)
+    private val productCardCredibility by lazyView<LinearLayout?>(R.id.productCardCredibility)
+    private val productCardShopSection by lazyView<LinearLayout?>(R.id.productCardShopSection)
 
     private var useCompatPadding = false
 
@@ -205,6 +214,20 @@ internal class ReimagineGridViewStrategy(
     override fun setOnClickListener(l: View.OnClickListener?) {
         cardContainer?.setOnClickListener(l)
     }
+    override fun setOnClickListener(l: ProductCardClickListener) {
+        cardContainer?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
+    }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
         cardContainer?.setOnLongClickListener(l)
@@ -234,5 +257,13 @@ internal class ReimagineGridViewStrategy(
 
     override fun reRenderGenericCtaButton(productCardModel: ProductCardModelReimagine) {
         genericCtaExtension.render(productCardModel)
+    }
+
+    override fun setProductImageOnClickListener(l: (View) -> Unit) {
+        imageView?.setOnClickListener(l)
+    }
+
+    override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
+        productCardShopSection?.setOnClickListener(l)
     }
 }

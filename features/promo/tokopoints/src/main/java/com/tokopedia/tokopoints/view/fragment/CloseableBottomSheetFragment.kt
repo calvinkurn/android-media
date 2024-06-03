@@ -51,7 +51,7 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
             bottomSheetInternal = view?.parent as FrameLayout
             context?.let {c ->
                 bottomSheetInternal?.let { b ->
-                    b.background = c.resources.getDrawable(com.tokopedia.design.R.drawable.bg_header_rounded_closeable_bs)
+                    b.background = c.resources.getDrawable(R.drawable.fromtkpddesign_bg_header_rounded_closeable_bs_tokopoints)
                     view?.let {
                         when(mState){
                             STATE_FULL -> {

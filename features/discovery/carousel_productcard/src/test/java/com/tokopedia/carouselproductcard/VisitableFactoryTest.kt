@@ -224,6 +224,14 @@ class VisitableFactoryTest {
             override fun onItemImpress(groupModel: CarouselPagingGroupModel, itemPosition: Int) { }
 
             override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) { }
+
+            override fun onAreaClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
+
+            override fun onSellerInfoClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
+
+            override fun onProductImageClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
+            override fun onViewAttachedToWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int) {}
+            override fun onViewDetachedFromWindow(groupModel: CarouselPagingGroupModel, itemPosition: Int, visiblePercentage: Int) {}
         }
     }
 }

@@ -32,7 +32,6 @@ class UniversalInboxAdapter(
 ) : BaseListAdapter<Visitable<in UniversalInboxTypeFactory>, UniversalInboxTypeFactory>(
     typeFactory
 ) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         val holder = typeFactory.createViewHolder(view, viewType)
@@ -70,7 +69,6 @@ class UniversalInboxAdapter(
     override fun onViewRecycled(holder: AbstractViewHolder<*>) {
         holder.onViewRecycled()
     }
-
     private var menuSeparatorPosition: Int? = null
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null

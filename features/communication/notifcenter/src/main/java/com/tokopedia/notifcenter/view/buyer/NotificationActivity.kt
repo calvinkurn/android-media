@@ -13,6 +13,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.inboxcommon.InboxFragment
@@ -96,7 +97,8 @@ open class NotificationActivity :
     HasComponent<NotificationComponent>,
     NotifCenterConfig.ConfigListener,
     NotificationFragmentContainer,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var source = ""
 
@@ -355,6 +357,10 @@ open class NotificationActivity :
     }
 
     override fun getPageName(): String {
+        return PageName.NOTIFICATION
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.NOTIFICATION
     }
 

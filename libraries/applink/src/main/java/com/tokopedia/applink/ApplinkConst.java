@@ -378,6 +378,8 @@ public interface ApplinkConst {
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
     String INTERNAL_CONTENT_DETAIL = "tokopedia-android-internal://content/post-detail/{post_id}";
 
+    String CONTENT_SETTINGS = "tokopedia-android-internal://content/settings";
+
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";
     String AFFILIATE_DEFAULT_CREATE_POST_V2 = "tokopedia://affiliate/create_post_v2";

@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
@@ -29,6 +31,9 @@ import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -210,6 +215,32 @@ class ProductRecommendationViewHolder(
                             productRecommendationApplink(product, productRecommendation)
                         )
                     }
+                }
+
+                override fun onAreaClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
+                    val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
+                    val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
+                    val productRecommendation = product.recommendationItemList.getOrNull(bindingAdapterPosition) ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                }
+            },
+            carouselProductCardOnItemViewListener = object: CarouselProductCardListener.OnViewListener {
+                override fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                    productRecommendation.sendShowAdsByteIo(itemView.context)
+                }
+
+                override fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int) {
+                    val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                    productRecommendation.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
                 }
             },
             carouselProductCardOnItemImpressedListener = object :

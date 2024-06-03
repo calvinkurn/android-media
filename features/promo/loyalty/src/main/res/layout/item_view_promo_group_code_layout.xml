@@ -19,14 +19,13 @@
         tools:ignore="RelativeOverlap"
         tools:text="CREDIT CARD BANK BRI" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_chevron_icon"
         android:layout_width="@dimen/chevron_size"
         android:layout_height="@dimen/chevron_size"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:padding="8dp"
-        app:srcCompat="@drawable/ic_arrow_down_grey"
+        app:icon_name="CHEVRON_DOWN"
         tools:ignore="ContentDescription" />
 
     <RelativeLayout

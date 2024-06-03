@@ -54,9 +54,12 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.EnterMethod;
+import com.tokopedia.analytics.byteio.IAdsLog;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -151,7 +154,8 @@ public class MainParentActivity extends BaseActivity implements
         ITelemetryActivity,
         InAppCallback,
         HomeCoachmarkListener,
-        HomeBottomNavListener {
+        HomeBottomNavListener,
+        IAdsLog {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -1443,6 +1447,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
+        AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, getAdsPageName());
         updateAppLogPageData(position, false);
         sendEnterPage(position);
         return true;
@@ -1635,5 +1640,14 @@ public class MainParentActivity extends BaseActivity implements
         if (isSameValue)
             return;
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
+    }
+
+    @NonNull
+    @Override
+    public String getAdsPageName() {
+        if (currentFragment instanceof IAdsLog) {
+            return ((IAdsLog) currentFragment).getAdsPageName();
+        }
+        return "";
     }
 }

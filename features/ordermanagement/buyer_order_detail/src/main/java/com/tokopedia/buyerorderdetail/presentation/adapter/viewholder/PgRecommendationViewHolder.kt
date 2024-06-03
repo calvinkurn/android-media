@@ -3,8 +3,12 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.view.View
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 
@@ -12,7 +16,8 @@ open class PgRecommendationViewHolder(
     itemView: View,
     private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener
 ) : AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
-    RecomCarouselWidgetBasicListener {
+    RecomCarouselWidgetBasicListener, RecomCarouselWidgetBasicListener.OnAdsItemClickListener,
+    RecomCarouselWidgetBasicListener.OnAdsViewListener {
 
     companion object {
         val LAYOUT = R.layout.buyer_order_detail_pg_recommendation_layout
@@ -36,10 +41,32 @@ open class PgRecommendationViewHolder(
                     adapterPosition = adapterPosition,
                     basicListener = this@PgRecommendationViewHolder,
                     tokonowPageNameListener = null,
-                    tempHeaderName = getString(R.string.bom_recommendation_lbl)
+                    tempHeaderName = getString(R.string.bom_recommendation_lbl),
+                    adsItemClickListener = this@PgRecommendationViewHolder,
+                    adsViewListener = this@PgRecommendationViewHolder
                 )
             }
         }
+    }
+
+    override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendShowAdsByteIo(itemView.context)
+    }
+
+    override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
+        recomItem.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+    }
+
+    override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+    }
+
+    override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+    }
+
+    override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
     }
 
     override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) {

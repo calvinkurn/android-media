@@ -663,7 +663,11 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/search-history"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/sharing-wishlist"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar"),
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar/add-email")
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar/add-email"),
+
+        // changephonenumber
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/change-phone-number"),
+
     )
 
     private fun getDfCampaignList() = mutableListOf(

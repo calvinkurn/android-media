@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 
 /**
  * Created by frenzel on 09/05/22.
@@ -21,6 +22,7 @@ object HomeRollenceController {
         fetchAtfCacheRollenceValue()
         fetchHomeMegaTabRollenceValue()
         HomeComponentFeatureFlag.fetchMissionRollenceValue()
+        SearchRollenceController.fetchInboxNotifTopNavValue()
     }
 
     @JvmStatic
@@ -68,6 +70,10 @@ object HomeRollenceController {
         }
 
         isMegaTabEnabled = megaTab.isNotEmpty()
+    }
+
+    fun shouldCombineInboxNotif(): Boolean {
+        return SearchRollenceController.shouldCombineInboxNotif()
     }
 
     fun isLoadAtfFromCache(): Boolean {
