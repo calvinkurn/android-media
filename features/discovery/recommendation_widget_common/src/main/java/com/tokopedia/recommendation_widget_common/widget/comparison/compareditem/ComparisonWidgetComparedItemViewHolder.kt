@@ -3,8 +3,6 @@ package com.tokopedia.recommendation_widget_common.widget.comparison.comparedite
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -22,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonMo
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonViewHolder
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
