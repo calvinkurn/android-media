@@ -28,21 +28,22 @@ class ShopHomeCarouselProductAdapterTypeFactory(
     companion object {
         private const val TWO_PRODUCT = 2
     }
-    enum class ProductCardType  {
-        LIST,
+    enum class ProductCardType {
+        LIST, // Cart Reminder and Buy It Again Widget
         GRID
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
-        return when{
-            shopHomeCarouselProductUiModel.productList.size == Int.ONE -> {
+        val productCount = shopHomeCarouselProductUiModel.productList.size
+        return when {
+            productCount == Int.ONE -> ShopHomeCarouselProductItemListViewHolder.LAYOUT
+            productCardType == ProductCardType.LIST && productCount == Int.ONE -> {
                 ShopHomeCarouselProductItemListViewHolder.LAYOUT
             }
-            shopHomeCarouselProductUiModel.productList.size == TWO_PRODUCT -> {
-                ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT
+            productCardType == ProductCardType.LIST && productCount > Int.ONE -> {
+                ShopHomeCarouselProductItemListScrollableViewHolder.LAYOUT
             }
             productCardType == ProductCardType.GRID -> ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT
-            productCardType == ProductCardType.LIST -> ShopHomeCarouselProductItemListScrollableViewHolder.LAYOUT
             else -> ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT
         }
     }
