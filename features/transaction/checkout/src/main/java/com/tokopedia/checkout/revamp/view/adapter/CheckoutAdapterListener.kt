@@ -193,4 +193,10 @@ interface CheckoutAdapterListener {
     fun onCheckoutItemQuantityChanged(product: CheckoutProductModel, value: Int)
 
     fun clearAllFocus()
+
+    fun onQtyMinusButtonClicked()
+
+    fun onQtyPlusButtonClicked()
+
+    fun onClickInputQty()
 }

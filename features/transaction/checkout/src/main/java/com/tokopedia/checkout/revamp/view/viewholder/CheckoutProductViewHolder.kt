@@ -327,6 +327,9 @@ class CheckoutProductViewHolder(
                         listener.clearAllFocus()
                     }
                     qtyState.value = if (focus.isFocused) QtyState.Focus else QtyState.Enabled
+                    if (focus.isFocused) {
+                        listener.onClickInputQty()
+                    }
                 }
                 keyboardOptions.value = KeyboardOptions(
                     imeAction = ImeAction.Done,
@@ -344,6 +347,20 @@ class CheckoutProductViewHolder(
                     maxInt = maxQty,
                     qtyField = configState.value.qtyField.copy(
                         maxLine = 1
+                    ),
+                    qtyMinusButton = configState.value.qtyMinusButton.copy(
+                        onClick = {
+                            if (position != RecyclerView.NO_POSITION) {
+                                listener.onQtyMinusButtonClicked()
+                            }
+                        }
+                    ),
+                    qtyPlusButton = configState.value.qtyPlusButton.copy(
+                        onClick = {
+                            if (position != RecyclerView.NO_POSITION) {
+                                listener.onQtyPlusButtonClicked()
+                            }
+                        }
                     )
                 )
 

@@ -1404,6 +1404,7 @@ class CheckoutFragment :
     }
 
     override fun onNoteClicked(product: CheckoutProductModel, bindingAdapterPosition: Int) {
+        checkoutAnalyticsCourierSelection.sendClickNoteIconEvent(viewModel.getCartTypeString())
         val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
             CartNoteBottomSheetData(
                 productName = product.name,
@@ -1413,6 +1414,7 @@ class CheckoutFragment :
             )
         )
         cartNoteBottomSheet.setListener {
+            checkoutAnalyticsCourierSelection.sendClickSimpanOnNotesEvent(viewModel.getCartTypeString())
             viewModel.setProductNote(it, bindingAdapterPosition)
         }
         if (cartNoteBottomSheet.isAdded || childFragmentManager.isStateSaved) return
@@ -2352,6 +2354,7 @@ class CheckoutFragment :
 
     private fun onSuccessCheckout(checkoutResult: CheckoutResult) {
         if (checkoutResult.checkoutData?.consent?.show == true) {
+            checkoutAnalyticsCourierSelection.sendViewConsentPopUpEvent(viewModel.getCartTypeString())
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
                 setImageDrawable(R.drawable.checkout_popup_confirmation)
                 setPrimaryCTAText(getString(R.string.checkout_popup_primary_btn))
@@ -2362,11 +2365,15 @@ class CheckoutFragment :
 
                 setPrimaryCTAClickListener {
                     dismiss()
+                    checkoutAnalyticsCourierSelection.sendClickBayarConsentPopUpEvent(viewModel.getCartTypeString())
                     processingToPayment(true)
                 }
                 setSecondaryCTAClickListener {
                     dismiss()
+                    checkoutAnalyticsCourierSelection.sendClickCekLagiConsentPopUpEvent(viewModel.getCartTypeString())
                 }
+                setCanceledOnTouchOutside(false)
+                setCancelable(false)
             }.show()
         } else {
             continueToPaymentPage(checkoutResult)
@@ -3087,6 +3094,18 @@ class CheckoutFragment :
     override fun clearAllFocus() {
         val view = activity?.currentFocus
         view?.clearFocus()
+    }
+
+    override fun onQtyMinusButtonClicked() {
+        checkoutAnalyticsCourierSelection.sendClickQtyEditorButtonMinusEvent(viewModel.getCartTypeString())
+    }
+
+    override fun onQtyPlusButtonClicked() {
+        checkoutAnalyticsCourierSelection.sendClickQtyEditorButtonPlusEvent(viewModel.getCartTypeString())
+    }
+
+    override fun onClickInputQty() {
+        checkoutAnalyticsCourierSelection.sendClickQtyInputText(viewModel.getCartTypeString())
     }
 
     companion object {
