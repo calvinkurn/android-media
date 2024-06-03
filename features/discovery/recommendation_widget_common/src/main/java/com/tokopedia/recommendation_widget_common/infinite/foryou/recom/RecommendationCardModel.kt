@@ -84,7 +84,7 @@ data class RecommendationCardModel(
             val url: String = ""
         )
 
-        val productIdByteIo: String
+        val absoluteProductId: String
             get() = if (parentProductId == "0" || parentProductId.isBlank()) id else parentProductId
     }
 }

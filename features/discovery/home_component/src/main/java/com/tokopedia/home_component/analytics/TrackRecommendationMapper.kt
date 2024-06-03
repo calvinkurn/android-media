@@ -58,7 +58,7 @@ object TrackRecommendationMapper {
             creativeID.toLongOrZero(),
             logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
-            productId = productIdByteIo,
+            productId = absoluteProductId,
             productName = name,
         ))
     }
@@ -68,7 +68,7 @@ object TrackRecommendationMapper {
             creativeID.toLongOrZero(),
             logExtra,
             AdsLogShowOverModel.AdExtraData(
-                productId = productIdByteIo,
+                productId = absoluteProductId,
                 productName = name,
                 sizePercent = visiblePercentage.toString())
         )
@@ -79,7 +79,7 @@ object TrackRecommendationMapper {
             creativeID.toLongOrZero(),
             logExtra,
             AdsLogShowModel.AdExtraData(
-            productId = productIdByteIo,
+            productId = absoluteProductId,
             productName = name,
         ))
     }

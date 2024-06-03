@@ -27,7 +27,7 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
-                productId = productIdByteIo,
+                productId = absoluteProductId,
                 productName = name,
             ))
     }
@@ -36,7 +36,7 @@ object TrackRecommendationMapper {
         return AdsLogShowOverModel(
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
-            AdsLogShowOverModel.AdExtraData(productId = productIdByteIo,
+            AdsLogShowOverModel.AdExtraData(productId = absoluteProductId,
                 productName = name,
                 sizePercent = visiblePercentage.toString())
         )
@@ -47,7 +47,7 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogShowModel.AdExtraData(
-            productId = productIdByteIo,
+            productId = absoluteProductId,
             productName = name,
         ))
     }
@@ -57,7 +57,7 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
-                productId = productIdByteIo,
+                productId = absoluteProductId,
                 productName = name,
         ))
     }
@@ -67,7 +67,7 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogShowOverModel.AdExtraData(
-                productId = productIdByteIo,
+                productId = absoluteProductId,
                 sizePercent = visiblePercentage.toString(),
                 productName = name,
         ))
@@ -78,7 +78,7 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogShowModel.AdExtraData(
-                productId = productIdByteIo,
+                productId = absoluteProductId,
                 productName = name)
         )
     }

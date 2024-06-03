@@ -63,7 +63,7 @@ data class RecommendationItem(
     val recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
 ) : ImpressHolder() {
 
-    val productIdByteIo: String
+    val absoluteProductId: String
         get() = if (parentID == 0L) productId.toString() else parentID.toString()
 
     enum class AddToCartType {
