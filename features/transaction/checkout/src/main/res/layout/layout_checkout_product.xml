@@ -148,7 +148,7 @@
         app:layout_constraintTop_toTopOf="@id/qty_editor_product"
         app:layout_constraintBottom_toBottomOf="@id/qty_editor_product"
         app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/anim_cart_note_dark" />
+        app:lottie_rawRes="@raw/anim_checkout_note_dark" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_checkout_product_info"

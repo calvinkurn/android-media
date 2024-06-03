@@ -69,7 +69,6 @@ class CheckoutProductViewHolder(
     private val binding: ItemCheckoutProductBinding,
     private val listener: CheckoutAdapterListener
 ) : RecyclerView.ViewHolder(binding.root) {
-    // private var lastQty: Int = 0
 
     private val productBinding: LayoutCheckoutProductBinding =
         LayoutCheckoutProductBinding.bind(binding.root)
@@ -422,9 +421,9 @@ class CheckoutProductViewHolder(
 
     private fun setNoteAnimationResource() {
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            productBinding.buttonChangeNoteLottie.setAnimation(R.raw.anim_cart_note_dark)
+            productBinding.buttonChangeNoteLottie.setAnimation(R.raw.anim_checkout_note_dark)
         } else {
-            productBinding.buttonChangeNoteLottie.setAnimation(R.raw.anim_cart_note)
+            productBinding.buttonChangeNoteLottie.setAnimation(R.raw.anim_checkout_note)
         }
     }
 
