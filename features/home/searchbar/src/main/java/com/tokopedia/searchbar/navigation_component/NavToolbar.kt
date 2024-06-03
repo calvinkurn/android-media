@@ -278,16 +278,15 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         btnSearch.showWithCondition(showSearchBtn)
     }
 
-    fun setupItemCoachMark(iconId: Int, onReady: (View) -> Unit) {
-        navIconRecyclerView.post {
-            val itemIndex = navIconAdapter?.indexOf(iconId) ?: return@post
-            if (itemIndex != RecyclerView.NO_POSITION) {
-                val view = runCatching {
-                    navIconRecyclerView.getChildAt(itemIndex)
-                }.getOrNull() ?: return@post
-                onReady(view)
-            }
+    fun getIconView(iconId: Int): View? {
+        val itemIndex = navIconAdapter?.indexOf(iconId) ?: return null
+        if (itemIndex != RecyclerView.NO_POSITION) {
+            val view = runCatching {
+                navIconRecyclerView.getChildAt(itemIndex)
+            }.getOrNull()
+            return view
         }
+        return null
     }
 
     /**

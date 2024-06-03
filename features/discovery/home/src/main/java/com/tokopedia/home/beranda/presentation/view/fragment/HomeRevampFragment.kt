@@ -116,11 +116,9 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigContr
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
-import com.tokopedia.home.beranda.presentation.view.helper.hasInboxCoachMarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setInboxCoachMarkHasShown
 import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.BestSellerWidgetCallback
@@ -180,6 +178,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -709,8 +708,8 @@ open class HomeRevampFragment :
                 AppLogSearch.eventShowSearch()
             }
             it.updateSearchBarStyle(showSearchBtn = shouldCombineInboxNotif)
-            it.setupItemCoachMark(IconList.ID_MESSAGE) { inboxView ->
-                showInboxCoachMark(inboxView)
+            it.post {
+                onInboxReady()
             }
         }
         onChooseAddressUpdated()
@@ -788,8 +787,6 @@ open class HomeRevampFragment :
                 showSubscriptionEligibleCoachMark(subscriptionBalanceCoachMark)
             } else if (!isHomeTokonowCoachmarkShown(ctx)) {
                 showTokonowCoachmark()
-            } else {
-                homeCoachmarkListener?.onHomeCoachMarkFinished()
             }
         }
     }
@@ -830,7 +827,7 @@ open class HomeRevampFragment :
                     if (coachMarkItemTokonow.isNotEmpty() && isValidToShowCoachMark() && !tokonowCoachmarkIsShowing) {
                         coachmarkTokonow.onDismissListener = {
                             setHomeTokonowCoachmarkShown(it)
-                            homeCoachmarkListener?.onHomeCoachMarkFinished()
+                            homeCoachmarkListener?.prepareNavigationCoachMark(navToolbar?.getIconView(IconList.ID_MESSAGE))
                         }
                         coachmarkTokonow.showCoachMark(
                             step = coachMarkItemTokonow,
@@ -838,41 +835,20 @@ open class HomeRevampFragment :
                         )
                         tokonowCoachmarkIsShowing = true
                     } else {
-                        homeCoachmarkListener?.onHomeCoachMarkFinished()
+                        homeCoachmarkListener?.prepareNavigationCoachMark(navToolbar?.getIconView(IconList.ID_MESSAGE))
                     }
                 } catch (e: Exception) {
                     tokonowCoachmarkIsShowing = false
                     e.printStackTrace()
-                    homeCoachmarkListener?.onHomeCoachMarkFinished()
+                    homeCoachmarkListener?.prepareNavigationCoachMark(navToolbar?.getIconView(IconList.ID_MESSAGE))
                 }
             }
         }
     }
 
-    private fun showInboxCoachMark(inboxView: View) {
-        val ctx = context ?: return
-        val combineNative = HomeRollenceController.shouldCombineInboxNotif()
-        val neverShowInboxCoachMark = !hasInboxCoachMarkShown(ctx.applicationContext)
-        val isValidToShowCoachMark = isValidToShowCoachMark()
-        val isEligibleCoachMark = isValidToShowCoachMark && neverShowInboxCoachMark && combineNative
-        if (isEligibleCoachMark) {
-            inboxCoachMark = CoachMark2(ctx)
-            inboxCoachMark?.run {
-                onDismissListener = {
-                    setInboxCoachMarkHasShown(ctx.applicationContext)
-                }
-                showCoachMark(
-                    arrayListOf(
-                        CoachMark2Item(
-                            inboxView,
-                            getString(R.string.home_inbox_coach_mark_title),
-                            getString(R.string.home_inbox_coach_mark_description),
-                            position = CoachMark2.POSITION_BOTTOM
-                        )
-                    )
-                )
-            }
-        }
+    private fun onInboxReady() {
+        if (coachmarkTokonow?.isShowing.orFalse() || coachmarkSubscription?.isShowing.orFalse()) return
+        homeCoachmarkListener?.prepareNavigationCoachMark(navToolbar?.getIconView(IconList.ID_MESSAGE))
     }
 
     private fun getSubscriptionBalanceWidgetView(): View? {
@@ -1266,7 +1242,6 @@ open class HomeRevampFragment :
             activityStateListener!!.onPause()
         }
         performanceTrace?.finishOnPaused()
-        inboxCoachMark?.dismissCoachMark()
     }
 
     override fun onStop() {
@@ -2842,7 +2817,7 @@ open class HomeRevampFragment :
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
         if (hidden) {
-            inboxCoachMark?.dismissCoachMark()
+            homeCoachmarkListener?.dismissNavigationCoachMark()
         }
     }
 
