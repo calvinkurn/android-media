@@ -37,18 +37,26 @@ fun clickContinueOnLeaveConfirmationPopup() {
     click(dialogR.id.dialog_btn_primary)
 }
 
-fun completeMandatoryMenu() {
-    clickMenuTitle()
+fun completeTitleMenu() {
     inputTitle()
     submitTitle()
+}
 
-    clickMenuProduct()
+fun completeProductMenu() {
     delay()
     selectProduct()
     delay()
     clickSubmitProductTag()
     delay()
     clickCloseProductSummaryBottomSheet()
+}
+
+fun completeMandatoryMenu() {
+    clickMenuTitle()
+    completeTitleMenu()
+
+    clickMenuProduct()
+    completeProductMenu()
 }
 
 fun clickContinueOnPreparationPage() {
@@ -70,6 +78,10 @@ fun clickUserAccount() {
 
 fun clickCancelSwitchAccount() {
     click(dialogR.id.dialog_btn_primary)
+}
+
+fun clickProceedSwitchAccount() {
+    click(dialogR.id.dialog_btn_secondary_long)
 }
 
 /** Ugc Onboarding */

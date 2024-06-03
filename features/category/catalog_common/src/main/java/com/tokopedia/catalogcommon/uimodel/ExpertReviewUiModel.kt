@@ -1,6 +1,7 @@
 package com.tokopedia.catalogcommon.uimodel
 
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
+import com.tokopedia.catalogcommon.util.ColorConst.DMS_COLOR_WHITE
 import com.tokopedia.catalogcommon.R as catalogcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -34,7 +35,7 @@ data class ExpertReviewUiModel(
         val textReviewColor: Int,
         val textTitleColor: Int,
         val textSubTitleColor: Int,
-        val backgroundColor: String = "#FFFFFF",
+        val backgroundColor: String = DMS_COLOR_WHITE,
         val styleIconPlay: StyleIconPlay = StyleIconPlay()
     )
 

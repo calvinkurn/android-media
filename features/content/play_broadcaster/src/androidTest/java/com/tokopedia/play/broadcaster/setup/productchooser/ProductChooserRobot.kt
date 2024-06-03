@@ -16,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
@@ -27,7 +28,9 @@ import com.tokopedia.content.product.picker.seller.view.viewholder.ProductListVi
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.play.broadcaster.helper.containsEventAction
 import io.mockk.mockk
+import org.junit.Rule
 import com.tokopedia.dialog.R as dialogR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.empty_state.R as empty_stateR
@@ -41,6 +44,11 @@ class ProductChooserRobot(
         productSetupViewModel(handle = it)
     },
 ) {
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+
+    private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_analytic.json"
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -84,13 +92,13 @@ class ProductChooserRobot(
         ).perform(click())
     }
 
-    fun confirmClose() {
+    fun confirmClose() = chainable {
         onView(
             ViewMatchers.withId(dialogR.id.dialog_btn_secondary)
         ).perform(click())
     }
 
-    fun cancelClose() {
+    fun cancelClose() = chainable {
         onView(
             ViewMatchers.withId(dialogR.id.dialog_btn_primary)
         ).perform(click())
@@ -111,7 +119,7 @@ class ProductChooserRobot(
         ).perform(click())
     }
 
-    fun clickSortChips() {
+    fun clickSortChips() = chainable {
         onView(
             ViewMatchers.withId(contentproductpickerR.id.chips_sort)
         ).perform(click())
@@ -119,19 +127,19 @@ class ProductChooserRobot(
         delay(300)
     }
 
-    fun clickEtalaseCampaignChips() {
+    fun clickEtalaseCampaignChips() = chainable {
         onView(
             ViewMatchers.withId(contentproductpickerR.id.chips_etalase)
         ).perform(click())
     }
 
-    fun searchKeyword(keyword: String) {
+    fun searchKeyword(keyword: String) = chainable {
         onView(
             ViewMatchers.withId(contentproductpickerR.id.et_search)
         ).perform(typeText(keyword))
     }
 
-    fun selectSort(position: Int) {
+    fun selectSort(position: Int) = chainable {
         onView(
             ViewMatchers.withId(contentproductpickerR.id.rv_sort)
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -139,7 +147,7 @@ class ProductChooserRobot(
         )
     }
 
-    fun saveSort() {
+    fun saveSort() = chainable {
         onView(
             ViewMatchers.withId(unifycomponentsR.id.bottom_sheet_action)
         ).perform(click())
@@ -160,6 +168,17 @@ class ProductChooserRobot(
         ).check(
             if (isShown) ViewAssertions.matches(isDisplayed())
             else doesNotExist()
+        )
+    }
+
+    fun performDelay(timeInMillis: Long = 500) = chainable {
+        delay(timeInMillis)
+    }
+
+    fun assertEventAction(eventAction: String) = chainable {
+        ViewMatchers.assertThat(
+            cassavaTestRule.validate(analyticFile),
+            containsEventAction(eventAction)
         )
     }
 

@@ -37,15 +37,22 @@ data class QuestList(
     @SerializedName("task")
     @Expose
     val task: List<Task>,
+    @SerializedName("sequenceQuestIDs")
+    val sequenceQuestIDs: List<Int>? = null
 ) {
 
     companion object {
         private const val STATUS_IDLE = "Idle"
+        private const val STATUS_CLAIMED = "Claimed"
+
+        private const val MANUAL_START_QUEST_ID = 0
     }
 
-    fun isIdle(): Boolean {
-        return questUser.status == STATUS_IDLE
-    }
+    fun isIdle() = questUser.status == STATUS_IDLE
+
+    fun isClaimed() = questUser.status == STATUS_CLAIMED
+
+    fun isManualStart() = sequenceQuestIDs?.firstOrNull() == MANUAL_START_QUEST_ID
 }
 
 data class QuestUser(
@@ -66,7 +73,7 @@ data class Task(
     val title: String,
     @SerializedName("progress")
     @Expose
-    val progress: Progress,
+    val progress: Progress
 )
 
 data class Progress(
@@ -75,7 +82,7 @@ data class Progress(
     val current: Float,
     @SerializedName("target")
     @Expose
-    val target: Float,
+    val target: Float
 )
 
 data class ResultStatus(
@@ -86,5 +93,3 @@ data class ResultStatus(
     @Expose
     val reason: String
 )
-
-

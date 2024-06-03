@@ -25,7 +25,6 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -49,7 +48,6 @@ import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
-import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.common.comment.ContentCommentFactory
 import com.tokopedia.feed.common.comment.PageSource
@@ -70,7 +68,6 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
-import com.tokopedia.feedplus.di.DaggerFeedMainComponent
 import com.tokopedia.feedplus.di.FeedInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
@@ -1464,10 +1461,10 @@ class FeedFragment :
                 is Success -> {
                     currentTrackerData?.let { data ->
                         if (it.data.source == FeedProductActionModel.Source.CardHighlight) {
-                           feedAnalytics?.atcFromProductHighlight(
-                               trackerModel = data,
-                               product = it.data
-                           )
+                            feedAnalytics?.atcFromProductHighlight(
+                                trackerModel = data,
+                                product = it.data
+                            )
                         } else {
                             feedAnalytics?.eventClickBuyButton(
                                 trackerData = data,
@@ -1551,6 +1548,7 @@ class FeedFragment :
                         is FeedMainEvent.ScrollToTop -> {
                             if (event.tabKey != data?.key) return@collect
                             binding.rvFeedPost.scrollToPosition(0)
+                            if (checkResume()) adapter.select(0)
                         }
 
                         else -> {}
@@ -2292,8 +2290,9 @@ class FeedFragment :
     private fun removeRefreshForRelevantPostArgument(isRemoveParent: Boolean) {
         arguments?.remove(UF_EXTRA_REFRESH_FOR_RELEVANT_POST)
 
-        if (isRemoveParent)
+        if (isRemoveParent) {
             parentFragment?.arguments?.remove(UF_EXTRA_REFRESH_FOR_RELEVANT_POST)
+        }
     }
 
     private fun fetchInitialPost() {

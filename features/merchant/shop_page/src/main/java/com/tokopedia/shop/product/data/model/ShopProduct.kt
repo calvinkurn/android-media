@@ -71,7 +71,7 @@ data class ShopProduct(
     @SerializedName("badge")
     @Expose
     val badge: List<Badge> = listOf(),
-    
+
     @SerializedName("hasVariant")
     @Expose
     val hasVariant: Boolean = false,
@@ -103,11 +103,15 @@ data class ShopProduct(
         @Expose
         val title: String = "",
 
-        @SerializedName("image_url")
+        @SerializedName("imageUrl")
         @Expose
         val imageUrl: String = "",
+
+        @SerializedName("show")
+        @Expose
+        val show: Boolean = false
     )
-    
+
     data class GetShopProduct(
         @SerializedName("data")
         @Expose

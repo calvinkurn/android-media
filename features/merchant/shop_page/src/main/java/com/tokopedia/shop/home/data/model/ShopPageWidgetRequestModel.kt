@@ -18,7 +18,10 @@ data class ShopPageWidgetRequestModel(
     val widgetName: String = "",
     @SerializedName("header")
     @Expose
-    val headerInput: HeaderInput = HeaderInput()
+    val headerInput: HeaderInput = HeaderInput(),
+    @SerializedName("options")
+    @Expose
+    val options: List<Option> = emptyList()
 ) {
     data class HeaderInput(
         @SerializedName("title")
@@ -44,7 +47,7 @@ data class ShopPageWidgetRequestModel(
         val isShowEtalaseName: Int = -1,
         @SerializedName("data")
         @Expose
-        val listData: List<DataOnHeaderInput> = listOf(),
+        val listData: List<DataOnHeaderInput> = listOf()
     ) {
         data class DataOnHeaderInput(
             @SerializedName("linkID")
@@ -55,4 +58,11 @@ data class ShopPageWidgetRequestModel(
             val linkType: String = ""
         )
     }
+
+    data class Option(
+        @SerializedName("key")
+        val key: String = "",
+        @SerializedName("value")
+        val value: String = ""
+    )
 }

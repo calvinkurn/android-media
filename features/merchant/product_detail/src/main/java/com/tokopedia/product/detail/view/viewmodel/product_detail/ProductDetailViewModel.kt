@@ -55,7 +55,6 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
-import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -137,6 +136,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -241,10 +241,6 @@ class ProductDetailViewModel @Inject constructor(
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
-    private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
-    val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
-        get() = _addToCartLiveData
-
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
     val toggleTeaserNotifyMe: LiveData<Result<NotifyMeUiData>>
         get() = _toggleTeaserNotifyMe
@@ -280,25 +276,20 @@ class ProductDetailViewModel @Inject constructor(
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
     private val _finishAnimationAtc = MutableStateFlow(false)
-    private val _finishAtc = MutableStateFlow(false)
+    private val _addToCartState = MutableStateFlow<Result<AddToCartDataModel>?>(null)
 
-    val successAtcAndAnimation: Flow<Boolean> =
-        _finishAnimationAtc.combine(_finishAtc) { finishAtcAnimation, finishAtc ->
-            val finishAtcAnimationResult =
-                !ProductRollenceHelper.rollenceAtcAnimationActive() || finishAtcAnimation
-
-            finishAtcAnimationResult && finishAtc
-        }.map { bothSuccess ->
-            if (bothSuccess) {
-                _finishAnimationAtc.emit(false)
-                _finishAtc.emit(false)
-            }
-            bothSuccess
+    val addToCartResultState
+        get() = _finishAnimationAtc.combine(_addToCartState) { finishAtcAnimation, addToCartState ->
+            finishAtcAnimation to addToCartState
         }.filter {
-            it
-        }.shareIn(
-            viewModelScope,
-            SharingStarted.Lazily
+            it.first && it.second != null
+        }.map {
+            _finishAnimationAtc.emit(false)
+            _addToCartState.emit(null)
+            it.second
+        }.filterNotNull().shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000)
         )
 
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
@@ -385,10 +376,6 @@ class ProductDetailViewModel @Inject constructor(
 
     fun onFinishAnimation() {
         _finishAnimationAtc.tryEmit(true)
-    }
-
-    fun onFinishAtc() {
-        _finishAtc.tryEmit(true)
     }
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
@@ -757,7 +744,7 @@ class ProductDetailViewModel @Inject constructor(
                 }
             }
         }) {
-            _addToCartLiveData.value = it.cause?.asFail() ?: it.asFail()
+            _addToCartState.emit(it.cause?.asFail() ?: it.asFail())
         }
     }
 
@@ -795,7 +782,7 @@ class ProductDetailViewModel @Inject constructor(
                     deviceId
                 )
             }
-            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
             val isTokoNow = getProductInfoP1?.basic?.isTokoNow ?: false
             if (isTokoNow) {
@@ -806,7 +793,7 @@ class ProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-            _addToCartLiveData.value = result.asSuccess()
+            _addToCartState.emit(result.asSuccess())
         }
     }
 
@@ -825,9 +812,9 @@ class ProductDetailViewModel @Inject constructor(
                     deviceId
                 )
             }
-            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
-            _addToCartLiveData.value = result.asSuccess()
+            _addToCartState.emit(result.asSuccess())
         }
     }
 
@@ -860,9 +847,9 @@ class ProductDetailViewModel @Inject constructor(
                     deviceId
                 )
             }
-            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+            _addToCartState.emit(MessageErrorException(errorMessage).asFail())
         } else {
-            _addToCartLiveData.value = result.asSuccess()
+            _addToCartState.emit(result.asSuccess())
         }
     }
 

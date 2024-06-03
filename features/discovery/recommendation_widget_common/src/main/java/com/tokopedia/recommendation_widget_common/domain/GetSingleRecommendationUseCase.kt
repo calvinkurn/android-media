@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
@@ -48,7 +49,11 @@ constructor(
                     val requestIdentifier = requestParams.parameters[PRODUCT_IDS].toString().ifEmpty {
                         requestParams.parameters[PRODUCT_IDS].toString()
                     }
-                    byteIoUseCase.updateSessionId(requestIdentifier, data.appLog.sessionId)
+                    byteIoUseCase.updateMap(
+                        requestIdentifier,
+                        sessionId = data.appLog.sessionId,
+                        totalData = data.recommendation.size
+                    )
                 }
             }
     }

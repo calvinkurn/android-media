@@ -33,5 +33,5 @@
         android:layout_marginTop="8dp"
         tools:itemCount="2"
         android:clipToPadding="false"
-        tools:listitem="@layout/item_shop_home_banner_product_group_product_info_card" />
+        tools:listitem="@layout/item_shop_home_banner_product_group_with_product_info" />
 </LinearLayout>

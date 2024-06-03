@@ -32,11 +32,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class SwitchAccountAnalyticTest {
 
-    @get:Rule
-    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
-
-    private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_ugc.json"
-
     private val mockDispatcher: CoroutineDispatchers = CoroutineDispatchersProvider
     private val mockDataStore = PlayBroadcastDataStoreImpl(
         mSetupDataStore = PlayBroadcastSetupDataStoreImpl(
@@ -86,74 +81,28 @@ class SwitchAccountAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickDropDownAccount() {
-        createRobot().onClickDropDownAccount()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - available account")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickAccountFromBottomSheet() {
-        createRobot().onClickDropDownAccount()
-            .onClickAccountFromBottomSheet()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - pilih akun")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickAccountFromBottomSheetAndHaveDraft() {
+    fun testAnalytic_switchAccount() {
         coEvery {
             mockGetChannelUseCase.executeOnBackground()
         } returns channelWithTitleResponse
 
-        createRobot().onClickDropDownAccount()
+        createRobot()
+            .onClickDropDownAccount()
+            .assertEventAction("click - available account")
+
             .onClickAccountFromBottomSheet()
+            .assertEventAction("click - pilih akun")
+
             .onSwitchAccountConfirmationDialogShown()
+            .assertEventAction("click - available account after draft")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - available account after draft")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickCancelSwitchWhenHavingDraft() {
-        coEvery {
-            mockGetChannelUseCase.executeOnBackground()
-        } returns channelWithTitleResponse
-
-        createRobot().onClickDropDownAccount()
-            .onClickAccountFromBottomSheet()
-            .onSwitchAccountConfirmationDialogShown()
             .onClickCancelSwitchWhenHavingDraft()
+            .assertEventAction("click - batal switch account")
 
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - batal switch account")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickConfirmSwitchWhenHavingDraft() {
-        coEvery {
-            mockGetChannelUseCase.executeOnBackground()
-        } returns channelWithTitleResponse
-
-        createRobot().onClickDropDownAccount()
+            .onClickDropDownAccount()
             .onClickAccountFromBottomSheet()
             .onSwitchAccountConfirmationDialogShown()
             .onClickConfirmSwitchWhenHavingDraft()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - confirm switch account")
-        )
+            .assertEventAction("click - confirm switch account")
     }
-
 }

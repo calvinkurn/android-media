@@ -152,6 +152,7 @@ object PageName {
     const val ORDER_SUBMIT = "order_submit"
     const val EXTERNAL_PROMO = "external_promo"
     const val RECOMMENDATION = "recommendation"
+    const val ACCOUNT = "account"
 }
 
 object QuitType {
@@ -186,7 +187,6 @@ enum class EnterMethod(val str: String) {
     CLICK_EXTERNAL_ADS("click_external_ads"),
     CLICK_HOME_ICON("click_home_icon"),
     CLICK_APP_ICON("click_app_icon"),
-    CLICK_RECOM_CARD_INFINITE("click_recom_card_infinite"),
     CLICK_INBOX_HOMEPAGE("click_inbox_homepage"),
     CLICK_NOTIFICATION_HOMEPAGE("click_notification_homepage"),
     CLICK_CART_ICON_HOMEPAGE("click_cart_icon_homepage"),
@@ -276,14 +276,13 @@ object AppLogParam {
     const val MAIN_VIDEO_ID = "main_video_id"
     const val IS_SHADOW = "is_shadow"
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
-    const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
     const val PARENT_PRODUCT_ID = "parent_product_id"
     const val PARENT_TRACK_ID = "parent_track_id"
     const val PARENT_REQUEST_ID = "parent_request_id"
     const val FIRST_TRACK_ID = "first_track_id"
     const val FIRST_SOURCE_PAGE = "first_source_page"
     const val CLICK_AREA = "click_area"
-    val ENTER_METHOD_SEE_MORE
+    val ENTER_METHOD_FMT_PAGENAME
         get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"
     const val SOURCE_CONTENT_ID = "source_content_id"

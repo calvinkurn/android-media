@@ -7,7 +7,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.imageassets.TokopediaImageUrl.TOKOPEDIANOW_IC_QUEST_LOCKED_DARK
 import com.tokopedia.imageassets.TokopediaImageUrl.TOKOPEDIANOW_IC_QUEST_LOCKED_LIGHT
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
@@ -80,10 +83,43 @@ class HomeQuestCardItemViewHolder(
                 openQuestChannelPage()
                 listener?.onClickQuestCard()
             }
+            setupStartButton(element)
+        }
+    }
+
+    private fun setupStartButton(element: HomeQuestCardItemUiModel) {
+        binding.apply {
+            if(element.showStartBtn) {
+                setStartBtnClickListener(element)
+                btnStart.isLoading = element.isLoading
+                btnStart.show()
+            } else {
+                btnStart.hide()
+            }
+        }
+    }
+
+    private fun ItemTokopedianowQuestCardBinding.setStartBtnClickListener(
+        element: HomeQuestCardItemUiModel
+    ) {
+        btnStart.apply {
+            if (!element.isLoading) {
+                setOnClickListener {
+                    listener?.onClickStartButton(
+                        channelId = element.channelId,
+                        questId = element.id.toIntOrZero()
+                    )
+                    setOnClickListener(null)
+                }
+            } else {
+                setOnClickListener(null)
+            }
         }
     }
 
     interface HomeQuestCardItemListener {
         fun onClickQuestCard()
+
+        fun onClickStartButton(channelId: String, questId: Int)
     }
 }
