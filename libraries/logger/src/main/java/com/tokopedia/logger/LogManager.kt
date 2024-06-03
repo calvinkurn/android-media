@@ -2,6 +2,7 @@ package com.tokopedia.logger
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiDataSource
@@ -129,7 +130,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 loggerCloudEmbraceDataSource,
                 loggerCloudSlardarApmDataSource,
                 getScalyrConfigList(context),
-                getRollenceMap(context),
+                getABTestSharedPreferences(context),
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,
                 loggerProxy.decryptNrKey,
@@ -157,32 +158,23 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         return ScalyrConfig(loggerProxy.scalyrToken, session, serverHost, parser)
     }
 
-    private fun getRollenceMap(context: Context): Map<String, Boolean> {
-        val result = mutableMapOf<String, Boolean>()
-        result[SLARDAR_LOG_ROLLENCE_KEY] = shouldSendToSlardarApm(context)
-        return result
-    }
-
     /**
      * Need to manually get rollence value from cache
      * Circular dependency when implementing remote config module
      */
-    private fun shouldSendToSlardarApm(context: Context): Boolean {
+    private fun getABTestSharedPreferences(context: Context): SharedPreferences? {
         return try {
-            val sharedPreferences = context.getSharedPreferences(
+            return context.getSharedPreferences(
                 SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
-            val cacheValue: String = sharedPreferences.getString(SLARDAR_LOG_ROLLENCE_KEY, "") ?: ""
-            cacheValue == SLARDAR_LOG_ROLLENCE_KEY
         } catch (throwable: Throwable) {
             Timber.d(throwable)
-            false
+            null
         }
     }
 
     companion object {
 
         const val PRIORITY_LENGTH = 2
-        const val SLARDAR_LOG_ROLLENCE_KEY = "android_slardar_log"
         private const val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
 
         var queryLimits: List<Int> = mutableListOf(5, 5)

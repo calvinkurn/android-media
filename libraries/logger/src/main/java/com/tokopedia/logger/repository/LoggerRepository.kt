@@ -1,9 +1,9 @@
 package com.tokopedia.logger.repository
 
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
@@ -40,7 +40,7 @@ class LoggerRepository(
     private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
     private val loggerCloudSlardarApmDataSource: LoggerCloudSlardarApmDataSource,
     private val scalyrConfigs: List<ScalyrConfig>,
-    private val rollenceMap: Map<String, Boolean>,
+    private val abTestSharedPreference: SharedPreferences?,
     private val encrypt: ((String) -> (String))? = null,
     val decrypt: ((String) -> (String))? = null,
     private val decryptNrKey: ((String) -> (String))? = null,
@@ -152,7 +152,8 @@ class LoggerRepository(
                     jobList.add(jobEmbrace)
                 }
 
-                if (rollenceMap[LogManager.SLARDAR_LOG_ROLLENCE_KEY] == true) {
+                val rollenceMap = getRollenceMap()
+                if (rollenceMap[SLARDAR_LOG_ROLLENCE_KEY] == SLARDAR_LOG_ROLLENCE_KEY) {
                     val jobApmSlardar = async {
                         sendSlardarApmLogToServer(newRelicMessageSdkList, newRelicMessageApiList)
                     }
@@ -165,6 +166,12 @@ class LoggerRepository(
                 }
             }
         }
+    }
+
+    private fun getRollenceMap(): Map<String, String> {
+        val result = mutableMapOf<String, String>()
+        result[SLARDAR_LOG_ROLLENCE_KEY] = abTestSharedPreference?.getString(SLARDAR_LOG_ROLLENCE_KEY, "") ?: ""
+        return result
     }
 
     private suspend fun sendScalyrLogToServer(
@@ -343,4 +350,8 @@ class LoggerRepository(
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
+
+    companion object {
+        private const val SLARDAR_LOG_ROLLENCE_KEY = "android_slardar_log"
+    }
 }
