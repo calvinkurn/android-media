@@ -236,7 +236,9 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         } returns responseSaf
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(12, 5)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
         assertEquals(5, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
@@ -310,7 +312,9 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         } returns responseSaf
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(12, 105)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
         assertEquals(100, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
@@ -384,7 +388,9 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         } returns responseSaf
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(12, 50)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
         assertEquals(30, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
@@ -458,7 +464,9 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         } returns responseSaf
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(12, 105)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
         assertEquals(100, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
@@ -532,7 +540,9 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         } returns responseSaf
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(12, 3)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
         assertEquals(5, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
@@ -582,7 +592,7 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
                                     products = listOf(
                                         Product(
                                             cartId = 12,
-                                            productQuantity = 50,
+                                            productQuantity = 5,
                                             productInvenageValue = 300,
                                             productMinOrder = 5,
                                             productMaxOrder = 50,
@@ -606,10 +616,12 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         } returns responseSaf
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(12, 3)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
-        assertEquals(50, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
+        assertEquals(5, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
     }
 
     @Test
@@ -650,7 +662,9 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         } returns UpdateCartV2Data(status = "ERROR", data = Data(status = false))
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(12, 3)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
         assertEquals(1, (viewModel.listData.value[4] as CheckoutProductModel).quantity)
@@ -690,7 +704,9 @@ class CheckoutViewModelEditTest : BaseCheckoutViewModelTest() {
         )
 
         // WHEN
+        dispatchers.main.scheduler.apply { advanceTimeBy(500); runCurrent() }
         viewModel.updateQuantityProduct(10, 3)
+        dispatchers.main.scheduler.advanceUntilIdle()
 
         // THEN
         assertEquals(1, (viewModel.listData.value[4] as CheckoutProductModel).quantity)

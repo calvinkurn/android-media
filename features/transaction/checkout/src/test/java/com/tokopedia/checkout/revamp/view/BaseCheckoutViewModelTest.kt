@@ -2,7 +2,6 @@ package com.tokopedia.checkout.revamp.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
@@ -167,7 +166,7 @@ open class BaseCheckoutViewModelTest {
     @MockK(relaxed = true)
     lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
 
-    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchers
+    val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
 
     lateinit var logisticProcessor: CheckoutLogisticProcessor
 

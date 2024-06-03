@@ -81,7 +81,6 @@ class CheckoutProductViewHolder(
         LayoutCheckoutProductBmgmBinding.bind(binding.root)
 
     private var delayChangeCheckboxAddOnState: Job? = null
-    private var delayChangeQtyEditor: Job? = null
 
     init {
         productBinding.qtyEditorProduct.apply {
@@ -323,13 +322,7 @@ class CheckoutProductViewHolder(
                     val currentFocus = qtyState.value
                     if (currentFocus is QtyState.Focus && !focus.isFocused) {
                         val newQty = qtyValue.value
-                        delayChangeQtyEditor?.cancel()
-                        delayChangeQtyEditor = GlobalScope.launch(Dispatchers.Main) {
-                            delay(DEBOUNCE_500MS)
-                            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                                listener.onCheckoutItemQuantityChanged(product, newQty)
-                            }
-                        }
+                        listener.onCheckoutItemQuantityChanged(product, newQty)
                         hideKeyboard()
                         listener.clearAllFocus()
                     }
@@ -357,13 +350,7 @@ class CheckoutProductViewHolder(
                 onValueChanged = { qty ->
                     if (qtyState.value !is QtyState.Focus) {
                         if (qty != 0) {
-                            delayChangeQtyEditor?.cancel()
-                            delayChangeQtyEditor = GlobalScope.launch(Dispatchers.Main) {
-                                delay(DEBOUNCE_500MS)
-                                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                                    listener.onCheckoutItemQuantityChanged(product, qty)
-                                }
-                            }
+                            listener.onCheckoutItemQuantityChanged(product, qty)
                         }
                     } else {
                         qtyValue.value = qty
@@ -767,7 +754,7 @@ class CheckoutProductViewHolder(
                         cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                delay(DEBOUNCE_500MS)
+                                delay(DEBOUNCE_TIME_ADDON)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener.onCheckboxAddonProductListener(
                                         isChecked,
@@ -864,7 +851,7 @@ class CheckoutProductViewHolder(
                         cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                delay(DEBOUNCE_500MS)
+                                delay(DEBOUNCE_TIME_ADDON)
                                 if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                     listener.onCheckboxAddonProductListener(
                                         isChecked,
@@ -950,7 +937,7 @@ class CheckoutProductViewHolder(
                             cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                                 delayChangeCheckboxAddOnState?.cancel()
                                 delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
-                                    delay(DEBOUNCE_500MS)
+                                    delay(DEBOUNCE_TIME_ADDON)
                                     if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                         listener.onCheckboxAddonProductListener(
                                             isChecked,
@@ -1285,7 +1272,7 @@ class CheckoutProductViewHolder(
 
         private const val VIEW_ALPHA_ENABLED = 1.0f
         private const val VIEW_ALPHA_DISABLED = 0.5f
-        private const val DEBOUNCE_500MS = 500L
+        private const val DEBOUNCE_TIME_ADDON = 500L
 
         private const val EPHARMACY_ICON_SIZE = 12
         private const val MARGIN_TOP_BMGM_CARD = 24
