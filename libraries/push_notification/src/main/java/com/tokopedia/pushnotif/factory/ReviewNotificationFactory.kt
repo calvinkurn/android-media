@@ -160,13 +160,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
 
             intent.action = "$truePosition"
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 notificationLayout.setOnClickPendingIntent(starId,
                         PendingIntent.getBroadcast(
                                 context,
                                 0,
                                 intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                         )
                 )
             }else{
