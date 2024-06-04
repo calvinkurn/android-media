@@ -9,6 +9,13 @@ internal class CarouselProductCardListenerInfo {
             }
         }
 
+    var onViewListener: CarouselProductCardListener.OnViewListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
     var onItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null
         set(value) {
             if (value != null) {

@@ -331,11 +331,15 @@ class ManageAddressViewModel @Inject constructor(
                     if (result.keroValidateShareAddressAsReceiver?.isValid == true) {
                         ValidateShareAddressState.Success()
                     } else {
-                        ValidateShareAddressState.Fail
+                        ValidateShareAddressState.Fail(
+                            MessageErrorException(
+                                result.keroValidateShareAddressAsReceiver?.error?.message
+                            )
+                        )
                     }
             },
             onError = {
-                _validateShareAddressState.value = ValidateShareAddressState.Fail
+                _validateShareAddressState.value = ValidateShareAddressState.Fail(it)
             }
         )
     }
@@ -352,11 +356,15 @@ class ManageAddressViewModel @Inject constructor(
                     if (result.keroValidateShareAddressAsSender?.isValid == true) {
                         ValidateShareAddressState.Success(result.keroValidateShareAddressAsSender.receiverUserName)
                     } else {
-                        ValidateShareAddressState.Fail
+                        ValidateShareAddressState.Fail(
+                            MessageErrorException(
+                                result.keroValidateShareAddressAsSender?.error?.message
+                            )
+                        )
                     }
             },
             onError = {
-                _validateShareAddressState.value = ValidateShareAddressState.Fail
+                _validateShareAddressState.value = ValidateShareAddressState.Fail(it)
             }
         )
     }
