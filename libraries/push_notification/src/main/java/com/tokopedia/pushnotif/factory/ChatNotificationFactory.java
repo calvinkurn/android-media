@@ -133,9 +133,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         intent.putExtra(MESSAGE_ID, mMessageId);
         intent.putExtra(NOTIFICATION_ID, notificationId);
         intent.putExtra(USER_ID, userSession.getUserId());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(context, notificationId, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         } else {
             return PendingIntent.getBroadcast(context, notificationId, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
