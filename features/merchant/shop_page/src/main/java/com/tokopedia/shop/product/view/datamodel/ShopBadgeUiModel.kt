@@ -1,7 +1,7 @@
 package com.tokopedia.shop.product.view.datamodel
 
 data class ShopBadgeUiModel(
-    val title: String,
-    val imageUrl: String,
-    val show: Boolean
+    var title: String = "",
+    var imageUrl: String = "",
+    var show: Boolean = false
 )

@@ -430,7 +430,7 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH_RESULT_CLICK, searchResult.json())
 
         with(searchResult) {
-            AppLogAnalytics.setGlobalParams(
+            AppLogAnalytics.setGlobalParamOnClick(
                 trackId = trackId,
                 requestId = imprId,
             )
@@ -541,7 +541,7 @@ object AppLogSearch {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, product.json())
 
         with(product) {
-            AppLogAnalytics.setGlobalParams(
+            AppLogAnalytics.setGlobalParamOnClick(
                 entranceForm = entranceForm.str,
                 enterMethod = null,
                 sourceModule = null,

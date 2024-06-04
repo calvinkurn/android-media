@@ -14,7 +14,6 @@ data class HomeChannelProductModel(
     val listNum: String,
     val entranceForm: String,
     val sourceModule: String,
-    val enterMethod: String?,
     val productId: String,
     val isAd: Int,
     val isUseCache: Int,
@@ -42,7 +41,6 @@ data class HomeChannelProductModel(
             recParams = recParams,
             shopId = shopId,
             itemOrder = itemOrder,
-            enterMethod = enterMethod,
             entranceForm = entranceForm
         )
     }

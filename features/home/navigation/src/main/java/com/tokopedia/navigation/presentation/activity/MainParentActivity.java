@@ -1382,7 +1382,6 @@ public class MainParentActivity extends BaseActivity implements
         if (index != currentSelectedFragmentPosition) {
             currentFragment.setUserVisibleHint(false);
         }
-        this.currentSelectedFragmentPosition = position;
         String pageName = "";
         String pageTitle = "";
         if (menu.size() > index) {
@@ -1443,8 +1442,12 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        updateAppLogPageData(position, false);
-        sendEnterPage(position);
+
+        if (index != currentSelectedFragmentPosition) {
+            updateAppLogPageData(position, false);
+            sendEnterPage(position);
+        }
+        this.currentSelectedFragmentPosition = position;
         return true;
     }
 
@@ -1467,13 +1470,13 @@ public class MainParentActivity extends BaseActivity implements
     private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
         if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
+            handleAppLogEnterMethod(applogInterface, isFirstTimeInit);
             Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
             if (currentPageName == null
                     || !applogInterface.getPageName().equals(currentPageName.toString())) {
                 AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
                 AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
             }
-            handleAppLogEnterMethod(applogInterface, isFirstTimeInit);
         }
     }
 
