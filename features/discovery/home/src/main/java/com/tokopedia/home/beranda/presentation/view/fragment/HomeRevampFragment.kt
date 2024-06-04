@@ -846,7 +846,7 @@ open class HomeRevampFragment :
 
     private fun showNavigationCoachMark() {
         navToolbar?.postDelayed({
-            if (coachmarkTokonow?.isShowing.orFalse() || coachmarkSubscription?.isShowing.orFalse()) return
+            if (coachmarkTokonow?.isShowing.orFalse() || coachmarkSubscription?.isShowing.orFalse()) return@postDelayed
             homeCoachmarkListener?.prepareNavigationCoachMark(navToolbar?.getIconView(IconList.ID_MESSAGE))
         }, DELAY_NAV_COACH_MARK)
     }
