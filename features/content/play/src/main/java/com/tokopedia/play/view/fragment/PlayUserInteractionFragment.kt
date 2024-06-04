@@ -1140,7 +1140,7 @@ class PlayUserInteractionFragment @Inject constructor(
                                     pageTypeEnum = ShareExPageTypeEnum.PLAY,
                                     defaultUrl = "tokopedia://play/$channelId",
                                     trackerArg = ShareExTrackerArg(
-                                        utmCampaign = "",
+                                        utmCampaign = "Content-$SHARE_ID_KEY-play-${event.channelId}",
                                         labelActionClickShareIcon = label,
                                         labelActionCloseIcon = label,
                                         labelActionClickChannel = labelActionClick,
