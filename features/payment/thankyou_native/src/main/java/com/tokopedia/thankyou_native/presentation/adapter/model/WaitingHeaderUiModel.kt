@@ -29,8 +29,12 @@ data class WaitingHeaderUiModel(
     val note: List<String>,
     val shouldHidePrimaryButton: Boolean,
     val primaryButtonText: String,
+    val primaryButtonApplink: String,
+    val primaryButtonType: String,
     val shouldHideSecondaryButton: Boolean,
     val secondaryButtonText: String,
+    val secondaryButtonApplink: String,
+    val secondaryButtonType: String,
     val highlightLastThreeDigits: Boolean,
     val bankBranch: String,
     val tickerData: List<TickerData> = arrayListOf(),
@@ -41,7 +45,6 @@ data class WaitingHeaderUiModel(
     }
 
     companion object {
-        private const val BANK_TRANSFER = "BANKTRANSFER"
         fun create(thanksPageData: ThanksPageData, context: Context?): WaitingHeaderUiModel {
 
             val accountIdLabel = when (PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)) {
@@ -67,9 +70,6 @@ data class WaitingHeaderUiModel(
 
             val note = Gson().fromJson(thanksPageData.customDataMessage?.customNotes, Array<String>::class.java)
 
-            val primaryButtonText = if (thanksPageData.customDataMessage?.titleHomeButton.isNullOrEmpty()) context?.getString(R.string.thank_check_payment_status) else thanksPageData.customDataMessage?.titleHomeButton
-            val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_payment_methods) else thanksPageData.customDataMessage?.titleOrderButton
-
             return WaitingHeaderUiModel(
                 context?.getString(R.string.thank_pay_before).orEmpty(),
                 thanksPageData.expireTimeStr,
@@ -80,10 +80,14 @@ data class WaitingHeaderUiModel(
                 context?.getString(R.string.thank_invoice_total_bill).orEmpty(),
                 amount.toLong(),
                 note.orEmpty().toList(),
-                thanksPageData.configFlagData?.shouldHideHomeButton == true,
-                primaryButtonText.orEmpty(),
-                false,
-                secondaryButtonText.orEmpty(),
+                thanksPageData.ctaDataThanksPage.primary.hideButton,
+                thanksPageData.ctaDataThanksPage.primary.text,
+                thanksPageData.ctaDataThanksPage.primary.applink,
+                thanksPageData.ctaDataThanksPage.primary.type,
+                thanksPageData.ctaDataThanksPage.secondary.hideButton,
+                thanksPageData.ctaDataThanksPage.secondary.text,
+                thanksPageData.ctaDataThanksPage.secondary.applink,
+                thanksPageData.ctaDataThanksPage.secondary.type,
                 PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType) == BankTransfer,
                 thanksPageData.additionalInfo.bankBranch
             )
