@@ -759,14 +759,24 @@ data class DataItem(
         return appLog
     }
 
+    fun getAppLogSPUId(): String {
+        return parentProductId?.let {
+            if (it.isBlankOrZero()) {
+                productId.orEmpty()
+            } else {
+                it
+            }
+        } ?: productId.orEmpty()
+    }
+
     fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(refer,
             topAdsCreativeId.toLongOrZero(),
             topAdsLogExtra.orEmpty(),
             AdsLogRealtimeClickModel.AdExtraData(
-            productId = productId.orEmpty(),
-            productName = getRealProductName(),
-        ))
+                productId = productId.orEmpty(),
+                productName = getRealProductName(),
+            ))
     }
 
     fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
@@ -785,9 +795,9 @@ data class DataItem(
             topAdsCreativeId.toLongOrZero(),
             topAdsLogExtra.orEmpty(),
             AdsLogShowModel.AdExtraData(
-            productId = productId.orEmpty(),
-            productName = getRealProductName(),
-        ))
+                productId = productId.orEmpty(),
+                productName = getRealProductName(),
+            ))
     }
 
     private fun getRealProductName() = if (productName?.isNotBlank().orFalse()) productName.orEmpty() else name.orEmpty()
