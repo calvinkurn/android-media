@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.R
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardReimagineGridItemBinding
+import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardGridViewHolder(
@@ -18,8 +20,33 @@ internal class CarouselProductCardGridViewHolder(
             setProductModel(element.productCardModel)
 
             addOnImpressionListener(element)
+            setVisibilityPercentListener(element.productCardModel.isAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.onViewAttachedToWindow()
+                }
 
-            setOnClickListener { element.onClick() }
+                override fun onShowOver(maxPercentage: Int) {
+                    element.onViewDetachedFromWindow(maxPercentage)
+                }
+            })
+            setOnClickListener(object : ProductCardClickListener {
+                override fun onClick(v: View) {
+                    element.onClick()
+                }
+
+                override fun onAreaClicked(v: View) {
+                    element.onAreaClicked()
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    element.onProductImageClicked()
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    element.onSellerInfoClicked()
+                }
+            })
+
 
             setAddToCartOnClickListener { element.onAddToCart() }
         }

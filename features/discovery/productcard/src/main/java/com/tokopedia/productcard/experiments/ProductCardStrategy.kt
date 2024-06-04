@@ -7,6 +7,7 @@ import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardModel as ReimagineProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -33,9 +34,14 @@ internal interface IGridViewStrategy {
     fun getNotifyMeButton(): UnifyButton? = null
     fun getShopBadgeView(): View? = null
     fun getProductImageView(): ImageView? = null
+
+    // Ads tracker (byteio)
+    fun setProductImageOnClickListener(l: (View) -> Unit)
+
+    fun setShopTypeLocationOnClickListener(l: (View) -> Unit)
 }
 
-internal interface ProductCardStrategy:
+internal interface ProductCardStrategy :
     IGridViewStrategy,
     IReimagineGridViewStrategy {
 
@@ -50,6 +56,7 @@ internal interface ProductCardStrategy:
         viewHintListener: ViewHintListener
     )
     fun setOnClickListener(l: View.OnClickListener?)
+    fun setOnClickListener(l: ProductCardClickListener)
     fun setAddToCartOnClickListener(l: View.OnClickListener?)
     fun setOnLongClickListener(l: View.OnLongClickListener?) { }
     fun setThreeDotsOnClickListener(l: View.OnClickListener?) { }

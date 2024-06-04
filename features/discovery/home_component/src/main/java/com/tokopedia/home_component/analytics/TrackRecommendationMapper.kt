@@ -4,7 +4,12 @@ import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.CardName
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object TrackRecommendationMapper {
     const val MISSION_MODULE_NAME = "mission"
@@ -46,5 +51,36 @@ object TrackRecommendationMapper {
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             position = cardPosition,
         )
+    }
+
+    fun ChannelGrid.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(refer,
+            creativeID.toLongOrZero(),
+            logExtra,
+            AdsLogRealtimeClickModel.AdExtraData(
+            productId = id,
+            productName = name,
+        ))
+    }
+
+    fun ChannelGrid.asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            creativeID.toLongOrZero(),
+            logExtra,
+            AdsLogShowOverModel.AdExtraData(
+                productId = id,
+                productName = name,
+                sizePercent = visiblePercentage.toString())
+        )
+    }
+
+    fun ChannelGrid.asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            creativeID.toLongOrZero(),
+            logExtra,
+            AdsLogShowModel.AdExtraData(
+            productId = id,
+            productName = name,
+        ))
     }
 }

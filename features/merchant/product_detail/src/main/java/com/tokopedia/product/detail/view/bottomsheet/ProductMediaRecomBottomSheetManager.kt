@@ -1,11 +1,13 @@
 package com.tokopedia.product.detail.view.bottomsheet
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
@@ -19,6 +21,9 @@ import com.tokopedia.product.detail.databinding.BsProductMediaRecomBinding
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ProductMediaRecomTracker
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
@@ -45,18 +50,21 @@ class ProductMediaRecomBottomSheetManager(
             is ProductMediaRecomBottomSheetState.Dismissed -> {
                 getProductMediaRecomBottomSheet()?.dismiss()
             }
+
             is ProductMediaRecomBottomSheetState.Loading -> {
                 updateProductMediaRecomBottomSheet {
                     setTitle(state.title)
                     showLoading()
                 }
             }
+
             is ProductMediaRecomBottomSheetState.ShowingData -> {
                 updateProductMediaRecomBottomSheet {
                     setTitle(state.title)
                     showData(state.recomWidgetData)
                 }
             }
+
             is ProductMediaRecomBottomSheetState.ShowingError -> {
                 updateProductMediaRecomBottomSheet {
                     setTitle(state.title)
@@ -92,6 +100,8 @@ class ProductMediaRecomBottomSheetManager(
     class BottomSheet :
         BottomSheetUnify(),
         RecomCarouselWidgetBasicListener,
+        RecomCarouselWidgetBasicListener.OnAdsItemClickListener,
+        RecomCarouselWidgetBasicListener.OnAdsViewListener,
         RecommendationCarouselTokonowListener {
 
         companion object {
@@ -167,10 +177,31 @@ class ProductMediaRecomBottomSheetManager(
             }
         }
 
+        override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+            recomItem.sendShowAdsByteIo(context)
+        }
+
+        override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
+            recomItem.sendShowOverAdsByteIo(context, visiblePercentage)
+        }
+
+        override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+            recomItem.sendRealtimeClickAdsByteIo(context, AdsLogConst.Refer.AREA)
+        }
+
+        override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+            recomItem.sendRealtimeClickAdsByteIo(context, AdsLogConst.Refer.COVER)
+        }
+
+        override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+            recomItem.sendRealtimeClickAdsByteIo(context, AdsLogConst.Refer.SELLER_NAME)
+        }
+
         override fun onRecomBannerImpressed(
             data: RecommendationCarouselData,
             adapterPosition: Int
-        ) {}
+        ) {
+        }
 
         override fun onRecomBannerClicked(
             data: RecommendationCarouselData,
@@ -191,13 +222,15 @@ class ProductMediaRecomBottomSheetManager(
             recomItem: RecommendationItem,
             adapterPosition: Int,
             quantity: Int
-        ) {}
+        ) {
+        }
 
         override fun onRecomProductCardAddVariantClick(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             adapterPosition: Int
-        ) {}
+        ) {
+        }
 
         fun setListener(listener: ProductDetailListener) {
             pdpListener = listener
@@ -235,7 +268,9 @@ class ProductMediaRecomBottomSheetManager(
             binding?.recomProductMedia?.bind(
                 carouselData = carouselData,
                 basicListener = this,
-                tokonowListener = this
+                tokonowListener = this,
+                adsItemClickListener = this,
+                adsViewListener = this
             )
         }
 
@@ -255,6 +290,7 @@ class ProductMediaRecomBottomSheetManager(
                     is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
                         GlobalError.NO_CONNECTION
                     }
+
                     else -> {
                         GlobalError.SERVER_ERROR
                     }

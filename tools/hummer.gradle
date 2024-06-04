@@ -1,0 +1,80 @@
+def isBitsRepo() {
+    return project.findProperty('resRepo') == 'bits'
+}
+
+
+
+String getEnvironment() {
+    def env = ""
+    gradle.startParameter.getTaskNames().forEach {
+        taskName -> {
+            if (taskName.containsIgnoreCase("prod")) {
+                env = "Production"
+            } else if (taskName.containsIgnoreCase("dev")) {
+                env = "Development"
+            }
+        }
+    }
+    return env
+}
+
+String getTier() {
+    def tier = ""
+    gradle.startParameter.getTaskNames().forEach {
+        taskName -> {
+            if (taskName.containsIgnoreCase("live")) {
+                tier = "Live"
+            } else if (taskName.containsIgnoreCase("staging")) {
+                tier = "Staging"
+            }
+        }
+    }
+    return tier
+}
+
+String getBuildType() {
+    def buildType = ""
+    gradle.startParameter.getTaskNames().forEach {
+        taskName -> {
+            if (taskName.containsIgnoreCase("debug")) {
+                buildType = "debug"
+            } else if (taskName.containsIgnoreCase("release")) {
+                buildType = "signed"
+            }
+        }
+    }
+    return buildType
+}
+
+if (isBitsRepo()) {
+    def env = getEnvironment()
+    def buildType = getBuildType()
+    def tier = getTier()
+    def jobName = "jobName=${System.getenv('WORKFLOW_JOB_NAME')}".toString()
+    def isCiBuild = jobName ? "CI" : "LOCAL"
+    def appName = gradle.startParameter.projectDir?.name ?: ""
+    def gradleVersion = "gradleVersion=${project.getGradle().getGradleVersion()}".toString()
+    println("Job Name: $jobName")
+    println("Is CI Build: $isCiBuild")
+    println("Current Env: $env")
+    println("Build Type: $buildType")
+    println("Tier: $tier")
+    println("Gradle Version: $gradleVersion")
+    println("Job Name: $jobName")
+
+    ext.isCollectBuild = true
+
+    if (project.extensions.findByName("buildCollectConfig") != null) {
+        def projectName = project.projectDir
+        println("-----Project Name: $projectName -----")
+        buildCollectConfig{
+            if (jobName != null) {
+                tags = [appName, isCiBuild, jobName.toString(), env, buildType, tier, gradleVersion]
+            } else {
+                tags = [appName, isCiBuild, env, buildType, tier, gradleVersion]
+            }
+        }
+    }
+}
+
+

@@ -60,6 +60,14 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
         updateHeight()
     }
 
+    private fun updateHeight(){
+        fun updateHeight() {
+            inflatedView.invalidate()
+            inflatedView.measure(0, 0)
+            if (bottomSheet != null) bottomSheet.setPeekHeight(inflatedView.getMeasuredHeight())
+        }
+    }
+
     private fun updateCounterError(): Boolean {
         if (isResumed) {
             counterError++
@@ -75,7 +83,9 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
     }
 
     override fun onCloseButtonClick() {
-        listenerPayment?.onGoToOtpPage(transactionId, urlOtp)
+        setCloseClickListener {
+            listenerPayment?.onGoToOtpPage(transactionId, urlOtp)
+        }
     }
 
     override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {

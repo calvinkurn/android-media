@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.Transaction
@@ -227,7 +228,7 @@ import javax.inject.Inject
 import com.tokopedia.atc_common.R as atc_commonR
 
 @Keep
-open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener, AppLogInterface {
+open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener, AppLogInterface, IAdsLog {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -551,6 +552,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
             )
+            uohNavtoolbar.updateSearchBarStyle(showSearchBtn = false)
             val pageSource = if (activityOrderHistory != PARAM_HOME) {
                 uohNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.visibility = View.GONE
@@ -2011,6 +2013,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun getScreenName(): String = ""
 
     override fun getPageName(): String {
+        return PageName.UOH
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.UOH
     }
 

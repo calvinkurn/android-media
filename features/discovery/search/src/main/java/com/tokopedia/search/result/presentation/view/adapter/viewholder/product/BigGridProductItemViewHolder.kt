@@ -2,13 +2,20 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardBigGridBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.search.utils.sendEventRealtimeClickAdsByteIo
+import com.tokopedia.search.utils.sendEventShow
+import com.tokopedia.search.utils.sendEventShowOver
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BigGridProductItemViewHolder(
@@ -52,9 +59,33 @@ class BigGridProductItemViewHolder(
             true
         }
 
-        productCardView.setOnClickListener {
-            productListener.onItemClicked(productItemData, adapterPosition)
-        }
+        productCardView.setVisibilityPercentListener(productItemData.isAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                sendEventShow(itemView.context, productItemData)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                sendEventShowOver(itemView.context, productItemData, maxPercentage)
+            }
+        })
+
+        productCardView.setOnClickListener(object: ProductCardClickListener {
+            override fun onClick(v: View) {
+                productListener.onItemClicked(productItemData, adapterPosition)
+            }
+
+            override fun onAreaClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.AREA)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.COVER)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                sendEventRealtimeClickAdsByteIo(itemView.context, productItemData, AdsLogConst.Refer.SELLER_NAME)
+            }
+        })
 
         productCardView.setAddToCartOnClickListener {
             productListener.onAddToCartClick(productItemData)
