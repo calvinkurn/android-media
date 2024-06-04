@@ -4,9 +4,12 @@
 package com.tokopedia.home.beranda.presentation.view.listener.shorten.item
 
 import android.annotation.SuppressLint
+import com.tokopedia.analytics.byteio.home.AppLogHomeChannel
 import com.tokopedia.home.analytics.v2.Kd2BannerSquareTracker
 import com.tokopedia.home.analytics.v2.Kd2ProductSquareTracker
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home_component.analytics.TwoProductSquareTrackingMapper.asCardModel
+import com.tokopedia.home_component.analytics.TwoProductSquareTrackingMapper.asProductModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.viewholders.shorten.viewholder.listener.ProductWidgetListener
 import com.tokopedia.home_component.visitable.shorten.ItemProductWidgetUiModel
@@ -27,7 +30,7 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
         )
     }
 
-    override fun productImpressed(data: ProductWidgetUiModel, position: Int) {
+    override fun productContainerImpressed(data: ProductWidgetUiModel, position: Int) {
         // Used in the [itemProductClicked] method.
         channelModel = data.channelModel
 
@@ -52,10 +55,19 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
         }
     }
 
+    override fun itemProductImpressed(data: ItemProductWidgetUiModel, position: Int) {
+        if (data.tracker.isProduct()) {
+            AppLogHomeChannel.sendProductShow(data.asProductModel())
+        } else {
+            AppLogHomeChannel.sendCardShow(data.asCardModel())
+        }
+    }
+
     override fun itemProductClicked(data: ItemProductWidgetUiModel, position: Int) {
         listener.onDynamicChannelClicked(data.appLink)
 
         if (data.tracker.isProduct()) {
+            AppLogHomeChannel.sendProductClick(data.asProductModel())
             channelModel?.let {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     Kd2ProductSquareTracker.productClick(
@@ -67,6 +79,7 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
                 )
             }
         } else {
+            AppLogHomeChannel.sendCardClick(data.asCardModel())
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 Kd2BannerSquareTracker.cardClicked(
                     data.tracker,
