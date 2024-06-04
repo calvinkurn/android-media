@@ -38,7 +38,7 @@ class MePageCoachMark @Inject constructor(
             }
         })
         coachMark.onDismissListener = {
-            mePageCoachMarkToggle = true
+            inboxCoachMarkToggle = true
         }
     }
 
@@ -72,7 +72,6 @@ class MePageCoachMark @Inject constructor(
     }
 
     fun forceDismiss() {
-        coachMark.onDismissListener = {}
         coachMark.dismissCoachMark()
     }
 

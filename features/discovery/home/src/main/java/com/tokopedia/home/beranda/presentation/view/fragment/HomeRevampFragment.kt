@@ -321,6 +321,7 @@ open class HomeRevampFragment :
                 "&enter_method={enter_method}"
         private const val HOME_SOURCE = "home"
 
+        private const val DELAY_NAV_COACH_MARK = 500L
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val EMPTY_TIME_MILLIS = 0L
@@ -708,9 +709,6 @@ open class HomeRevampFragment :
                 AppLogSearch.eventShowSearch()
             }
             it.updateSearchBarStyle(showSearchBtn = shouldCombineInboxNotif)
-            it.post {
-                onInboxReady()
-            }
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
@@ -846,9 +844,11 @@ open class HomeRevampFragment :
         }
     }
 
-    private fun onInboxReady() {
-        if (coachmarkTokonow?.isShowing.orFalse() || coachmarkSubscription?.isShowing.orFalse()) return
-        homeCoachmarkListener?.prepareNavigationCoachMark(navToolbar?.getIconView(IconList.ID_MESSAGE))
+    private fun showNavigationCoachMark() {
+        navToolbar?.postDelayed({
+            if (coachmarkTokonow?.isShowing.orFalse() || coachmarkSubscription?.isShowing.orFalse()) return
+            homeCoachmarkListener?.prepareNavigationCoachMark(navToolbar?.getIconView(IconList.ID_MESSAGE))
+        }, DELAY_NAV_COACH_MARK)
     }
 
     private fun getSubscriptionBalanceWidgetView(): View? {
@@ -1522,6 +1522,7 @@ open class HomeRevampFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeSearchHint()
+        showNavigationCoachMark()
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
