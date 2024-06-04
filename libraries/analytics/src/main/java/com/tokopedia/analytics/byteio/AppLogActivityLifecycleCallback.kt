@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
@@ -64,7 +65,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     }
 
     override fun onActivityStarted(activity: Activity) {
-        // no op
+        Timber.d("Activity started $activity")
     }
 
     private fun setCurrent(activity: Activity) {
@@ -74,6 +75,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     }
 
     override fun onActivityResumed(activity: Activity) {
+        Timber.d("Activity resumed $activity")
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
             // in case the activity is resuming, we start the startTime in onResume, not onCreate
             if (activity.startTime == 0L) {
@@ -94,6 +96,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     ) {
         if (product == null) return
         if (isFinishing) {
+            AppLogAnalytics.clearGlobalParamsOnClick(hash)
             sendStayProductDetail(durationInMs, product, QuitType.RETURN, hash)
             return
         }

@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -103,7 +103,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel) {
             with(binding) {
-                ivProductIcon.loadImage(element.item.attributes.iconUrl)
+                ivProductIcon.loadImageFresco(element.item.attributes.iconUrl)
                 tvMainPrice.text = element.item.label2
 
                 renderProductInfo(this, element.item)

@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 /**
  * @author by resakemal on 21/06/20.
@@ -33,8 +33,8 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: Recha
                 viewRechargeHomeDualBannersShimmering.root.hide()
 
                 viewRechargeHomeDualBannersTitle.displayTextOrHide(section.title)
-                viewRechargeHomeDualBannersImage1.loadImage(items[0].mediaUrl)
-                viewRechargeHomeDualBannersImage2.loadImage(items[1].mediaUrl)
+                viewRechargeHomeDualBannersImage1.loadImageFresco(items[0].mediaUrl)
+                viewRechargeHomeDualBannersImage2.loadImageFresco(items[1].mediaUrl)
                 viewRechargeHomeDualBannersImage1.setOnClickListener {
                     listener.onRechargeSectionItemClicked(items[0])
                 }

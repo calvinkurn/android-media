@@ -2,6 +2,9 @@ package com.tokopedia.tkpd.deeplink.activity;
 
 import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
 
+import static com.tokopedia.applink.internal.ApplinkConsInternalHome.PATH_REKOMENDASI;
+import static com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.HOST_DISCOVERY;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +18,10 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds;
 import com.tokopedia.applink.ApplinkConst;
@@ -104,10 +109,21 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
             if (uri != null) {
                 sendAuthenticated(uri, isOriginalUrlAmp);
             }
+            addRekomendasiAppLog(applink);
             RouteManager.route(this, applink);
             finish();
         } else {
             initDeepLink();
+        }
+    }
+
+    private void addRekomendasiAppLog(String applink) {
+        // we put this logic not in presenter, because presenter only handle applink not converted into internal
+        // this is for internal
+        String path = Uri.parse(applink).getPath();
+        if (path != null && path.contains(HOST_DISCOVERY + "/" + PATH_REKOMENDASI)) {
+            AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_EXTERNAL_ADS);
         }
     }
 
