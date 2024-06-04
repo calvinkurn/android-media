@@ -15,6 +15,7 @@ import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -63,6 +64,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private var recyclerViewCarouselSingleOrDoubleProduct: RecyclerView? = null
     private var productCarouselSingleOrDoubleAdapter: ShopHomeCarouselProductAdapter? = null
     private var hasApplogScrollListener = false
+    private val snapHelper = StartSnapHelper()
 
     init {
         initView()
@@ -404,8 +406,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager.apply {
-            if (this is LinearLayoutManager) scrollToPositionWithOffset(scrollToPosition, 16)
+            if (this is LinearLayoutManager) shopHomeListener.getShopPageHomeFragment().context?.applicationContext?.resources?.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16)
+                ?.let { scrollToPositionWithOffset(scrollToPosition, it) }
         }
+        snapHelper.attachToRecyclerView(recyclerViewCarouselSingleOrDoubleProduct)
         recyclerViewCarouselSingleOrDoubleProduct?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
     }
 
