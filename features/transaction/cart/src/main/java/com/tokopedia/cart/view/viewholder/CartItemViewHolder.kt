@@ -1470,6 +1470,22 @@ class CartItemViewHolder(
 //                imeAction = ImeAction.Done,
 //                keyboardType = KeyboardType.Number
 //            )
+            onDoneListener = {
+//                    val newQty = getQuantity()
+//                    if (newQty == 0) {
+//                        actionListener?.onCartItemDeleteButtonClicked(
+//                            data,
+//                            CartDeleteButtonSource.QuantityEditorImeAction
+//                        )
+//                    } else {
+//                        validateQty(newQty, data)
+//                        lastQty = getQuantity()
+//                        actionListener?.onCartItemQuantityChanged(data, getQuantity())
+//                        handleRefreshType(data, viewHolderListener)
+//                        hideKeyboard()
+                        actionListener?.clearAllFocus()
+//                    }
+            }
 //            keyboardActions.value = KeyboardActions(
 //                onDone = {
 //                    val newQty = qtyValue.value
@@ -1489,12 +1505,31 @@ class CartItemViewHolder(
 //                }
 //            )
 //            qtyValue.value = if (data.isBundlingItem) data.bundleQuantity else data.quantity
+            minQty = data.minOrder
+            maxQty = data.maxOrder
             setQuantity(if (data.isBundlingItem) data.bundleQuantity else data.quantity)
 //            configState.value = configState.value.copy(
 //                qtyMinusButton = getQuantityEditorMinButton(
 //                    if (data.isBundlingItem) data.bundleQuantity else data.quantity,
 //                    data
 //                ),
+            onPlusClickListener = {
+                if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                    actionListener?.onCartItemQuantityPlusButtonClicked()
+                }
+            }
+            onMinusClickListener = {
+                if (getQuantity() == data.minOrder) {
+                    actionListener?.onCartItemDeleteButtonClicked(
+                        data,
+                        CartDeleteButtonSource.TrashBin
+                    )
+                    actionListener?.clearAllFocus()
+                    false
+                } else {
+                    true
+                }
+            }
 //                qtyPlusButton = configState.value.qtyPlusButton.copy(
 //                    onClick = {
 //                        if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
@@ -1502,8 +1537,8 @@ class CartItemViewHolder(
 //                        }
 //                    }
 //                ),
-//                minInt = 0,
-//                maxInt = data.maxOrder
+//                minQty = data.minOrder
+//                maxQty = data.maxOrder
 //            )
 //
             onValueChanged = { qty ->
@@ -1592,13 +1627,64 @@ class CartItemViewHolder(
                 data.maxOrder
             )
             data.isAlreadyShowMaximumQuantityPurchasedError = true
-//            binding.qtyEditorProduct.qtyValue.value = data.maxOrder
+            binding.qtyEditorProduct.setQuantity(data.maxOrder)
             binding.labelQuantityError.show()
         } else if (newQty > data.minOrder && newQty < data.maxOrder) {
             data.isAlreadyShowMaximumQuantityPurchasedError = false
             binding.labelQuantityError.gone()
         }
     }
+    java.lang.IllegalStateException: Cannot call this method while RecyclerView is computing a layout or scrolling com.tokopedia.cart.view.compoundview.CartRecyclerView{2ff8254 VFED..... ........ 0,0-1080,2062 #7e081252 com.tokopedia.tkpd.df_base:id/rv_cart}, adapter:com.tokopedia.cart.view.adapter.cart.CartAdapter@17845fd, layout:com.tokopedia.cart.view.CartRevampFragment$initRecyclerView$gridLayoutManager$1@43712f2, context:com.tokopedia.cart.CartActivity@e8bf2cf
+    at androidx.recyclerview.widget.RecyclerView.assertNotInLayoutOrScroll(RecyclerView.java:3185)
+    at androidx.recyclerview.widget.RecyclerView$RecyclerViewDataObserver.onItemRangeRemoved(RecyclerView.java:5728)
+    at androidx.recyclerview.widget.RecyclerView$AdapterDataObservable.notifyItemRangeRemoved(RecyclerView.java:12694)
+    at androidx.recyclerview.widget.RecyclerView$Adapter.notifyItemRangeRemoved(RecyclerView.java:7755)
+    at androidx.recyclerview.widget.AdapterListUpdateCallback.onRemoved(AdapterListUpdateCallback.java:48)
+    at androidx.recyclerview.widget.BatchingListUpdateCallback.dispatchLastEvent(BatchingListUpdateCallback.java:64)
+    at androidx.recyclerview.widget.BatchingListUpdateCallback.onInserted(BatchingListUpdateCallback.java:82)
+    at androidx.recyclerview.widget.DiffUtil$DiffResult.dispatchUpdatesTo(DiffUtil.java:947)
+    at androidx.recyclerview.widget.DiffUtil$DiffResult.dispatchUpdatesTo(DiffUtil.java:840)
+    at com.tokopedia.cart.view.adapter.cart.CartAdapter.updateList(CartAdapter.kt:97)
+    at com.tokopedia.cart.view.CartRevampFragment.observeCartDataList$lambda-92(CartRevampFragment.kt:2886)
+    at com.tokopedia.cart.view.CartRevampFragment.$r8$lambda$9CwR1MLduuarYgRzDVJh6-lfjj4(Unknown Source:0)
+    at com.tokopedia.cart.view.CartRevampFragment$$ExternalSyntheticLambda13.onChanged(Unknown Source:4)
+    at androidx.lifecycle.LiveData.considerNotify(LiveData.java:133)
+    at androidx.lifecycle.LiveData.dispatchingValue(LiveData.java:151)
+    at androidx.lifecycle.LiveData.setValue(LiveData.java:309)
+    at com.tokopedia.cart.view.uimodel.CartMutableLiveData.setValue(CartState.kt:248)
+    at com.tokopedia.cart.view.uimodel.CartMutableLiveData.notifyObserver(CartState.kt:252)
+    at com.tokopedia.cart.view.CartViewModel.expandDisabledItems(CartViewModel.kt:658)
+    at com.tokopedia.cart.view.CartRevampFragment.collapseOrExpandDisabledItem(CartRevampFragment.kt:1965)
+    at com.tokopedia.cart.view.CartRevampFragment.collapseOrExpandDisabledItem(CartRevampFragment.kt:1953)
+    at com.tokopedia.cart.view.CartRevampFragment.onCartItemDeleteButtonClicked(CartRevampFragment.kt:1324)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder.validateMinimumQty(CartItemViewHolder.kt:1678)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder.validateQty(CartItemViewHolder.kt:1620)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder.access$validateQty(CartItemViewHolder.kt:76)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder$renderQuantity$1$5.invoke(CartItemViewHolder.kt:1549)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder$renderQuantity$1$5.invoke(CartItemViewHolder.kt:1544)
+    at com.tokopedia.cart.view.customview.CartQuantityEditorView.setQuantity(CartQuantityEditorView.kt:123)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder.renderQuantity(CartItemViewHolder.kt:1510)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder.renderQuantityWidget(CartItemViewHolder.kt:1397)
+    at com.tokopedia.cart.view.viewholder.CartItemViewHolder.bindData(CartItemViewHolder.kt:145)
+    at com.tokopedia.cart.view.adapter.cart.CartAdapter.onBindViewHolder(CartAdapter.kt:322)
+    at androidx.recyclerview.widget.RecyclerView$Adapter.onBindViewHolder(RecyclerView.java:7254)
+    at androidx.recyclerview.widget.RecyclerView$Adapter.bindViewHolder(RecyclerView.java:7337)
+    at androidx.recyclerview.widget.RecyclerView$Recycler.tryBindViewHolderByDeadline(RecyclerView.java:6194)
+    at androidx.recyclerview.widget.RecyclerView$Recycler.tryGetViewHolderForPositionByDeadline(RecyclerView.java:6460)
+    at androidx.recyclerview.widget.GapWorker.prefetchPositionWithDeadline(GapWorker.java:288)
+    at androidx.recyclerview.widget.GapWorker.flushTaskWithDeadline(GapWorker.java:345)
+    at androidx.recyclerview.widget.GapWorker.flushTasksWithDeadline(GapWorker.java:361)
+    at androidx.recyclerview.widget.GapWorker.prefetch(GapWorker.java:368)
+    at androidx.recyclerview.widget.GapWorker.run(GapWorker.java:399)
+    at android.os.Handler.handleCallback(Handler.java:942)
+    at android.os.Handler.dispatchMessage(Handler.java:99)
+    at android.os.Looper.loopOnce(Looper.java:201)
+    at android.os.Looper.loop(Looper.java:288)
+    at android.app.ActivityThread.main(ActivityThread.java:7872)
+    at java.lang.reflect.Method.invoke(Native Method)
+    at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:548)
+    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:936)
+
 
     private fun validateMinimumQty(newQty: Int, data: CartItemHolderData) {
         val qtyEditorCart = binding.qtyEditorProduct
@@ -1615,7 +1701,7 @@ class CartItemViewHolder(
                 data.minOrder
             )
             if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
-//                qtyEditorCart.qtyValue.value = data.minOrder
+                qtyEditorCart.setQuantity(data.minOrder)
                 data.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 data.isAlreadyShowMinimumQuantityPurchasedError = false
@@ -1636,7 +1722,7 @@ class CartItemViewHolder(
                 data.minOrder
             )
             if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
-//                qtyEditorCart.qtyValue.value = data.minOrder
+                qtyEditorCart.setQuantity(data.minOrder)
                 data.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 data.isAlreadyShowMinimumQuantityPurchasedError = false
