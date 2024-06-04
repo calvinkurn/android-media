@@ -565,7 +565,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             )
             icons.apply {
                 addIcon(IconList.ID_MESSAGE) {}
-                addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
                 if (arguments?.getBoolean(PARAM_SHOULD_SHOW_GLOBAL_NAV, true) != false) addIcon(IconList.ID_NAV_GLOBAL) {}
             }
