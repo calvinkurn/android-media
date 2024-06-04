@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailV
 import com.tokopedia.product.detail.view.widget.AnimatedImageAnchor
 import com.tokopedia.product.detail.view.widget.AnimationData
 import com.tokopedia.unifycomponents.toPx
+import timber.log.Timber
 
 class AtcAnimationManager(
     val mediator: PdpComponentCallbackMediator
@@ -43,23 +44,24 @@ class AtcAnimationManager(
             return
         }
 
-        if (mSourceImageView == null) {
+        val drawable = mSourceImageView?.drawable ?: run {
+            viewModel.onFinishAnimation()
+            return
+        }
+        val cartViewMenu = binding.pdpNavtoolbar.getCartIconPosition() ?: run {
             viewModel.onFinishAnimation()
             return
         }
 
-        val toolbar = binding.pdpNavtoolbar
-
-        val cartViewMenu = toolbar.getCartIconPosition()
-
-        cartViewMenu?.apply {
-            post {
-                renderAnimatedImage(
-                    binding = binding,
-                    target = this,
-                    image = mSourceImageView?.drawable!!.toBitmap()
-                )
-            }
+        runCatching {
+            renderAnimatedImage(
+                binding = binding,
+                target = cartViewMenu,
+                image = drawable.toBitmap()
+            )
+        }.onFailure {
+            Timber.e(it)
+            viewModel.onFinishAnimation()
         }
     }
 

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellImageBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener) :
     RecyclerView.Adapter<RechargeItemCarousellAdapter.CarousellRechargeItemViewHolder>() {
@@ -28,7 +28,7 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
     class CarousellRechargeItemViewHolder(val binding: ViewRechargeHomeCarousellImageBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
             with(binding) {
-                imgCarousellRechargeHomePage.loadImage(element.mediaUrl)
+                imgCarousellRechargeHomePage.loadImageFresco(element.mediaUrl)
                 root.setOnClickListener {
                     if (element.applink.isNotEmpty()) {
                         try {

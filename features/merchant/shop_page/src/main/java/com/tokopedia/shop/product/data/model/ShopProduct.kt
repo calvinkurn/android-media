@@ -103,9 +103,13 @@ data class ShopProduct(
         @Expose
         val title: String = "",
 
-        @SerializedName("image_url")
+        @SerializedName("imageUrl")
         @Expose
-        val imageUrl: String = ""
+        val imageUrl: String = "",
+
+        @SerializedName("show")
+        @Expose
+        val show: Boolean = false
     )
 
     data class GetShopProduct(

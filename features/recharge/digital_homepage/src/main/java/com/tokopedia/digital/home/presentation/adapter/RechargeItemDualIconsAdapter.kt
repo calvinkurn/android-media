@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeTrustmarkItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class RechargeItemDualIconsAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener) :
     RecyclerView.Adapter<RechargeItemDualIconsAdapter.RechargeItemTrustMarkViewHolder>() {
@@ -27,7 +27,7 @@ class RechargeItemDualIconsAdapter(val items: List<RechargeHomepageSections.Item
     class RechargeItemTrustMarkViewHolder(val binding: LayoutDigitalHomeTrustmarkItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
             with(binding) {
-                trustmarkImage.loadImage(element.mediaUrl)
+                trustmarkImage.loadImageFresco(element.mediaUrl)
                 trustmarkName.text = element.title
                 root.setOnClickListener {
                     onItemBindListener.onRechargeSectionItemClicked(element)

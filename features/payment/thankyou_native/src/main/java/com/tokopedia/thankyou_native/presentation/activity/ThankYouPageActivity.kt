@@ -198,10 +198,18 @@ class ThankYouPageActivity :
         }
         idlingResource?.decrement()
         findViewById<FrameLayout>(getParentViewResourceID()).animate().alpha(0f).setDuration(UnifyMotion.T5).withEndAction {
+            onLoaderFullyInvisible()
+        }.start()
+    }
+
+    private fun onLoaderFullyInvisible() {
+        try {
             supportFragmentManager.findFragmentById(getParentViewResourceID())?.let {
                 supportFragmentManager.beginTransaction().remove(it).commit()
             }
-        }.start()
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
     }
 
     fun cancelGratifDialog() {

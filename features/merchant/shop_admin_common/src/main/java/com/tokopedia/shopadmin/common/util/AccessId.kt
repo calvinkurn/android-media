@@ -31,7 +31,8 @@ import androidx.annotation.IntDef
     AccessId.COMPLAINT,
     AccessId.DISCUSSION,
     AccessId.REVIEW,
-    AccessId.SHOP_SCORE
+    AccessId.SHOP_SCORE,
+    AccessId.CONTENT,
 )
 annotation class AccessId {
     companion object {
@@ -59,5 +60,6 @@ annotation class AccessId {
         const val REVIEW = 14011
         const val SHOP_SCORE = 14006
         const val VIEW_SLASH_PRICE = 75
+        const val CONTENT = 111
     }
 }
