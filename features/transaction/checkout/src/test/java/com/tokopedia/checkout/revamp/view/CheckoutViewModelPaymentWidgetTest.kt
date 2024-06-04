@@ -38,7 +38,7 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 import java.io.IOException
 
-class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
+class CheckoutViewModelPaymentWidgetTest : BaseCheckoutViewModelTest() {
 
     @Test
     fun `GIVEN failed get payment widget WHEN get payment widget THEN should not hit platform fee & show error`() {
@@ -164,9 +164,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA"
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -221,9 +223,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA"
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -278,10 +282,12 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-                mandatoryHit = listOf("CreditCardTenorList")
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA",
+                    mandatoryHit = listOf("CreditCardTenorList")
+                )
+            )
         )
 
         coEvery {
@@ -348,10 +354,12 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-                mandatoryHit = listOf("CreditCardTenorList")
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA",
+                    mandatoryHit = listOf("CreditCardTenorList")
+                )
+            )
         )
 
         coEvery {
@@ -418,13 +426,15 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-                mandatoryHit = listOf("CreditCardTenorList"),
-                amountValidation = PaymentAmountValidation(
-                    maximumAmount = 10000
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA",
+                    mandatoryHit = listOf("CreditCardTenorList"),
+                    amountValidation = PaymentAmountValidation(
+                        maximumAmount = 10000
+                    )
                 )
-            ))
+            )
         )
 
         coEvery {
@@ -488,10 +498,12 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-                mandatoryHit = listOf("getInstallmentInfo")
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA",
+                    mandatoryHit = listOf("getInstallmentInfo")
+                )
+            )
         )
 
         coEvery {
@@ -559,13 +571,15 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-                mandatoryHit = listOf("getInstallmentInfo"),
-                amountValidation = PaymentAmountValidation(
-                    maximumAmount = 10000
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA",
+                    mandatoryHit = listOf("getInstallmentInfo"),
+                    amountValidation = PaymentAmountValidation(
+                        maximumAmount = 10000
+                    )
                 )
-            ))
+            )
         )
 
         coEvery {
@@ -629,9 +643,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -656,9 +672,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             dynamicPaymentFeeUseCase(any())
         }
         coVerify(exactly = 1) {
-            getPaymentWidgetUseCase(match {
-                it.chosenPayment.gatewayCode == "newGateway" && it.chosenPayment.metadata == "newMetadata" && it.chosenPayment.optionId == "" && it.chosenPayment.tenureType == 0
-            })
+            getPaymentWidgetUseCase(
+                match {
+                    it.chosenPayment.gatewayCode == "newGateway" && it.chosenPayment.metadata == "newMetadata" && it.chosenPayment.optionId == "" && it.chosenPayment.tenureType == 0
+                }
+            )
         }
     }
 
@@ -696,9 +714,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -719,9 +739,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             dynamicPaymentFeeUseCase(any())
         }
         coVerify(inverse = true) {
-            getPaymentWidgetUseCase(match {
-                it.chosenPayment.gatewayCode == "newGateway" && it.chosenPayment.metadata == "newMetadata" && it.chosenPayment.optionId == "" && it.chosenPayment.tenureType == 0
-            })
+            getPaymentWidgetUseCase(
+                match {
+                    it.chosenPayment.gatewayCode == "newGateway" && it.chosenPayment.metadata == "newMetadata" && it.chosenPayment.optionId == "" && it.chosenPayment.tenureType == 0
+                }
+            )
         }
     }
 
@@ -750,7 +772,9 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
-            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true,
+            CheckoutPaymentModel(
+                widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal),
+                enable = true,
                 data = PaymentWidgetListData(
                     paymentWidgetData = listOf(
                         PaymentWidgetData(
@@ -758,7 +782,8 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
                             mandatoryHit = listOf("CreditCardTenorList")
                         )
                     )
-                )),
+                )
+            ),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -767,9 +792,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -781,10 +808,13 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         } throws IOException()
 
         // When
-        viewModel.chooseInstallmentCC(TenorListData(
-            type = "12",
-            gatewayCode = "abc"
-        ), emptyList())
+        viewModel.chooseInstallmentCC(
+            TenorListData(
+                type = "12",
+                gatewayCode = "abc"
+            ),
+            emptyList()
+        )
 
         // Then
         assertNotNull(latestToaster)
@@ -824,15 +854,19 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
-            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true,
+            CheckoutPaymentModel(
+                widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal),
+                enable = true,
                 data = PaymentWidgetListData(
                     paymentWidgetData = listOf(
                         PaymentWidgetData(
                             gatewayCode = "cc",
+                            metadata = """{"express_checkout_param":{"installment_term":0}, "gateway_code":"VA"}""",
                             mandatoryHit = listOf("CreditCardTenorList")
                         )
                     )
-                )),
+                )
+            ),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -841,9 +875,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -857,7 +893,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
                 TenorListData(type = "FULL", gatewayCode = "abc0"),
                 TenorListData(type = "3", gatewayCode = "abc3"),
                 TenorListData(type = "6", gatewayCode = "abc6"),
-                TenorListData(type = "12", gatewayCode = "abc12"),
+                TenorListData(type = "12", gatewayCode = "abc12")
             )
         )
 
@@ -866,14 +902,20 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         } returns UpdateCartV2Data(status = "OK", data = Data(status = true))
 
         // When
-        viewModel.chooseInstallmentCC(TenorListData(
-            type = "12",
-            gatewayCode = "abc"
-        ), listOf(TenorListData()))
+        viewModel.chooseInstallmentCC(
+            TenorListData(
+                type = "12",
+                gatewayCode = "abc"
+            ),
+            listOf(TenorListData())
+        )
 
         // Then
         assertNull(latestToaster)
         assertEquals(CheckoutPaymentWidgetState.Normal, viewModel.listData.value.payment()!!.widget.state)
+        coVerify {
+            updateCartUseCase.get().setParams(any(), "update_payment", match { it.gatewayCode == "abc" })
+        }
         coVerify {
             dynamicPaymentFeeUseCase(any())
         }
@@ -881,7 +923,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             getPaymentWidgetUseCase(any())
         }
         assertEquals(12, viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().installmentPaymentData.selectedTenure)
-        assertEquals("abc12", viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().gatewayCode)
+        assertEquals("abc", viewModel.listData.value.payment()!!.data!!.paymentWidgetData.first().gatewayCode)
     }
 
     @Test
@@ -909,7 +951,9 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
-            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true,
+            CheckoutPaymentModel(
+                widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal),
+                enable = true,
                 data = PaymentWidgetListData(
                     paymentWidgetData = listOf(
                         PaymentWidgetData(
@@ -917,7 +961,8 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
                             mandatoryHit = listOf("getInstallmentInfo")
                         )
                     )
-                )),
+                )
+            ),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -926,9 +971,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -979,7 +1026,9 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
-            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true,
+            CheckoutPaymentModel(
+                widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal),
+                enable = true,
                 data = PaymentWidgetListData(
                     paymentWidgetData = listOf(
                         PaymentWidgetData(
@@ -987,7 +1036,8 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
                             mandatoryHit = listOf("getInstallmentInfo")
                         )
                     )
-                )),
+                )
+            ),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -996,9 +1046,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA",
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {
@@ -1012,7 +1064,7 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
                 GoCicilInstallmentOption(installmentTerm = 0),
                 GoCicilInstallmentOption(installmentTerm = 3),
                 GoCicilInstallmentOption(installmentTerm = 6),
-                GoCicilInstallmentOption(installmentTerm = 12, isActive = true),
+                GoCicilInstallmentOption(installmentTerm = 12, isActive = true)
             )
         )
 
@@ -1060,9 +1112,12 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData())),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
-            CheckoutPaymentModel(widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true, data = PaymentWidgetListData(
-                paymentWidgetData = listOf(PaymentWidgetData(gatewayCode = "VA"))
-            )),
+            CheckoutPaymentModel(
+                widget = CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal), enable = true,
+                data = PaymentWidgetListData(
+                    paymentWidgetData = listOf(PaymentWidgetData(gatewayCode = "VA"))
+                )
+            ),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1071,9 +1126,11 @@ class CheckoutViewModelPaymentWidgetTest: BaseCheckoutViewModelTest() {
         coEvery {
             getPaymentWidgetUseCase(any())
         } returns PaymentWidgetListData(
-            paymentWidgetData = listOf(PaymentWidgetData(
-                gatewayCode = "VA"
-            ))
+            paymentWidgetData = listOf(
+                PaymentWidgetData(
+                    gatewayCode = "VA"
+                )
+            )
         )
 
         coEvery {

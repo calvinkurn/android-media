@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.processor
 
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartPaymentRequest
@@ -468,11 +469,34 @@ class CheckoutCartProcessor @Inject constructor(
         val paymentData = payment?.data?.paymentWidgetData?.firstOrNull()
         if (paymentData != null) {
             val selectedTenure = paymentData.installmentPaymentData.selectedTenure
+            var currPaymentGatewayCode = paymentData.gatewayCode
+            var currPaymentMetadata = paymentData.metadata
+            val selectedInstallment = payment.tenorList?.firstOrNull { it.tenure == selectedTenure }
+            if (selectedInstallment != null) {
+                currPaymentGatewayCode = selectedInstallment.gatewayCode
+                try {
+                    val metadata = JsonParser().parse(currPaymentMetadata)
+                    val jsonObject = metadata.asJsonObject
+                    val expressCheckoutParams =
+                        jsonObject.getAsJsonObject(UpdateCartPaymentRequest.EXPRESS_CHECKOUT_PARAM)
+                    jsonObject.addProperty(
+                        UpdateCartPaymentRequest.GATEWAY_CODE,
+                        selectedInstallment.gatewayCode
+                    )
+                    expressCheckoutParams.addProperty(
+                        UpdateCartPaymentRequest.INSTALLMENT_TERM,
+                        selectedInstallment.tenure.toString()
+                    )
+                    currPaymentMetadata = metadata.toString()
+                } catch (e: RuntimeException) {
+                    Timber.d(e)
+                }
+            }
             return UpdateCartPaymentRequest(
-                paymentData.gatewayCode,
+                currPaymentGatewayCode,
                 selectedTenure,
                 payment.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.optionId ?: "",
-                paymentData.metadata
+                currPaymentMetadata
             )
         }
         return UpdateCartPaymentRequest()

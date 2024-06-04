@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -956,12 +957,12 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
-    internal fun calculateTotal() {
+    internal fun calculateTotal(skipPaymentMandatoryHit: Boolean = false) {
         viewModelScope.launch(dispatchers.immediate) {
             calculateTotalWithoutPayment()
             val shouldGetPayment = shouldGetPayment(listData.value)
             if (shouldGetPayment) {
-                getCheckoutPaymentData()
+                getCheckoutPaymentData(skipPaymentMandatoryHit)
             } else {
                 getCheckoutPlatformFee()
             }
@@ -1688,7 +1689,7 @@ class CheckoutViewModel @Inject constructor(
         return ArrayList(promoProcessor.bboPromoCodes)
     }
 
-    private suspend fun validatePromo(skipEE: Boolean = false) {
+    private suspend fun validatePromo(skipEE: Boolean = false, skipPaymentMandatoryHit: Boolean = false) {
         val checkoutItems = listData.value.toMutableList()
         var newItems = promoProcessor.validateUse(
             promoProcessor.generateValidateUsePromoRequest(
@@ -1707,7 +1708,7 @@ class CheckoutViewModel @Inject constructor(
         newItems = getEntryPointInfo(newItems, checkoutItems)
         newItems = checkCrossSellImpressionState(newItems)
         listData.value = newItems
-        calculateTotal()
+        calculateTotal(skipPaymentMandatoryHit)
         if (!skipEE) {
             sendEEStep3()
         }
@@ -3254,7 +3255,7 @@ class CheckoutViewModel @Inject constructor(
         return hasValidOrder && isPaymentWidgetEnable
     }
 
-    private suspend fun getCheckoutPaymentData() {
+    private suspend fun getCheckoutPaymentData(skipPaymentMandatoryHit: Boolean = false) {
         val checkoutItems = listData.value.toMutableList()
         var payment = checkoutItems.payment() ?: return
 
@@ -3351,7 +3352,7 @@ class CheckoutViewModel @Inject constructor(
         }
 
         val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
-        if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
+        if (!skipPaymentMandatoryHit && paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
             payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.tenorList == null) {
@@ -3359,7 +3360,7 @@ class CheckoutViewModel @Inject constructor(
             }
         }
 
-        if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
+        if (!skipPaymentMandatoryHit && paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
             payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.installmentData == null) {
@@ -3472,12 +3473,37 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
+            var currPaymentMetadata = currPayment.metadata
+            try {
+                val metadata = JsonParser().parse(currPaymentMetadata)
+                val jsonObject = metadata.asJsonObject
+                val expressCheckoutParams =
+                    jsonObject.getAsJsonObject(UpdateCartPaymentRequest.EXPRESS_CHECKOUT_PARAM)
+                jsonObject.addProperty(
+                    UpdateCartPaymentRequest.GATEWAY_CODE,
+                    selectedInstallment.gatewayCode
+                )
+                expressCheckoutParams.addProperty(
+                    UpdateCartPaymentRequest.INSTALLMENT_TERM,
+                    selectedInstallment.tenure.toString()
+                )
+                currPaymentMetadata = metadata.toString()
+            } catch (e: RuntimeException) {
+                Timber.d(e)
+                pageState.value = CheckoutPageState.Normal
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR
+                    )
+                )
+                return@launch
+            }
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
                 UPDATE_CART_SOURCE_PAYMENT,
                 UpdateCartPaymentRequest(
-                    gatewayCode = currPayment.gatewayCode,
-                    metadata = currPayment.metadata,
+                    gatewayCode = selectedInstallment.gatewayCode,
+                    metadata = currPaymentMetadata,
                     tenureType = selectedInstallment.tenure
                 )
             )
@@ -3501,7 +3527,8 @@ class CheckoutViewModel @Inject constructor(
                 installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
                     selectedTenure = selectedInstallment.tenure
                 ),
-                gatewayCode = selectedInstallment.gatewayCode
+                gatewayCode = selectedInstallment.gatewayCode,
+                metadata = currPaymentMetadata
             )
             paymentWidgetData[0] = newPaymentData
             checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
@@ -3512,7 +3539,7 @@ class CheckoutViewModel @Inject constructor(
                 tenorList = installmentList
             )
             listData.value = checkoutItems
-            validatePromo(skipEE = true)
+            validatePromo(skipEE = true, skipPaymentMandatoryHit = true)
             pageState.value = CheckoutPageState.Normal
         }
     }
@@ -3564,7 +3591,7 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             listData.value = checkoutItems
-            validatePromo(skipEE = true)
+            validatePromo(skipEE = true, skipPaymentMandatoryHit = true)
         }
     }
 
