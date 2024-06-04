@@ -29,17 +29,14 @@ class MePageCoachMark @Inject constructor(
         if (coachMark.isShowing) return
         coachMark.showCoachMark(ArrayList(coachMarkItems.filterNotNull()))
 
-        coachMark.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                when (coachMarkItem) {
-                    inboxCoachMark -> inboxCoachMarkToggle = true
-                    mePageCoachMark -> mePageCoachMarkToggle = true
-                }
-            }
-        })
         coachMark.onDismissListener = {
             inboxCoachMarkToggle = true
+            mePageCoachMarkToggle = true
         }
+    }
+
+    fun forceDismiss() {
+        coachMark.dismissCoachMark()
     }
 
     private fun getMePageCoachMark(mePageView: View): CoachMark2Item? {
@@ -69,10 +66,6 @@ class MePageCoachMark @Inject constructor(
         } else {
             null
         }
-    }
-
-    fun forceDismiss() {
-        coachMark.dismissCoachMark()
     }
 
     companion object {
