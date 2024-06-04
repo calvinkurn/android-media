@@ -3,13 +3,13 @@ package com.tokopedia.play.broadcaster.setup.productsummary
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.play.broadcaster.helper.containsEventAction
-import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.helper.containsEventAction
+import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.mockk
 import org.junit.Rule
@@ -36,6 +36,10 @@ class ProductSummaryAnalyticTest {
             extraCommission = false,
             pinStatus = PinProductUiModel.Empty,
             number = "",
+            shopName = "",
+            shopBadge = "",
+            rating = "",
+            countSold = ""
         )
     }
 
@@ -43,7 +47,7 @@ class ProductSummaryAnalyticTest {
         ProductTagSectionUiModel(
             name = "Section Test",
             campaignStatus = CampaignStatus.Ongoing,
-            products = mockSelectedProducts,
+            products = mockSelectedProducts
         )
     )
 
@@ -55,7 +59,7 @@ class ProductSummaryAnalyticTest {
     private fun createRobot() = ProductSummaryRobot {
         productSetupViewModel(
             productSectionList = mockProductSections,
-            repo = mockk(relaxed = true),
+            repo = mockk(relaxed = true)
         )
     }
 

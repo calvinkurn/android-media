@@ -1,11 +1,14 @@
 package com.tokopedia.home.beranda.data.mapper.factory
 
+import com.google.gson.Gson
+import com.tokopedia.home.beranda.domain.model.DynamicChannelTracker
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
 
@@ -44,6 +47,45 @@ object DynamicChannelComponentMapper {
             channelConfig = channel.mapToChannelConfig(),
             trackingAttributionModel = channel.mapToTrackingAttributionModel(verticalPosition),
             channelGrids = channel.grids.takeIf { mapGrids }?.mapToChannelGrids().orEmpty(),
+        )
+    }
+
+    fun mapHomeChannelTrackerToModel(
+        channel: DynamicHomeChannel.Channels?,
+        grid: DynamicHomeChannel.Grid
+    ): ChannelTracker {
+        val json = Gson().fromJson(grid.trackerJson, DynamicChannelTracker::class.java) ?: return ChannelTracker()
+
+        return ChannelTracker(
+            entranceForm = json.entranceForm,
+            sourceModuleType = json.sourceModuleType,
+            recomPageName = json.recomPageName,
+            layoutTrackerType = json.layoutTrackerType,
+            productId = json.productId,
+            isTopAds = json.isTopAds.toBoolean(),
+            trackId = json.trackId,
+            recSessionId = json.recSessionId,
+            recParams = json.recParams,
+            requestId = json.requestId,
+            shopId = json.shopId,
+            itemOrder = json.itemOrder,
+            layout = json.layout,
+            cardName = json.cardName,
+            campaignCode = json.campaignCode,
+            creativeName = json.creativeName,
+            creativeSlot = json.creativeSlot,
+            isCarousel = json.isCarousel.toBoolean(),
+            categoryId = json.categoryId,
+            productName = json.productName,
+            recommendationType = json.recommendationType,
+            buType = json.buType,
+            channelId = channel?.id.orEmpty(),
+            channelName = channel?.name.orEmpty(),
+            gridId = grid.id,
+            headerName = channel?.header?.name.orEmpty(),
+            bannerId = channel?.brandId.orEmpty(),
+            attribution = channel?.homeAttribution.orEmpty(),
+            persoType = channel?.persoType.orEmpty(),
         )
     }
 
@@ -172,7 +214,9 @@ object DynamicChannelComponentMapper {
                             imageUrl = badge.imageUrl
                         )
                     },
-                    position = index
+                    position = index,
+                    logExtra = it.logExtra,
+                    creativeID = it.creativeID
                 )
             }
         )
@@ -289,7 +333,9 @@ object DynamicChannelComponentMapper {
             badges = shopBadges,
             expiredTime = expiredTime,
             categoryBreadcrumbs = categoryBreadcrumbs,
-            position = index
+            position = index,
+            creativeID = creativeID,
+            logExtra = logExtra
         )
     }
 
@@ -400,7 +446,9 @@ object DynamicChannelComponentMapper {
             )
         },
         categoryBreadcrumbs = categoryBreadcrumbs,
-        position = index
+        position = index,
+        creativeID = recommendationAdsLog.creativeID,
+        logExtra = recommendationAdsLog.logExtra
     )
 
     private fun Array<com.tokopedia.home.beranda.domain.model.LabelGroup>.getLabelGroupFulfillment(): LabelGroup? {

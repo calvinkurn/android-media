@@ -529,14 +529,14 @@ class ShopDiscountManageFragment :
 
     private fun openBottomSheetBulkApply() {
         val minStartDate = adapter.getMinStartDateOfProductList()
-        val maxStartDate = adapter.getMaxStartDateOfProductList()
+        val maxEndDate = adapter.getMaxEndDateOfProductList()
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
         val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(mode)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode,
             minStartDate,
-            maxStartDate,
+            maxEndDate,
             selectedSlashPriceStatusId
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->

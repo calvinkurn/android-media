@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +38,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
-import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
@@ -50,6 +48,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATION
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -68,14 +67,17 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_C
 import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.CartRedirectionButtonsByteIOTracker
+import com.tokopedia.product.detail.common.buttons_byte_io_tracker.ICartRedirectionButtonsByteIOTracker
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton.Companion.buttonText
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.postatc.PostAtcParams
-import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -115,7 +117,9 @@ class AtcVariantBottomSheet :
     PartialAtcButtonListener,
     PartialButtonShopFollowersListener,
     AtcVariantBottomSheetListener,
-    HasComponent<AtcVariantComponent> {
+    HasComponent<AtcVariantComponent>,
+    ICartRedirectionButtonsByteIOTracker.Mediator,
+    ICartRedirectionButtonsByteIOTracker by CartRedirectionButtonsByteIOTracker() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -166,9 +170,14 @@ class AtcVariantBottomSheet :
         atcAnimator.setSourceView(view = container)
     }
 
+    private val aggregatorParams
+        get() = sharedViewModel.aggregatorParams.value
+            ?: ProductVariantBottomSheetParams()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+        registerCartRedirectionButtonsByteIOTracker(mediator = this)
     }
 
     override fun onCreateView(
@@ -230,8 +239,7 @@ class AtcVariantBottomSheet :
             })
         }
 
-        viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
-        viewContent?.let {
+        viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null).also {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
             txtStock = it.findViewById(R.id.txt_variant_empty_stock)
         }
@@ -323,10 +331,23 @@ class AtcVariantBottomSheet :
         shouldSetActivityResult = data.saveAfterClose
     }
 
-    private fun dismissAfterAtc() {
-        val shouldDismiss = sharedViewModel.aggregatorParams.value?.dismissAfterTransaction ?: false
+    private fun dismissAfterTransaction() {
+        val shouldDismiss = aggregatorParams.dismissAfterTransaction
         if (shouldDismiss) {
             dismiss()
+        }
+    }
+
+    private fun dismissWhenTransactionError(
+        onDismissed: () -> Unit = {},
+        onNothing: () -> Unit = {}
+    ) {
+        val shouldDismiss = aggregatorParams.dismissWhenTransactionError
+        if (shouldDismiss) {
+            onDismissed()
+            dismiss()
+        } else {
+            onNothing()
         }
     }
 
@@ -438,12 +459,52 @@ class AtcVariantBottomSheet :
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             baseAtcBtn?.hideLoading()
 
-            when (it) {
-                is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
-                is Fail -> {
-                    showToasterError(getErrorMessage(it.throwable))
-                    logException(it.throwable)
-                }
+            when (aggregatorParams.pageSource) {
+                VariantPageSource.CART_CHANGE_VARIANT.source -> handleObserveUpdateCartByClient(it)
+                else -> handleObserveUpdateCartOnGeneral(result = it)
+            }
+        }
+    }
+
+    private fun handleObserveUpdateCartOnGeneral(result: Result<Data>) {
+        when (result) {
+            is Success -> {
+                showToasterSuccess(result.data.message, getString(R.string.atc_variant_oke_label))
+            }
+
+            is Fail -> {
+                showToasterError(getErrorMessage(result.throwable))
+                logException(result.throwable)
+            }
+        }
+    }
+
+    private fun handleObserveUpdateCartByClient(result: Result<Data>) {
+        when (result) {
+            is Success -> {
+                val data = result.data
+                viewModel.updateActivityResult(
+                    requestCode = ProductDetailCommonConstant.RC_VBS_UPDATE_VARIANT_SUCCESS,
+                    atcSuccessMessage = data.message,
+                    anchorCartId = data.anchorCartId.toString()
+                )
+                dismissAfterTransaction()
+            }
+
+            is Fail -> {
+                logException(result.throwable)
+
+                dismissWhenTransactionError(
+                    onDismissed = {
+                        viewModel.getActivityResultData().apply {
+                            requestCode = ProductDetailCommonConstant.RC_VBS_TRANSACTION_ERROR
+                            atcMessage = getErrorMessage(result.throwable)
+                        }
+                    },
+                    onNothing = {
+                        showToasterError(getErrorMessage(result.throwable))
+                    }
+                )
             }
         }
     }
@@ -515,17 +576,17 @@ class AtcVariantBottomSheet :
                 baseAtcBtn?.hideLoading()
 
                 val model = getConfirmCartAnalyticsModel(it)
-                if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-                    || buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
-    //                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON // disabled on this phase
-                    ) {
+                if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON ||
+                    buttonActionType == ProductDetailCommonConstant.BUY_BUTTON
+                ) {
                     AppLogPdp.sendConfirmCartResult(model)
                 }
 
                 when (it) {
                     is Success -> {
                         onSuccessTransaction(it.data)
-                        dismissAfterAtc()
+                        trackOnButtonClickCompleted(it.data)
+                        dismissAfterTransaction()
                     }
 
                     is Fail -> {
@@ -583,9 +644,7 @@ class AtcVariantBottomSheet :
 
         trackSuccessAtc(cartId)
 
-        if (sharedViewModel.aggregatorParams.value?.showQtyEditor == true ||
-            sharedViewModel.aggregatorParams.value?.isTokoNow == true
-        ) {
+        if (aggregatorParams.showQtyEditor || aggregatorParams.isTokoNow) {
             onSuccessAtcTokoNow(result.errorMessage.firstOrNull(), cartId)
             return
         }
@@ -746,7 +805,10 @@ class AtcVariantBottomSheet :
                 successMessage
             }
 
-            showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+            showToasterSuccess(
+                message,
+                ctaText = getString(productdetailcommonR.string.cta_text_atc_success)
+            ) {
                 val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
                 ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(
                     message,
@@ -766,7 +828,7 @@ class AtcVariantBottomSheet :
     }
 
     private fun putAppLogEnterMethod() {
-        if (AppLogAnalytics.getDataLast(AppLogParam.PAGE_NAME) == PageName.PDP) {
+        if (AppLogAnalytics.getDataBeforeStep(AppLogParam.PAGE_NAME) == PageName.PDP) {
             AppLogAnalytics.putPreviousPageData(
                 AppLogParam.ENTER_METHOD,
                 EnterMethod.CLICK_ATC_TOASTER_PDP.str
@@ -877,33 +939,31 @@ class AtcVariantBottomSheet :
         goToImagePreview(arrayListOf(url))
     }
 
-    override fun addToCartClick(buttonText: String) {
-        this.buttonText = buttonText
-        doAtc(ProductDetailCommonConstant.ATC_BUTTON)
-    }
-
-    override fun buyNowClick(buttonText: String) {
-        this.buttonText = buttonText
-        doAtc(ProductDetailCommonConstant.BUY_BUTTON)
+    override fun onButtonFallbackClick(actionButton: AvailableButton) {
+        this.buttonText = actionButton.text
+        doAtc(button = actionButton)
     }
 
     override fun onChatButtonClick() {
         goToTopChat()
     }
 
-    override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
+    override fun onButtonShowed(buttonCartTypes: List<String>) {
+        trackOnButtonsShowed(buttonCartTypes)
+    }
+
+    override fun buttonCartTypeClick(availableButton: AvailableButton) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         val productIdPreviousPage = sharedViewModel.aggregatorParams.value?.productId ?: ""
         val parentId = viewModel.getVariantAggregatorData()?.variantData?.parentId ?: ""
 
-        when (cartType) {
+        when (availableButton.cartType) {
             ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
             ProductDetailCommonConstant.KEY_DEFAULT_CHOOSE_VARIANT -> {
                 ProductTrackingCommon.eventClickPilihVariant(
-                    adapter.getHeaderDataModel()?.productId
-                        ?: "",
+                    adapter.getHeaderDataModel()?.productId.orEmpty(),
                     pageSource,
-                    cartType,
+                    availableButton.cartType,
                     parentId,
                     productIdPreviousPage
                 )
@@ -912,10 +972,9 @@ class AtcVariantBottomSheet :
 
             ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> {
                 ProductTrackingCommon.eventClickPilihVariant(
-                    adapter.getHeaderDataModel()?.productId
-                        ?: "",
+                    adapter.getHeaderDataModel()?.productId.orEmpty(),
                     pageSource,
-                    cartType,
+                    availableButton.cartType,
                     parentId,
                     productIdPreviousPage
                 )
@@ -923,10 +982,14 @@ class AtcVariantBottomSheet :
                 onSaveButtonClicked()
             }
 
+            ProductDetailCommonConstant.KEY_CART_TYPE_OF_VARIANT_EDITOR -> {
+                baseAtcBtn?.showLoading()
+                viewModel.updateCart(params = aggregatorParams)
+            }
+
             else -> {
-                this.buttonText = buttonText
-                val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-                doAtc(atcKey)
+                this.buttonText = availableButton.buttonText
+                doAtc(availableButton)
             }
         }
     }
@@ -994,8 +1057,8 @@ class AtcVariantBottomSheet :
         })
     }
 
-    private fun doAtc(buttonAction: Int) {
-        buttonActionType = buttonAction
+    private fun doAtc(button: AvailableButton) {
+        buttonActionType = button.atcKey
         context?.let {
             val isPartialySelected =
                 AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())
@@ -1026,10 +1089,12 @@ class AtcVariantBottomSheet :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            showWaitingIndicator(action = buttonAction)
+            showWaitingIndicator(button = button)
+
+            trackOnButtonClick(button.atcKey)
 
             viewModel.hitAtc(
-                buttonAction,
+                button.atcKey,
                 sharedData?.shopId.orEmpty(),
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
                     ?: "",
@@ -1043,25 +1108,14 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun showWaitingIndicator(action: Int) {
-        val shouldShowAnimation = shouldLoadingWithAnimation(action = action)
+    private fun showWaitingIndicator(button: AvailableButton) {
         baseAtcBtn?.showLoading()
-        if (shouldShowAnimation) {
+
+        if (button.showAnimation) {
             atcAnimator.show(onAnimateEnded = { viewModel.atcAnimationEnd() })
         } else {
             viewModel.atcAnimationEnd()
         }
-    }
-
-    private fun shouldLoadingWithAnimation(action: Int): Boolean {
-        val aggregatorParams = sharedViewModel.aggregatorParams.value
-        val cartPositionIsNull = aggregatorParams?.cartPosition == null
-        val shouldShowQtyEditor = aggregatorParams?.showQtyEditor == true
-
-        if (cartPositionIsNull || shouldShowQtyEditor) return false
-
-        return action == ProductDetailCommonConstant.ATC_BUTTON &&
-            ProductRollenceHelper.rollenceAtcAnimationActive()
     }
 
     private fun doAddWishlistV2(productId: String) {
@@ -1295,6 +1349,10 @@ class AtcVariantBottomSheet :
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
         }
     }
+
+    override fun getCartRedirectionButtonsByteIOTrackerViewModel() = viewModel
+
+    override fun getCartRedirectionButtonsByteIOTrackerActionType() = buttonActionType
 }
 
 interface AtcVariantBottomSheetListener {

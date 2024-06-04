@@ -15,7 +15,7 @@ class DevOptLoginSession(private val context: Context) {
         private const val KEY_PASSWORD = "password_hash"
         private const val KEY_LAST_UPDATED = "last_updated"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
-
+        private const val KEY_IS_LOGGED_IN_BY_SSO = "is_logged_in_by_ssp"
         private const val SESSION_EXPIRED_DAYS = 7 // 1 week
         private const val DEV_OPT_IV = "developeropt1234"
     }
@@ -25,7 +25,7 @@ class DevOptLoginSession(private val context: Context) {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
 
     fun isLoggedIn(): Boolean {
-        return isPasswordValid() && !isSessionExpired()
+        return (isPasswordValid() && !isSessionExpired()) || (alreadyLoginSSO() && !isSessionExpired())
     }
 
     fun setLoginSession(password: String) {
@@ -51,6 +51,14 @@ class DevOptLoginSession(private val context: Context) {
         val currentPassword = getPassword()
         val serverPassword = getServerPassword()
         return currentPassword == serverPassword
+    }
+
+    private fun alreadyLoginSSO(): Boolean{
+        return  sharedPref.getBoolean(KEY_IS_LOGGED_IN_BY_SSO,false)
+    }
+
+    fun setLoginSSO(){
+        sharedPrefEditor.putBoolean(KEY_IS_LOGGED_IN_BY_SSO, true).apply()
     }
 
     private fun isSessionExpired(): Boolean {

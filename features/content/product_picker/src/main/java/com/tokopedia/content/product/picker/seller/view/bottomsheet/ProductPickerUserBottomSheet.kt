@@ -17,13 +17,13 @@ import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProduc
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
 import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
@@ -63,7 +63,11 @@ class ProductPickerUserBottomSheet @Inject constructor(
                             commission = 0L,
                             extraCommission = false,
                             pinStatus = PinProductUiModel.Empty,
-                            number = ""
+                            number = "",
+                            shopBadge = "",
+                            shopName = "",
+                            rating = "",
+                            countSold = "",
                         )
                     }
                 )

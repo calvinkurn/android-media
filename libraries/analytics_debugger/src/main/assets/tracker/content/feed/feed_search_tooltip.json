@@ -1,0 +1,28 @@
+{
+  "readme": "Feed Page - Search Tooltip",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - tooltip local search",
+      "eventCategory": "unified feed",
+      "eventLabel": "(user_affinity|UGC|story|trending|promo)",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "50717"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - tooltip local search",
+      "eventCategory": "unified feed",
+      "eventLabel": "(user_affinity|UGC|story|trending|promo)",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "50718"
+    }
+  ]
+}

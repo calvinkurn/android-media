@@ -9,6 +9,7 @@
     <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
     <string name="path_new_home_account">/new-home-account</string>
     <string name="path_explicit_profile">/explicit-profile</string>
+    <string name="path_explicit_personalize">/explicit-personalize</string>
     <string name="path_dsar">/dsar</string>
     <string name="path_dsar_add_email">/dsar/add-email</string>
 
@@ -82,6 +83,8 @@
     //Login
     <string name="applink_login">/login</string>
     <string name="applink_login_seamless">/login-seamless</string>
+    <string name="applink_login_tiktok">/login-tiktok</string>
+    <string name="applink_login_sdk">/login-sdk</string>
 
     <string name="applink_term_privacy">/term-privacy/.*\</string>
 

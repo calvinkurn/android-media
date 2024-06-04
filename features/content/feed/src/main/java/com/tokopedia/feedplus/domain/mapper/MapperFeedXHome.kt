@@ -52,6 +52,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.feed.common.R as feedcommonR
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
@@ -454,7 +455,7 @@ class MapperFeedXHome @Inject constructor(
                 add(
                     ContentMenuItem(
                         iconUnify = IconUnify.WARNING,
-                        name = contentcommonR.string.content_common_menu_report,
+                        name = feedcommonR.string.content_common_menu_report,
                         type = ContentMenuIdentifier.Report,
                         contentData = contentData
                     )
@@ -464,7 +465,7 @@ class MapperFeedXHome @Inject constructor(
                 add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
-                        name = contentcommonR.string.content_common_menu_delete,
+                        name = feedcommonR.string.content_common_menu_delete,
                         type = ContentMenuIdentifier.Delete,
                         contentData = contentData
                     )

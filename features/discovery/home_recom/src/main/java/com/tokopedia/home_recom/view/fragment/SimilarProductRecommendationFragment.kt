@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -91,7 +90,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     private var internalRef: String = ""
     private var hasNextPage: Boolean = true
     private var navToolbar: NavToolbar? = null
-    private var hasTrackEnterPage = false
     private var hasApplogScrollListener = false
 
     companion object{
@@ -251,7 +249,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                         it.data?.let { pair ->
                             val recommendationItems = pair.first
                             if (recommendationItems.isNotEmpty()) {
-                                trackEnterPage()
                                 recommendationItems.getOrNull(0)?.let {
                                     navToolbar?.setToolbarTitle(
                                         it.productItem.header.ifEmpty { getString(R.string.recom_similar_recommendation) })
@@ -447,12 +444,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         adapter.clearAllElements()
         recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), source, productId)
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
     }
 
     /**

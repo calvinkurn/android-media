@@ -41,6 +41,10 @@ class FeedBrowseItemDecoration(
         val layoutPosition = parent.getChildLayoutPosition(view)
         if (layoutPosition == RecyclerView.NO_POSITION || layoutPosition >= state.itemCount) return
 
+        if (layoutPosition == 0) {
+            view.setGapOnFirstItem()
+        }
+
         val adapter = parent.adapter as? ListAdapter<*, *> ?: return
         try {
             when (adapter.getItemViewType(layoutPosition)) {
@@ -155,5 +159,9 @@ class FeedBrowseItemDecoration(
         if (nextSpanRowPosition < state.itemCount) return
 
         bottom = offset16
+    }
+
+    private fun View.setGapOnFirstItem() {
+        setPadding(paddingLeft, offset16, paddingRight, paddingBottom)
     }
 }

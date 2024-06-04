@@ -52,7 +52,6 @@ open class BaseCartViewModelTest {
     var undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     var updateCartUseCase: UpdateCartUseCase = mockk()
     var updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase = mockk()
-    var compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     var addToWishListV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
     var deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
     var updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
@@ -68,7 +67,8 @@ open class BaseCartViewModelTest {
     var followShopUseCase: FollowShopUseCase = mockk()
     var cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase = mockk()
     var coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
-    var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase = mockk(relaxed = true)
+    var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase =
+        mockk(relaxed = true)
     var getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper =
         PromoUsageGetPromoListRecommendationMapper()
     var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
@@ -88,15 +88,27 @@ open class BaseCartViewModelTest {
             chosenAddressRequestHelper
         )
         cartViewModel = CartViewModel(
-            getCartRevampV4UseCase, deleteCartUseCase,
-            undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
-            addToWishListV2UseCase, deleteWishlistV2UseCase,
-            updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
-            getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
-            seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
-            setCartlistCheckboxStateUseCase, followShopUseCase,
-            cartShopGroupTickerAggregatorUseCase, cartPromoEntryPointProcessor,
-            bmGmGetGroupProductTickerUseCase, TestSchedulers,
+            getCartRevampV4UseCase,
+            deleteCartUseCase,
+            undoDeleteCartUseCase,
+            updateCartUseCase,
+            addToWishListV2UseCase,
+            deleteWishlistV2UseCase,
+            updateAndReloadCartUseCase,
+            userSessionInterface,
+            clearCacheAutoApplyStackUseCase,
+            getWishlistV2UseCase,
+            getRecommendationUseCase,
+            addToCartUseCase,
+            addToCartExternalUseCase,
+            seamlessLoginUsecase,
+            updateCartCounterUseCase,
+            updateCartAndGetLastApplyUseCase,
+            setCartlistCheckboxStateUseCase,
+            followShopUseCase,
+            cartShopGroupTickerAggregatorUseCase,
+            cartPromoEntryPointProcessor,
+            bmGmGetGroupProductTickerUseCase,
             coroutineTestDispatchers
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs

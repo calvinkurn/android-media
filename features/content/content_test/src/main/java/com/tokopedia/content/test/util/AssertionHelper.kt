@@ -7,13 +7,13 @@ import kotlin.reflect.KProperty
 /**
  * Created By : Jonathan Darwin on November 20, 2023
  */
-fun <T : Any> T.assertEqualTo(expected: T) {
+fun <T : Any?> T.assertEqualTo(expected: T?) {
     Assertions
         .assertThat(this)
         .isEqualTo(expected)
 }
 
-fun <T : Any> T.assertNotEqualTo(expected: T) {
+fun <T : Any?> T.assertNotEqualTo(expected: T?) {
     Assertions
         .assertThat(this)
         .isNotEqualTo(expected)
@@ -25,7 +25,7 @@ fun <T : Any> T.isEqualToComparingFieldByField(expected: T) {
         .isEqualToComparingFieldByField(expected)
 }
 
-inline fun <reified T : Any> List<T>.isContentEqualTo(expected: List<T>) {
+inline fun <reified T : Any?> List<T>.isContentEqualTo(expected: List<T?>) {
     ListAssert(this)
         .containsExactly(*expected.toTypedArray())
 }
@@ -37,13 +37,13 @@ fun <T : Any> List<T>.isEqualToIgnoringFields(expected: List<T>, vararg ignoredF
         .isEqualTo(expected)
 }
 
-fun <T: Any> List<T>.assertNotEmpty() {
+fun <T : Any> List<T>.assertNotEmpty() {
     Assertions
         .assertThat(this)
         .isNotEmpty
 }
 
-fun <T: Any> List<T>.assertEmpty() {
+fun <T : Any> List<T>.assertEmpty() {
     Assertions
         .assertThat(this)
         .isEmpty()
@@ -67,25 +67,25 @@ fun Boolean.assertFalse() {
         .isFalse
 }
 
-fun <T: Any> List<T>.assertCount(count: Int) {
+fun <T : Any> List<T>.assertCount(count: Int) {
     Assertions
         .assertThat(size)
         .isEqualTo(count)
 }
 
-fun <K: Any, V: Any> Map<K, V>.assertNotEmpty() {
+fun <K : Any, V : Any> Map<K, V>.assertNotEmpty() {
     Assertions
         .assertThat(this)
         .isNotEmpty
 }
 
-fun <K: Any, V: Any> Map<K, V>.assertEmpty() {
+fun <K : Any, V : Any> Map<K, V>.assertEmpty() {
     Assertions
         .assertThat(this)
         .isEmpty()
 }
 
-fun <K: Any, V: Any> Map<K, V>.assertCount(count: Int) {
+fun <K : Any, V : Any> Map<K, V>.assertCount(count: Int) {
     Assertions
         .assertThat(size)
         .isEqualTo(count)

@@ -10,10 +10,10 @@ import javax.inject.Inject
 
 class EmptyStateViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
 ) :
-    DiscoveryBaseViewModel() {
+    DiscoveryBaseViewModel(components) {
     @JvmField
     @Inject
     var emptyStateRepository: EmptyStateRepository? = null

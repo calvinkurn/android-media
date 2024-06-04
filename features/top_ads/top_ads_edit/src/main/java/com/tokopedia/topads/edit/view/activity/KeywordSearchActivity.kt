@@ -51,11 +51,13 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 private const val CLICK_MANUAL_SEARCH = "click - ceklist rekomendasi kata kunci manual search"
 private const val EVENT_CLICK_MANUAL_SEARCH = "kata kunci terpilih yang di ceklist"
 private const val CLICK_SUBMIT_BUTT = "'click - pilih kata kunci"
 private const val EVENT_CLICK_SUBMIT_BUTT = "kata kunci terpilih yang di ceklist"
+private const val ALLOWED_CHARS_REGEX = "[a-zA-Z0-9();+/\"'-.,&*%: ]"
 
 class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> {
 
@@ -194,24 +196,38 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     private fun fetchData() {
         manualAd?.visibility = View.GONE
         if (search.searchBarTextField.text.toString().isNotEmpty()) {
-            adapter.items.clear()
-            txtError?.text =
-                validateKeywordCountAndChars(this, search.searchBarTextField.text.toString().trim())
-            if (txtError?.text?.isNotEmpty() == true) {
-                setEmpty(true)
-                txtError?.visibility = View.VISIBLE
-                onSelectedItem()
-            } else {
-                txtError?.visibility = View.GONE
-                if (!intent?.getStringExtra(PRODUCT_IDS_SELECTED).isNullOrEmpty()) {
-                    viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
-                            ?: "", ::onSuccessSearch,resources)
+            if(isValidString(search.searchBarTextField.text.toString())) {
+                adapter.items.clear()
+                txtError?.text =
+                    validateKeywordCountAndChars(
+                        this,
+                        search.searchBarTextField.text.toString().trim()
+                    )
+                if (txtError?.text?.isNotEmpty() == true) {
+                    setEmpty(adapter.items.isEmpty())
+                    txtError?.visibility = View.VISIBLE
+                    onSelectedItem()
                 } else {
-                    setEmpty(true)
-                    if (manualKeywords.isNotEmpty())
-                        adapter.items.addAll(manualKeywords)
-                    checkIfNeedsManualAddition(null)
+                    txtError?.visibility = View.GONE
+                    if (!intent?.getStringExtra(PRODUCT_IDS_SELECTED).isNullOrEmpty()) {
+                        viewModel.searchKeyword(
+                            search.searchBarTextField.text.toString(),
+                            intent?.getStringExtra(PRODUCT_IDS_SELECTED)
+                                ?: "",
+                            ::onSuccessSearch,
+                            resources
+                        )
+                    } else {
+                        setEmpty(adapter.items.isEmpty())
+                        if (manualKeywords.isNotEmpty())
+                            adapter.items.addAll(manualKeywords)
+                        checkIfNeedsManualAddition(null)
+                    }
                 }
+            } else {
+                txtError?.visibility = View.VISIBLE
+                txtError?.text = getString(topadscommonR.string.error_keyword)
+                setEmpty(adapter.items.isEmpty())
             }
         }
     }
@@ -274,23 +290,31 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     }
 
     private fun addManualKeyword() {
-        if (adapter.getSelectedItem()
-                .find { it.keyword == search.searchBarTextField.text.toString() } != null
-        ) {
-            makeToast()
+        if (isValidString(search.searchBarTextField.text.toString())) {
+            if (adapter.getSelectedItem()
+                    .find { it.keyword == search.searchBarTextField.text.toString() } != null
+            ) {
+                makeToast()
+            } else {
+                headlineList?.visibility = View.VISIBLE
+                manualAd?.visibility = View.GONE
+                dividerManual?.visibility = View.GONE
+                val item = SearchData()
+                item.keyword = search.searchBarTextField.text.toString()
+                item.onChecked = true
+                item.totalSearch = -1
+                manualKeywords.add(item)
+                adapter.items.add(0, item)
+                adapter.notifyItemInserted(0)
+                onSelectedItem()
+            }
         } else {
-            headlineList?.visibility = View.VISIBLE
-            manualAd?.visibility = View.GONE
-            dividerManual?.visibility = View.GONE
-            val item = SearchData()
-            item.keyword = search.searchBarTextField.text.toString()
-            item.onChecked = true
-            item.totalSearch = -1
-            manualKeywords.add(item)
-            adapter.items.add(0, item)
-            adapter.notifyItemInserted(0)
-            onSelectedItem()
+            txtError?.text = getString(topadscommonR.string.error_keyword)
         }
+    }
+    private fun isValidString(input: String): Boolean {
+        val regex = Regex(ALLOWED_CHARS_REGEX)
+        return input.all { it.toString().matches(regex) }
     }
 
     private fun makeToast() {

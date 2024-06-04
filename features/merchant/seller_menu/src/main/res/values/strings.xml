@@ -39,7 +39,7 @@
     <string name="transaction_on_date">Transaksi sejak 14 Juni 2021</string>
     <string name="transaction_passed">Kamu telah melewati <![CDATA[<b>100</b>]]> transaksi</string>
 
-    <string name="power_merchant_pro_status">Power Merchant PRO:&#160;</string>
+    <string name="power_merchant_pro_status">Power Merchant PRO</string>
 
     <string name="total_transaction">%s/100</string>
 

@@ -240,6 +240,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   cart_type
                   onboarding_message
                   show_recommendation
+                  showAnimation
                 }
                 unavailable_buttons
                 hide_floating_button
@@ -560,6 +561,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   t
                   b
                 }
+                imageSize {
+                  w
+                  h
+                }
             }
             bmgm {
               separator
@@ -593,6 +598,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 padding {
                   t
                   b
+                }
+                imageSize {
+                  w
+                  h
                 }
               }
             }

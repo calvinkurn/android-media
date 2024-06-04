@@ -34,7 +34,7 @@ class BottomSheetWishlistCollectionKebabMenuItemViewHolder(
             }
             ACTION_KEBAB_SHARE_COLLECTION -> {
                 binding.run {
-                    iconKebabMenu.setImage(IconUnify.SHARE_MOBILE)
+                    iconKebabMenu.setImage(IconUnify.SOCIAL_SHARE)
                     listener?.onShareItemShown(iconKebabMenu)
                     root.setOnClickListener {
                         listener?.onShareCollection(_collectionId, _collectionName, actionItem.text, _collectionIndicatorTitle)

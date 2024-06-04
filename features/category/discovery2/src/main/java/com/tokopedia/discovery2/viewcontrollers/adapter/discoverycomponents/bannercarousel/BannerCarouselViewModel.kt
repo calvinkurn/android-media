@@ -20,7 +20,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class BannerCarouselViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class BannerCarouselViewModel(val application: Application, component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(component), CoroutineScope {
     private val bannerCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val title: MutableLiveData<String> = MutableLiveData()
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()

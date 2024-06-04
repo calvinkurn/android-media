@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.bmsm_widget.data.mapper.GetOfferProductsBenefitListMapper
 import com.tokopedia.bmsm_widget.data.request.GetOfferProductsBenefitListRequest
 import com.tokopedia.bmsm_widget.data.response.GetOfferProductsBenefitListResponse
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGift
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
@@ -88,7 +89,8 @@ class GetOfferProductsBenefitListUseCase @Inject constructor(
         data class Filter(
             val offerId: Long,
             val tierProduct: List<TierGifts> = emptyList(),
-            val warehouseId: Long = 0
+            val warehouseId: Long = 0,
+            val mainProducts: List<MainProduct> = emptyList()
         )
     }
 
@@ -119,6 +121,12 @@ class GetOfferProductsBenefitListUseCase @Inject constructor(
                             )
                         },
                         tierId = tierProduct.tierId
+                    )
+                },
+                mainProducts = filter.mainProducts.map { mainProduct ->
+                    GetOfferProductsBenefitListRequest.Filter.MainProduct(
+                        productId = mainProduct.productId,
+                        quantity = mainProduct.quantity
                     )
                 },
                 warehouseId = filter.warehouseId

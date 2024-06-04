@@ -354,7 +354,7 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_ENABLE_DYNAMIC_SHOP_ADS_POSITION = "android_enable_dynamic_shop_ads_position";
     public static final String ANDROID_SEARCH_ENABLE_FIX_BYTEIO_CPM = "android_search_enable_fix_byteio_cpm";
-  
+
     public static final String ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD = "android_main_app_enable_copy_crash_stack_trace_to_clipboard";
     public static final String ANDROID_PDP_ENABLE_SDUI_TRACKING_QUEUE = "android_enable_sdui_tracking_queue";
 
@@ -362,4 +362,5 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_TOP_ADS_SDK_V2 = "android_top_ads_sdk_v2";
 
+    public static final String ANDROID_MAINAPP_PROFILE_FOLLOW_LIST_COMPOSE_ENABLE = "android_main_app_enable_compose_profile_follow_list";
 }

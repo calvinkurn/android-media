@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.bmsm_widget.R
 import com.tokopedia.bmsm_widget.databinding.BottomsheetGiftListBinding
 import com.tokopedia.bmsm_widget.di.component.DaggerBmsmWidgetComponent
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGift
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
@@ -45,6 +46,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_PAGE_SOURCE = "page_source"
         private const val BUNDLE_KEY_TIER_GIFTS = "tier_gifts"
         private const val BUNDLE_KEY_SELECTED_TIER_ID = "selected_tier_id"
+        private const val BUNDLE_KEY_MAIN_PRODUCTS = "main_products"
         private const val TWO_COLUMN_GRID = 2
         private const val MARGIN = 16
 
@@ -60,6 +62,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
             shopId: String,
             warehouseId: Long,
             tierGifts: List<TierGifts>,
+            mainProducts: List<MainProduct>,
             pageSource: PageSource,
             autoSelectTierChipByTierId: Long = BundleConstant.ID_NO_SELECTED_TIER
         ): GiftListBottomSheet {
@@ -69,6 +72,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putLong(BUNDLE_KEY_WAREHOUSE_ID, warehouseId)
                     putParcelableArrayList(BUNDLE_KEY_TIER_GIFTS, ArrayList(tierGifts))
+                    putParcelableArrayList(BUNDLE_KEY_MAIN_PRODUCTS, ArrayList(mainProducts))
                     putParcelable(BUNDLE_KEY_PAGE_SOURCE, pageSource)
                     putLong(BUNDLE_KEY_SELECTED_TIER_ID, autoSelectTierChipByTierId)
                 }
@@ -96,6 +100,7 @@ class GiftListBottomSheet : BottomSheetUnify() {
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val warehouseId by lazy { arguments?.getLong(BUNDLE_KEY_WAREHOUSE_ID).orZero() }
     private val tierGifts by lazy { arguments?.getParcelableArrayList<TierGifts>(BUNDLE_KEY_TIER_GIFTS) ?: emptyList() }
+    private val mainProducts by lazy { arguments?.getParcelableArrayList<MainProduct>(BUNDLE_KEY_MAIN_PRODUCTS) ?: emptyList() }
     private val source by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_SOURCE) as? PageSource ?: PageSource.OFFER_LANDING_PAGE }
     private val selectedTierId by lazy { arguments?.getLong(BUNDLE_KEY_SELECTED_TIER_ID) ?: BundleConstant.ID_NO_SELECTED_TIER }
 
@@ -117,7 +122,8 @@ class GiftListBottomSheet : BottomSheetUnify() {
                 source = source,
                 selectedTierId = selectedTierId,
                 userCache = getUserCache(),
-                shopId = shopId
+                shopId = shopId,
+                mainProducts = mainProducts
             )
         )
     }

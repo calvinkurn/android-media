@@ -19,9 +19,9 @@ import kotlin.coroutines.CoroutineContext
 
 class SectionViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()

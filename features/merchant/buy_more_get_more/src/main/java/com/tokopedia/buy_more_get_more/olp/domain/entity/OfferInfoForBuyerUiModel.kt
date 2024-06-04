@@ -75,6 +75,7 @@ data class OfferInfoForBuyerUiModel(
         val shopData: ShopData = ShopData(),
         val productIds: List<Long> = emptyList(),
         val warehouseIds: List<Long> = emptyList(),
+        val cartId: String = "",
         val tnc: List<String> = emptyList(),
         val localCacheModel: LocalCacheModel? = null,
         val offeringJsonData: String = "",
@@ -126,5 +127,7 @@ data class OfferInfoForBuyerUiModel(
             val selectedTier: Offering.Tier,
             val offerInfo: OfferInfoForBuyerUiModel
         ) : OlpEvent()
+
+        data class SetCartId(val cartId: String) : OlpEvent()
     }
 }

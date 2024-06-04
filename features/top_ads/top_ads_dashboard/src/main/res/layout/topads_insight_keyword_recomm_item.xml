@@ -73,7 +73,8 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
-        app:srcCompat="@drawable/ic_search_icon" />
+        app:tint="@color/Unify_NN500"
+        app:srcCompat="@drawable/iconunify_search" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtNoOfSearches"
@@ -119,7 +120,8 @@
         app:layout_constraintEnd_toEndOf="@id/txtSubTitle2"
         app:layout_constraintStart_toStartOf="@id/txtSubTitle1"
         app:layout_constraintTop_toTopOf="@id/txtSubTitle1"
-        app:srcCompat="@drawable/ic_arrow_right_grey" />
+        app:tint="@color/Unify_NN400"
+        app:srcCompat="@drawable/iconunify_chevron_right" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/subtitle2_left_guideline"

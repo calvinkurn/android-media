@@ -20,25 +20,4 @@ data class Balance(
     @Expose
     @SerializedName("wallet_code")
     val walletCode: String = "",
-    @Expose
-    @SerializedName("code")
-    val code: String = "",
-    @Expose
-    @SerializedName("icon_url")
-    val iconUrl: String = "",
-    @Expose
-    @SerializedName("is_linked")
-    val isLinked: Boolean = false,
-    @Expose
-    @SerializedName("masked_phone")
-    val maskedPhone: String = "",
-    @Expose
-    @SerializedName("redirect_url")
-    val redirectUrl: String = "",
-    @Expose
-    @SerializedName("type")
-    val type: String = "",
-    @Expose
-    @SerializedName("wallet_name")
-    val walletName: String = ""
 )

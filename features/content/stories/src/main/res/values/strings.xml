@@ -21,4 +21,6 @@
     <string name="story_creation_timestamp">• %s</string>
     <string name="story_manual_duration_coachmark_title">Story yang kamu upload hanya akan tampil 24 jam, ya.</string>
     <string name="story_manual_duration_coachmark_subtitle">Sedangkan Story yang otomatis di-posting tetap akan tampil hingga 7 hari.</string>
+    <string name="stories_report">Laporkan</string>
+    <string name="stories_performance">Lihat Performa</string>
 </resources>

@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
@@ -21,7 +24,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew.Com
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
+class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener, IAdsLog {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     private var mUserSession: UserSessionInterface? = null
 
@@ -77,6 +80,10 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
             fragment?.onActivityResult(requestCode,requestCode,data)
         }
         else finish()
+    }
+
+    override fun getAdsPageName(): String {
+        return PageName.REWARD
     }
 
     companion object {

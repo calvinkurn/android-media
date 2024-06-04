@@ -9,12 +9,15 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -50,6 +53,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -86,7 +90,7 @@ class StatisticActivity :
     lateinit var coachMarkHelper: StatisticCoachMarkHelper
 
     private val viewModel: StatisticActivityViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(StatisticActivityViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[StatisticActivityViewModel::class.java]
     }
     private var pages: List<StatisticPageUiModel> = emptyList()
     private var viewPagerAdapter: StatisticViewPagerAdapter? = null
@@ -94,6 +98,8 @@ class StatisticActivity :
         StatisticPerformanceMonitoring()
     }
     var pltListener: StatisticIdlingResourceListener? = null
+    var isPaywallAccessGranted: Boolean = false
+        private set
 
     private val coachMark by lazy { CoachMark2(this) }
 
@@ -106,6 +112,7 @@ class StatisticActivity :
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         initInjector()
+        checkLoggedInStatus()
 
         if (savedInstanceState == null) {
             checkWhiteListStatus()
@@ -122,7 +129,7 @@ class StatisticActivity :
 
         observeWhiteListStatus()
         observeUserRole()
-        fetchPMStatus()
+        observePaywallAccess()
     }
 
     override fun getComponent(): StatisticComponent {
@@ -275,8 +282,13 @@ class StatisticActivity :
         viewModel.getUserRole()
     }
 
-    private fun fetchPMStatus() {
-        viewModel.fetchPMStatus()
+    private fun observePaywallAccess() {
+        lifecycleScope.launch {
+            viewModel.paywallAccess.collect {
+                this@StatisticActivity.isPaywallAccessGranted = it
+            }
+        }
+        viewModel.fetchPaywallAccessState()
     }
 
     private fun setupTabs() = binding?.run {
@@ -429,5 +441,12 @@ class StatisticActivity :
             }
         }
         toastCountDown.start()
+    }
+
+    private fun checkLoggedInStatus() {
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(this, ApplinkConst.LOGIN)
+            finish()
+        }
     }
 }

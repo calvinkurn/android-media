@@ -127,11 +127,14 @@ class MiniCartEditorViewModel @Inject constructor(
                 showPartialLoadingState()
                 val params = listOf(
                     UpdateCartRequest(
-                        quantity = newQty, cartId = product.cartId, productId = product.productId
+                        quantity = newQty,
+                        cartId = product.cartId,
+                        productId = product.productId
                     )
                 )
                 updateCartUseCase.get().setParams(
-                    params, UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
+                    params,
+                    UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
                 )
                 withContext(dispatchers.get().io) {
                     updateCartUseCase.get().executeOnBackground()
@@ -147,7 +150,8 @@ class MiniCartEditorViewModel @Inject constructor(
     }
 
     private fun getGroupProductTicker(
-        product: BmgmMiniCartVisitable.ProductUiModel, newQty: Int = -1
+        product: BmgmMiniCartVisitable.ProductUiModel,
+        newQty: Int = -1
     ) {
         viewModelScope.launch {
             runCatching {

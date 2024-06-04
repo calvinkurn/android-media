@@ -127,6 +127,13 @@ class FeedXHeaderUseCase @Inject constructor(
           weblink
           applink
           title
+          searchBar {
+            isActive
+            placeholder
+            weblink
+            applink
+            __typename
+          }
           __typename
         }
         

@@ -81,4 +81,9 @@ interface StoriesRoomAnalytic {
         reportReason: String
     )
 
+    fun clickPerformance(
+        storiesId: String,
+        contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String
+    )
 }

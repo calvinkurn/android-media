@@ -103,6 +103,9 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
                 currentSelectedBankAccount.isChecked = false
             }
         }
+        bankAccountList.forEach {
+            it.isChecked = false
+        }
         newSelectedBankAccount.isChecked = true
         currentSelectedBankAccount = newSelectedBankAccount
         notifyDataSetChanged()

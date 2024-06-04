@@ -32,13 +32,25 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
-        android:id="@+id/total_view"
+    <com.tokopedia.play.widget.ui.custom.PlayLiveBadgeView
+        android:id="@+id/view_live"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/img_cover"
+        />
+
+    <com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
+        android:id="@+id/total_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        app:layout_goneMarginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/view_live"
         app:layout_constraintTop_toTopOf="@id/img_cover"
         />
 
@@ -65,6 +77,7 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:orientation="horizontal"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

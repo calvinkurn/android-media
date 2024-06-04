@@ -34,6 +34,27 @@ class GetCartListTest : BaseCartViewModelTest() {
     }
 
     @Test
+    fun `WHEN initial load cart list success with change variant THEN should render success`() {
+        // GIVEN
+        val cartData = CartData()
+
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
+
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
+
+        // WHEN
+        cartViewModel.processInitialGetCartData(
+            cartId = "",
+            initialLoad = true,
+            isLoadingTypeRefresh = false,
+            isCartChangeVariant = true
+        )
+
+        // THEN
+        assertEquals(CartState.Success(cartData), cartViewModel.loadCartState.value)
+    }
+
+    @Test
     fun `WHEN initial load cart list failed THEN should render error`() {
         // GIVEN
         val exception =

@@ -14,13 +14,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class UserProfileModule(
-    private val activityContext: Context,
-) {
-
-    @Provides
-    @UserProfileScope
-    fun provideActivityContext() = activityContext
+object UserProfileModule {
 
     @Provides
     @UserProfileScope

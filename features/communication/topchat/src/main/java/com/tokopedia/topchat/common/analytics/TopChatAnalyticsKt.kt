@@ -1126,6 +1126,162 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventImpressionBroadcastBanner(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.BROADCAST_CHAT,
+                action = Action.IMPRESSION_ON_BANNER,
+                label = "$blastId - $campaignStatus - $campaignCountDown",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50434"
+            )
+        )
+    }
+
+    fun eventClickBroadcastBanner(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.BROADCAST_CHAT,
+                action = Action.CLICK_ON_BANNER,
+                label = "$blastId - $campaignStatus - $campaignCountDown",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50435"
+            )
+        )
+    }
+
+    fun eventImpressionBroadcastProductCard(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String,
+        productId: String,
+        productPosition: String,
+        totalProductAttach: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.BROADCAST_CHAT,
+                action = Action.IMPRESSION_ON_PRODUCT_CARD,
+                label = "$blastId - $campaignStatus - $campaignCountDown - $productId - $productPosition - $totalProductAttach",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50436"
+            )
+        )
+    }
+
+    fun eventClickBroadcastProductCard(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String,
+        productId: String,
+        productPosition: String,
+        totalProductAttach: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.BROADCAST_CHAT,
+                action = Action.CLICK_ON_PRODUCT_CARD,
+                label = "$blastId - $campaignStatus - $campaignCountDown - $productId - $productPosition - $totalProductAttach",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50437"
+            )
+        )
+    }
+
+    fun eventImpressionBroadcastVoucher(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String,
+        voucherId: String,
+        voucherPosition: String,
+        totalVoucherAttach: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.BROADCAST_CHAT,
+                action = Action.IMPRESSION_ON_VOUCHER,
+                label = "$blastId - $campaignStatus - $campaignCountDown - $voucherId - $voucherPosition - $totalVoucherAttach",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50438"
+            )
+        )
+    }
+
+    fun eventClickBroadcastVoucher(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String,
+        voucherId: String,
+        voucherPosition: String,
+        totalVoucherAttach: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.BROADCAST_CHAT,
+                action = Action.CLICK_ON_VOUCHER,
+                label = "$blastId - $campaignStatus - $campaignCountDown - $voucherId - $voucherPosition - $totalVoucherAttach",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50439"
+            )
+        )
+    }
+
+    fun eventImpressionBroadcastSeeMoreProductCard(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.BROADCAST_CHAT,
+                action = Action.IMPRESSION_ON_CTA_LIHAT_PRODUCT_LAINNYA,
+                label = "$blastId - $campaignStatus - $campaignCountDown",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50440"
+            )
+        )
+    }
+
+    fun eventClickBroadcastSeeMoreProductCard(
+        blastId: String,
+        campaignStatus: String,
+        campaignCountDown: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.BROADCAST_CHAT,
+                action = Action.CLICK_ON_CTA_LIHAT_PRODUCT_LAINNYA,
+                label = "$blastId - $campaignStatus - $campaignCountDown",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "50441"
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -1198,6 +1354,7 @@ object TopChatAnalyticsKt {
         const val INBOX_CHAT = "inbox-chat"
         const val PUSH_NOTIF_CHAT = "push notification chat"
         const val CHAT_SETTINGS = "chat settings"
+        const val BROADCAST_CHAT = "broadcast chat"
     }
 
     object Bubbles {
@@ -1283,6 +1440,14 @@ object TopChatAnalyticsKt {
         const val IMPRESSION_BALASAN_OTOMATIS = "impression to balasan otomatis"
         const val CLICK_BALASAN_OTOMATIS = "click to balasan otomatis"
         const val CLICK_ON_ORDER_MANAGEMENT_WIDGET = "click on order management widget"
+        const val IMPRESSION_ON_BANNER = "impression on banner"
+        const val CLICK_ON_BANNER = "click on banner"
+        const val IMPRESSION_ON_PRODUCT_CARD = "impression on product card"
+        const val CLICK_ON_PRODUCT_CARD = "click on product card"
+        const val IMPRESSION_ON_VOUCHER = "impression on voucher"
+        const val CLICK_ON_VOUCHER = "click on voucher"
+        const val IMPRESSION_ON_CTA_LIHAT_PRODUCT_LAINNYA = "impression on cta lihat produk lainnya"
+        const val CLICK_ON_CTA_LIHAT_PRODUCT_LAINNYA = "click on cta lihat produk lainnya"
     }
 
     private const val PRODUCT_INDEX = "0"

@@ -35,12 +35,11 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 @Composable
 fun StoriesDetailTimer(
     timerInfo: TimerStatusInfo,
-    timerFinished: () -> Unit,
+    timerFinished: () -> Unit
 ) {
     if (LocalContext.current.isDeviceAnimationsEnabled()) {
         StoriesTimerAnimationEnabled(timerInfo = timerInfo, timerFinished = timerFinished)
-    }
-    else {
+    } else {
         StoriesTimerAnimationDisabled(timerInfo = timerInfo, timerFinished = timerFinished)
     }
 }
@@ -48,7 +47,7 @@ fun StoriesDetailTimer(
 @Composable
 private fun StoriesTimerAnimationEnabled(
     timerInfo: TimerStatusInfo,
-    timerFinished: () -> Unit,
+    timerFinished: () -> Unit
 ) {
     val anim = remember(timerInfo.story.id, timerInfo.story.resetValue) {
         Animatable(INITIAL_ANIMATION)
@@ -63,25 +62,25 @@ private fun StoriesTimerAnimationEnabled(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
                         durationMillis = (timerInfo.story.duration * (TARGET_ANIMATION - anim.value)).toInt(),
-                        easing = LinearEasing,
+                        easing = LinearEasing
                     )
                 )
             }
         }
-        if ((anim.value == anim.targetValue) && (anim.targetValue != INITIAL_ANIMATION)) timerFinished.invoke()
+        if ((anim.value >= anim.targetValue) && (anim.targetValue != INITIAL_ANIMATION)) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
         count = timerInfo.story.itemCount,
         currentPosition = timerInfo.story.position,
-        progress = anim.value,
+        progress = anim.value
     )
 }
 
 @Composable
 private fun StoriesTimerAnimationDisabled(
     timerInfo: TimerStatusInfo,
-    timerFinished: () -> Unit,
+    timerFinished: () -> Unit
 ) {
     val timer = remember(timerInfo.story.id, timerInfo.story.resetValue) {
         mutableStateOf(INITIAL_ANIMATION)
@@ -106,13 +105,13 @@ private fun StoriesTimerAnimationDisabled(
                 }
             }
         }
-        if (timer.value == TARGET_ANIMATION) timerFinished.invoke()
+        if (timer.value >= TARGET_ANIMATION) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
         count = timerInfo.story.itemCount,
         currentPosition = timerInfo.story.position,
-        progress = timer.value,
+        progress = timer.value
     )
 }
 
@@ -120,7 +119,7 @@ private fun StoriesTimerAnimationDisabled(
 private fun StoriesDetailTimerContent(
     count: Int,
     currentPosition: Int,
-    progress: Float,
+    progress: Float
 ) {
     NestTheme(darkTheme = true) {
         Row(
@@ -128,7 +127,7 @@ private fun StoriesDetailTimerContent(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .background(Color.Transparent)
-                .height(2.dp),
+                .height(2.dp)
         ) {
             for (index in 0 until count) {
                 Row(
@@ -150,7 +149,7 @@ private fun StoriesDetailTimerContent(
                                     in 0..currentPosition -> it.fillMaxWidth(1f)
                                     else -> it
                                 }
-                            },
+                            }
                     )
                 }
                 Spacer(modifier = Modifier.width(2.dp))
@@ -163,7 +162,7 @@ private fun StoriesDetailTimerContent(
 @Composable
 internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
-        timerInfo = TimerStatusInfo.Empty,
+        timerInfo = TimerStatusInfo.Empty
     ) { }
 }
 

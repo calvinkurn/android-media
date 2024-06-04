@@ -7,8 +7,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,7 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
@@ -73,7 +71,6 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -320,7 +317,9 @@ class OfferLandingPageFragment :
                             miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
                         }
                     }
+                    viewModel.processEvent(OlpEvent.SetCartId(atc.data.data.cartId))
                     viewModel.processEvent(OlpEvent.GetNotification)
+                    fetchMiniCart()
                 }
 
                 is Fail -> {
@@ -339,7 +338,8 @@ class OfferLandingPageFragment :
                     showBottomSheetGiftList(
                         result.data.selectedTier,
                         result.data.offerInfo,
-                        result.data.tierGifts
+                        result.data.tierGifts,
+                        result.data.mainProducts
                     )
                 }
 
@@ -507,6 +507,7 @@ class OfferLandingPageFragment :
             if (atcMessage.isNotEmpty()) {
                 binding?.miniCartView.showToaster(atcMessage)
             }
+            viewModel.processEvent(OlpEvent.SetCartId(cartId))
             fetchMiniCart()
             tracker.sendClickCloseVariantEvent(
                 currentState.offerIds.toSafeString(),
@@ -799,7 +800,8 @@ class OfferLandingPageFragment :
             shopIds = listOf(currentState.shopData.shopId),
             offerIds = currentState.offerIds,
             offerJsonData = currentState.offeringJsonData,
-            warehouseIds = currentState.warehouseIds
+            warehouseIds = currentState.warehouseIds,
+            cartId = currentState.cartId
         )
     }
 
@@ -1003,7 +1005,8 @@ class OfferLandingPageFragment :
     private fun showBottomSheetGiftList(
         selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
         offerInfo: OfferInfoForBuyerUiModel,
-        tierGifts: List<TierGifts>
+        tierGifts: List<TierGifts>,
+        mainProducts: List<MainProduct>
     ) {
         if (!shouldShowGiftListBottomSheet) return
         shouldShowGiftListBottomSheet = false
@@ -1018,7 +1021,8 @@ class OfferLandingPageFragment :
             tierGifts = tierGifts,
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
-            shopId = currentState.shopData.shopId.toString()
+            shopId = currentState.shopData.shopId.toString(),
+            mainProducts = mainProducts
         )
 
         bottomSheet.setOnDismissListener {

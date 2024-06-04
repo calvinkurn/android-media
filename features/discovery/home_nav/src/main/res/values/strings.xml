@@ -3,10 +3,13 @@
 
     <string name="main_nav_args_source_key">pageSource</string>
     <string name="main_nav_args_source_path_key">pageSourcePath</string>
+    <string name="main_nav_args_is_acting_as_account_page_key">isActingAsAccountPage</string>
 
     <string name="content_desc_review">review star</string>
+    <string name="content_desc_product_image">product image</string>
 
     <string name="title_main_nav">Menu Utama</string>
+    <string name="title_main_nav_account_page">Akun</string>
 
     <string name="btn_login">Masuk</string>
     <string name="btn_register">Daftar</string>
@@ -30,6 +33,7 @@
     <string name="title_wishlist_section">Wishlist</string>
     <string name="title_favorite_shop_section">Toko yang di-follow</string>
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
+    <string name="menu_transaction_menu_buy_again">Beli Lagi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
     <string name="title_activity_revamp">Aktivitasmu</string>
@@ -81,4 +85,7 @@
     <string name="transaction_view_all_desc">Transaksi lainnya</string>
     <string name="review_view_all_desc">Ulasan lainnya</string>
     <string name="wishlist_view_all_desc">Wishlist lainnya</string>
+
+    <string name="transaction_buy_again_atc_message">1 barang berhasil ditambahkan ke keranjang.</string>
+    <string name="transaction_buy_again_atc_cta">Lihat</string>
 </resources>

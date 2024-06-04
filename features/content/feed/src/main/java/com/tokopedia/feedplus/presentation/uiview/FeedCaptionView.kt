@@ -23,6 +23,7 @@ import com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 /**
  * Created By : Muhammad Furqan on 06/03/23
@@ -100,6 +101,7 @@ class FeedCaptionView(
                 showLess()
             }
         }
+        fadingLayout.showWithCondition(text.isNotBlank())
 
         showLess()
     }

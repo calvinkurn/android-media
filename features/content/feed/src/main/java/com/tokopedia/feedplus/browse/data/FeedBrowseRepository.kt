@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.data
 
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
@@ -11,7 +12,7 @@ import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
  */
 internal interface FeedBrowseRepository {
 
-    suspend fun getTitle(): String
+    suspend fun getHeaderDetail(): HeaderDetailModel?
 
     suspend fun getCategoryInspirationTitle(source: String): String
 

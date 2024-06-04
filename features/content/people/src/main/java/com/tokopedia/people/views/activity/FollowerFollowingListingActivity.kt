@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.people.di.DaggerUserProfileComponent
-import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
 import javax.inject.Inject
 
@@ -34,17 +33,16 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
         return FollowerFollowingListingFragment.getFragment(
             supportFragmentManager,
             classLoader,
-            bundle ?: Bundle(),
+            bundle ?: Bundle()
         )
     }
 
     private fun inject() {
-        DaggerUserProfileComponent.builder()
-            .baseAppComponent(
+        DaggerUserProfileComponent.factory()
+            .create(
                 (applicationContext as BaseMainApplication).baseAppComponent,
+                this
             )
-            .userProfileModule(UserProfileModule(this))
-            .build()
             .inject(this)
     }
 

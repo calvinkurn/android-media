@@ -457,6 +457,14 @@ open class PickerActivity :
     }
 
     override fun onGalleryTabSelected(isDirectClick: Boolean) {
+        if (viewModel.isOnVideoRecording.value == true) {
+            // if user click gallery tab but camera on record state, skip process and set tabs state to camera back
+            Handler(Looper.getMainLooper()).postDelayed({
+                bottomNavTab.navigateToIndexOf(BottomNavUiComponent.PAGE_CAMERA_INDEX)
+            }, TABS_ANIMATION_DELAY)
+            return
+        }
+
         navigateToGalleryPage()
 
         if (isDirectClick) {
@@ -684,5 +692,6 @@ open class PickerActivity :
         private const val BYTES_TO_MB = 1000000
         private const val TOAST_DELAYED = 3000L
         private const val MILLIS_TO_SEC = 1000
+        private const val TABS_ANIMATION_DELAY = 100L
     }
 }

@@ -1,10 +1,12 @@
 package com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel
 
+import android.text.format.DateUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -15,6 +17,7 @@ import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
+import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.FIVE_MINUTES
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
@@ -23,6 +26,7 @@ import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscou
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.extension.minutesToMillis
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
+import com.tokopedia.shopdiscount.utils.extension.toDate
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -125,10 +129,19 @@ class ShopDiscountManageProductViewModel @Inject constructor(
     }
 
     private fun getVpsPackageDefaultEndDate(slashPriceBenefitData: ShopDiscountSellerInfoUiModel): Date {
-        val vpsPackageData = slashPriceBenefitData.listSlashPriceBenefitData.firstOrNull {
-            it.packageId.toIntOrZero() != -1
+        val vpsPackageData = slashPriceBenefitData.listSlashPriceBenefitData.firstOrNull()
+        val benefitExpiryDate = vpsPackageData?.expiredAt?.toDate(DateConstant.DATE_TIME) ?: Date()
+        val finalEndDate = if (DateUtils.isToday(benefitExpiryDate.time)) {
+            Calendar.getInstance().apply {
+                add(Calendar.YEAR, Int.ONE)
+                add(Calendar.MINUTE,
+                    START_TIME_OFFSET_IN_MINUTES
+                )
+            }.time
+        } else {
+            benefitExpiryDate
         }
-        return Date(vpsPackageData?.expiredAtUnix?.unixToMs().orZero())
+        return finalEndDate
     }
 
     private fun getMembershipDefaultEndDate(): Date {

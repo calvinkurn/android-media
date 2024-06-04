@@ -3,6 +3,9 @@ package com.tokopedia.homenav.mainnav.interactor
 import android.accounts.NetworkErrorException
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
@@ -15,10 +18,15 @@ import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
@@ -53,6 +61,8 @@ class TestMainNavViewModel {
     private val mockGetUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
     private val mockGetPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
     private val mockGetReviewProductUseCase = mockk<GetReviewProductUseCase>()
+    private val mockAddToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
+    private val mockRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed =  true)
 
     @Before
     fun setup() {
@@ -1292,5 +1302,71 @@ class TestMainNavViewModel {
                 it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == refreshedData
             }
         )
+    }
+
+    @Test
+    fun `given user add to cart success should update atcProductState pair isError false`(){
+        val addToCartDataModel = AddToCartDataModel(status = "OK", data = DataModel(success = 1))
+
+        coEvery { mockAddToCartUseCase.executeOnBackground() } returns addToCartDataModel
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            addToCartUseCase = mockAddToCartUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.addToCartProduct("", "")
+
+        val newState = viewModel.onAtcProductState.value
+        Assert.assertEquals(false, newState?.first)
+    }
+
+    @Test
+    fun `given user add to cart throwing exception should update atcProductState pair isError true`(){
+
+        coEvery { mockAddToCartUseCase.executeOnBackground() } throws  Exception("")
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            addToCartUseCase = mockAddToCartUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.addToCartProduct("", "")
+
+        val newState = viewModel.onAtcProductState.value
+        Assert.assertEquals(true, newState?.first)
+    }
+
+    @Test
+    fun `given user refreshes buy again data should call recommendation with page name buy again and update data`(){
+        val requestParamSlot = slot<GetRecommendationRequestParam>()
+        val recommendationItemList = listOf(
+            RecommendationItem(
+                productId = 1,
+            )
+        )
+        val recommendationWidgetList = listOf(
+            RecommendationWidget(
+                recommendationItemList = recommendationItemList,
+            )
+        )
+
+        coEvery { mockRecommendationUseCase.getData(capture(requestParamSlot)) } returns recommendationWidgetList
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getRecommendationUseCase = mockRecommendationUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.refreshBuyAgainData()
+
+        coVerify (exactly = 1){ mockRecommendationUseCase.getData(any()) }
+        Assert.assertEquals("buy_it_again_me", requestParamSlot.captured.pageName)
+
+        val resultData = viewModel.mainNavLiveData.value
+        assert(resultData?.dataList?.find { it is BuyAgainUiModel } != null)
     }
 }

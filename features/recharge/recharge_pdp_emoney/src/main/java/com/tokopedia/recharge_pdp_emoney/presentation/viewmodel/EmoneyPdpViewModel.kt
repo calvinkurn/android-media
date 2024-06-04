@@ -9,13 +9,12 @@ import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
-import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
+import com.tokopedia.common.topupbills.usecase.GetBCAGenCheckerUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
-import com.tokopedia.recharge_pdp_emoney.presentation.domain.GetBCAGenCheckerUseCase
 import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
 import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyDppoConsentModel
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper.mapDigiPersoToBCAGenCheck

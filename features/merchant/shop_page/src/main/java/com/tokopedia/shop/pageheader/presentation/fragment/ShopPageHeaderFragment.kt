@@ -122,6 +122,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -447,6 +448,9 @@ class ShopPageHeaderFragment :
         null
     private var shopPageFeedTabSharedViewModel: ShopPageFeedTabSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
+    private val mockDataSharedPreferences by lazy {
+        activity?.getSharedPreferences(ShopPageConstant.SHARED_PREF_NAME, Context.MODE_PRIVATE)
+    }
     private var isGeneralShareBottomSheet = false
     var selectedPosition = -1
     val isMyShop: Boolean
@@ -519,6 +523,7 @@ class ShopPageHeaderFragment :
         onFragmentAttached()
         super.onCreate(savedInstanceState)
         FoldableAndTabletSupportManager(this, activity as AppCompatActivity)
+        SearchRollenceController.fetchInboxNotifTopNavValue()
     }
 
     override fun onCreateView(
@@ -1545,6 +1550,7 @@ class ShopPageHeaderFragment :
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
             }
             setToolbarPageName(SHOP_PAGE)
+            updateSearchBarStyle(showSearchBtn = false)
         }
     }
 
@@ -2192,7 +2198,11 @@ class ShopPageHeaderFragment :
                     ).apply {
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
-                        setHomeTabLottieUrl(it.lottieUrl)
+                        setHomeTabLottieUrl(
+                            it.lottieUrl.ifEmpty {
+                                mockDataSharedPreferences?.getString(ShopPageConstant.SHARED_PREF_MOCK_LOTTIE_URL_DATA, null).orEmpty()
+                            }
+                        )
                     }
                 }
 

@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class BrandRecommendationItemViewModel(application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class BrandRecommendationItemViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     override fun onAttachToViewHolder() {

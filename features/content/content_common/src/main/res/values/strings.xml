@@ -81,17 +81,6 @@
     <string name="performance_dashboard_coachmark_title">Kini udah bisa pantau performa video dari sini</string>
     <string name="performance_dashboard_coachmark_subtitle">Supaya kamu selalu update perkembangannya &amp; analisa performa jadi lebih mudah.</string>
 
-    <!-- Comment   -->
-    <string name="content_comment_header">Komentar</string>
-    <string name="content_comment_reply">Balas</string>
-    <string name="content_comment_empty_title">Belum ada komentar</string>
-    <string name="content_comment_empty_desc">Mulai percakapan dengan berikan komentar</string>
-    <string name="content_comment_expand_hide">Sembunyikan</string>
-    <string name="content_comment_expand_visible">Lihat %s Balasan</string>
-    <string name="content_common_menu_delete">Hapus</string>
-    <string name="content_common_menu_report">Laporkan</string>
-    <string name="comment_delete_undo">Kembalikan</string>
-    <string name="comment_delete_kembali">Komentar dihapus.</string>
     <string name="content_global_error_secondary_text">Ke Pengaturan</string>
 
     <!--Report Bottom Sheet -->
@@ -382,4 +371,7 @@ produk eksklusif ini.</string>
 
     <string name="content_out_of_stock_label_text">Stok Habis</string>
     <string name="content_soon_label_text">Segera Hadir</string>
+
+    <string name="content_failed_product_load">Gagal menampilkan produk lainnya</string>
+    <string name="content_test_tag_three_dots_screen">test_tag_three_dots_screen</string>
 </resources>

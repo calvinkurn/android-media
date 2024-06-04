@@ -23,7 +23,7 @@ import kotlin.coroutines.CoroutineContext
 
 const val PRODUCT_PER_PAGE = 10
 
-class ProductBundlingViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ProductBundlingViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val bundledProductData: MutableLiveData<ArrayList<BundleUiModel>> = MutableLiveData()
     private val paginationHandlingList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()

@@ -42,7 +42,7 @@ class GetViewToViewRecommendationUseCase @Inject constructor(
                 .toQueryParam(inputParameter.queryParam)
         } ?: inputParameter.queryParam
 
-        graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toViewToViewGqlRequest())
+        graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
 
         return graphqlUseCase
             .executeOnBackground()

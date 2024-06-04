@@ -1,7 +1,7 @@
 package com.tokopedia.content.test.espresso
 
 import android.view.View
-import androidx.test.espresso.Espresso
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
@@ -15,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import org.hamcrest.Matcher
 import java.lang.reflect.Field
-
 
 /**
  * Created by kenny.hadisaputra on 17/03/22
@@ -31,7 +30,7 @@ fun waitFor(delay: Long): ViewAction {
 }
 
 fun delay(delayInMillis: Long = 500) {
-    Espresso.onView(ViewMatchers.isRoot()).perform(waitFor(delayInMillis))
+    onView(ViewMatchers.isRoot()).perform(waitFor(delayInMillis))
 }
 
 fun clickOnViewChild(viewId: Int) = object : ViewAction {
@@ -65,7 +64,7 @@ class ViewIdlingResource(
     }
 
     override fun getName(): String {
-        return "$this ${viewMatcher.toString()}"
+        return "$this $viewMatcher"
     }
 
     private fun getView(viewMatcher: Matcher<View?>?): View? {
@@ -79,7 +78,6 @@ class ViewIdlingResource(
             null
         }
     }
-
 }
 
 /**
@@ -93,4 +91,27 @@ fun waitUntilViewIsDisplayed(matcher: Matcher<View?>) {
     } finally {
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
+}
+
+fun recyclerViewSmoothScrollTo(
+    rvId: Int,
+    position: Int
+) {
+    onView(withId(rvId))
+        .perform(
+            object : ViewAction {
+                override fun getConstraints(): Matcher<View> {
+                    return ViewMatchers.isDisplayingAtLeast(90)
+                }
+
+                override fun getDescription(): String {
+                    return "smooth scroll order widget"
+                }
+
+                override fun perform(uiController: UiController?, view: View?) {
+                    (view as? RecyclerView)?.smoothScrollToPosition(position)
+                    uiController?.loopMainThreadForAtLeast(500)
+                }
+            }
+        )
 }

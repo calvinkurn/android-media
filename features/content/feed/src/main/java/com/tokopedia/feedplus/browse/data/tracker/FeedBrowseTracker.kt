@@ -75,7 +75,7 @@ internal interface FeedBrowseTracker {
         widgetPositionInList: Int
     )
 
-    fun clickBackExitCategoryInspirationPage()
+    fun clickBackExit()
 
     fun openScreenBrowseFeedPage()
 
@@ -90,4 +90,6 @@ internal interface FeedBrowseTracker {
         slotInfo: SlotInfo,
         widgetPositionInList: Int
     )
+
+    fun clickSearchbar()
 }

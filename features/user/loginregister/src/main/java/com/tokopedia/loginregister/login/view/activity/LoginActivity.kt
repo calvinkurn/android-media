@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
@@ -17,12 +18,15 @@ import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.removeLoginSdkFlow
 import com.tokopedia.telemetry.ITelemetryActivity
 
 /**
  * @author by nisie on 10/1/18.
  */
-open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
+open class LoginActivity :
+    BaseSimpleActivity(),
+    HasComponent<LoginComponent>,
     ITelemetryActivity {
 
     private val loginComponent: LoginComponent by lazy {
@@ -46,6 +50,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
         super.onCreate(savedInstanceState)
         setWhiteStatusBarIfSellerApp()
         removeBackButtonIfSellerApp()
+        removeLoginSdkFlow()
     }
 
     private fun setWhiteStatusBarIfSellerApp() {
@@ -75,7 +80,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
         }
     }
 
-    private fun getBundleFromData(): Bundle {
+    fun getBundleFromData(): Bundle {
         val bundle = Bundle()
         intent?.data?.let {
             var method = it.getQueryParameter(PARAM_LOGIN_METHOD).orEmpty()
@@ -83,6 +88,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
             val email = it.getQueryParameter(PARAM_EMAIL).orEmpty()
             val source = it.getQueryParameter(PARAM_SOURCE).orEmpty()
             val isReturnHomeWhenBackPressed = it.getBooleanQueryParameter(PARAM_IS_RETURN_HOME, false)
+            val callbackRegister = it.getQueryParameter(PARAM_CALLBACK_REGISTER).orEmpty()
 
             if (method.isEmpty()) {
                 if (email.isNotEmpty()) {
@@ -97,6 +103,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
             bundle.putString(PARAM_EMAIL, email)
             bundle.putString(PARAM_SOURCE, source)
             bundle.putBoolean(PARAM_IS_RETURN_HOME, isReturnHomeWhenBackPressed)
+            bundle.putString(PARAM_CALLBACK_REGISTER, callbackRegister)
         }
 
         return bundle

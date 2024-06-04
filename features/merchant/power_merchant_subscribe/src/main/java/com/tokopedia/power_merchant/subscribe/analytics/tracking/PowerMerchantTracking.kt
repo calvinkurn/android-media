@@ -20,6 +20,21 @@ class PowerMerchantTracking @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
 
+    fun sendEventClickStartVerification() {
+        val map = TrackAppUtils.gtmData(
+            TrackingConstant.EVENT_CLICK_PG,
+            TrackingConstant.PM_PAGE,
+            TrackingConstant.ACTION_CLICK_VERIFICATION,
+            String.EMPTY
+        )
+        map[TrackingConstant.KEY_BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS_VERIF
+        map[TrackingConstant.KEY_CURRENT_SITE] = TrackingConstant.TOKOPEDIA_MARKETPLACE
+        map[TrackingConstant.KEY_SHOP_ID] = userSession.shopId
+        map[TrackingConstant.KEY_USER_ID] = userSession.userId
+        map[TrackingConstant.KEY_TRACKER_ID] = TrackingConstant.TRACKER_ID_VERIFICATION
+        sendEvent(map)
+    }
+
     fun sendEventClickTickBox() {
         val event = createEvent(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,

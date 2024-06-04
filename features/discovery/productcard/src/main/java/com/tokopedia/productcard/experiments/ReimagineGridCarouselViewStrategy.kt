@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -17,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
@@ -55,6 +58,12 @@ internal class ReimagineGridCarouselViewStrategy(
     private val guidelineStart by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
     private val guidelineEnd by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
     private val guidelineBottom by lazyView<Guideline?>(R.id.productCardGuidelineBottomContent)
+
+    private val productCardPriceContainer by lazyView<RelativeLayout?>(R.id.productCardPriceContainer)
+    private val productCardSlashedPrice by lazyView<Typography?>(R.id.productCardSlashedPrice)
+    private val productCardDiscount by lazyView<Typography?>(R.id.productCardDiscount)
+    private val productCardCredibility by lazyView<LinearLayout?>(R.id.productCardCredibility)
+    private val productCardShopSection by lazyView<LinearLayout?>(R.id.productCardShopSection)
 
     val additionalMarginStart: Int
         get() = cardContainer?.marginStart ?: 0
@@ -165,6 +174,20 @@ internal class ReimagineGridCarouselViewStrategy(
     override fun setOnClickListener(l: View.OnClickListener?) {
         cardContainer?.setOnClickListener(l)
     }
+    override fun setOnClickListener(l: ProductCardClickListener) {
+        cardContainer?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
+    }
 
     override fun setAddToCartOnClickListener(l: View.OnClickListener?) {
         cartExtension.addToCartClickListener = { l?.onClick(it) }
@@ -184,5 +207,13 @@ internal class ReimagineGridCarouselViewStrategy(
 
     override fun reRenderGenericCtaButton(productCardModel: ProductCardModelReimagine) {
         genericCtaExtension.render(productCardModel)
+    }
+
+    override fun setProductImageOnClickListener(l: (View) -> Unit) {
+        imageView?.setOnClickListener(l)
+    }
+
+    override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
+        productCardShopSection?.setOnClickListener(l)
     }
 }

@@ -93,7 +93,7 @@ class ETollCardInfoView @JvmOverloads constructor(
         tgAdditionalBalance = view.findViewById(R.id.tg_additional_balance)
     }
 
-    fun showCardInfo(attributesEmoneyInquiry: AttributesEmoneyInquiry) {
+    fun showCardInfo(attributesEmoneyInquiry: AttributesEmoneyInquiry, isGenBCAOne: Boolean) {
         this.attributesEmoneyInquiry = attributesEmoneyInquiry
         viewVisible()
         imageIssuer.visibility = View.VISIBLE
@@ -117,7 +117,7 @@ class ETollCardInfoView @JvmOverloads constructor(
         val result = String.format("(%s)", simpleDateFormat.format(date))
         textDate.text = result
         processTickerInfo(attributesEmoneyInquiry.extraPendingBalance, attributesEmoneyInquiry.issuer_id.toString(),
-            attributesEmoneyInquiry.lastBalance)
+            attributesEmoneyInquiry.lastBalance, isGenBCAOne)
         if (attributesEmoneyInquiry.showAdditionalBalance &&
             attributesEmoneyInquiry.pendingBalance.isMoreThanZero()) {
             showAdditionalBalanceInfo(attributesEmoneyInquiry.pendingBalance)
@@ -126,7 +126,7 @@ class ETollCardInfoView @JvmOverloads constructor(
         }
     }
 
-    private fun processTickerInfo(extraPendingBalance: Boolean, issuerId: String, balance: Int) {
+    private fun processTickerInfo(extraPendingBalance: Boolean, issuerId: String, balance: Int, isGenBCAOne: Boolean) {
         val tickers = mutableListOf<TickerData>()
         if (extraPendingBalance) {
             tickers.add(
@@ -138,8 +138,8 @@ class ETollCardInfoView @JvmOverloads constructor(
                 ))
         }
 
-        if ((issuerId != ISSUER_ID_TAPCASH && balance >= EmoneyConstant.MAX_NON_TAPCASH) ||
-            (issuerId == ISSUER_ID_TAPCASH && balance >= EmoneyConstant.MAX_TAPCASH)) {
+        if (((issuerId != ISSUER_ID_TAPCASH && balance >= EmoneyConstant.MAX_NON_TAPCASH) ||
+            (issuerId == ISSUER_ID_TAPCASH && balance >= EmoneyConstant.MAX_TAPCASH)) && !isGenBCAOne) {
             tickers.add(
                 TickerData(
                     resources.getString(common_digitalR.string.recharge_pdp_emoney_max_limit_title),

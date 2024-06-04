@@ -269,7 +269,7 @@ open class ShopPageHomeFragment :
     ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener,
     ShopHomeReimagineShowcaseNavigationListener,
     ShopHomeReimagineShowcaseNavigationDependencyProvider,
-    ShopHomeReimagineTerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    ShopHomeReimagineTerlarisViewHolder.Listener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
@@ -5187,6 +5187,14 @@ open class ShopPageHomeFragment :
                     shopHomeAdapter?.removeWidget(this)
                 }
             }
+
+            override fun getPatternColorType(): String {
+                return this@ShopPageHomeFragment.getPatternColorType()
+            }
+
+            override fun getBackgroundColor(): String {
+                return this@ShopPageHomeFragment.getBackgroundColor()
+            }
         }
 
     override fun onDisplayBannerTimerClicked(
@@ -5402,7 +5410,8 @@ open class ShopPageHomeFragment :
 
     override fun onBannerProductGroupProductClick(selectedProduct: ProductItemType) {
         try {
-            RouteManager.route(activity ?: return, selectedProduct.appLink)
+            val appLink = "tokopedia://product/${selectedProduct.productId}"
+            RouteManager.route(activity ?: return, appLink)
         } catch (_: Exception) {
         }
     }
@@ -5509,14 +5518,6 @@ open class ShopPageHomeFragment :
     // need to be improve this logic in the future by combining this 2 logic in BE
     override fun isOverrideTheme(): Boolean {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
-    }
-
-    override fun isForceLightModeColorOnShopFlashSaleWidget(): Boolean {
-        return isOverrideTheme()
-    }
-
-    override fun isForceLightModeColorOnCampaignNplWidget(): Boolean {
-        return isOverrideTheme()
     }
 
     override fun getShopPageHomeFragment(): ShopPageHomeFragment {

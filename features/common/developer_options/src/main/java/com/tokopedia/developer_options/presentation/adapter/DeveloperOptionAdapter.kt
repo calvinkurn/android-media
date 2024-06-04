@@ -22,6 +22,7 @@ class DeveloperOptionAdapter(
     companion object {
         const val KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION = "Enable Developer Options on Notification"
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
+        const val MOCK_DYNAMIC_WIDGET_DEV = "Mock Dynamic Widget"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
         const val KEYWORD_SYSTEM_APPS = "System Apps"
         const val KEYWORD_NON_SYSTEM_APPS = "Non System Apps"
@@ -60,6 +61,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_NEW_RELIC = "View New Relic Log"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
+        const val KEYWORD_OK_HTTP_TIMEOUT = "OkHttp default timeout value"
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
@@ -91,6 +93,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
         const val KEYWORD_BANNER_ENVIRONMENT = "Switch banner environment"
+        const val KEYWORD_PERCENT_VIEW = "Percent Visible View"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
@@ -101,6 +104,7 @@ class DeveloperOptionAdapter(
         const val FPI_MONITORING = "FPI Monitoring"
         const val KEYWORD_GET_USER_ID = "Get User Id"
         const val KEYWORD_GET_SHOP_ID = "Get Shop Id"
+        const val KEYWORD_SSO_LOGIN = "Login SSO"
     }
 
     /**
@@ -110,8 +114,10 @@ class DeveloperOptionAdapter(
      **/
     private val generalItems = mutableListOf(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
+        SSOAuthorizationUiModel(listOf(KEYWORD_SSO_LOGIN)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
+        MockDynamicWidgetUiModel(listOf(MOCK_DYNAMIC_WIDGET_DEV)),
         DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
         SystemNonSystemAppsUiModel(
             listOf(
@@ -125,6 +131,7 @@ class DeveloperOptionAdapter(
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
         TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
         BannerEnvironmentUiModel(listOf(KEYWORD_BANNER_ENVIRONMENT)),
+        PercentViewUiModel(listOf(KEYWORD_PERCENT_VIEW)),
         ForceDarkModeUiModel(listOf(KEYWORD_FORCE_DARK_MODE)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         TranslatorUiModel(
@@ -210,6 +217,7 @@ class DeveloperOptionAdapter(
                 KEYWORD_LIVE
             )
         ),
+        OkHttpTimeoutUiModel(listOf(KEYWORD_OK_HTTP_TIMEOUT)),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
         DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
@@ -253,6 +261,7 @@ class DeveloperOptionAdapter(
             defaultItems.addAll(topHiddenItems)
             defaultItems.addAll(generalItems)
             defaultItems.addAll(hiddenItems)
+            removeWidget(SSOAuthorizationUiModel::class.java)
             removeWidget(DevOptsAuthorizationUiModel::class.java)
         }
 

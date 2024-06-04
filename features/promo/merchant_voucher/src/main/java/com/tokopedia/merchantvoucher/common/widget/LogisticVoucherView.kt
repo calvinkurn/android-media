@@ -68,7 +68,7 @@ class LogisticVoucherView : CustomVoucherView {
         tvVoucherTitle?.text = title
         tvVoucherSubtitle?.text = subtitle
         tvVoucherDesc?.text = desc
-        ivVoucherType?.loadImageWithPlaceholder(DELIVERY_VOUCHER_IMAGE_URL, R.drawable.ic_loading_image)
+        ivVoucherType?.loadImageWithPlaceholder(DELIVERY_VOUCHER_IMAGE_URL, R.drawable.mv_ic_loading_image)
         btnUseVoucher?.isEnabled = !isApplied
         btnUseVoucher?.text = if (isApplied) context.getString(R.string.applied) else
             context.getString(R.string.use_promo)

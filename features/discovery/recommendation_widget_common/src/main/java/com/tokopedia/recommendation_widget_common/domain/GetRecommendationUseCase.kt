@@ -2,8 +2,11 @@ package com.tokopedia.recommendation_widget_common.domain
 
 import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.byteio.RecommendationByteIoUseCase
@@ -41,9 +44,15 @@ constructor(
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
             .map { graphqlResponse ->
                 val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
-                entity?.productRecommendationWidget?.data?.mappingToRecommendationModel().also { data ->
+                entity?.productRecommendationWidget?.data?.mappingToRecommendationModel(
+                    byteIoUseCase.getTotalData(requestParams.parameters[PAGE_NAME]?.toString().orEmpty())
+                ).also { data ->
                     requestParams.parameters[PAGE_NAME]?.toString()?.let { pageName ->
-                        byteIoUseCase.updateSessionId(pageName, data?.firstOrNull()?.appLog?.sessionId.orEmpty())
+                        byteIoUseCase.updateMap(
+                            pageName,
+                            sessionId = data?.firstOrNull()?.appLog?.sessionId.orEmpty(),
+                            totalData = data?.firstOrNull()?.recommendationItemList?.size.orZero()
+                        )
                     }
                 }
             }
@@ -97,6 +106,8 @@ constructor(
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         params.putString(REFRESH_TYPE, byteIoParam.refreshType.value.toString())
         params.putString(CURRENT_SESSION_ID, byteIoParam.bytedanceSessionId)
+        params.putString(ENTER_FROM, AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)?.toString().orEmpty())
+        params.putString(SOURCE_PAGE_TYPE, AppLogAnalytics.getLastData(AppLogParam.SOURCE_PAGE_TYPE)?.toString().orEmpty())
         return params
     }
 
@@ -168,6 +179,8 @@ constructor(
         private const val PARAM_CARD_REIMAGINE = "productCardVersion"
         private const val REFRESH_TYPE = "refreshType"
         private const val CURRENT_SESSION_ID = "currentSessionID"
+        private const val ENTER_FROM = "enterFrom"
+        private const val SOURCE_PAGE_TYPE = "sourcePageType"
 
         private const val CARD_REIMAGINE_VERSION = 5
         private const val CARD_REVERT_VERSION = 0

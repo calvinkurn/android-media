@@ -38,9 +38,10 @@ android {
         viewBinding true
         buildConfig true
     }
-    
+
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
 
     defaultConfig {

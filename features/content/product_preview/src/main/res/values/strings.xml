@@ -29,4 +29,9 @@
     <string name="product_prev_review_ellipsize"> ... </string>
     <string name="product_prev_coachmark_onboard">Kamu bisa lihat semua foto &amp; video dari penjual atau ulasan di sini, ya!</string>
     <string name="product_prev_coachmark_share">Lihat halaman produk di sini ya~ </string>
+
+    <string name="product_prev_test_tag_navigation_container">test_tag_navigation_container</string>
+    <string name="product_prev_test_tag_atc_button">test_tag_atc_button</string>
+    <string name="product_prev_test_tag_option_report">test_tag_option_report</string>
+    <string name="product_prev_test_tag_submit_report">test_tag_button_submit_report</string>
 </resources>

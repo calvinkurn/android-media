@@ -10,7 +10,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SlideTrackObject
-import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
@@ -21,8 +20,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetCarouselLayoutBinding
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetCarouselLayoutBinding
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
@@ -88,6 +87,7 @@ class RecommendationCarouselWidgetView :
             showSeeMoreCard = model.widget.seeMoreAppLink.isNotBlank(),
             carouselProductCardOnItemImpressedListener = itemImpressionListener(model),
             carouselProductCardOnItemClickListener = itemClickListener(model),
+            carouselProductCardOnItemViewListener = itemViewListener(model),
             carouselSeeMoreClickListener = seeMoreClickListener(model),
             carouselProductCardOnItemATCNonVariantClickListener = itemAddToCartNonVariantListener(model),
             carouselProductCardOnItemAddToCartListener = itemAddToCartListener(model),
@@ -158,9 +158,30 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductShowAppLog(
                     productRecommendation.asProductTrackModel(
-                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                        additionalParam = model.appLogAdditionalParam
                     )
                 )
+            }
+        }
+
+    private fun itemViewListener(model: RecommendationCarouselModel) =
+        object : CarouselProductCardListener.OnViewListener {
+            override fun onViewAttachedToWindow(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int
+            ) {
+                val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
+                model.listener?.onViewAttachedToWindow(carouselProductCardPosition, productRecommendation)
+            }
+
+            override fun onViewDetachedFromWindow(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int,
+                visiblePercentage: Int
+            ) {
+                val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
+                model.listener?.onViewDetachedFromWindow(carouselProductCardPosition, productRecommendation, visiblePercentage)
             }
         }
 
@@ -194,18 +215,43 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductClickAppLog(
                     productRecommendation.asProductTrackModel(
-                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                        additionalParam = model.appLogAdditionalParam
                     )
                 )
 
                 RouteManager.route(context, productRecommendation.appUrl)
+            }
+
+            override fun onAreaClicked(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int
+            ) {
+                val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
+                model.listener?.onAreaClicked(carouselProductCardPosition, productRecommendation)
+            }
+
+            override fun onProductImageClicked(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int
+            ) {
+                val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
+                model.listener?.onProductImageClicked(carouselProductCardPosition, productRecommendation)
+            }
+
+            override fun onSellerInfoClicked(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int
+            ) {
+                val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
+                model.listener?.onSellerInfoClicked(carouselProductCardPosition, productRecommendation)
             }
         }
 
     private fun seeMoreClickListener(model: RecommendationCarouselModel) =
         object : CarouselProductCardListener.OnSeeMoreClickListener {
             override fun onSeeMoreClick() {
-                AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(model.widget.pageName))
+                AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(model.widget.pageName))
                 model.widgetTracking?.sendEventSeeAll()
                 RouteManager.route(context, model.widget.seeMoreAppLink)
             }
@@ -230,7 +276,7 @@ class RecommendationCarouselWidgetView :
     private fun headerViewListener(model: RecommendationCarouselModel) =
         object : RecommendationHeaderListener {
             override fun onSeeAllClick(link: String) {
-                AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(model.widget.pageName))
+                AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(model.widget.pageName))
                 model.widgetTracking?.sendEventSeeAll()
                 RouteManager.route(context, link)
             }

@@ -17,6 +17,7 @@ object RegisterConstants {
         const val REQUEST_OTP_VALIDATE = 113
         const val REQUEST_PENDING_OTP_VALIDATE = 114
         const val REQUEST_ADD_PIN = 115
+        const val REQUEST_CALLBACK_REGISTER = 116
     }
 
     object OtpType {

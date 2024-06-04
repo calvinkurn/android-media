@@ -1,9 +1,6 @@
 package com.tokopedia.imageassets
 
 object TokopediaImageUrl {
-    const val SRE_OTHER_MENU_RM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_rm.png"
-    const val SRE_OTHER_MENU_PM_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_pm.png"
-    const val SRE_OTHER_MENU_OS_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/bg_sah_new_other_curved_header_os.png"
     const val EMPTY_DATA_URL = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     const val SHOP_BADGE = "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
     const val IMAGE_OUTSIDE_INDONESIA = "https://images.tokopedia.net/img/android/logistic/location_outside_indonesia.png"
@@ -259,6 +256,8 @@ object TokopediaImageUrl {
     const val PM_BADGE_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20inactive.png"
     const val PM_SHOP_ICON = "https://images.tokopedia.net/img/android/gold_merchant_common/power_merchant_shop@3x.png"
     const val PM_PRO_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@3x.png"
+    const val PM_SEARCH_DISCOVERY_ICON = "https://images.tokopedia.net/img/android/power_merchant_subscribe/pm_search_discovery_icon.png"
+    const val PM_SHOP_PROMO_ICON = "https://images.tokopedia.net/img/android/power_merchant_subscribe/pm_shop_promo_icon.png"
     const val PM_NEW_REQUIREMENT = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_requirement.png"
     const val PM_ADD_PRODUCT_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_add_product_illustration.png"
     const val PM_TOTAL_ORDER_TERM = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_order.png"

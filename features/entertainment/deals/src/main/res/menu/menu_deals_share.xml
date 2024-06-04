@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_share_deals"
-        android:icon="@drawable/iconunify_share_mobile"
+        android:icon="@drawable/iconunify_social_share"
         android:orderInCategory="100"
         android:title=""
         app:showAsAction="always" />

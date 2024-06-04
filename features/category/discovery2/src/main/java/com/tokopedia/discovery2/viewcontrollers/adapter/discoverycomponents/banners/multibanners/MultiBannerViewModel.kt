@@ -42,7 +42,7 @@ const val BANNER_ACTION_CODE = "CODE"
 private const val SINGLE_PROMO_CODE = "single_promo_code"
 private const val DOUBLE_PROMO_CODE = "double_promo_code"
 
-class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class MultiBannerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
     private val applinkCheck: MutableLiveData<String> = MutableLiveData()

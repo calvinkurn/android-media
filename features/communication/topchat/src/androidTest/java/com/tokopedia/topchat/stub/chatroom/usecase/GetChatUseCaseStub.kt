@@ -67,6 +67,55 @@ class GetChatUseCaseStub @Inject constructor(
     private val sellerOrderCancellationAfterResponse =
         "seller/order_cancellation/success_get_chat_order_cancellation_after.json"
 
+    /**
+     * New Broadcast
+     */
+    private val chatBroadcastPromoPath =
+        "broadcast/promo/success_get_broadcast_promo.json"
+    private val chatBroadcastPromoWithHiddenBannerPath =
+        "broadcast/promo/success_get_broadcast_promo_with_hidden_banner.json"
+    private val chatBroadcastPromoWithoutBannerPath =
+        "broadcast/promo/success_get_broadcast_promo_without_banner.json"
+    private val chatBroadcastPromoWithFinishCountdownPath =
+        "broadcast/promo/success_get_broadcast_promo_with_finish_countdown.json"
+    private val chatBroadcastPromoWithoutMessagePath =
+        "broadcast/promo/success_get_broadcast_promo_without_message.json"
+    private val chatBroadcastPromoWithSingleProductPath =
+        "broadcast/promo/success_get_broadcast_promo_single_product.json"
+    private val chatBroadcastPromoWithSingleProductOOSPath =
+        "broadcast/promo/success_get_broadcast_promo_single_product_oos.json"
+    private val chatBroadcastPromoWithSingleProductPreOrderPath =
+        "broadcast/promo/success_get_broadcast_promo_single_product_preorder.json"
+    private val chatBroadcastPromoWithoutProductPath =
+        "broadcast/promo/success_get_broadcast_promo_without_product.json"
+    private val chatBroadcastPromoWithSingleVoucherPath =
+        "broadcast/promo/success_get_broadcast_promo_single_voucher.json"
+    private val chatBroadcastPromoWithoutVoucherPath =
+        "broadcast/promo/success_get_broadcast_promo_without_voucher.json"
+
+    private val chatBroadcastFlashSalePath =
+        "broadcast/flashsale/success_get_broadcast_flashsale.json"
+    private val chatBroadcastFlashSaleWithHiddenBannerPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_with_hidden_banner.json"
+    private val chatBroadcastFlashSaleWithoutBannerPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_without_banner.json"
+    private val chatBroadcastFlashSaleWithFinishCountdownPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_with_finish_countdown.json"
+    private val chatBroadcastFlashSaleWithoutMessagePath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_without_message.json"
+    private val chatBroadcastFlashSaleWithSingleProductPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_single_product.json"
+    private val chatBroadcastFlashSaleWithSingleProductOOSPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_single_product_oos.json"
+    private val chatBroadcastFlashSaleWithSingleProductPreOrderPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_single_product_preorder.json"
+    private val chatBroadcastFlashSaleWithoutProductPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_without_product.json"
+    private val chatBroadcastFlashSaleWithSingleVoucherPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_single_voucher.json"
+    private val chatBroadcastFlashSaleWithoutVoucherPath =
+        "broadcast/flashsale/success_get_broadcast_flashsale_without_voucher.json"
+
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
             repository.createMapResult(response::class.java, value)
@@ -454,6 +503,126 @@ class GetChatUseCaseStub @Inject constructor(
 
     /**
      * <!--- End Order Cancellation responses --->
+     */
+
+    /**
+     * <!-- Start New Broadcast -->
+     */
+
+    // Promo Broadcast
+    val broadcastPromoBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithHiddenBannerBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithHiddenBannerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithoutBannerBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithoutBannerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithFinishCountdownBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithFinishCountdownPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithoutMessageBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithoutMessagePath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithSingleProductBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithSingleProductPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithSingleProductOOSBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithSingleProductOOSPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithSingleProductPreOrderBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithSingleProductPreOrderPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithoutProductBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithoutProductPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithSingleVoucherBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithSingleVoucherPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastPromoWithoutVoucherBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastPromoWithoutVoucherPath) { response ->
+            alterDateToToday(response)
+        }
+
+    // Flash Sale Broadcast
+    val broadcastFlashSaleBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSalePath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithHiddenBannerBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithHiddenBannerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithoutBannerBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithoutBannerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithFinishCountdownBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithFinishCountdownPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithoutMessageBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithoutMessagePath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithSingleProductBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithSingleProductPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithSingleProductOOSBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithSingleProductOOSPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithSingleProductPreOrderBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithSingleProductPreOrderPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithoutProductBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithoutProductPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithSingleVoucherBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithSingleVoucherPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val broadcastFlashSaleWithoutVoucherBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatBroadcastFlashSaleWithoutVoucherPath) { response ->
+            alterDateToToday(response)
+        }
+
+    /**
+     * <!-- End New Broadcast -->
      */
 
     fun getLastIndexOf(response: GetExistingChatPojo): Int {

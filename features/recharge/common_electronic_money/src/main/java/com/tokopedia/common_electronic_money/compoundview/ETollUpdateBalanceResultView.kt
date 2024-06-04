@@ -11,6 +11,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerType
 import com.tokopedia.unifyprinciples.Typography
 import org.jetbrains.annotations.NotNull
 
@@ -60,11 +61,16 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         eTollCardInfoView.setListener(this)
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
-        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash) View.VISIBLE else View.GONE
+        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash || inquiryBalanceModel.isBCAGenOne ||
+             inquiryBalanceModel.isErrorTopUp2) View.VISIBLE else View.GONE
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
-            buttonTopup.text = it.buttonText
+            if (!inquiryBalanceModel.isBCAGenOne) {
+                buttonTopup.text = it.buttonText
+            } else {
+                buttonTopup.text = resources.getString(R.string.emoney_nfc_bca_back_gen_1)
+            }
             eTollCardInfoView.visibility = View.VISIBLE
-            eTollCardInfoView.showCardInfo(it)
+            eTollCardInfoView.showCardInfo(it, inquiryBalanceModel.isBCAGenOne)
             buttonTopup.visibility = View.VISIBLE
 
             if (::listener.isInitialized) {
@@ -77,15 +83,24 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
             }
 
             tickerTapcash.apply {
-                setHtmlDescription(resources.getString(R.string.emoney_nfc_ticker_desc))
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        listener.onClickTickerTapcash()
-                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
-                    }
+                if (inquiryBalanceModel.isCheckSaldoTapcash) {
+                    tickerType = Ticker.TYPE_WARNING
+                    setHtmlDescription(resources.getString(R.string.emoney_nfc_ticker_desc))
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            listener.onClickTickerTapcash()
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        }
 
-                    override fun onDismiss() {}
-                })
+                        override fun onDismiss() {}
+                    })
+                } else if (inquiryBalanceModel.isBCAGenOne) {
+                    tickerType = Ticker.TYPE_ERROR
+                    setHtmlDescription(inquiryBalanceModel.messageBCAGen1)
+                } else if (inquiryBalanceModel.isErrorTopUp2) {
+                    tickerType = Ticker.TYPE_ERROR
+                    setHtmlDescription(inquiryBalanceModel.messageTopUp2)
+                }
             }
         }
     }

@@ -14,4 +14,17 @@ object Constant {
     const val ROLE_SHOP = "shop"
     const val GOOD_PERFORMANCE = "baik"
     const val NEED_IMPROVEMENT = "perlu ditingkatkan"
+
+    // Product Card Label
+    const val STATUS = "status"
+
+    // Text
+    const val EMPTY_STOCK = "Stok Habis"
+    const val PREORDER = "PreOrder"
+
+    // Style
+    const val TEXT_COLOR_SOLD = "textDarkGrey"
+    const val BACKGROUND_OPACITY_PREORDER = "0.7"
+    const val BACKGROUND_OPACITY_OOS = "0.5"
+    const val BACKGROUND_COLOR_LABEL_COMPACT = "transparentBlack"
 }

@@ -71,13 +71,7 @@ class RegistrationHeaderWidget(
                 }
                 return
             }
-
-            val text = when (element.shopInfo.shopLevel) {
-                PMConstant.ShopLevel.TWO -> getString(R.string.pm_pro_advanced)
-                PMConstant.ShopLevel.THREE -> getString(R.string.pm_pro_expert)
-                PMConstant.ShopLevel.FOUR -> getString(R.string.pm_pro_ultimate)
-                else -> getString(R.string.pm_power_merchant)
-            }
+            val text = if (element.shopInfo.isEligiblePmPro) getString(R.string.pm_pm_pro) else getString(R.string.pm)
             tvPmHeaderEligibleFor.text = root.context.getString(R.string.pm_eligible_pm_grade, text)
                 .parseAsHtml()
             tvPmHeaderEligibleFor.gravity = Gravity.START

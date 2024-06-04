@@ -7,4 +7,7 @@
 
     <string name="fund_and_investment_failed">https://images.tokopedia.net/img/android/user/failed_fund_and_investment.png</string>
 
+    <string name="explicit_personalize_success_bottom">https://assets.tokopedia.net/asts/android/user/home_account/explicit_personalize_animation_success_bottom.json</string>
+    <string name="explicit_personalize_success_top">https://assets.tokopedia.net/asts/android/user/home_account/explicit_personalize_animation_success_top.json</string>
+
 </resources>

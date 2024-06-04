@@ -29,6 +29,7 @@ object ApplinkConstInternalUserPlatform {
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     const val PARAM_IS_FROM_STICKY_LOGIN = "from_sticky_login"
     const val PARAM_IS_FROM_OCL_LOGIN = "from_ocl_page"
+    const val PARAM_CALLBACK_REGISTER = "callback_register"
 
     const val PARAM_IS_SAVE_SESSION = "is_save_session"
 
@@ -95,6 +96,12 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/explicit-profile
      **/
     const val EXPLICIT_PROFILE = "$NEW_INTERNAL_USER/explicit-profile"
+
+    /**
+     * ExplicitPersonalizeActivity
+     * @Applink : tokopedia-android-internal://user/explicit-personalize
+     **/
+    const val EXPLICIT_PERSONALIZE = "$NEW_INTERNAL_USER/explicit-personalize"
 
     /**
      * GotoSeamlessLandingActivity
@@ -529,6 +536,9 @@ object ApplinkConstInternalUserPlatform {
     const val TAB_PRIVATE = "private"
 
     const val SHARING_WISHLIST = "$NEW_INTERNAL_USER/sharing-wishlist?tab={$PARAM_TAB}"
+
+
+    const val LOGIN_SDK = "$NEW_INTERNAL_USER/login-sdk"
 
     fun getGotoKYCApplink(projectId: String, source: String, callback: String = ""): String {
         return UriUtil.buildUri(GOTO_KYC, projectId, source, callback)

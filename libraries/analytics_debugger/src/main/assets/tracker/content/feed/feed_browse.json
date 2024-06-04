@@ -131,7 +131,7 @@
       "event": "select_content",
       "eventAction": "click - creator name",
       "eventCategory": "feed browse page",
-      "eventLabel": ".* - .* - .* - \\d+",
+      "eventLabel": ".* - .* - .* - .*",
       "trackerId": "45754",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
@@ -159,7 +159,7 @@
     },
     {
       "event": "clickHomepage",
-      "eventAction": "click - back exit category inspiration",
+      "eventAction": "click - back exit page",
       "eventCategory": "feed browse page",
       "eventLabel": ".*",
       "trackerId": "45755",
@@ -213,6 +213,17 @@
           "item_name": "/ - .* - \\d+ - stories"
         }
       ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - search bar",
+      "eventCategory": "feed browse page",
+      "eventLabel": ".*",
+      "trackerId": "50385",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
       "sessionIris":".*",
       "userId": ".*"
     }

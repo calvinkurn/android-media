@@ -1,6 +1,8 @@
 package com.tokopedia.homenav.mainnav.interactor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -29,6 +31,7 @@ import com.tokopedia.navigation_common.model.wallet.WalletStatus
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
@@ -56,7 +59,9 @@ fun createViewModel(
     accountAdminInfoUseCase: AccountAdminInfoUseCase? = null,
     getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
     getReviewProductUseCase: GetReviewProductUseCase? = null,
-    getTokopediaPlusUseCase: TokopediaPlusUseCase? = null
+    getTokopediaPlusUseCase: TokopediaPlusUseCase? = null,
+    getRecommendationUseCase: GetRecommendationUseCase? = null,
+    addToCartUseCase: AddToCartUseCase? = null,
 ): MainNavViewModel {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -101,6 +106,14 @@ fun createViewModel(
         coEvery { it.executeOnBackground() }.answers { listOf() }
     }
 
+    val getRecommendationUseCaseMock = getOrUseDefault(getRecommendationUseCase) {
+        coEvery { it.getData(any()) }.answers { listOf() }
+    }
+
+    val addToCartUseCaseMock = getOrUseDefault(addToCartUseCase) {
+        coEvery { it.executeOnBackground() }.answers { AddToCartDataModel() }
+    }
+
     return spyk(
         MainNavViewModel(
             baseDispatcher = Lazy { dispatchers },
@@ -114,7 +127,9 @@ fun createViewModel(
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
             getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
             getTokopediaPlusUseCase = getTokopediaPlusUseCaseMock,
-            getReviewProductUseCase = getReviewProductUseCaseMock
+            getReviewProductUseCase = getReviewProductUseCaseMock,
+            getRecommendationUseCase = getRecommendationUseCaseMock,
+            addToCartUseCase = addToCartUseCaseMock
         ),
         recordPrivateCalls = true
     )

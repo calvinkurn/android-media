@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,15 +26,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.CompositeTouchDelegate
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.common.util.reduceDragSensitivity
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.creation.common.analytics.ContentCreationAnalytics
@@ -43,16 +45,15 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPoin
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
-import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
+import com.tokopedia.feedplus.analytics.FeedTooltipAnalytics
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
-import com.tokopedia.feedplus.di.DaggerFeedMainComponent
+import com.tokopedia.feedplus.di.FeedInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
@@ -61,6 +62,7 @@ import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
+import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
@@ -68,8 +70,10 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreOwner
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModelStoreProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -100,7 +104,8 @@ class FeedBaseFragment :
     TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
     FragmentListener,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -116,6 +121,9 @@ class FeedBaseFragment :
 
     @Inject
     lateinit var contentCreationAnalytics: ContentCreationAnalytics
+
+    @Inject
+    lateinit var tooltipAnalytics: FeedTooltipAnalytics
 
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
@@ -277,7 +285,7 @@ class FeedBaseFragment :
         observeFeedTabData()
 
         observeEvent()
-
+        observeTooltip()
         observeUpload()
     }
 
@@ -306,17 +314,16 @@ class FeedBaseFragment :
     }
 
     private fun inject() {
-        DaggerFeedMainComponent.factory()
-            .build(
-                activityContext = requireContext(),
-                appComponent = (requireActivity().application as BaseMainApplication).baseAppComponent,
-                creationUploaderComponent = CreationUploaderComponentProvider.get(requireContext())
-            ).inject(this)
+        FeedInjector.get(requireActivity()).inject(this)
     }
 
     override fun getScreenName(): String = "Feed Fragment"
 
     override fun getPageName(): String {
+        return PageName.FEED
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.FEED
     }
 
@@ -363,6 +370,7 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.showAnimated()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
         binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.touchDelegate = containerFeedTouchDelegate
 
@@ -411,6 +419,12 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
+
+        binding.containerFeedTopNav.btnFeedBrowse.doOnLayout {
+            val centerX = it.width / 2
+
+            binding.containerFeedTopNav.searchTooltip.setAnchorXLocation(centerX)
+        }
     }
 
     private fun setupInsets() {
@@ -542,6 +556,33 @@ class FeedBaseFragment :
         }
     }
 
+    private fun observeTooltip() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.tooltipEvent.collect { event ->
+                    if (event == null) return@collect
+
+                    when (event) {
+                        is FeedTooltipEvent.ShowTooltip -> {
+                            if (binding.containerFeedTopNav.btnFeedBrowse.isVisible && !mOnboarding?.hasCoachMark.orFalse()) {
+                                binding.containerFeedTopNav.searchTooltip.setTooltipMessage(event.category)
+                                binding.containerFeedTopNav.searchTooltip.show()
+                                feedMainViewModel.setHasShownTooltip()
+
+                                tooltipAnalytics.impressSearchTooltip(feedMainViewModel.currentTooltipCategory)
+                            }
+                        }
+                        is FeedTooltipEvent.DismissTooltip -> {
+                            binding.containerFeedTopNav.searchTooltip.hide()
+                        }
+                    }
+
+                    feedMainViewModel.consumeEvent(event)
+                }
+            }
+        }
+    }
+
     private fun observeUpload() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -550,23 +591,23 @@ class FeedBaseFragment :
                     .collect { uploadResult ->
                         when (uploadResult) {
                             is CreationUploadResult.Empty -> {
-                                binding.uploadView.hide()
+                                binding.containerFeedTopNav.uploadView.hide()
                             }
 
                             is CreationUploadResult.Upload -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setUploadProgress(uploadResult.progress)
-                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.containerFeedTopNav.uploadView.show()
+                                binding.containerFeedTopNav.uploadView.setUploadProgress(uploadResult.progress)
+                                binding.containerFeedTopNav.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             }
 
                             is CreationUploadResult.OtherProcess -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setOtherProgress(uploadResult.progress)
-                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.containerFeedTopNav.uploadView.show()
+                                binding.containerFeedTopNav.uploadView.setOtherProgress(uploadResult.progress)
+                                binding.containerFeedTopNav.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             }
 
                             is CreationUploadResult.Success -> {
-                                binding.uploadView.hide()
+                                binding.containerFeedTopNav.uploadView.hide()
 
                                 when (val uploadData = uploadResult.data) {
                                     is CreationUploadData.Post -> {
@@ -625,10 +666,10 @@ class FeedBaseFragment :
                             }
 
                             is CreationUploadResult.Failed -> {
-                                binding.uploadView.show()
-                                binding.uploadView.setFailed()
-                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                                binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                binding.containerFeedTopNav.uploadView.show()
+                                binding.containerFeedTopNav.uploadView.setFailed()
+                                binding.containerFeedTopNav.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.containerFeedTopNav.uploadView.setListener(object : UploadInfoView.Listener {
                                     override fun onRetryClicked(view: UploadInfoView) {
                                         launch {
                                             creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
@@ -637,13 +678,7 @@ class FeedBaseFragment :
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                         launch {
-                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
-                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                            binding.uploadView.hide()
-                                        }
-
-                                        if (uploadResult.data.uploadType == CreationUploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
+                                            creationUploader.removeFailedContentFromQueue(uploadResult.data)
                                         }
                                     }
                                 })
@@ -690,13 +725,14 @@ class FeedBaseFragment :
 
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
             feedNavigationAnalytics.sendClickBrowseIconEvent()
-            if (!userSession.isLoggedIn) {
-                openBrowseLoginResult.launch(
-                    RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
-                )
-            } else {
-                openAppLink.launch(meta.browseApplink)
-            }
+            goToFeedBrowse(meta.browseApplink)
+        }
+
+        binding.containerFeedTopNav.searchTooltip.setOnClickTooltip {
+            binding.containerFeedTopNav.searchTooltip.hide()
+            tooltipAnalytics.clickSearchTooltip(feedMainViewModel.currentTooltipCategory)
+
+            goToFeedBrowse(meta.browseApplink)
         }
 
         binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
@@ -841,8 +877,7 @@ class FeedBaseFragment :
                     }
                 )
                 .setListener(object : ImmersiveFeedOnboarding.Listener {
-                    override fun onStarted() {
-                    }
+                    override fun onStarted() {}
 
                     override fun onCompleteCreateContentOnboarding() {
                         feedMainViewModel.setHasShownCreateContent()
@@ -869,6 +904,16 @@ class FeedBaseFragment :
         ContentCreationBottomSheet
             .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
+    }
+
+    private fun goToFeedBrowse(appLink: String) {
+        if (!userSession.isLoggedIn) {
+            openBrowseLoginResult.launch(
+                RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+            )
+        } else {
+            openAppLink.launch(appLink)
+        }
     }
 
     private fun showJustLoggedInToaster() {

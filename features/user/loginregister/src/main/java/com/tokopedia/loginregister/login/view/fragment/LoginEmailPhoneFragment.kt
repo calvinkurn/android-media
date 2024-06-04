@@ -2,9 +2,9 @@ package com.tokopedia.loginregister.login.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import com.tokopedia.media.loader.loadImage
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
@@ -53,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
@@ -106,9 +107,12 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.P
 import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.login_sdk.LoginSdkActivity
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
@@ -123,6 +127,7 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.network.TokenErrorException
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
@@ -191,7 +196,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     var viewBinding by autoClearedNullable<FragmentLoginWithPhoneBinding>()
 
-    private var source: String = ""
+    protected var source: String = ""
     protected var isAutoLogin: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
@@ -208,14 +213,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var validateToken = ""
     private var isLoginAfterSq = false
     private var isReturnHomeWhenBackPressed = false
+    private var isSuccessRegisterPhone = false
     private var socmedBottomSheet: SocmedBottomSheet? = null
+    private var callbackRegister = ""
 
     private var currentEmail = ""
     private var tempValidateToken = ""
 
     private var sharedPrefs: SharedPreferences? = null
 
-    private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
+    protected var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
     private var isEnableSeamlessLogin = false
 
     override fun getScreenName(): String {
@@ -236,7 +243,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onResume() {
         super.onResume()
-        if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
+        if (userSession.isLoggedIn && activity != null && activityShouldEnd && activity !is LoginSdkActivity) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -333,6 +340,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         isEnableDirectBiometric = isEnableDirectBiometric()
         isEnableOcl = isOclEnabled()
+        callbackRegister = getParamString(PARAM_CALLBACK_REGISTER, arguments, savedInstanceState, "")
         refreshRolloutVariant()
     }
 
@@ -411,7 +419,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun checkLoginOption() {
+    open fun checkLoginOption() {
         if (GlobalConfig.isSellerApp()) {
             viewModel.checkLoginOption(
                 isEnableSeamless = false,
@@ -430,7 +438,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         (activity as? LoginActivity)?.supportActionBar?.hide()
     }
 
-    private fun hideLoadingOverlay() {
+    fun hideLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.hide()
         (activity as? LoginActivity)?.supportActionBar?.show()
     }
@@ -691,7 +699,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
     }
 
-    private fun clearData() {
+    open fun clearData() {
         userSession.logoutSession()
     }
 
@@ -737,6 +745,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 override fun onItemClick(provider: ProviderData) {
                     if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
                         onLoginGoogleClick()
+                        socmedBottomSheet?.dismiss()
                     }
                 }
             }
@@ -903,7 +912,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return rollence.isNotEmpty()
     }
 
-    private fun showNeedHelpBottomSheet() {
+    open fun showNeedHelpBottomSheet() {
         if (needHelpBottomSheetUnify == null) {
             needHelpBottomSheetUnify = NeedHelpBottomSheet()
         }
@@ -957,7 +966,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun onLoginGoogleClick() {
+    fun onLoginGoogleClick() {
         if (activity != null) {
             onDismissBottomSheet()
             activity?.applicationContext?.let { analytics.eventClickLoginGoogle(it) }
@@ -1043,6 +1052,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            intent.putExtra(PARAM_CALLBACK_REGISTER, callbackRegister)
             startActivity(intent)
             it.finish()
         }
@@ -1077,6 +1087,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.getUserInfo()
     }
 
+    @SuppressLint("PII Data Exposure")
     override fun onSuccessLogin() {
         dismissLoadingLogin()
         activityShouldEnd = true
@@ -1089,18 +1100,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 setLoginSuccessSellerApp()
             } else {
                 getDefaultChosenAddress()
-                val bundle = Bundle()
-
-                if (isFromRegister) {
-                    bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
-                }
 
                 if (isReturnHomeWhenBackPressed) {
                     goToHome()
                 }
 
-                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-                it.finish()
+                if (isSuccessRegisterPhone && callbackRegister.isNotEmpty()) {
+                    goToCallbackRegister(callbackRegister)
+                } else {
+                    finishResultOk()
+                }
             }
 
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
@@ -1131,6 +1140,26 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         refreshRolloutVariant()
         saveFirstInstallTime()
+    }
+
+    private fun finishResultOk() {
+        activity?.let {
+            val bundle = Bundle()
+
+            if (isFromRegister) {
+                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
+            }
+
+            if (!requireContext().isLoginSdkFlow()) {
+                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+                it.finish()
+            }
+        }
+    }
+
+    private fun goToCallbackRegister(callback: String) {
+        val intent = RouteManager.getIntent(this.context, callback)
+        this.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CALLBACK_REGISTER)
     }
 
     private fun initTokoChatConnection() {
@@ -1300,6 +1329,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return isEnableEncryptConfig
     }
 
+    open fun gotoRegisterEmail(activity: Activity, email: String, isPending: Boolean) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        activity.startActivity(intent)
+        activity.finish()
+    }
+
     override fun showNotRegisteredEmailDialog(email: String, isPending: Boolean) {
         dismissLoadingLogin()
         activity?.let {
@@ -1311,14 +1352,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     if (GlobalConfig.isSellerApp()) {
                         goToRegisterInitial(source)
                     } else {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
-                        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                        it.startActivity(intent)
-                        it.finish()
+                        gotoRegisterEmail(requireActivity(), email, isPending)
                     }
                 }
                 dialog.setSecondaryCTAClickListener {
@@ -1555,6 +1589,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else if (requestCode == LoginConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 isFromRegister = true
+                isSuccessRegisterPhone = true
                 showLoading(true)
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
@@ -1637,7 +1672,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         activity?.finish()
                     }
                 }
-            } else {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CALLBACK_REGISTER) {
+                finishResultOk()
+            } else{
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
@@ -1835,7 +1872,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
+    fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
         return {
             trackSuccessValidate()
 
@@ -2004,7 +2041,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return message
     }
 
-    private fun autoFillWithDataFromLatestLoggedIn() {
+    open fun autoFillWithDataFromLatestLoggedIn() {
         if (!userSession.autofillUserData.isNullOrEmpty() && viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isEmpty() == true) {
             viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.let {
                 it.setText(userSession.autofillUserData)
@@ -2024,7 +2061,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     companion object {
         const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_v2"
 
-        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
+        const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"

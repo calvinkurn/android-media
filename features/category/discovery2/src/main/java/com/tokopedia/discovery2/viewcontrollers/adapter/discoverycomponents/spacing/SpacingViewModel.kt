@@ -11,7 +11,7 @@ import com.tokopedia.unifyprinciples.UnifyColorRef
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class SpacingViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class SpacingViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
     private val spacingComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val viewHeight: MutableLiveData<Int> = MutableLiveData()
     private val viewBackgroundColor: MutableLiveData<Int> = MutableLiveData()

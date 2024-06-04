@@ -36,7 +36,7 @@ class WishlistThreeDotsMenuItemViewHolder(
             }
             MENU_SHARE_LINK_PRODUCT -> {
                 binding.run {
-                    menuIcon.setImage(IconUnify.SHARE_MOBILE)
+                    menuIcon.setImage(IconUnify.SOCIAL_SHARE)
                     menuLabel.gone()
                 }
             }

@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loa
 
 import android.app.Application
 import android.content.Context
+import com.tokopedia.analytics.byteio.RefreshType
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -18,7 +19,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class LoadMoreViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class LoadMoreViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     @JvmField
     @Inject
@@ -53,7 +54,11 @@ class LoadMoreViewModel(val application: Application, private val components: Co
                         bannerInfiniteUseCase?.getBannerUseCase(components.id, components.pageEndPoint, isDarkMode = isDarkMode)
                     ComponentNames.ShopCardInfinite.componentName ->
                         shopCardInfiniteUseCase?.getShopCardUseCase(components.id, components.pageEndPoint)
-                    else -> productCardUseCase?.getProductCardsUseCase(components.id, components.pageEndPoint)
+                    else -> productCardUseCase?.getProductCardsUseCase(
+                        components.id,
+                        components.pageEndPoint,
+                        RefreshType.LOAD_MORE
+                    )
                 }
             }
         }, onError = {

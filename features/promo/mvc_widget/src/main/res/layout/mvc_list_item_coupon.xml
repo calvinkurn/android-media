@@ -58,7 +58,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/iv_check"
             android:layout_alignParentStart="true"
-            android:src="@drawable/mvc_ic_check_circle"/>
+            app:srcCompat="@drawable/mvc_ic_check_circle"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
             android:layout_centerVertical="true"
             android:tint="@color/Unify_NN900"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_arrow_right_default"/>
+            app:srcCompat="@drawable/mvc_ic_arrow_right_default"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -95,7 +95,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/iv_check_info"
             android:layout_alignParentStart="true"
-            android:src="@drawable/mvc_ic_check_circle"/>
+            app:srcCompat="@drawable/mvc_ic_check_circle"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"

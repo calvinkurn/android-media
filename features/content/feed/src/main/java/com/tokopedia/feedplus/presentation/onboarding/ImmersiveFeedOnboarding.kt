@@ -20,6 +20,9 @@ class ImmersiveFeedOnboarding private constructor(
 
     private val coachMark = CoachMark2(context)
 
+    var hasCoachMark: Boolean = false
+        private set
+
     suspend fun show() {
         val coachMarkItems = buildList {
             if (browseIconView != null) {
@@ -39,6 +42,8 @@ class ImmersiveFeedOnboarding private constructor(
             listener.onFinished(isForcedDismiss = false)
             return
         }
+
+        hasCoachMark = true
 
         if (coachMarkItems.size > 1) {
             coachMark.setStepListener(object : CoachMark2.OnStepListener {

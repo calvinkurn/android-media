@@ -61,6 +61,7 @@
     <string name="product_unpin">Lepas</string>
     <string name="product_pinned_product_info">Pin Dipasang</string>
     <string name="product_pin_failed">Tunggu 5 detik untuk pin produk ya</string>
+    <string name="product_tag_dots">•</string>
 
     <!-- Affiliate -->
     <string name="product_affiliate_coach_mark_product_summary_commission_title">Nge-tag produk bisa dapat komisi, lho</string>

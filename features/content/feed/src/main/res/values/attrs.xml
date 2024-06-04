@@ -1,0 +1,9 @@
+<!-- res/values/attrs.xml -->
+<resources>
+    <declare-styleable name="FeedSearchHeaderView">
+        <attr name="isClearable" format="boolean" />
+        <attr name="isShowShadow" format="boolean"/>
+        <attr name="withSearchbar" format="boolean"/>
+        <attr name="isTransparent" format="boolean"/>
+    </declare-styleable>
+</resources>

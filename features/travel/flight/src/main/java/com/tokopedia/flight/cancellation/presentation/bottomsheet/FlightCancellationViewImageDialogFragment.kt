@@ -19,6 +19,7 @@ class FlightCancellationViewImageDialogFragment : DialogFragment() {
     private var filePath: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
 
         filePath = arguments?.getString(EXTRA_FILE_PATH) ?: ""
@@ -33,8 +34,6 @@ class FlightCancellationViewImageDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         showImage()
 

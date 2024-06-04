@@ -21,10 +21,10 @@ import kotlin.coroutines.CoroutineContext
 
 class CarouselErrorLoadViewModel(
     application: Application,
-    private val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
 ) :
-    DiscoveryBaseViewModel(), CoroutineScope {
+    DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val showLoader: MutableLiveData<Boolean> = MutableLiveData()
 

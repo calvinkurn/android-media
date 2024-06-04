@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.analytics.TrackingMapper.setAppLog
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getCartData
@@ -55,7 +56,7 @@ class SectionUseCase @Inject constructor(
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
-                                if (comp.properties?.cardType.equals("V1", true)) {
+                                if (comp.properties.isOldProductCardType()) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.MasterProductCardItemList.componentName,
@@ -73,7 +74,7 @@ class SectionUseCase @Inject constructor(
                                     )
                                 }
                             } else {
-                                if (comp.properties?.cardType.equals("V1", true)) {
+                                if (comp.properties.isOldProductCardType()) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardRevampItem.componentName,
@@ -95,7 +96,7 @@ class SectionUseCase @Inject constructor(
 
                         ComponentNames.ProductCardCarousel.componentName -> {
                             if (comp.properties?.template == Constant.ProductTemplate.LIST) {
-                                if (comp.properties?.cardType.equals("V1", true)) {
+                                if (comp.properties.isOldProductCardType()) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardCarouselItemList.componentName,
@@ -113,7 +114,7 @@ class SectionUseCase @Inject constructor(
                                     )
                                 }
                             } else {
-                                if (comp.properties?.cardType.equals("V1", true)) {
+                                if (comp.properties.isOldProductCardType()) {
                                     DiscoveryDataMapper().mapListToComponentList(
                                         comp.data,
                                         ComponentNames.ProductCardCarouselItem.componentName,
@@ -134,7 +135,7 @@ class SectionUseCase @Inject constructor(
                         }
 
                         ComponentNames.ProductCardSprintSale.componentName -> {
-                            if (comp.properties?.cardType.equals("V1", true)) {
+                            if (comp.properties.isOldProductCardType()) {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardSprintSaleItem.componentName,
@@ -154,7 +155,7 @@ class SectionUseCase @Inject constructor(
                         }
 
                         ComponentNames.ProductCardSprintSaleCarousel.componentName -> {
-                            if (comp.properties?.cardType.equals("V1", true)) {
+                            if (comp.properties.isOldProductCardType()) {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
@@ -182,9 +183,15 @@ class SectionUseCase @Inject constructor(
                         }
 
                         ComponentNames.ShopOfferHeroBrand.componentName -> {
+                            val subComponentName = if (comp.properties.isOldProductCardType()) {
+                                ComponentNames.ShopOfferHeroBrandProductItem.componentName
+                            } else {
+                                ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
+                            }
+
                             DiscoveryDataMapper().mapListToComponentList(
                                 comp.data,
-                                ComponentNames.ShopOfferHeroBrandProductItem.componentName,
+                                subComponentName,
                                 comp.properties,
                                 creativeName,
                                 parentSectionId = comp.parentSectionId

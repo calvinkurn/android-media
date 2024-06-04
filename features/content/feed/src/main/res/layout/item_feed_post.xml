@@ -100,7 +100,9 @@
         app:layout_constraintBottom_toTopOf="@id/layout_feed_caption"
         app:layout_constraintEnd_toStartOf="@id/share_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
+        app:layout_constraintTop_toBottomOf="@id/product_tag_view"
+        app:layout_goneMarginBottom="12dp"
+        />
 
     <com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout
         android:id="@+id/layout_feed_caption"
@@ -191,7 +193,7 @@
         android:layout_marginBottom="22dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="SHARE"
+        app:icon_name="SOCIAL_SHARE"
         app:layout_constraintBottom_toTopOf="@id/menu_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"

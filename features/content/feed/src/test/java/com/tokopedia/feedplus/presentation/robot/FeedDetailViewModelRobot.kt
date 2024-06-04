@@ -8,6 +8,9 @@ import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 
@@ -33,10 +36,13 @@ class FeedDetailViewModelRobot(
     }
 }
 
-fun createFeedDetailViewModelRobot(
+fun TestScope.createFeedDetailViewModelRobot(
     repository: FeedDetailRepository = mockk(relaxed = true),
     dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
-    fn: FeedDetailViewModelRobot.() -> Unit = {}
 ): FeedDetailViewModelRobot {
-    return FeedDetailViewModelRobot(repository, dispatchers).apply(fn)
+    return FeedDetailViewModelRobot(repository, dispatchers).also {
+        backgroundScope.launch {
+            it.viewModel.headerDetail.collect()
+        }
+    }
 }

@@ -51,7 +51,7 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:rotation="90"
-        app:icon_name="SHARE_MOBILE"
+        app:icon_name="SOCIAL_SHARE"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/products_title"
         app:layout_constraintEnd_toStartOf="@id/ads_title"

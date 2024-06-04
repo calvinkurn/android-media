@@ -134,7 +134,9 @@ data class ComponentsItem(
             it.parentComponentId = this.id
             it.pageEndPoint = this.pageEndPoint
             it.tabName = tabName
-            it.data?.firstOrNull()?.tabName = tabName
+            it.data?.forEach { dataItem ->
+                dataItem.tabName = tabName
+            }
             it.parentComponentPosition = position
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
         }
@@ -157,11 +159,13 @@ data class ComponentsItem(
 
     fun getComponentsItemSize(): Int = getComponentsItem()?.size.orZero()
 
-    fun isFulfillment(dataItem: DataItem?): Boolean = dataItem?.labelsGroupList?.any { it.position == LABEL_FULFILLMENT }.orFalse()
+    fun isFulfillment(dataItem: DataItem?): Boolean =
+        dataItem?.labelsGroupList?.any { it.position == LABEL_FULFILLMENT }.orFalse()
 
     fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()
 
-    fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
+    fun getComponentAdditionalInfo(): ComponentAdditionalInfo? =
+        getComponentsItem()?.firstOrNull()?.compAdditionalInfo
 
     fun getSource(): ComponentSourceData {
         return sourceData?.let {

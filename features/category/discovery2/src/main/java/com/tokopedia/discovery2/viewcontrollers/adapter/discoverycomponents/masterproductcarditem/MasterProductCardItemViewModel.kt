@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.Utils.Companion.isReimagineProductCardInBackground
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackingMapper
@@ -44,9 +45,9 @@ private const val CAROUSEL_NOT_FOUND = -1
 
 class MasterProductCardItemViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val productCardModelLiveData: MutableLiveData<ProductCardModel> = MutableLiveData()
@@ -89,7 +90,7 @@ class MasterProductCardItemViewModel(
                     DiscoveryDataMapper().mapDataItemToProductCardModel(
                         productData,
                         components.name,
-                        components.properties?.cardType,
+                        components.properties.isReimagineProductCardInBackground(),
                         getNotifyText(productData.notifyMe)
                     )
             }
@@ -366,7 +367,8 @@ class MasterProductCardItemViewModel(
         return if (
             components.name == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
             components.name == ComponentNames.ProductCardCarouselItem.componentName ||
-            components.name == ComponentNames.ShopOfferHeroBrandProductItem.componentName
+            components.name == ComponentNames.ShopOfferHeroBrandProductItem.componentName ||
+            components.name == ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
         ) {
             getComponent(components.parentComponentId, components.pageEndPoint)?.let {
                 if (!it.parentSectionId.isNullOrEmpty() && it.isBackgroundPresent) {
@@ -392,9 +394,5 @@ class MasterProductCardItemViewModel(
                 scrollToSimilarProductComponentID.value = targetCompId
             }
         }
-    }
-
-    fun getProductCardType(): String {
-        return components.properties?.cardType ?: "v1"
     }
 }

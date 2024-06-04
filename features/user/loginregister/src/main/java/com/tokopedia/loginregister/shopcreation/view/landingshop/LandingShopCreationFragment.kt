@@ -280,6 +280,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun showVerifyPhoneNoDialog(phoneNo: String) {
+        hideLoading()
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(it.getString(R.string.verify_phone_dialog_title))
@@ -316,7 +317,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                 }
             } else {
-                goToPhoneShopCreation(userProfileCompletionData.phone)
+                showVerifyPhoneNoDialog(userProfileCompletionData.phone)
             }
         } else {
             goToPhoneShopCreation()

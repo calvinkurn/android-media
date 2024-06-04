@@ -243,7 +243,7 @@ open class FlightSearchActivity :
         val paramShare = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
         paramShare.leftMargin = DIMEN_14_IN_PX
         imageViewShare.layoutParams = paramShare
-        imageViewShare.setImage(IconUnify.SHARE_MOBILE)
+        imageViewShare.setImage(IconUnify.SOCIAL_SHARE)
 
         wrapper.addView(imageView)
         wrapper.addView(imageViewShare)

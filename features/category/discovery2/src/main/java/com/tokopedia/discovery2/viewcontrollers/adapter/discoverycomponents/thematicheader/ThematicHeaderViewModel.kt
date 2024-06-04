@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 
 class ThematicHeaderViewModel(
     application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(component) {
     companion object {
         private const val THEMATIC_HEADER_MIN_SIZE = 1
 

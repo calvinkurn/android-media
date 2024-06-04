@@ -9,9 +9,9 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class MixLeftEmptyViewModel(
     application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
     private val mixLeftBannerData: MutableLiveData<MixLeft> = MutableLiveData()
     fun getMixLeftBannerDataLD(): LiveData<MixLeft> = mixLeftBannerData
 

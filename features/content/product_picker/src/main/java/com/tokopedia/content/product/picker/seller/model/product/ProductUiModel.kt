@@ -1,8 +1,8 @@
 package com.tokopedia.content.product.picker.seller.model.product
 
 import android.os.Parcelable
-import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.ProductPrice
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -21,4 +21,8 @@ data class ProductUiModel(
     val price: ProductPrice,
     val pinStatus: PinProductUiModel,
     val number: String,
+    val shopName: String,
+    val shopBadge: String,
+    val rating: String,
+    val countSold: String,
 ) : Parcelable

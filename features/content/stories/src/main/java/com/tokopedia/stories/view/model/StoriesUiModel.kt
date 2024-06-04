@@ -59,7 +59,8 @@ data class StoriesDetailItem(
     val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
-    val status: StoryStatus = StoryStatus.Unknown
+    val status: StoryStatus = StoryStatus.Unknown,
+    val performanceLink: String = "",
 ) {
 
     val storyType: String
@@ -76,7 +77,7 @@ data class StoriesDetailItem(
             get() = StoriesDetailItem(
                 event = StoriesDetailItemUiEvent.RESUME,
                 content = StoriesItemContent(duration = 3000),
-                resetValue = 0
+                resetValue = 0, performanceLink = ""
             )
     }
 

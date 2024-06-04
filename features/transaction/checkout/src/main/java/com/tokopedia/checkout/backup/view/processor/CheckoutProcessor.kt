@@ -4,6 +4,15 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.pdp.AtcBuyType
+import com.tokopedia.checkout.backup.view.crossSellGroup
+import com.tokopedia.checkout.backup.view.firstOrNullInstanceOf
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutEgoldModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutItem
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.backup.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.backup.view.upsell
 import com.tokopedia.checkout.data.model.request.checkout.Carts
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.Data
@@ -16,15 +25,6 @@ import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellIt
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
-import com.tokopedia.checkout.backup.view.crossSellGroup
-import com.tokopedia.checkout.backup.view.firstOrNullInstanceOf
-import com.tokopedia.checkout.backup.view.uimodel.CheckoutCrossSellModel
-import com.tokopedia.checkout.backup.view.uimodel.CheckoutDonationModel
-import com.tokopedia.checkout.backup.view.uimodel.CheckoutEgoldModel
-import com.tokopedia.checkout.backup.view.uimodel.CheckoutItem
-import com.tokopedia.checkout.backup.view.uimodel.CheckoutOrderModel
-import com.tokopedia.checkout.backup.view.uimodel.CheckoutProductModel
-import com.tokopedia.checkout.backup.view.upsell
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -346,6 +346,8 @@ class CheckoutProcessor @Inject constructor(
         dynamicData: String,
         fingerprintPublicKey: String?
     ): CheckoutRequest {
+        val buyType = if (isOneClickShipment) AtcBuyType.OCS else AtcBuyType.ATC
+
         return CheckoutRequest(
             carts,
             isOneClickShipment.toString(),
@@ -359,7 +361,7 @@ class CheckoutProcessor @Inject constructor(
             isExpress = false,
             fingerprintSupport = (fingerprintPublicKey != null).toString(),
             fingerprintPublickey = fingerprintPublicKey ?: "",
-            tracker = AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC, carts.cartIds)
+            tracker = AppLogAnalytics.getEntranceInfoForCheckout(buyType, carts.cartIds)
         )
     }
 

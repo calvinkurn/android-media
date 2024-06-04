@@ -51,7 +51,7 @@ class BannerTimerViewHolder(customItemView: View, val fragment: Fragment) : Abst
 
     private fun configureTimerUI() {
         with(binding) {
-            bannerTimerViewModel?.getComponent().let {
+            bannerTimerViewModel?.component.let {
                 if (!it?.data.isNullOrEmpty()) {
                     bannerImageView.loadImageFitCenter(
                         it?.data?.firstOrNull()?.backgroundUrlMobile

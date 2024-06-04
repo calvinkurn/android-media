@@ -59,7 +59,8 @@ data class RecommendationItem(
     val appLogImpressHolder: ImpressHolder = ImpressHolder(),
     // for tokonow
     val parentID: Long = 0L,
-    var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
+    var currentQuantity: Int = 0, // change this quantity before atc/update/delete, if failed then return this value to quantity
+    val recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
 ) : ImpressHolder() {
 
     enum class AddToCartType {
@@ -129,6 +130,7 @@ data class RecommendationItem(
         if (addToCartType != other.addToCartType) return false
         if (currentQuantity != other.currentQuantity) return false
         if (specs != other.specs) return false
+        if (recommendationAdsLog != other.recommendationAdsLog) return false
 
         return true
     }
@@ -179,6 +181,7 @@ data class RecommendationItem(
         result = HASH_CODE * result + addToCartType.hashCode()
         result = HASH_CODE * result + currentQuantity.hashCode()
         result = HASH_CODE * result + specs.hashCode()
+        result = HASH_CODE * result + recommendationAdsLog.hashCode()
         return result
     }
 

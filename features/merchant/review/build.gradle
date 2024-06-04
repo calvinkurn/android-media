@@ -19,6 +19,12 @@ buildscript {
 android {
     namespace 'com.tokopedia.review'
     testNamespace 'com.tokopedia.review.test'
+
+    packagingOptions {
+        exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
+    }
+
     def pathSources = "src/main/res/"
     sourceSets {
         main {

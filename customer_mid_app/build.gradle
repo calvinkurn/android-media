@@ -36,6 +36,7 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/**'
+        pickFirst "**/libc++_shared.so"
     }
     lintOptions {
         abortOnError false
@@ -50,6 +51,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
+    implementation projectOrAar(rootProject.ext.features.feedCommon)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.home)
@@ -70,6 +72,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.productCardCompact)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
@@ -193,6 +196,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.medialoaderFresco)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
     implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
     implementation projectOrAar(rootProject.ext.libraries.oms)
@@ -415,4 +419,7 @@ dependencies {
     implementation rootProject.ext.ttnetDependencies.boringSsl
     implementation rootProject.ext.ttnetDependencies.cppShared
 
+    //Fresco Bytedance
+    implementation rootProject.ext.bytedanceFrescoDependencies.fresco
+    implementation rootProject.ext.bytedanceFrescoDependencies.statistic
 }

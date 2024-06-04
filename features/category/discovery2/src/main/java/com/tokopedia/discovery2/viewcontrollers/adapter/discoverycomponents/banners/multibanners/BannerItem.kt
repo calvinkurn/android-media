@@ -48,11 +48,7 @@ class BannerItem(
         constraintSet.constrainWidth(bannerImageView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.constrainHeight(bannerImageView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
-        if (viewWeight != null) {
-            constraintSet.setHorizontalWeight(bannerImageView.id, viewWeight)
-        } else {
-            constraintSet.setHorizontalWeight(bannerImageView.id, 1.0f)
-        }
+        constraintSet.setHorizontalWeight(bannerImageView.id, viewWeight ?: 1.0f)
 
         if (compType == SHOP_CARD) {
             (bannerImageView as ImageUnify).cornerRadius = RADIUS
@@ -125,7 +121,12 @@ class BannerItem(
                 )
             }
         }
-        constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        constraintSet.connect(
+            bannerImageView.id,
+            ConstraintSet.TOP,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.TOP
+        )
         if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
             try {
                 if (context.isValidGlideContext()) {

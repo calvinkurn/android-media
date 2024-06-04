@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/productContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="6dp"
+    android:layout_marginBottom="8dp">
+
+    <com.tokopedia.productcard.ProductCardListView
+        android:id="@+id/productCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:reimagine="true"
+        app:reimagine_template="list"
+        app:useCompatPadding="true" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgRank"
+        android:layout_width="44dp"
+        android:layout_marginEnd="16dp"
+        android:layout_height="75dp"
+        android:layout_gravity="center_vertical|end"
+        android:letterSpacing="0"
+        android:textColor="@color/dms_clr_AAB4C8_25"
+        android:textSize="64sp"
+        app:typographyWeight="bold"
+        tools:text="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="6dp"
+        android:background="@color/dms_clr_AAB4C8_25"/>
+
+</FrameLayout>
+
+
+

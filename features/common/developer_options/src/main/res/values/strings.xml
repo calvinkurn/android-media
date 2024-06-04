@@ -4,6 +4,8 @@
     <string name="shared_pref_title">Shared Pref Editor</string>
     <string name="ab_test_rollence_title">Ab Test Rollence Editor</string>
     <string name="pdp_dev_option_title">Product Dev Option</string>
+    <string name="shop_page_mock_dynamic_widget">Shop Page Mock Dynamic Widget</string>
+    <string name="mock_dynamic_widget_option_title">Mock Dynamic Widget Option</string>
 
     <string name="screen_name">Developer page</string>
 
@@ -35,7 +37,9 @@
 
     <string name="access_token">Access Token</string>
     <string name="pdp_dev">Product Detail Dev</string>
+    <string name="mock_dynamic_widget">Mock Dynamic Widget</string>
     <string name="mssdk_dev">MsSdk Dev</string>
+    <string name="shop_page_dev">Shop Page Dev</string>
     <string name="app_auth_secret">App Auth Secret (IT Risk)</string>
     <string name="skip_onboarding_user_session">Set False OnBoarding User Session</string>
     <string name="reset_onboarding">Reset OnBoarding</string>
@@ -110,6 +114,10 @@
     <string name="view_sse_logging">View SSE Logging</string>
     <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
     <string name="view_websocket_logging">View Web Socket Logging</string>
+    <string name="ok_http_timeout">OkHttp Timeout Value</string>
+    <string name="change_ok_http_timeout">Change</string>
+    <string name="change_ok_http_timeout_success_toaster">Success, please restart your app</string>
+    <string name="change_ok_http_timeout_empty_toaster">Timeout value cannot be empty, the default value is 10</string>
 
     <string name="applink_list">Applink List</string>
     <string name="tokopedia_name">Tokopedia</string>
@@ -142,6 +150,8 @@
     <string name="extract_branch_link">Extract Branch Link</string>
     <string name="hint_branch_et">Put your Branch Link Here ex: https://tokopedia.link/5lT0NZpifAb</string>
     <string name="banner_environment">Enable Banner Environment</string>
+    <string name="enable_percent_view_visible">Enable Percent View Visible</string>
 
     <string name="copy_id">Copied Id %s</string>
+    <string name="text_login_by_lark">Authorize by Lark</string>
 </resources>

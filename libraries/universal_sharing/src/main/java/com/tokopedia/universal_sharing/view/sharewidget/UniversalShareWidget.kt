@@ -45,7 +45,7 @@ import com.tokopedia.universal_sharing.R as universal_sharingR
 class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
     private var channelShareIconId: Int = CHANNEL_SHARE
-    private var iconUnifyId: Int = IconUnify.SHARE_MOBILE
+    private var iconUnifyId: Int = IconUnify.SOCIAL_SHARE
     private var callback: ShareWidgetCallback? = null
     private var isDirectChannel = false
     private var isAffiliate = false
@@ -143,7 +143,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
     private fun populateView() {
         when (getVariant()) {
             UniversalShareConst.RemoteConfigKey.VALUE_VARIANT_A -> {
-                binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
+                binding?.shareChannel?.setImage(IconUnify.SOCIAL_SHARE)
                 channelShareIconId = CHANNEL_SHARE
             }
 
@@ -153,9 +153,9 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                     mapColorIcon()
                     isDirectChannel = true
                 } else {
-                    binding?.shareChannel?.setImage(IconUnify.SHARE_MOBILE)
+                    binding?.shareChannel?.setImage(IconUnify.SOCIAL_SHARE)
                     channelShareIconId = CHANNEL_SHARE
-                    iconUnifyId = IconUnify.SHARE_MOBILE
+                    iconUnifyId = IconUnify.SOCIAL_SHARE
                 }
             }
 
@@ -279,7 +279,7 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                     is Success -> {
                         if (result.data.eligibleCommission?.isEligible.orFalse()) {
                             if (isShowShareIcon()) {
-                                binding?.shareChannel?.setImage(IconUnify.SHARE_AFFILIATE)
+                                binding?.shareChannel?.setImage(IconUnify.SOCIAL_SHARE_AFFILIATE)
                             }
                         }
 

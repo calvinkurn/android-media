@@ -66,6 +66,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
     private var selectedStartDate: Date? = null
     private var selectedEndDate: Date? = null
+    private var maxDate: Date? = null
     private var selectedDiscountType = DiscountType.RUPIAH
     private var selectedDiscountAmount = 0
     private var selectedMaxQuantity = 0
@@ -109,7 +110,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
         calendar.add(Calendar.YEAR, ONE_YEAR)
         this.selectedEndDate = calendar.time
-
+        this.maxDate = this.selectedEndDate
         _startDate.value = selectedStartDate
         _endDate.value = selectedEndDate
     }
@@ -183,6 +184,14 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
     fun getSelectedEndDate(): Date? {
         return selectedEndDate
+    }
+
+    fun setMaxDate(date: Date) {
+        maxDate = date
+    }
+
+    fun getMaxDate(): Date? {
+        return maxDate
     }
 
     fun setSelectedStartDate(startDate: Date) {

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import androidx.activity.result.ActivityResult
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.*
@@ -69,6 +72,9 @@ open class PowerMerchantSubscriptionFragment :
         fun createInstance(): PowerMerchantSubscriptionFragment {
             return PowerMerchantSubscriptionFragment()
         }
+        private const val PM_ISREVERIFY_KEY = "isReVerify"
+        private const val PM_SUBSCRIBE = "Power Merchant"
+        private const val PM_PROJECT_ID = "10"
     }
 
     protected val binding: FragmentPmPowerMerchantSubscriptionBinding? by viewBinding()
@@ -81,6 +87,10 @@ open class PowerMerchantSubscriptionFragment :
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        activity?.setResult(result.resultCode)
+    }
 
     protected val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
         ViewModelProvider(
@@ -180,6 +190,20 @@ open class PowerMerchantSubscriptionFragment :
 
     override fun goToMembershipDetail() {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+    }
+    override fun goToKyc() {
+        powerMerchantTracking.sendEventClickStartVerification()
+        goToTransparentActivityToReVerify()
+    }
+
+    private fun goToTransparentActivityToReVerify() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
+            putExtra(PM_ISREVERIFY_KEY, false)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_SOURCE,  PM_SUBSCRIBE)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, PM_PROJECT_ID)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK, String.EMPTY)
+        }
+        startReVerifyKycForResult.launch(intent)
     }
 
     override fun onPMProNewSellerLearnMore() {
@@ -821,7 +845,8 @@ open class PowerMerchantSubscriptionFragment :
             shopAge = shopInfo?.shopAge.orZero(),
             gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
             pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
-            shopGrade = shopGrade?.gradeName ?: PMConstant.ShopGrade.PM
+            shopGrade = shopGrade?.gradeName ?: PMConstant.ShopGrade.PM,
+            isKyc = shopInfo?.isKyc.orFalse(),
         )
     }
 

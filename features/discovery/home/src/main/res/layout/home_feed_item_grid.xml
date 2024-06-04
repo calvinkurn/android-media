@@ -9,4 +9,4 @@
     android:focusable="true"
     app:reimagine="true"
     app:reimagine_template="grid"
-    app:useCompatPadding="true"/>
+    app:useCompatPadding="true" />

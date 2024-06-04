@@ -64,6 +64,7 @@ object ProductDetailCommonConstant {
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val KEY_CART_TYPE_UPDATE_CART = "update_cart"
+    const val KEY_CART_TYPE_OF_VARIANT_EDITOR = "variant_editor"
 
     const val TEXT_REMIND_ME = "Cek Wishlist Kamu"
     const val TEXT_SAVE_ATC = "Simpan Perubahan"
@@ -82,6 +83,8 @@ object ProductDetailCommonConstant {
     const val REQUEST_CODE_TRADEIN_PDP = 2881
     const val RQUEST_CODE_UPDATE_FINTECH_WIDGET = 1991
     const val RQUEST_CODE_ACTIVATE_GOPAY = 1992
+    const val RC_VBS_TRANSACTION_ERROR = 1993
+    const val RC_VBS_UPDATE_VARIANT_SUCCESS = 1994
 
     // OVO
     const val OVO_INACTIVE_STATUS = 1

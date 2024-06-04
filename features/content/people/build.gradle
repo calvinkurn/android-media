@@ -103,8 +103,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayer
 
-    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.accompanistPager
     implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
 
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
@@ -118,6 +119,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.features.contentTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest

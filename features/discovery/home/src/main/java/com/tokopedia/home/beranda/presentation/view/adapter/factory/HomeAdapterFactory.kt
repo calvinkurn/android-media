@@ -29,6 +29,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.InspirationHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PullToRefreshDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringIconDataModel
@@ -40,6 +41,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeIniti
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CMHomeWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
@@ -51,6 +53,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeLoadingMoreViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomePayLaterWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PullToRefreshViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ReviewViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TargetedTickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
@@ -129,6 +132,7 @@ import com.tokopedia.home_component.viewholders.V2OrigamiSDUIViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.viewholders.mission.v3.Mission4SquareWidgetListener
+import com.tokopedia.home_component.viewholders.shorten.ContainerMultiTwoSquareViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
@@ -155,6 +159,16 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.visitable.shorten.MultiTwoSquareWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetErrorUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetErrorViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetLoadingUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetLoadingViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.LoginWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.listener.shorten.TwoSquareWidgetListenerCallback
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
@@ -220,12 +234,35 @@ class HomeAdapterFactory(
     private val homeThematicUtil: HomeThematicUtil,
     private val origamiListenerDelegate: OrigamiListenerDelegate,
     private val mission4SquareWidgetListener: Mission4SquareWidgetListener,
+    private val multiTwoSquareWidgetListener: TwoSquareWidgetListenerCallback,
     private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
     RecommendationTypeFactory,
-    RechargeComponentTypeFactory {
+    RechargeComponentTypeFactory,
+    BalanceWidgetTypeFactory
+{
+
+    override fun type(visitable: BalanceWidgetUiModel): Int {
+        return BalanceWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(visitable: BalanceWidgetErrorUiModel): Int {
+        return BalanceWidgetErrorViewHolder.LAYOUT
+    }
+
+    override fun type(visitable: BalanceWidgetLoadingUiModel): Int {
+        return BalanceWidgetLoadingViewHolder.LAYOUT
+    }
+
+    override fun type(visitable: LoginWidgetUiModel): Int {
+        return LoginWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(pullToRefreshDataModel: PullToRefreshDataModel): Int {
+        return PullToRefreshViewHolder.LAYOUT
+    }
 
     override fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int {
         return InspirationHeaderViewHolder.LAYOUT
@@ -492,6 +529,10 @@ class HomeAdapterFactory(
         return OrigamiSDUIViewHolder.LAYOUT
     }
 
+    override fun type(model: MultiTwoSquareWidgetUiModel): Int {
+        return ContainerMultiTwoSquareViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
@@ -672,6 +713,12 @@ class HomeAdapterFactory(
             V2OrigamiSDUIViewHolder.LAYOUT -> viewHolder = V2OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
+            ContainerMultiTwoSquareViewHolder.LAYOUT -> viewHolder = ContainerMultiTwoSquareViewHolder(view, multiTwoSquareWidgetListener, parentRecycledViewPool)
+            PullToRefreshViewHolder.LAYOUT -> viewHolder = PullToRefreshViewHolder(view, listener)
+            BalanceWidgetViewHolder.LAYOUT -> viewHolder = BalanceWidgetViewHolder(view, listener)
+            BalanceWidgetErrorViewHolder.LAYOUT -> viewHolder = BalanceWidgetErrorViewHolder(view, listener)
+            BalanceWidgetLoadingViewHolder.LAYOUT -> viewHolder = BalanceWidgetLoadingViewHolder(view)
+            LoginWidgetViewHolder.LAYOUT -> viewHolder = LoginWidgetViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

@@ -14,7 +14,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import java.util.*
 
-class TimerSprintSaleItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class TimerSprintSaleItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     var timerWithBannerCounter: CountDownTimer? = null
     private val elapsedTime: Long = 1000

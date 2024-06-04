@@ -1,5 +1,10 @@
 package com.tokopedia.tkpd.deeplink.activity;
 
+import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
+
+import static com.tokopedia.applink.internal.ApplinkConsInternalHome.PATH_REKOMENDASI;
+import static com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.HOST_DISCOVERY;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +18,12 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.PageName;
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -29,13 +38,13 @@ import com.tokopedia.linker.FirebaseDLWrapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.uri.DeeplinkUtils;
@@ -90,6 +99,7 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
                 List<String> pathSegments = uriData.getPathSegments();
                 if (pathSegments.size() > 0 && pathSegments.get(0).equals(PATH_FIND)) {
                     screenName = PRODUCT_SEARCH_RESULT;
+                    setAdsLogData();
                 } else {
                     screenName = uriData.getPath();
                 }
@@ -99,12 +109,29 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
             if (uri != null) {
                 sendAuthenticated(uri, isOriginalUrlAmp);
             }
+            addRekomendasiAppLog(applink);
             RouteManager.route(this, applink);
             finish();
         } else {
             initDeepLink();
-            TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_DEEP_LINK);
         }
+    }
+
+    private void addRekomendasiAppLog(String applink) {
+        // we put this logic not in presenter, because presenter only handle applink not converted into internal
+        // this is for internal
+        String path = Uri.parse(applink).getPath();
+        if (path != null && path.contains(HOST_DISCOVERY + "/" + PATH_REKOMENDASI)) {
+            AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_EXTERNAL_ADS);
+        }
+    }
+
+    private void setAdsLogData() {
+        AppLogTopAds.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
+        AppLogTopAds.currentPageName = PageName.FIND_PAGE;
+        AppLogTopAds.putAdsPageData(this, PAGE_NAME, PageName.FIND_PAGE);
+        AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
     }
 
     private void initBranchIO(Context context) {
@@ -124,7 +151,8 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
         return uriHaveCampaignData;
     }
 
-    private void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp) {
+    @Override
+    public void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp) {
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()), isOriginalUrlAmp);
         presenter.sendOpenScreen(uriData, campaign, AppScreen.SCREEN_DEEP_LINK, extraReferrer);
@@ -230,6 +258,12 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
     @Override
     public String getPageName() {
         return "";
+    }
+
+    @NonNull
+    @Override
+    public String getEnterFrom() {
+        return getPageName();
     }
 
     @Override

@@ -19,6 +19,9 @@ data class ContentSlot(
 )
 
 data class ContentSlotMeta(
+    @SerializedName("status_code")
+    val statusCode: Int = 0,
+
     @SerializedName("is_autoplay")
     val isAutoplay: Boolean = false,
 

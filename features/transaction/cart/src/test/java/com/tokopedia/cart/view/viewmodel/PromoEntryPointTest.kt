@@ -400,6 +400,25 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
     }
 
     @Test
+    fun getEntryPointInfoDefault_errorDefault() {
+        // given
+        cartPromoEntryPointProcessor.isPromoRevamp = false
+        val appliedPromoCodes = listOf("PROMO1", "PROMO2")
+
+        // when
+        cartViewModel.getEntryPointInfoDefault(
+            appliedPromoCodes = appliedPromoCodes,
+            isError = true
+        )
+
+        // then
+        Assert.assertEquals(
+            EntryPointInfoEvent.ActiveDefault(appliedPromoCodes),
+            cartViewModel.entryPointInfoEvent.value
+        )
+    }
+
+    @Test
     fun getEntryPointInfoNoItemSelected_success() {
         // given
 

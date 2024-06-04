@@ -2,14 +2,17 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.creation.common.upload.domain.usecase.post.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.data.FeedTabsModelBuilder
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedTooltipEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.tooltip.FeedSearchTooltipCategory
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -41,7 +44,6 @@ class FeedMainViewModelTest {
     private val activeTabSource = ActiveTabSource(null, 0)
 
     private val repository: FeedRepository = mockk()
-    private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = coroutineTestRule.dispatchers
@@ -51,6 +53,7 @@ class FeedMainViewModelTest {
     private val onBoardingPreferences: OnBoardingPreferences = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val uiEventManager: UiEventManager<FeedMainEvent> = mockk()
+    private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedMainViewModel
 
@@ -68,10 +71,10 @@ class FeedMainViewModelTest {
         viewModel = FeedMainViewModel(
             activeTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager,
         )
     }
 
@@ -88,10 +91,10 @@ class FeedMainViewModelTest {
         val mViewModel = FeedMainViewModel(
             activeTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager,
         )
         val displayName = mViewModel.displayName
 
@@ -276,13 +279,6 @@ class FeedMainViewModelTest {
                 assert(it == null || it.id != event.id)
             }
         }
-    }
-
-    @Test
-    fun onDeletePostCache() {
-        viewModel.deletePostCache()
-
-        coVerify(exactly = 1) { deletePostCacheUseCase(Unit) }
     }
 
     @Test
@@ -474,10 +470,10 @@ class FeedMainViewModelTest {
         coEvery { factory.create(mActiveTabSource) } returns FeedMainViewModel(
             mActiveTabSource,
             repository,
-            deletePostCacheUseCase,
             onBoardingPreferences,
             userSession,
-            uiEventManager
+            uiEventManager,
+            tooltipManager
         )
 
         val mViewModel = FeedMainViewModel.provideFactory(factory, mActiveTabSource)
@@ -485,5 +481,26 @@ class FeedMainViewModelTest {
 
         assert(mViewModel.activeTabSource.tabName == mActiveTabSource.tabName)
         assert(mViewModel.activeTabSource.index == mActiveTabSource.index)
+    }
+
+    /** Tooltip */
+    @Test
+    fun consumeEventTooltip() {
+        val event = FeedTooltipEvent.ShowTooltip(FeedSearchTooltipCategory.Promo)
+
+        coEvery { tooltipManager.clearTooltipEvent(event.id) } returns Unit
+
+        viewModel.consumeEvent(event)
+
+        coVerify(exactly = 1) { tooltipManager.clearTooltipEvent(event.id) }
+    }
+
+    @Test
+    fun setHasShownTooltip() {
+        coEvery { tooltipManager.setHasShownTooltip() } returns Unit
+
+        viewModel.setHasShownTooltip()
+
+        coVerify(exactly = 1) { tooltipManager.setHasShownTooltip() }
     }
 }

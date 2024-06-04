@@ -5,10 +5,11 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
 
 /**
  * Created by kenny.hadisaputra on 02/03/22
@@ -18,7 +19,7 @@ class ProductSetupContainer(
         productSetupViewModel(handle = it)
     },
     private val onAttach: (child: Fragment) -> Unit = {},
-    creator: (className: String) -> Fragment,
+    creator: (className: String) -> Fragment
 ) : BottomSheetContainer(creator), ViewModelFactoryProvider {
 
     override fun getFactory(): ViewModelProvider.Factory {
@@ -29,7 +30,7 @@ class ProductSetupContainer(
             override fun <T : ViewModel> create(
                 key: String,
                 modelClass: Class<T>,
-                handle: SavedStateHandle,
+                handle: SavedStateHandle
             ): T {
                 return object : ContentProductPickerSellerViewModel.Factory {
                     override fun create(
@@ -39,13 +40,20 @@ class ProductSetupContainer(
                         savedStateHandle: SavedStateHandle,
                         isNumerationShown: Boolean,
                         isEligibleForPin: Boolean,
-                        fetchCommissionProduct: Boolean
+                        fetchCommissionProduct: Boolean,
+                        selectedAccount: ContentAccountUiModel
                     ): ContentProductPickerSellerViewModel {
                         return viewModel(savedStateHandle)
                     }
-                }.create("123", 30, emptyList(), handle, isNumerationShown = true,
+                }.create(
+                    "123",
+                    30,
+                    emptyList(),
+                    handle,
+                    isNumerationShown = true,
                     isEligibleForPin = false,
-                    fetchCommissionProduct = false
+                    fetchCommissionProduct = false,
+                    selectedAccount = ContentAccountUiModel.Empty
                 ) as T
             }
         }

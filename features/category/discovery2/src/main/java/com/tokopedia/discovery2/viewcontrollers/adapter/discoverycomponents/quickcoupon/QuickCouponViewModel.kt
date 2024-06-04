@@ -17,7 +17,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class QuickCouponViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class QuickCouponViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
     private val clickCouponLiveData: MutableLiveData<ClickCouponData> = MutableLiveData()
     private val couponAppliedStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()

@@ -24,8 +24,8 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.listener.DateFilterLi
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
-import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.databinding.BottomsheetStcSelectDateRangeBinding
+import com.tokopedia.statistic.view.activity.StatisticActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -94,7 +94,7 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
             dismiss()
         }
 
-        showExclusiveIdentifier()
+        showPaywallAccess()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -156,14 +156,14 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         }
     }
 
-    private fun showExclusiveIdentifier() = binding?.run {
-        activity?.let {
+    private fun showPaywallAccess() = binding?.run {
+        (activity as? StatisticActivity)?.let {
             val userSession: UserSessionInterface = UserSession(it.applicationContext)
-            val isRegularMerchant = StatisticPageHelper.getRegularMerchantStatus(userSession)
+            val hasAccess = it.isPaywallAccessGranted
             rvStcDateRage.addOnItemTouchListener(object :
                 RecyclerView.OnItemTouchListener {
                 override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    return isRegularMerchant
+                    return !hasAccess
                 }
 
                 override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
@@ -174,14 +174,14 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
 
                 }
             })
-            tvStcExclusiveFeature.isVisible = !isRegularMerchant
-            icStcExclusiveFeature.isVisible = !isRegularMerchant
-            stcFilterExclusiveIdentifier.isVisible = isRegularMerchant
+            tvStcExclusiveFeature.isVisible = hasAccess
+            icStcExclusiveFeature.isVisible = hasAccess
+            stcFilterExclusiveIdentifier.isVisible = !hasAccess
             stcFilterExclusiveIdentifier.setOnCtaClickListener {
                 StatisticTracker.sendClickEventOnCloseDateFilter(pageSource)
                 dismiss()
             }
-            if (isRegularMerchant) {
+            if (!hasAccess) {
                 val identifierDescription = arguments
                     ?.getString(KEY_IDENTIFIER_DESCRIPTION).orEmpty()
                 stcFilterExclusiveIdentifier.setDescription(identifierDescription)

@@ -8,7 +8,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class SliderBannerViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class SliderBannerViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
 
     private val componentsData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()

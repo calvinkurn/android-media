@@ -163,7 +163,7 @@ class ShopDiscountManageViewModelTest {
             val liveDataValue = viewModel.setupProductListLiveData.value
             assert(liveDataValue is Success)
             assert((liveDataValue as Success).data.listSetupProductData.any {
-                it.mappedResultData.minStartDateUnix == null && it.mappedResultData.minEndDateUnix == null
+                it.mappedResultData.minStartDateUnix == null && it.mappedResultData.maxEndDateUnix == null
             })
         }
     }

@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.analytics.*
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
@@ -35,9 +34,10 @@ import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.getVideoDuration
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
@@ -48,9 +48,7 @@ open class CameraFragment @Inject constructor(
     private var param: PickerCacheManager,
     private var cameraAnalytics: CameraAnalytics,
     private val eventBus: PickerEventBus
-) : BaseDaggerFragment()
-    , CameraControllerComponent.Listener
-    , CameraViewUiComponent.Listener {
+) : BaseDaggerFragment(), CameraControllerComponent.Listener, CameraViewUiComponent.Listener {
 
     private val pickerViewModel: PickerViewModel by activityViewModels { viewModelFactory }
 
@@ -92,14 +90,17 @@ open class CameraFragment @Inject constructor(
     private var isInitFlashState = false
 
     val gestureDetector by lazy {
-        GestureDetector(requireContext(), FlingGestureWrapper(
-            swipeLeftToRight = {
-                controller.scrollToVideoMode()
-            },
-            swipeRightToLeft = {
-                controller.scrollToPhotoMode()
-            }
-        ))
+        GestureDetector(
+            requireContext(),
+            FlingGestureWrapper(
+                swipeLeftToRight = {
+                    controller.scrollToVideoMode()
+                },
+                swipeRightToLeft = {
+                    controller.scrollToPhotoMode()
+                }
+            )
+        )
     }
 
     override fun onCreateView(
@@ -172,7 +173,7 @@ open class CameraFragment @Inject constructor(
         cameraView.setCameraFlashIndex()
         setCameraFlashState()
 
-        val flashStateString = when(cameraView.cameraFlash()){
+        val flashStateString = when (cameraView.cameraFlash()) {
             Flash.AUTO -> FLASH_AUTO_STRING
             Flash.ON -> FLASH_ON_STRING
             else -> FLASH_OFF_STRING
@@ -324,8 +325,8 @@ open class CameraFragment @Inject constructor(
     }
 
     private fun onStartRecordVideo() {
-        controller.startRecording()
         contract?.parentTabIsShownAs(false)
+        controller.startRecording()
     }
 
     private fun onStopRecordVideo() {
@@ -373,5 +374,4 @@ open class CameraFragment @Inject constructor(
     companion object {
         private const val OVERLAY_SHUTTER_DELAY = 100L
     }
-
 }

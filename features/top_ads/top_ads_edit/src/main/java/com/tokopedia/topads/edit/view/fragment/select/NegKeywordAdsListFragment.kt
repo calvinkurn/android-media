@@ -43,6 +43,8 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
     companion object {
         private const val VALIDATE_KEYWORD_LIMIT = 5
+        private const val ALLOWED_CHARS_REGEX = "[a-zA-Z0-9()+/\"'-.,&*%: ]"
+
         fun createInstance(extras: Bundle?): NegKeywordAdsListFragment {
             val fragment = NegKeywordAdsListFragment()
             fragment.arguments = extras
@@ -177,13 +179,18 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     private fun validateKeyword(text: CharSequence?): CharSequence? {
         return if (!text.isNullOrBlank() && text.split(" ").size > VALIDATE_KEYWORD_LIMIT) {
             getString(com.tokopedia.topads.common.R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9 ]*$".toRegex())) {
+        } else if (!text.isNullOrBlank() && !isValidString(text.toString())) {
             getString(com.tokopedia.topads.common.R.string.error_keyword)
         } else if (text!!.length > BUDGET_MULTIPLE_FACTOR) {
             getString(com.tokopedia.topads.common.R.string.error_max_length)
         } else {
             null
         }
+    }
+
+    private fun isValidString(input: String): Boolean {
+        val regex = Regex(ALLOWED_CHARS_REGEX)
+        return input.all { it.toString().matches(regex) }
     }
 
     private fun getData(): ArrayList<GetKeywordResponse.KeywordsItem>? {

@@ -52,6 +52,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
@@ -93,6 +94,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.isLoginSdkFlow
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.track.TrackApp
@@ -109,11 +111,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import androidx.appcompat.R as appcompatR
-import com.tokopedia.sessioncommon.R as sessioncommonR
 import com.tokopedia.network.R as networkR
-
+import com.tokopedia.sessioncommon.R as sessioncommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by nisie on 10/24/18.
@@ -139,6 +140,7 @@ class RegisterInitialFragment :
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd: Boolean = true
     private var validateToken: String = ""
+    private var callbackRegister: String = ""
 
     private var redefineRegisterEmailVariant: String = ""
 
@@ -226,6 +228,12 @@ class RegisterInitialFragment :
         )
         loginCredential = getParamString(
             ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL,
+            arguments,
+            savedInstanceState,
+            ""
+        )
+        callbackRegister = getParamString(
+            ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER,
             arguments,
             savedInstanceState,
             ""
@@ -353,7 +361,7 @@ class RegisterInitialFragment :
     private fun setupToolbar() {
         activity?.let { activity ->
             activity.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
-                headerTitle = getString(R.string.register)
+                headerTitle = if (requireContext().isLoginSdkFlow()) getString(R.string.register_sdk_title) else getString(R.string.register)
                 actionText = getString(R.string.login)
                 setNavigationOnClickListener {
                     activity.onBackPressed()
@@ -365,7 +373,11 @@ class RegisterInitialFragment :
                         )
                     }
                     registerAnalytics.trackClickTopSignInButton()
-                    registerInitialRouter.goToLoginPage(activity)
+                    if (requireContext().isLoginSdkFlow()) {
+                        activity.onBackPressed()
+                    } else {
+                        registerInitialRouter.goToLoginPage(activity, callbackRegister)
+                    }
                 }
             }
         }
@@ -471,6 +483,19 @@ class RegisterInitialFragment :
             }
 
             initTermPrivacyView()
+            if (requireContext().isLoginSdkFlow()) {
+                prepareLoginTiktokView()
+            }
+        }
+    }
+
+    private fun prepareLoginTiktokView() {
+        viewBinding?.apply {
+            socmedBtn.showWithCondition(false)
+
+            btnLoginGoogle.showWithCondition(true)
+            val googleIcon = MethodChecker.getDrawable(requireContext(), R.drawable.ic_login_google)
+            btnLoginGoogle.setCompoundDrawablesWithIntrinsicBounds(googleIcon, null, null, null)
         }
     }
 
@@ -866,6 +891,7 @@ class RegisterInitialFragment :
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, callbackRegister)
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             it.startActivity(intent)
             it.finish()
@@ -901,6 +927,7 @@ class RegisterInitialFragment :
                 RegisterConstants.Request.REQUEST_CHANGE_NAME -> { onActivityResultChangeName(resultCode) }
                 RegisterConstants.Request.REQUEST_OTP_VALIDATE -> { onActivityResultOtpValidate(resultCode, data) }
                 RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE -> { onActivityResultPendingOtpValidate(resultCode, data) }
+                RegisterConstants.Request.REQUEST_CALLBACK_REGISTER -> { finishSuccessResult() }
                 else -> { super.onActivityResult(requestCode, resultCode, data) }
             }
         }
@@ -1386,20 +1413,17 @@ class RegisterInitialFragment :
         }
 
         activity?.let {
-            val bundle = Bundle()
-
             if (isSmartLogin) {
                 analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
             }
 
-            if (!isSmartRegister) {
-                bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
-            }
-
             TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
 
-            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-            it.finish()
+            if (!GlobalConfig.isSellerApp() && callbackRegister.isNotEmpty()) {
+                goToCallbackRegister(callbackRegister)
+            } else {
+                finishSuccessResult()
+            }
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
@@ -1407,6 +1431,21 @@ class RegisterInitialFragment :
             TwoFactorMluHelper.clear2FaInterval(it)
             initTokoChatConnection()
         }
+    }
+
+    private fun finishSuccessResult() {
+        activity?.let {
+            val bundle = Bundle()
+            if (!isSmartRegister) {
+                bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
+            }
+            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+            it.finish()
+        }
+    }
+
+    private fun goToCallbackRegister(callback: String) {
+        registerInitialRouter.goToCallbackRegister(this@RegisterInitialFragment, callback)
     }
 
     private fun initTokoChatConnection() {

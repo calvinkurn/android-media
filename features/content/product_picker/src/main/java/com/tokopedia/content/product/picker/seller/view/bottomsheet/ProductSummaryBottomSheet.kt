@@ -9,20 +9,20 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key.ProductSummaryCommission
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductTagSummaryUiModel
-import com.tokopedia.content.product.picker.seller.view.viewcomponent.ProductSummaryListViewComponent
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.content.product.picker.seller.util.productTagSummaryEmpty
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
+import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.databinding.BottomSheetSellerProductSummaryBinding
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.exception.PinnedProductException
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductTagSummaryUiModel
+import com.tokopedia.content.product.picker.seller.util.productTagSummaryEmpty
+import com.tokopedia.content.product.picker.seller.view.viewcomponent.ProductSummaryListViewComponent
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
@@ -148,7 +148,12 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
-                        productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin, viewModel.isNumerationShown)
+                        productSummaryListView.setProductList(
+                            productSectionList = state.productTagSectionList,
+                            isEligibleForPin = viewModel.isEligibleForPin,
+                            isProductNumerationShown = viewModel.isNumerationShown,
+                            selectedAccount = viewModel.selectedAccount,
+                        )
                         setupProductCommissionCoachMark()
 
                         if(state.productTagSectionList.isEmpty()) {
@@ -171,7 +176,12 @@ class ProductSummaryBottomSheet @Inject constructor(
                             actionListener = { event.action?.invoke() },
                         )
 
-                        productSummaryListView.setProductList(emptyList(), viewModel.isEligibleForPin, viewModel.isNumerationShown)
+                        productSummaryListView.setProductList(
+                            productSectionList = emptyList(),
+                            isEligibleForPin = viewModel.isEligibleForPin,
+                            isProductNumerationShown = viewModel.isNumerationShown,
+                            selectedAccount = viewModel.selectedAccount,
+                        )
                         showLoading(false)
                     }
                     is ProductChooserEvent.DeleteProductSuccess -> {

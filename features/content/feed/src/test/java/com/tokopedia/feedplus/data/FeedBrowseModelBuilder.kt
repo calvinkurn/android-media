@@ -68,7 +68,7 @@ class FeedBrowseModelBuilder {
         )
     )
 
-    private fun buildChannelList() = List(5) { index ->
+    fun buildChannelList(size: Int = 5) = List(size) { index ->
         PlayWidgetChannelUiModel(
             channelId = "$index",
             title = "title $index",

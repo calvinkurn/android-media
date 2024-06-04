@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.browse.presentation
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -18,9 +17,11 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
@@ -40,6 +41,7 @@ import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -309,7 +311,7 @@ internal class FeedBrowseFragment @Inject constructor(
                             hideError()
                             showContent()
 
-                            renderHeader(if (prevState is FeedBrowseUiState.Success) prevState.title else null, state.title)
+                            renderHeader(state.headerDetail)
                             renderContent(state.widgets)
                         }
                         is FeedBrowseUiState.Error -> {
@@ -322,10 +324,11 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private fun setupView() {
-        (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader)
-        binding.feedBrowseHeader.setBackgroundColor(Color.TRANSPARENT)
-        binding.feedBrowseHeader.setNavigationOnClickListener {
-            onBackPressedCallback.handleOnBackPressed()
+        (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader.header)
+        binding.feedBrowseHeader.let { feedHeader ->
+            feedHeader.onBackClicked {
+                onBackPressedCallback.handleOnBackPressed()
+            }
         }
 
         val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
@@ -383,9 +386,17 @@ internal class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseList.hide()
     }
 
-    private fun renderHeader(cachedTitle: String?, newTitle: String) {
-        if (cachedTitle == newTitle) return
-        binding.feedBrowseHeader.title = newTitle
+    private fun renderHeader(newHeaderDetail: HeaderDetailModel) {
+        binding.feedBrowseHeader.let {
+            if (!newHeaderDetail.isShowSearchBar) {
+                it.header?.title = newHeaderDetail.title
+            } else {
+                it.setSearchBar(false, newHeaderDetail.searchBarPlaceholder)
+                it.setSearchbarFocusListener { view, focusState ->
+                    searchbarFocusHandler(view, focusState)
+                }
+            }
+        }
     }
 
     private fun renderContent(widgets: List<FeedBrowseStatefulModel>) {
@@ -398,6 +409,20 @@ internal class FeedBrowseFragment @Inject constructor(
                 binding.feedBrowseList.invalidateItemDecorations()
             }
         }
+    }
+
+    private fun searchbarFocusHandler(view: View, focusState: Boolean) {
+        if (focusState) {
+            tracker.clickSearchbar()
+
+            viewModel.getHeaderDetail().also {
+                val intent = router.getIntent(context, it.applink.ifNull { ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE })
+                intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
+                startActivity(intent)
+            }
+        }
+
+        view.clearFocus()
     }
 
     companion object {

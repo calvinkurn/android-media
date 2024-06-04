@@ -42,7 +42,7 @@ abstract class UserProfileFragmentModule {
     @Binds
     @IntoMap
     @FragmentKey(FollowerFollowingListingFragment::class)
-    abstract fun bindFollowerFollowingListingFragment(fragment: FollowerFollowingListingFragment): Fragment
+    internal abstract fun bindFollowerFollowingListingFragment(fragment: FollowerFollowingListingFragment): Fragment
 
     @Binds
     @IntoMap

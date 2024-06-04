@@ -13,7 +13,7 @@
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        tools:text="2 Jam Tiba" />
+        tools:text="1 Jam Tiba" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_description"

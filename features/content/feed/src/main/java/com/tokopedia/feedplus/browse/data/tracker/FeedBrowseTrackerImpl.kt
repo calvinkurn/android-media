@@ -352,10 +352,10 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
         )
     }
 
-    override fun clickBackExitCategoryInspirationPage() {
+    override fun clickBackExit() {
         Tracker.Builder()
             .setEvent(Event.clickHomepage)
-            .setEventAction("click - back exit category inspiration")
+            .setEventAction("click - back exit page")
             .setEventCategory("feed browse page")
             .setEventLabel(prefix)
             .setCustomProperty(Key.trackerId, "45755")
@@ -431,6 +431,20 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
         )
     }
 
+    override fun clickSearchbar() {
+        Tracker.Builder()
+            .setEvent(Event.clickHomepage)
+            .setEventAction("click - search bar")
+            .setEventCategory("feed browse page")
+            .setEventLabel(prefix)
+            .setCustomProperty(Key.trackerId, "50385")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
     private fun sendEnhanceEcommerceEvent(
         eventName: String,
         eventAction: String,
@@ -468,5 +482,6 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
     companion object {
         const val PREFIX_BROWSE_PAGE = "BROWSE_PAGE_FEED"
         const val PREFIX_CATEGORY_INSPIRATION_PAGE = "CAT_INSPIRATION_PAGE"
+        const val PREFIX_LOCAL_SEARCH_PAGE = "BROWSE_PAGE_SEARCH"
     }
 }

@@ -93,7 +93,7 @@ object AtcCommonMapper {
                     ),
                     userId = userId,
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP,
-                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.INSTANT)
+                    trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.OCC)
                 )
             }
             else -> {
@@ -341,7 +341,8 @@ object AtcCommonMapper {
         shouldRefreshPreviousPage: Boolean? = null,
         isFollowShop: Boolean? = null,
         requestCode: Int? = null,
-        cartId: String? = null
+        cartId: String? = null,
+        anchorCartId: String? = null
     ): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
@@ -353,6 +354,7 @@ object AtcCommonMapper {
         if (requestCode != null) result.requestCode = requestCode
         if (isFollowShop != null) result.isFollowShop = isFollowShop
         if (cartId != null) result.cartId = cartId
+        if (anchorCartId != null) result.anchorCartId = anchorCartId
 
         return result
     }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +48,7 @@ internal fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewR
             LazyColumn(modifier = Modifier.padding(vertical = 12.dp)) {
                 items(reports) { item ->
                     NestRadioButton(
+                        modifier = Modifier.testTag(stringResource(id =R.string.product_prev_test_tag_option_report)),
                         text = item.text,
                         selected = item.reasonCode == selectedOption.reasonCode,
                         onSelected = { isChecked ->
@@ -73,7 +75,9 @@ internal fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewR
                     onSubmit(selectedOption.copy(text = if (isOtherReason) reason else selectedOption.text))
                 },
                 isEnabled = selectedOption != ReviewReportUiModel.Empty,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(stringResource(id = R.string.product_prev_test_tag_submit_report))
             )
         }
     }

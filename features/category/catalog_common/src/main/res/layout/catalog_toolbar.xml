@@ -109,7 +109,7 @@
         app:icon_color_night_disabled="@color/Unify_Static_Black"
         app:icon_color_night_enable="@color/Unify_Static_Black"
         app:icon_enable_state="true"
-        app:icon_name="SHARE_MOBILE"
+        app:icon_name="SOCIAL_SHARE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/icon_notif_wrapper"
         app:layout_constraintTop_toTopOf="parent" />

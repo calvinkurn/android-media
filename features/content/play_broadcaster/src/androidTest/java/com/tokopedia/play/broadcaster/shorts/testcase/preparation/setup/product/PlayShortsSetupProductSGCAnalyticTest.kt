@@ -5,6 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
@@ -18,6 +19,7 @@ import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -31,6 +33,7 @@ import org.junit.runner.RunWith
  * Created By : Jonathan Darwin on December 15, 2022
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayShortsSetupProductSGCAnalyticTest {
 
     @get:Rule
@@ -51,6 +54,7 @@ class PlayShortsSetupProductSGCAnalyticTest {
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
     private val mockIdleManager: PlayShortsIdleManager = mockk(relaxed = true)
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
@@ -63,6 +67,8 @@ class PlayShortsSetupProductSGCAnalyticTest {
     private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
 
     init {
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any()) } returns true
+        coEvery { mockCoachMarkSharedPref.hasBeenShown(any(), any()) } returns true
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
@@ -95,6 +101,7 @@ class PlayShortsSetupProductSGCAnalyticTest {
                         mockIdleManager = mockIdleManager,
                         mockRouter = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
+                        mockCoachMarkSharedPref = mockCoachMarkSharedPref,
                     )
                 )
                 .build()
@@ -110,222 +117,101 @@ class PlayShortsSetupProductSGCAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_clickSearchBarOnProductSetup() {
+    fun testAnalytic_shorts_productSetupSgc() {
+        cassavaValidator.verify("view - product selection bottom sheet")
+
+        clickCloseBottomSheet()
+        delay()
+        cassavaValidator.verify("click - close button on product bottom sheet")
+
+        clickMenuProduct()
         delay()
         clickSearchBarProductPickerSGC()
         delay()
-
         cassavaValidator.verify("click - search product")
-    }
 
-    @Test
-    fun testAnalytic_clickProductSorting() {
-        delay()
         clickSortChip()
         delay()
-
+        cassavaValidator.verify("view - sorting bottom sheet")
         cassavaValidator.verify("click - product sort")
-    }
 
-    @Test
-    fun testAnalytic_clickCampaignAndEtalaseFilter() {
-
-        delay()
-        clickEtalaseAndCampaignChip()
-        delay()
-
-        cassavaValidator.verify("click - filter product etalase")
-    }
-
-    @Test
-    fun testAnalytic_clickCloseOnProductChooser() {
-
-        delay()
-        clickCloseBottomSheet()
-        delay()
-
-        cassavaValidator.verify("click - close button on product bottom sheet")
-    }
-
-    @Test
-    fun testAnalytic_clickSelectProductOnProductSetup() {
-
-        delay()
-        selectProduct()
-        delay()
-
-        cassavaValidator.verify("click - product card")
-    }
-
-    @Test
-    fun testAnalytic_clickCloseOnProductSortingBottomSheet() {
-        delay()
-        clickSortChip()
-        delay()
-        clickCloseBottomSheet()
-        delay()
-
-        cassavaValidator.verify("click - close sort product")
-    }
-
-    @Test
-    fun testAnalytic_clickProductSortingType() {
-
-        delay()
-        clickSortChip()
-        delay()
         selectSortType()
         delay()
         clickSaveSort()
         delay()
-
         cassavaValidator.verify("click - sort type")
-    }
 
-    @Test
-    fun testAnalytic_viewProductSortingBottomSheet() {
-
-        delay()
         clickSortChip()
-        delay()
-
-        cassavaValidator.verify("view - sorting bottom sheet")
-    }
-
-    @Test
-    fun testAnalytic_clickCloseOnProductFilterBottomSheet() {
-        delay()
-        clickEtalaseAndCampaignChip()
         delay()
         clickCloseBottomSheet()
         delay()
+        cassavaValidator.verify("click - close sort product")
 
+        clickEtalaseAndCampaignChip()
+        delay()
+        cassavaValidator.verify("view - filter bottom sheet")
+        cassavaValidator.verify("click - filter product etalase")
+
+        clickCloseBottomSheet()
+        delay()
         cassavaValidator.verify("click - close filter bottom sheet")
+
+        clickEtalaseAndCampaignChip()
+        delay()
+        selectCampaign()
+        delay()
+        cassavaValidator.verify("click - campaign card")
+
+        clickEtalaseAndCampaignChip()
+        delay()
+        selectEtalase()
+        delay()
+        cassavaValidator.verify("click - etalase card")
+
+        selectProduct()
+        delay()
+        cassavaValidator.verify("click - product card")
+
+        clickSubmitProductTag()
+        delay()
+        cassavaValidator.verify("click - save product card")
+
+        delay()
+        cassavaValidator.verify("view - product selection summary")
+
+        clickDeleteOnFirstProduct()
+        delay()
+        cassavaValidator.verify("click - delete a product tagged")
+
+        clickCloseBottomSheet()
+        delay()
+        cassavaValidator.verify("click - back product selection page")
+
+        clickMenuProduct()
+        delay()
+        clickNextOnProductPickerSummary()
+        delay()
+        cassavaValidator.verify("click - save product tag")
+
+        clickMenuProduct()
+        delay()
+        clickAddMoreProduct()
+        delay()
+        cassavaValidator.verify("click - add product card")
     }
 
-    @Test
-    fun testAnalytic_clickCampaignCard() {
-        
+    private fun selectCampaign() {
         /** 0 for header, 1..x for the campaign */
         val firstCampaignIdx = 1
 
-        delay()
-        clickEtalaseAndCampaignChip()
-        delay()
         selectEtalaseOrCampaign(firstCampaignIdx)
-        delay()
-
-        cassavaValidator.verify("click - campaign card")
     }
 
-    @Test
-    fun testAnalytic_clickEtalaseCard() {
-        
+    private fun selectEtalase() {
         /** 2 for campaign header + etalase header */
         val totalHeader = 2
         val firstEtalaseIdx = mockCampaignList.size + totalHeader
 
-        delay()
-        clickEtalaseAndCampaignChip()
-        delay()
         selectEtalaseOrCampaign(firstEtalaseIdx)
-        delay()
-
-        cassavaValidator.verify("click - etalase card")
-    }
-
-    @Test
-    fun testAnalytic_viewProductFilterBottomSheet() {
-        delay()
-        clickEtalaseAndCampaignChip()
-        delay()
-
-        cassavaValidator.verify("view - filter bottom sheet")
-    }
-
-    @Test
-    fun testAnalytic_viewProductChooser() {
-        delay()
-        cassavaValidator.verify("view - product selection bottom sheet")
-    }
-
-    @Test
-    fun testAnalytic_clickSaveButtonOnProductSetup() {
-
-        delay()
-        selectProduct()
-        delay()
-        clickSubmitProductTag()
-        delay()
-
-        cassavaValidator.verify("click - save product card")
-    }
-
-    @Test
-    fun testAnalytic_clickAddMoreProductOnProductSetup() {
-
-        delay()
-        selectProduct()
-        delay()
-        clickSubmitProductTag()
-        delay()
-        clickAddMoreProduct()
-        delay()
-
-        cassavaValidator.verify("click - add product card")
-    }
-
-    @Test
-    fun testAnalytic_clickCloseOnProductSummary() {
-
-        delay()
-        selectProduct()
-        delay()
-        clickSubmitProductTag()
-        delay()
-        clickCloseBottomSheet()
-        delay()
-
-        cassavaValidator.verify("click - back product selection page")
-    }
-
-    @Test
-    fun testAnalytic_clickDeleteProductOnProductSetup() {
-
-        delay()
-        selectProduct()
-        delay()
-        clickSubmitProductTag()
-        delay()
-        clickDeleteOnFirstProduct()
-        delay()
-
-        cassavaValidator.verify("click - delete a product tagged")
-    }
-
-    @Test
-    fun testAnalytic_clickDoneOnProductSetup() {
-
-        delay()
-        selectProduct()
-        delay()
-        clickSubmitProductTag()
-        delay()
-        clickNextOnProductPickerSummary()
-        delay()
-
-        cassavaValidator.verify("click - save product tag")
-    }
-
-    @Test
-    fun testAnalytic_viewProductSummary() {
-
-        delay()
-        selectProduct()
-        delay()
-        clickSubmitProductTag()
-        delay()
-
-        cassavaValidator.verify("view - product selection summary")
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailShareUtils
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.iconunify.IconUnify
@@ -77,13 +78,18 @@ class PartialProductItemViewHolder(
     }
 
     private fun setupShareButton(productUrl: String?) {
+        if (BuyerOrderDetailShareUtils.isUsingShareEx()) {
+            return
+        }
+
         if (productUrl?.isEmpty() == true) {
             btnShareProduct?.hide()
         }
     }
 
     fun bindProductItemPayload(
-        oldItem: ProductListUiModel.ProductUiModel, newItem: ProductListUiModel.ProductUiModel
+        oldItem: ProductListUiModel.ProductUiModel,
+        newItem: ProductListUiModel.ProductUiModel
     ) {
         container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         this.element = newItem

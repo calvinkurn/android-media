@@ -15,15 +15,18 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.unitTest)
+
     // Unit Test Dependency
     implementation rootProject.ext.testDependencies.assertJCore
 
     // Instrumentation Test Dependency
     implementation rootProject.ext.testDependencies.androidxTest
-    implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
-
     implementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoContrib
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
     implementation rootProject.ext.unifyDependencies.components
 }

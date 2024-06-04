@@ -11,12 +11,11 @@ object UserProfileInjector {
     private var customComponent: UserProfileComponent? = null
 
     fun get(context: Context): UserProfileComponent = synchronized(this) {
-        return customComponent ?: DaggerUserProfileComponent.builder()
-            .baseAppComponent(
+        return customComponent ?: DaggerUserProfileComponent.factory()
+            .create(
                 (context.applicationContext as BaseMainApplication).baseAppComponent,
+                context
             )
-            .userProfileModule(UserProfileModule(context))
-            .build()
     }
 
     fun set(component: UserProfileComponent) = synchronized(this) {

@@ -14,8 +14,6 @@ import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.util.forceToUTCWithoutTimezone
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 /**
@@ -73,6 +71,10 @@ class ProductPickerSellerCommonMapper @Inject constructor() {
                     extraCommission = false,
                     pinStatus = PinProductUiModel.Empty,
                     number = "",
+                    shopBadge = "",
+                    shopName = "",
+                    rating = "",
+                    countSold = "",
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),

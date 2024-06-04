@@ -1,5 +1,6 @@
 package com.tokopedia.people.di
 
+import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
@@ -10,6 +11,7 @@ import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity
+import dagger.BindsInstance
 import dagger.Component
 
 @UserProfileScope
@@ -24,14 +26,23 @@ import dagger.Component
         FeedFloatingButtonManagerModule::class,
         ShopRecomModule::class,
         PeopleModule::class,
-        ContentCoachMarkSharedPrefModule::class,
+        ContentCoachMarkSharedPrefModule::class
     ],
-    dependencies = [BaseAppComponent::class],
+    dependencies = [BaseAppComponent::class]
 )
 interface UserProfileComponent {
 
     fun inject(activity: UserProfileActivity)
+
     fun inject(activity: FollowerFollowingListingActivity)
 
     fun inject(activity: ProfileSettingsActivity)
+
+    @Component.Factory
+    interface Factory {
+        fun create(
+            baseAppComponent: BaseAppComponent,
+            @BindsInstance context: Context
+        ): UserProfileComponent
+    }
 }

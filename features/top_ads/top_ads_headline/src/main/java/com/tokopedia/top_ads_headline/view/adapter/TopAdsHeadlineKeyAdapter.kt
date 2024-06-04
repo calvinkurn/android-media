@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -67,10 +68,12 @@ class TopAdsHeadlineKeyAdapter(
             }
         }
         holder.view.setOnClickListener {
-            holder.checkBox?.isChecked = holder.checkBox?.isChecked == false
-            items[holder.adapterPosition].onChecked = holder.checkBox?.isChecked == true
-            if (holder.adapterPosition != RecyclerView.NO_POSITION)
-                onCheck(items[holder.adapterPosition])
+            if (holder.adapterPosition >= Int.ZERO && holder.adapterPosition < items.size) {
+                holder.checkBox?.isChecked = holder.checkBox?.isChecked == false
+                items[holder.adapterPosition].onChecked = holder.checkBox?.isChecked == true
+                if (holder.adapterPosition != RecyclerView.NO_POSITION)
+                    onCheck(items[holder.adapterPosition])
+            }
         }
         setBidInfo(holder, items[holder.adapterPosition].bidSuggest.toIntOrZero())
     }

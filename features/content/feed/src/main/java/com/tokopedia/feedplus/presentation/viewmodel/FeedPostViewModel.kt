@@ -8,22 +8,25 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.types.TrackContentType
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
+import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase.Companion.isVisit
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
+import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
@@ -34,6 +37,7 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_MEDIA_VIDEO
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
@@ -51,10 +55,12 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
+import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feedplus.presentation.model.FeedReminderResultModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
+import com.tokopedia.feedplus.presentation.tooltip.FeedTooltipManager
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -89,7 +95,12 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -115,7 +126,6 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val affiliateCookieHelper: AffiliateCookieHelper,
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackReportTrackViewerUseCase: BroadcasterReportTrackViewerUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
@@ -124,6 +134,8 @@ class FeedPostViewModel @Inject constructor(
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase,
+    private val getCartCountUseCase: UpdateCartCounterUseCase,
+    private val tooltipManager: FeedTooltipManager,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -151,8 +163,8 @@ class FeedPostViewModel @Inject constructor(
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
 
-    private val _feedTagProductList = MutableLiveData<Result<List<ContentTaggedProductUiModel>>?>()
-    val feedTagProductList: LiveData<Result<List<ContentTaggedProductUiModel>>?>
+    private val _feedTagProductList = MutableStateFlow(FeedProductPaging.Empty)
+    val feedTagProductList: Flow<FeedProductPaging>
         get() = _feedTagProductList
 
     private val _followRecommendationResult = MutableLiveData<Result<String>>()
@@ -162,6 +174,9 @@ class FeedPostViewModel @Inject constructor(
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
+
+    private val _cartCount = MutableStateFlow(0)
+    val cartCount: StateFlow<Int> = _cartCount.asStateFlow()
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
@@ -207,6 +222,12 @@ class FeedPostViewModel @Inject constructor(
 
     fun saveScrollPosition(position: Int) {
         mSavedPostPosition = position
+
+        if (tooltipManager.isShowTooltip(position)) {
+            viewModelScope.launch {
+                tooltipManager.showTooltipEvent()
+            }
+        }
     }
 
     fun getScrollPosition(): Int? {
@@ -1071,7 +1092,7 @@ class FeedPostViewModel @Inject constructor(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
                         product = product,
-                        source = source,
+                        source = source
                     )
                 )
             }
@@ -1091,7 +1112,7 @@ class FeedPostViewModel @Inject constructor(
                     FeedProductActionModel(
                         cartId = response.data.cartId,
                         product = product,
-                        source = source,
+                        source = source
                     )
                 )
             }
@@ -1128,7 +1149,11 @@ class FeedPostViewModel @Inject constructor(
                         userId = userSession.userId
                     )
                 )
-            }.executeOnBackground()
+            }.executeOnBackground().also {
+                if (!it.isDataError()) {
+                    fetchCartCount()
+                }
+            }
         }
 
     /**
@@ -1213,41 +1238,28 @@ class FeedPostViewModel @Inject constructor(
     }
 
     /**
-     * Track Visit Channel
+     * Track
      */
-    fun trackVisitChannel(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
+    private val trackedProductIds = mutableListOf<String>()
+    fun trackPerformance(playChannelId: String, ids: List<String>, event: BroadcasterReportTrackViewerUseCase.Companion.Event) {
         if (playChannelId.isBlank()) return
 
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            trackVisitChannelUseCase.apply {
-                setRequestParams(
-                    TrackVisitChannelBroadcasterUseCase.createParams(
-                        playChannelId,
-                        TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
-                    )
-                )
-            }.executeOnBackground()
-        }) {
-        }
-    }
+        val hasChanged = ids.filterNot { trackedProductIds.contains(it) }.isNotEmpty()
+        if (hasChanged || event.isVisit) {
+            trackedProductIds.clear()
+            ids.map { trackedProductIds.add(it) }
+        } else { return }
 
-    fun trackChannelPerformance(model: FeedCardVideoContentModel) {
-        val playChannelId = model.playChannelId
-        if (playChannelId.isBlank()) return
-
-        val productIds = model.products.map { it.id }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             trackReportTrackViewerUseCase.apply {
-                setRequestParams(
-                    BroadcasterReportTrackViewerUseCase.createParams(
-                        playChannelId,
-                        productIds
-                    )
+                params = BroadcasterReportTrackViewerUseCase.createParams(
+                    channelId = playChannelId,
+                    productIds = trackedProductIds,
+                    event = event,
+                    type = TrackContentType.Play
                 )
             }.executeOnBackground()
-        }) {
-        }
+        }) {}
     }
 
     fun updateChannelStatus(playChannelId: String) {
@@ -1286,23 +1298,32 @@ class FeedPostViewModel @Inject constructor(
 
     fun fetchFeedProduct(
         activityId: String,
-        products: List<ContentTaggedProductUiModel>,
-        sourceType: ContentTaggedProductUiModel.SourceType
+        products: List<ContentTaggedProductUiModel> = _feedTagProductList.value.products,
+        sourceType: ContentTaggedProductUiModel.SourceType,
+        mediaType: String,
+        isNextPage: Boolean = false,
     ) {
         viewModelScope.launch {
             try {
-                _feedTagProductList.value = null
+                if (isNextPage && _feedTagProductList.value.hasNextPage.not()) return@launch
+
+                if (!isNextPage) _feedTagProductList.value = FeedProductPaging.Empty
+                else _feedTagProductList.update { state -> state.copy(state = ResultState.Loading) }
 
                 val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     else -> emptyList()
+                }
+                val cursor = when {
+                    _feedTagProductList.value.hasNextPage -> _feedTagProductList.value.cursor
+                    else -> ""
                 }
 
                 val response = withContext(dispatchers.io) {
                     feedXGetActivityProductsUseCase(
                         feedXGetActivityProductsUseCase.getFeedDetailParam(
                             activityId,
-                            ""
+                            cursor
                         )
                     ).data
                 }
@@ -1313,10 +1334,20 @@ class FeedPostViewModel @Inject constructor(
                 val distinctData = (currentList + mappedData).distinctBy {
                     it.id
                 }
-                _feedTagProductList.value = Success(distinctData)
+                _feedTagProductList.value = FeedProductPaging(ResultState.Success ,distinctData, response.nextCursor)
+                if (mediaType == TYPE_MEDIA_VIDEO) trackPerformance(activityId, distinctData.map(ContentTaggedProductUiModel::id), BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges)
             } catch (t: Throwable) {
-                _feedTagProductList.value = Fail(t)
+                _feedTagProductList.update { state -> state.copy(state = ResultState.Fail(t)) }
             }
+        }
+    }
+
+    fun fetchCartCount() {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) { getCartCountUseCase(Unit) }
+            _cartCount.update { response }
+        }) {
+            _cartCount.update { 0 }
         }
     }
 

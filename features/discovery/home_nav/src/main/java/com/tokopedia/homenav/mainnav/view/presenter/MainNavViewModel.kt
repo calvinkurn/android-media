@@ -1,14 +1,17 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_BUY_AGAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -17,6 +20,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.mainnav.MainNavConst
+import com.tokopedia.homenav.mainnav.data.mapper.BuyAgainMapper
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
@@ -43,10 +47,14 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileMembershipDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.TokopediaPlusDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainUiModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoGqlParam
@@ -68,6 +76,8 @@ import javax.inject.Inject
 class MainNavViewModel @Inject constructor(
     private val userSession: Lazy<UserSessionInterface>,
     private val baseDispatcher: Lazy<CoroutineDispatchers>,
+    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val addToCartUseCase: Lazy<AddToCartUseCase>,
     private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
     private val getNavNotification: Lazy<GetNavNotification>,
     private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
@@ -86,6 +96,7 @@ class MainNavViewModel @Inject constructor(
         private const val MAX_CARD_SHOWN_REVAMP = 5
 
         private const val SOURCE = "dave_home_nav"
+        private const val PAGE_NAME_BUY_AGAIN = "buy_it_again_me"
     }
 
     // network process live data, false if it is processing and true if it is finished
@@ -111,6 +122,14 @@ class MainNavViewModel @Inject constructor(
     val profileDataLiveData: LiveData<AccountHeaderDataModel>
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
+
+    /**
+     * Pair here consist of Boolean and String
+     * Boolean is whether there is error
+     * String contains the error message
+     */
+    val onAtcProductState: LiveData<Pair<Boolean, String>> get() = _onAtcProductState
+    private val _onAtcProductState: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -209,7 +228,32 @@ class MainNavViewModel @Inject constructor(
             onlyForLoggedInUser { getNotification() }
             onlyForLoggedInUser { updateProfileData() }
             onlyForLoggedInUser { getReview() }
+            onlyForLoggedInUser { getBuyAgain() }
             onlyForLoggedInUser { getOnGoingTransaction() }
+        }
+    }
+
+    fun addToCartProduct(productId: String, shopId: String) {
+        // set param
+        val param = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId
+        )
+
+        addToCartUseCase.get().setParams(param)
+
+        viewModelScope.launch {
+            try {
+                val result = addToCartUseCase.get().executeOnBackground()
+                withContext(baseDispatcher.get().main) {
+                    _onAtcProductState.value = Pair(
+                        result.isStatusError(),
+                        result.getAtcErrorMessage().orEmpty()
+                    )
+                }
+            } catch (t: Throwable) {
+                _onAtcProductState.value = Pair(true, t.message.orEmpty())
+            }
         }
     }
 
@@ -221,6 +265,8 @@ class MainNavViewModel @Inject constructor(
                 if (isLoggedIn) add(InitialShimmerTransactionRevampDataModel())
                 add(it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER, showCta = isLoggedIn))
                 if (isLoggedIn) add(ShimmerReviewDataModel())
+                add(it.getMenu(menuId = ID_BUY_AGAIN, sectionId = MainNavConst.Section.ORDER, showCta = isLoggedIn))
+                if (isLoggedIn) add(ShimmerBuyAgainUiModel())
                 add(it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER))
                 add(it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
                 add(SeparatorDataModel(sectionId = MainNavConst.Section.ORDER))
@@ -326,6 +372,12 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    fun refreshBuyAgainData() {
+        launch {
+            getBuyAgain()
+        }
+    }
+
     private suspend fun getOnGoingTransaction() {
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
@@ -375,6 +427,26 @@ class MainNavViewModel @Inject constructor(
         } catch (_: Exception) {
             deleteWidget<ShimmerReviewDataModel>()
             updateMenu(ID_REVIEW, showCta = false)
+        }
+    }
+
+    private suspend fun getBuyAgain() {
+        val param = GetRecommendationRequestParam(pageName = PAGE_NAME_BUY_AGAIN)
+
+        val recommendation = getRecommendationUseCase.get().getData(param)
+        val recommendationItem = recommendation.firstOrNull()?.recommendationItemList
+
+        if (recommendation.isNotEmpty() && recommendationItem?.isNotEmpty() == true) {
+            val position = findPosition<ShimmerBuyAgainUiModel>() ?: findPosition<BuyAgainUiModel>()
+            val result = BuyAgainMapper.map(recommendationItem)
+
+            position?.let {
+                updateWidget(BuyAgainUiModel(result), it)
+                updateMenu(ID_BUY_AGAIN, counter = "1", showCta = true)
+            }
+        } else {
+            deleteWidget<ShimmerBuyAgainUiModel>()
+            updateMenu(ID_BUY_AGAIN, showCta = false)
         }
     }
 

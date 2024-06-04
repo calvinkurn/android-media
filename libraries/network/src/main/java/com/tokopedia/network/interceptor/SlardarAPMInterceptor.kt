@@ -26,7 +26,7 @@ class SlardarAPMInterceptor() : Interceptor {
             duration = endTime - startTime
             sendTime = request.header("X-Sent")?.toLongOrNull() ?: startTime
             status = response.code
-            response.close()
+            response
         } catch (e: IOException) {
             // Log the exception or perform any other action
             // Assign default values

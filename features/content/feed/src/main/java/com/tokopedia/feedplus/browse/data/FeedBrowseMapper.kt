@@ -9,10 +9,12 @@ import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
 import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
+import com.tokopedia.feedplus.browse.presentation.model.exception.RestrictedKeywordException
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXHomeEntity
 import com.tokopedia.feedplus.data.GetContentWidgetRecommendationResponse
@@ -39,8 +41,8 @@ import javax.inject.Inject
  */
 class FeedBrowseMapper @Inject constructor() {
 
-    fun mapTitle(response: FeedXHeaderResponse): String {
-        return response.feedXHeaderData.data.browse.title
+    fun mapHeaderData(response: FeedXHeaderResponse): HeaderDetailModel {
+        return HeaderDetailModel.create(response.feedXHeaderData.data.browse)
     }
 
     internal fun mapSlotsResponse(response: FeedXHomeEntity): List<FeedBrowseSlotUiModel> {
@@ -92,6 +94,11 @@ class FeedBrowseMapper @Inject constructor() {
     }
 
     internal fun mapWidgetResponse(response: WidgetSlot): ContentSlotModel {
+
+        if (response.playGetContentSlot.meta.statusCode == FORBIDDEN_SEARCH_KEYWORD) {
+            throw RestrictedKeywordException()
+        }
+
         val data = response.playGetContentSlot.data
         val firstWidget = data.firstOrNull()
         val nextCursor = response.playGetContentSlot.meta.nextCursor
@@ -111,6 +118,7 @@ class FeedBrowseMapper @Inject constructor() {
             }
             FEED_TYPE_CHANNEL_BLOCK -> {
                 ContentSlotModel.ChannelBlock(
+                    firstWidget.title,
                     mapChannel(firstWidget),
                     mapPlayWidgetConfig(response.playGetContentSlot.meta),
                     nextCursor
@@ -247,5 +255,7 @@ class FeedBrowseMapper @Inject constructor() {
          */
         private const val IDENTIFIER_UGC_WIDGET = "content_browse_ugc"
         private const val IDENTIFIER_INSPIRATIONAL_WIDGET = "content_browse_inspirational"
+
+        private const val FORBIDDEN_SEARCH_KEYWORD = 435
     }
 }

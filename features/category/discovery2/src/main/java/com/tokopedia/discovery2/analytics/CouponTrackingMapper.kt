@@ -21,7 +21,7 @@ object CouponTrackingMapper {
         creativeName.orEmpty(),
         positionForParentItem,
         action.orEmpty(),
-        gtmItemName.orEmpty(),
+        gtmItemName,
         tabName.orEmpty()
     )
     //endregion

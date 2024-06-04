@@ -2,8 +2,8 @@ package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
-import com.tokopedia.content.common.comment.PageSource
-import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.feed.common.comment.PageSource
+import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
@@ -31,7 +31,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val getCountComment: GetCountCommentsUseCase,
     private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
-    private val channelMapper: PlayChannelDetailsWithRecomMapper,
+    private val channelMapper: PlayChannelDetailsWithRecomMapper
 ) : PlayViewerChannelRepository {
 
     override fun getChannelData(
@@ -52,7 +52,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         return@withContext PlayChannelStatus(
             statusType = statusType,
             statusSource = PlayStatusSource.Network,
-            waitingDuration = response.playGetChannelsStatus.waitingDuration,
+            waitingDuration = response.playGetChannelsStatus.waitingDuration
         )
     }
 
@@ -66,17 +66,17 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
 
         return@withContext PagingChannel(
             channelList = channelMapper.map(response, extraParams),
-            cursor = response.channelDetails.meta.cursor,
+            cursor = response.channelDetails.meta.cursor
         )
     }
 
     override suspend fun getChatHistory(
         channelId: String,
-        cursor: String,
+        cursor: String
     ): PlayChatHistoryUiModel = withContext(dispatchers.io) {
         val response = getChatHistory.executeOnBackground(
             channelId = channelId,
-            cursor = cursor,
+            cursor = cursor
         )
 
         uiMapper.mapHistoryChat(response)

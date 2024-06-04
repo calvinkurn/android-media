@@ -97,7 +97,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                         hasAction = false,
                         shouldShowPerformanceDashboard = false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown),
-                        gridType = PlayGridType.Medium,
+                        gridType = PlayGridType.Large,
                         products = emptyList()
                     )
                 }

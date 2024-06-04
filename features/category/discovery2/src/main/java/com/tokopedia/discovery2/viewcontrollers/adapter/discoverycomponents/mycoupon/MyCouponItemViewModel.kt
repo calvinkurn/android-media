@@ -9,7 +9,7 @@ import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.user.session.UserSession
 
-class MyCouponItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(){
+class MyCouponItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components){
     private val componentData = MutableLiveData<ComponentsItem>()
 
     init {

@@ -609,6 +609,7 @@ object CartUiModelMapper {
             showBmGmBottomDivider = shouldShowBmGmBottomDivider
             cartProductLabelData = mapProductLabel(product.productLabel)
             productMetadata = product.productMetadata
+            isEnableCartVariant = product.isEnableCartVariant
         }
     }
 

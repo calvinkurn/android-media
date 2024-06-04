@@ -22,6 +22,8 @@ object RollenceKey {
     const val HOME_MISSION_SIZE_CONTROL = "control_var"
     const val HOME_MISSION_SIZE_VARIANT = "exp_var"
     const val HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom"
+    const val HOME_COMBINE_INBOX_NOTIF_KEY = "Declutter_TopNav"
+    const val HOME_COMBINE_INBOX_NOTIF = "combine_inboxnotif"
     // end of home rollence section
 
     // TBD
@@ -37,8 +39,6 @@ object RollenceKey {
     const val ICON_JUMPER_DEFAULT = "control_variant"
     const val ICON_JUMPER_EXP = "VariantA"
     const val ICON_JUMPER = "IconJumper"
-    const val ICON_JUMPER_SRE_KEY = "SREbottomnav"
-    const val ICON_JUMPER_SRE_VALUE = "GetIcon"
 
     // Auto Complete
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
@@ -47,15 +47,11 @@ object RollenceKey {
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
-    const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CART_BUY_AGAIN = "buyagain_cart"
     const val CART_BUY_AGAIN_CONTROL = "no_buyagain_cart"
     const val CART_BUY_AGAIN_VARIANT = "with_buyagain_cart"
     const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
     const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
-    const val UOH_BUY_AGAIN_WIDGET = "buyagain_uoh"
-    const val UOH_BUY_AGAIN_WIDGET_CONTROL = "without_buyagain_uoh"
-    const val UOH_BUY_AGAIN_WIDGET_VARIANT = "with_buyagain_uoh"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -97,6 +93,9 @@ object RollenceKey {
     // BCA Rollence
     const val BCA_ROLLENCE = "android_flazzrollout"
 
+    // Fresco Image
+    const val FRESCO_IMAGE = "android_fresco"
+
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
     const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
@@ -131,9 +130,6 @@ object RollenceKey {
     const val REVERSE_PRODUCT_CARD_V4 = "v4_productcard"
 
     const val ANDROID_INTERNAL_TEST = "android_internal"
-
-    const val PDP_ATC_ANIMATION_VARIANT = "variant_animation"
-    const val PDP_ATC_ANIMATION_KEY = "pdp_animation_atc"
 
     // Travel
     const val FLIGHT_INSURANCE_AUTO_TICK = "Flight_Ins_Att"

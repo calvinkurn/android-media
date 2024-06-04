@@ -6,12 +6,18 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.browse.presentation.FeedLocalSearchActivity
 import com.tokopedia.feedplus.databinding.ActivityFeedDetailBinding
+import com.tokopedia.feedplus.detail.analytic.FeedDetailAnalytic
 import com.tokopedia.feedplus.detail.di.DaggerFeedDetailComponent
 import com.tokopedia.feedplus.presentation.callback.FeedUiActionListener
 import com.tokopedia.feedplus.presentation.callback.FeedUiListener
@@ -31,6 +37,8 @@ import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -39,6 +47,10 @@ import javax.inject.Inject
 class FeedDetailActivity : BaseActivity() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject lateinit var router: Router
+
+    @Inject lateinit var analytic: FeedDetailAnalytic
 
     private var _binding: ActivityFeedDetailBinding? = null
     private val binding: ActivityFeedDetailBinding
@@ -54,10 +66,10 @@ class FeedDetailActivity : BaseActivity() {
         setOnAttachFragmentListener()
         super.onCreate(savedInstanceState)
         _binding = ActivityFeedDetailBinding.inflate(layoutInflater)
-        setupStatusBar()
         setContentView(binding.root)
+        setupStatusBar()
 
-        observeTitleLiveData()
+        observeHeader()
 
         setupView()
     }
@@ -94,6 +106,7 @@ class FeedDetailActivity : BaseActivity() {
     }
 
     private fun setupView() {
+        val isShowSearchBar = intent.data?.getBooleanQueryParameter(KEY_SHOW_SEARCH_BAR, false) ?: false
         val source = intent.data?.getQueryParameter(KEY_QUERY_SOURCE) ?: TAB_TYPE_CDP
         val extrasData = Bundle().apply {
             putString(ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID, postId)
@@ -101,7 +114,7 @@ class FeedDetailActivity : BaseActivity() {
                 putAll(it)
             }
         }
-        setSupportActionBar(binding.feedDetailHeader)
+        setSupportActionBar(binding.feedDetailHeader.header)
         supportFragmentManager.commit {
             replace(
                 binding.feedDetailContainer.id,
@@ -123,12 +136,32 @@ class FeedDetailActivity : BaseActivity() {
             )
         }
 
-        viewModel.getTitle(source)
+        binding.feedDetailHeader.onBackClicked { finish() }
+
+        viewModel.getHeader(source, isShowSearchBar)
     }
 
-    private fun observeTitleLiveData() {
-        viewModel.titleLiveData.observe(this) { title ->
-            binding.feedDetailHeader.title = title
+    private fun observeHeader() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.headerDetail.collectLatest {
+                    if (it.isShowSearchBar) {
+                        analytic.impressSearchBar()
+
+                        binding.feedDetailHeader.post {
+                            binding.feedDetailHeader.setFeedSearchBar {
+                                analytic.clickSearchBar()
+
+                                val intent = router.getIntent(this@FeedDetailActivity, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
+                                intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
+                                startActivity(intent)
+                            }
+                        }
+                    } else {
+                        binding.feedDetailHeader.header.title = it.title
+                    }
+                }
+            }
         }
     }
 
@@ -212,5 +245,6 @@ class FeedDetailActivity : BaseActivity() {
 
     companion object {
         private const val KEY_QUERY_SOURCE = "source"
+        private const val KEY_SHOW_SEARCH_BAR = "show_search_bar"
     }
 }

@@ -12,14 +12,14 @@ import com.tokopedia.play_common.model.result.ResultState
  */
 data class ExploreWidgetUiModel(
     val chips: TabMenuUiModel,
-    val widgets: List<ExploreWidgetItemUiModel>,
+    val data: List<PlayWidgetItemUiModel>,
     val state: ExploreWidgetState
 ) {
     companion object {
         val Empty: ExploreWidgetUiModel
             get() = ExploreWidgetUiModel(
                 chips = TabMenuUiModel.Empty,
-                widgets = emptyList(),
+                data = emptyList(),
                 state = ExploreWidgetState.Loading
             )
     }
@@ -124,10 +124,10 @@ internal val List<WidgetUiModel>.getConfig: PageConfig
         return this.filterIsInstance<PageConfig>().firstOrNull() ?: PageConfig.Empty
     }
 
-internal val getWidgetShimmering: List<ExploreWidgetPlaceholder>
+internal val getWidgetShimmering: List<PlayWidgetShimmerUiModel>
     get() {
         return List(6) {
-            ExploreWidgetPlaceholder
+            PlayWidgetShimmerUiModel
         }
     }
 

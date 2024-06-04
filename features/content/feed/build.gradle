@@ -96,6 +96,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.creationCommon)
     implementation projectOrAar(rootProject.ext.features.storiesInternal)
     implementation projectOrAar(rootProject.ext.features.storiesWidget)
+    implementation projectOrAar(rootProject.ext.features.feedCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -205,6 +206,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest

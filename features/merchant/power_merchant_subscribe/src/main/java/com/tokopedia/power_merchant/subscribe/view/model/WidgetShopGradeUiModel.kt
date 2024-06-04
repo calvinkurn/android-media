@@ -19,7 +19,8 @@ class WidgetShopGradeUiModel(
         val shopAge: Long = 0L,
         val gradeBackgroundUrl: String = "",
         val pmStatus: String = "",
-        val shopGrade: String = ""
+        val shopGrade: String = "",
+        val isKyc: Boolean = false,
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

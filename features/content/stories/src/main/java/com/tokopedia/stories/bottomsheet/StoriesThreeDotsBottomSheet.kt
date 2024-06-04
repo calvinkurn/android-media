@@ -121,6 +121,10 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                 mListener?.onReportStoryClicked(this)
             }
 
+            ContentMenuIdentifier.SeePerformance -> {
+                mListener?.onSeePerformance(this)
+            }
+
             else -> {}
         }
     }
@@ -128,6 +132,7 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
     interface Listener {
         fun onReportStoryClicked(view: StoriesThreeDotsBottomSheet)
         fun onRemoveStory(view: StoriesThreeDotsBottomSheet)
+        fun onSeePerformance(view: StoriesThreeDotsBottomSheet)
     }
 
     companion object {

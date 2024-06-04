@@ -166,7 +166,7 @@
         android:background="@drawable/share_border"
         android:padding="6dp"
         app:icon_enable_state="true"
-        app:icon_name="SHARE_MOBILE"
+        app:icon_name="SOCIAL_SHARE"
         app:layout_constraintBottom_toBottomOf="@+id/btnBuyerOrderDetailBuyProductAgain"
         app:layout_constraintEnd_toStartOf="@+id/btnBuyerOrderDetailBuyProductAgain"
         app:layout_constraintHorizontal_bias="0.75"

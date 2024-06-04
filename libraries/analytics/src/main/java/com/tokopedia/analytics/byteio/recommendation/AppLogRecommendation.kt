@@ -2,11 +2,15 @@ package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogParam.CLICK_AREA
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
+import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import org.json.JSONObject
 
 /**
@@ -22,15 +26,23 @@ object AppLogRecommendation {
         }
     }
 
-    fun sendProductClickAppLog(model: AppLogRecommendationProductModel) {
-        AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
+    fun sendProductClickAppLog(
+        model: AppLogRecommendationProductModel,
+        areaType: ClickAreaType = ClickAreaType.UNDEFINED
+    ) {
+        val params = model.toShowClickJson()
+            .also {
+                it.appendDefineClickArea(areaType)
+            }
+
+        AppLogAnalytics.send(EventName.PRODUCT_CLICK, params)
         if (model.shouldSendCardEvent()) {
             AppLogAnalytics.send(EventName.CARD_CLICK, model.asCardModel().toShowClickJson())
         }
         if (shouldSendRecTrigger(model.entranceForm, model.isEligibleForRecTrigger)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun sendCardShowAppLog(model: AppLogRecommendationCardModel) {
@@ -42,7 +54,7 @@ object AppLogRecommendation {
         if (shouldSendRecTrigger(model.entranceForm)) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
-        model.setGlobalParams()
+        model.setGlobalParamOnClick()
     }
 
     fun sendEnterPageAppLog() {
@@ -56,22 +68,40 @@ object AppLogRecommendation {
         )
     }
 
-    private fun AppLogRecommendationProductModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+    fun sendConfirmCartAppLog(model: AppLogRecommendationProductModel, product: TrackConfirmCart) {
+        /**
+         * This product click event is sent as requested to accommodate
+         * value for entrance info. From an analytical point of view,
+         * When pressing the ATC button on the Discovery page, the journey will be the same
+         * like going to PDP and pressing the ATC button there.
+         */
+        sendProductClickAppLog(model, ClickAreaType.ATC)
+
+        AppLogAnalytics.send(EventName.CONFIRM_CART, model.toConfirmCartJson(product))
+    }
+
+    fun sendConfirmCartResultAppLog(
+        model: AppLogRecommendationProductModel,
+        product: TrackConfirmCartResult
+    ) {
+        AppLogAnalytics.send(EventName.CONFIRM_CART_RESULT, model.toConfirmCartResultJson(product))
+    }
+
+    private fun AppLogRecommendationProductModel.setGlobalParamOnClick() {
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataLast(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
-            requestId = requestId,
+            requestId = requestId
         )
+        additionalParam.setAdditionalToGlobalParam()
     }
 
-    private fun AppLogRecommendationCardModel.setGlobalParams() {
-        AppLogAnalytics.setGlobalParams(
+    private fun AppLogRecommendationCardModel.setGlobalParamOnClick() {
+        AppLogAnalytics.setGlobalParamOnClick(
             entranceForm = entranceForm,
-            enterMethod = enterMethod ?: AppLogAnalytics.getDataLast(ENTER_METHOD)?.toString(),
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,
@@ -93,5 +123,11 @@ object AppLogRecommendation {
     private fun AppLogRecommendationProductModel.shouldSendCardEvent(): Boolean {
         return entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
             entranceForm == EntranceForm.PURE_GOODS_CARD.str
+    }
+
+    private fun JSONObject.appendDefineClickArea(areaType: ClickAreaType): JSONObject {
+        if (areaType == ClickAreaType.UNDEFINED) return this
+
+        return put(CLICK_AREA, areaType.value)
     }
 }

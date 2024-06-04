@@ -14,5 +14,6 @@ class MiniCartParam(
     val shopIds: List<Long> = emptyList(),
     val offerIds: List<Long> = emptyList(),
     val warehouseIds: List<Long> = emptyList(),
-    val offerJsonData: String = "{}"
+    val offerJsonData: String = "{}",
+    val cartId: String = ""
 ) : Parcelable

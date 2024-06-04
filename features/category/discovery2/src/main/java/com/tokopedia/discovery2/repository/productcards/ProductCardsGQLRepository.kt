@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.analytics.TrackingMapper.setAppLog
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataResponse
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
 import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
@@ -30,7 +31,8 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                     requestParams.componentId,
                     requestParams.pageEndpoint,
                     Utils.getQueryString(queryParameterMap),
-                    requestParams.sessionId
+                    requestParams.sessionId,
+                    requestParams.refreshType
                 ),
                 GQL_COMPONENT_QUERY_NAME
             ) as DataResponse
@@ -63,7 +65,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
 
                 ComponentNames.ProductCardRevamp.componentName -> {
                     if (componentProperties?.template == Constant.ProductTemplate.LIST) {
-                        if (componentProperties.cardType.equals("V1", true)) {
+                        if (componentProperties.isOldVersionCardType()) {
                             DiscoveryDataMapper().mapListToComponentList(
                                 componentData,
                                 ComponentNames.MasterProductCardItemList.componentName,
@@ -83,7 +85,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                             )
                         }
                     } else {
-                        if (componentProperties?.cardType.equals("V1", true)) {
+                        if (componentProperties.isOldVersionCardType()) {
                             DiscoveryDataMapper().mapListToComponentList(
                                 componentData,
                                 ComponentNames.ProductCardRevampItem.componentName,
@@ -107,7 +109,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
 
                 ComponentNames.ProductCardSingleReimagine.componentName,
                 ComponentNames.ProductCardSingle.componentName -> {
-                    if (componentProperties?.cardType.equals("V1", true)) {
+                    if (componentProperties.isOldVersionCardType()) {
                         DiscoveryDataMapper().mapListToComponentList(
                             componentData,
                             ComponentNames.ProductCardSingleItem.componentName,
@@ -130,7 +132,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
 
                 ComponentNames.ProductCardCarousel.componentName -> {
                     if (componentProperties?.template == Constant.ProductTemplate.LIST) {
-                        if (componentProperties.cardType.equals("V1", true)) {
+                        if (componentProperties.isOldVersionCardType()) {
                             DiscoveryDataMapper().mapListToComponentList(
                                 componentData,
                                 ComponentNames.ProductCardCarouselItemList.componentName,
@@ -148,7 +150,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                             )
                         }
                     } else {
-                        if (componentProperties?.cardType.equals("V1", true)) {
+                        if (componentProperties.isOldVersionCardType()) {
                             DiscoveryDataMapper().mapListToComponentList(
                                 componentData,
                                 ComponentNames.ProductCardCarouselItem.componentName,
@@ -169,7 +171,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                 }
 
                 ComponentNames.ProductCardSprintSale.componentName -> {
-                    if (componentProperties?.cardType.equals("V1", true)) {
+                    if (componentProperties.isOldVersionCardType()) {
                         DiscoveryDataMapper().mapListToComponentList(
                             componentData,
                             ComponentNames.ProductCardSprintSaleItem.componentName,
@@ -191,7 +193,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                 }
 
                 ComponentNames.ProductCardSprintSaleCarousel.componentName -> {
-                    if (componentProperties?.cardType.equals("V1", true)) {
+                    if (componentProperties.isOldVersionCardType()) {
                         DiscoveryDataMapper().mapListToComponentList(
                             componentData,
                             ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
@@ -221,13 +223,20 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                         parentSectionId = componentItem?.parentSectionId
                     )
 
-                ComponentNames.ShopOfferHeroBrand.componentName -> DiscoveryDataMapper().mapListToComponentList(
-                    itemList = componentData,
-                    subComponentName = ComponentNames.ShopOfferHeroBrandProductItem.componentName,
-                    properties = componentProperties,
-                    creativeName = creativeName,
-                    parentListSize = componentsListSize
-                )
+                ComponentNames.ShopOfferHeroBrand.componentName -> {
+                    val subComponentName = if (componentProperties.isOldVersionCardType()) {
+                        ComponentNames.ShopOfferHeroBrandProductItem.componentName
+                    } else {
+                        ComponentNames.ShopOfferHeroBrandProductItemReimagine.componentName
+                    }
+                    DiscoveryDataMapper().mapListToComponentList(
+                        itemList = componentData,
+                        subComponentName = subComponentName,
+                        properties = componentProperties,
+                        creativeName = creativeName,
+                        parentListSize = componentsListSize
+                    )
+                }
 
                 else ->
                     DiscoveryDataMapper().mapListToComponentList(
@@ -241,4 +250,6 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         }
         return Pair(list, additionalInfo)
     }
+
+    private fun Properties?.isOldVersionCardType() = this?.getCardType() == Properties.CardType.OLD_VERSION
 }

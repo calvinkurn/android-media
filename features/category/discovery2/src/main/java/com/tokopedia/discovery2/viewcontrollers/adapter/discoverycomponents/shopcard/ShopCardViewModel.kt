@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
 
 const val SHOP_PER_PAGE = 10
 
-class ShopCardViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ShopCardViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components), CoroutineScope {
     private val shopCardBackgroundData: MutableLiveData<ComponentsItem?> = MutableLiveData()
     private val shopCardList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val _hideShimmer = SingleLiveEvent<Boolean>()

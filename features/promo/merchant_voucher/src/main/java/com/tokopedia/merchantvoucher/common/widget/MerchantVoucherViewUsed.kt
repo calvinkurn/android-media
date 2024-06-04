@@ -107,7 +107,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                     voucherImageUrl = MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
                 }
             }
-            ivVoucherType?.loadImageWithPlaceholder(voucherImageUrl, R.drawable.ic_loading_image)
+            ivVoucherType?.loadImageWithPlaceholder(voucherImageUrl, R.drawable.mv_ic_loading_image)
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())

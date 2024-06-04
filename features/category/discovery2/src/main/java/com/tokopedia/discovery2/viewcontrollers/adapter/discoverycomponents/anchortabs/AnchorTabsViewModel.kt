@@ -22,9 +22,9 @@ import kotlin.coroutines.CoroutineContext
 
 class AnchorTabsViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val carouselList: MutableLiveData<List<ComponentsItem>> = MutableLiveData()
     fun getCarouselItemsListData(): LiveData<List<ComponentsItem>> = carouselList

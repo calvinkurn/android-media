@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class ShimmerViewModel(application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class ShimmerViewModel(application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(components) {
 
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()

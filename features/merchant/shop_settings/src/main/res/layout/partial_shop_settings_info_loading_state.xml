@@ -10,7 +10,7 @@
     android:id="@+id/loadingMainContainer"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <include layout="@layout/partial_shimmering_label_view"
+    <include layout="@layout/partial_shop_setting_shimmering_label_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -28,28 +28,28 @@
             app:loader_corner_radius="0dp"
             app:loader_type="rect"/>
 
-        <include layout="@layout/partial_shimmering_list"
+        <include layout="@layout/partial_shop_setting_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shop_setting_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"/>
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shop_setting_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"/>
 
-    <include layout="@layout/partial_shimmering_label_view"
+    <include layout="@layout/partial_shop_setting_shimmering_label_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_60"
         android:layout_marginBottom="24dp"/>
 
-    <include layout="@layout/partial_shimmering_list"
+    <include layout="@layout/partial_shop_setting_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"/>

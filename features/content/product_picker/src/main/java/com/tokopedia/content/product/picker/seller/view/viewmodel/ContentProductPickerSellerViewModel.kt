@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.model.PagingType
@@ -60,6 +61,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
     @Assisted val isNumerationShown: Boolean,
     @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
     @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
+    @Assisted("selectedAccount") val selectedAccount: ContentAccountUiModel,
     private val repo: ContentProductPickerSellerRepository,
     private val commonRepo: ProductPickerSellerCommonRepository,
     userSession: UserSessionInterface,
@@ -75,7 +77,8 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
             savedStateHandle: SavedStateHandle,
             isNumerationShown: Boolean,
             @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
-            @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean
+            @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
+            @Assisted("selectedAccount") selectedAccount: ContentAccountUiModel,
         ): ContentProductPickerSellerViewModel
     }
 

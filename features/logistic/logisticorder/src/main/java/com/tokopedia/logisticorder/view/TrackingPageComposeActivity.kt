@@ -58,7 +58,7 @@ class TrackingPageComposeActivity : AppCompatActivity() {
     }
     private val orderCaller by lazy { intent.extras?.getString(ARGUMENTS_CALLER).orEmpty() }
     private val orderTxId by lazy { intent?.extras?.getString(ARGUMENTS_ORDER_TX_ID).orEmpty() }
-    private val groupType by lazy { intent?.extras?.getString(ARGUMENTS_GROUP_TYPE)?.toIntOrNull() }
+    private val groupType by lazy { intent?.extras?.getInt(ARGUMENTS_GROUP_TYPE) ?: 0 }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectComponent()

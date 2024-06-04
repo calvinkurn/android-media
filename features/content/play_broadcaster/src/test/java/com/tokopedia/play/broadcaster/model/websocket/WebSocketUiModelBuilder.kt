@@ -1,17 +1,15 @@
 package com.tokopedia.play.broadcaster.model.websocket
 
-import com.tokopedia.play.broadcaster.domain.model.LiveDuration
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.EventUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
-import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.ui.model.EventUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
@@ -28,7 +26,7 @@ class WebSocketUiModelBuilder {
         interval: Long = 1000,
         sentence: String = "<b>2</b> penonton <br> bergabung",
         type: String = "",
-        icon: String = "",
+        icon: String = ""
     ): String {
         var data = ""
         List(size) {
@@ -40,7 +38,7 @@ class WebSocketUiModelBuilder {
                     "icon": "$icon"
                 }
             """.trimIndent()
-            if(it != size-1) data += ","
+            if (it != size - 1) data += ","
         }
 
         return """
@@ -55,16 +53,16 @@ class WebSocketUiModelBuilder {
 
     fun buildNewMetricModelList(
         size: Int = 1,
-        iconUrl: String =  "",
+        iconUrl: String = "",
         spannedSentence: String = "<b>2</b> penonton <br> bergabung",
         type: String = "",
-        interval: Long = 1000L,
+        interval: Long = 1000L
     ) = List(size) {
         PlayMetricUiModel(
             iconUrl = iconUrl,
             spannedSentence = spannedSentence,
             type = type,
-            interval = interval,
+            interval = interval
         )
     }
 
@@ -86,7 +84,7 @@ class WebSocketUiModelBuilder {
     fun buildTotalViewString(
         channelId: Int = 1,
         totalView: Long = 1,
-        totalViewFmt: String = "1",
+        totalViewFmt: String = "1"
     ) = """
         {
             "type": "TOTAL_VIEW",
@@ -107,7 +105,7 @@ class WebSocketUiModelBuilder {
         name: String = "",
         image: String = "",
         message: String = "",
-        timestamp: Long = 1579064126000,
+        timestamp: Long = 1579064126000
     ) = """
         {
             "type": "MESG",
@@ -137,7 +135,7 @@ class WebSocketUiModelBuilder {
         userId = userId,
         name = name,
         message = message,
-        isSelfMessage = isSelfMessage,
+        isSelfMessage = isSelfMessage
     )
 
     /** PINNED_MESSAGE */
@@ -147,7 +145,7 @@ class WebSocketUiModelBuilder {
         title: String = "",
         message: String = "",
         imageUrl: String = "",
-        redirectUrl: String = "",
+        redirectUrl: String = ""
     ) = """
         {
             "type": "PINNED_MESSAGE",
@@ -166,12 +164,12 @@ class WebSocketUiModelBuilder {
         id: String = "1",
         message: String = "",
         isActive: Boolean = true,
-        editStatus: PinnedMessageEditStatus = PinnedMessageEditStatus.Nothing,
+        editStatus: PinnedMessageEditStatus = PinnedMessageEditStatus.Nothing
     ) = PinnedMessageUiModel(
         id = id,
         message = message,
         isActive = isActive,
-        editStatus = editStatus,
+        editStatus = editStatus
     )
 
     /** LIVE_DURATION */
@@ -180,7 +178,7 @@ class WebSocketUiModelBuilder {
         maxDurationSec: Long = 0,
         remainingSec: Long = 0,
         startTime: String = "",
-        timeNow: String = "",
+        timeNow: String = ""
     ) = """
         {
           "type": "LIVE_DURATION",
@@ -211,10 +209,10 @@ class WebSocketUiModelBuilder {
     /** PRODUCT_TAG */
     fun buildProductTagString(
         sectionSize: Int = 1,
-        productSize: Int = 1,
+        productSize: Int = 1
     ): String {
         var productList = ""
-        for(i in 1..productSize) {
+        for (i in 1..productSize) {
             productList += """
                 {
                     "id": "$i",
@@ -242,11 +240,11 @@ class WebSocketUiModelBuilder {
                 }
             """.trimIndent()
 
-            if(i != productSize) productList += ","
+            if (i != productSize) productList += ","
         }
 
         var sectionList = ""
-        for(i in 1..sectionSize) {
+        for (i in 1..sectionSize) {
             sectionList += """
                 {
                     "type": "active",
@@ -270,7 +268,7 @@ class WebSocketUiModelBuilder {
                 }
             """.trimIndent()
 
-            if(i != sectionSize) sectionList += ","
+            if (i != sectionSize) sectionList += ","
         }
 
         return """
@@ -287,7 +285,7 @@ class WebSocketUiModelBuilder {
 
     fun buildProductTagModel(
         sectionSize: Int = 1,
-        productSize: Int = 1,
+        productSize: Int = 1
     ) = List(sectionSize) {
         ProductTagSectionUiModel(
             name = "Section ${it + 1}",
@@ -301,7 +299,7 @@ class WebSocketUiModelBuilder {
                     stock = 1,
                     price = OriginalPrice(
                         price = "Rp 60.000",
-                        priceNumber = 60000.0,
+                        priceNumber = 60000.0
                     ),
                     number = "0",
                     hasCommission = false,
@@ -309,6 +307,10 @@ class WebSocketUiModelBuilder {
                     commissionFmt = "",
                     extraCommission = false,
                     pinStatus = PinProductUiModel.Empty,
+                    shopName = "",
+                    shopBadge = "",
+                    rating = "",
+                    countSold = ""
                 )
             }
         )
@@ -318,7 +320,7 @@ class WebSocketUiModelBuilder {
     fun buildFreezeString(
         channelId: Int = 1,
         isFreeze: Boolean = true,
-        timestamp: Long = 1592392273000,
+        timestamp: Long = 1592392273000
     ) = """
         {
             "type":"FREEZE",
@@ -335,13 +337,13 @@ class WebSocketUiModelBuilder {
         banned: Boolean = false,
         title: String = "",
         message: String = "",
-        buttonTitle: String = "",
+        buttonTitle: String = ""
     ) = EventUiModel(
         freeze = freeze,
         banned = banned,
         title = title,
         message = message,
-        buttonTitle = buttonTitle,
+        buttonTitle = buttonTitle
     )
 
     /** BANNED */
@@ -351,7 +353,7 @@ class WebSocketUiModelBuilder {
         name: String = "",
         image: String = "",
         isBanned: Boolean = true,
-        timestamp: Long = 1579064126000,
+        timestamp: Long = 1579064126000
     ) = """
         {
             "type": "MODERATE",
@@ -373,13 +375,13 @@ class WebSocketUiModelBuilder {
         banned: Boolean = true,
         title: String = "",
         message: String = "",
-        buttonTitle: String = "",
+        buttonTitle: String = ""
     ) = EventUiModel(
         freeze = freeze,
         banned = banned,
         title = title,
         message = message,
-        buttonTitle = buttonTitle,
+        buttonTitle = buttonTitle
     )
 
     /** CHANNEL_INTERACTIVE */
@@ -392,7 +394,7 @@ class WebSocketUiModelBuilder {
         countdownStart: Int = 0,
         countdownEnd: Int = 1,
         countdownEndDelay: Int = 0,
-        waitingDuration: Int = 0,
+        waitingDuration: Int = 0
     ) = """
         {
             "type": "CHANNEL_INTERACTIVE",
@@ -416,15 +418,15 @@ class WebSocketUiModelBuilder {
         title: String = "",
         timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Scheduled(
             timeToStartInMs = 0,
-            interactiveDurationInMs = 1000,
+            interactiveDurationInMs = 1000
         ),
-        endGameDelayInMs: Long = 0L,
+        endGameDelayInMs: Long = 0L
     ) = PlayCurrentInteractiveModel(
         id = id,
         type = type,
         title = title,
         timeStatus = timeStatus,
-        endGameDelayInMs = endGameDelayInMs,
+        endGameDelayInMs = endGameDelayInMs
     )
 
     fun buildUnknownTypeChannelQuizString(
@@ -434,7 +436,7 @@ class WebSocketUiModelBuilder {
         question: String = "",
         prize: String = "",
         countdownEnd: Int = 1,
-        waitingDuration: Int = 0,
+        waitingDuration: Int = 0
     ) = """
         {
             "type": "CHANNEL_QUIZ",
@@ -449,5 +451,4 @@ class WebSocketUiModelBuilder {
             }
         }
     """.trimIndent()
-
 }

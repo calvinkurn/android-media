@@ -7,6 +7,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -18,6 +19,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton.Companion.buttonText
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton.Companion.orEmpty
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.generateTheme
@@ -37,7 +41,6 @@ import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import com.tokopedia.product.detail.R as productdetailR
-import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 class PartialButtonActionView private constructor(
     val view: View,
@@ -90,6 +93,7 @@ class PartialButtonActionView private constructor(
         private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L
         private const val TEXTWATCHER_QUANTITY_RESET_DEBOUNCE_TIME = 1000L
         private const val DEFAULT_TOTAL_STOCK = 1
+        private const val CART_REDIRECTION_BUTTON_COUNT = 2
     }
 
     init {
@@ -203,20 +207,16 @@ class PartialButtonActionView private constructor(
     }
 
     private fun renderTokoNowVar() = with(view) {
-        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
-        btnTokonowVar.text = availableButton.getOrNull(0)?.text
-            ?: context.getString(productdetailcommonR.string.plus_product_to_cart)
+        val firstButton = cartTypeData?.availableButtonsPriority?.firstOrNull().orEmpty
+            .copy(showRecommendation = true)
+        btnTokonowVar.text = firstButton.buttonText
         btnTokonowVar.generateTheme(
-            availableButton.getOrNull(0)?.color
-                ?: ProductDetailCommonConstant.KEY_BUTTON_PRIMARY
+            colorDescription = firstButton.color.ifBlank {
+                ProductDetailCommonConstant.KEY_BUTTON_PRIMARY
+            }
         )
         btnTokonowVar.setOnClickListener {
-            buttonListener.buttonCartTypeClick(
-                availableButton.getOrNull(0)?.cartType
-                    ?: ProductDetailCommonConstant.KEY_NORMAL_BUTTON,
-                btnTokonowVar.text.toString(),
-                true
-            )
+            buttonListener.buttonCartTypeClick(firstButton)
         }
 
         txtTotalStockTokonowVar.text = context.getString(
@@ -238,45 +238,47 @@ class PartialButtonActionView private constructor(
     private fun showCartTypeButton() {
         hideButtonEmptyAndTopAds()
 
-        renderNormalButtonCartRedirection()
+        val buttonToRender = cartTypeData
+            ?.availableButtons
+            .orEmpty()
+            .take(CART_REDIRECTION_BUTTON_COUNT)
+        renderNormalButtonCartRedirection(buttonToRender)
+        buttonListener.onButtonsShowed(buttonToRender.map { it.cartType })
 
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
         renderTopChat(unavailableButton)
     }
 
-    private fun renderNormalButtonCartRedirection() = with(binding) {
+    private fun renderNormalButtonCartRedirection(
+        buttonToRender: List<AvailableButton>
+    ) = with(binding) {
         qtyButtonPdp.hide()
-        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
 
-        btnBuyNow.showWithCondition(availableButton.firstOrNull() != null)
-        btnAddToCart.showWithCondition(availableButton.getOrNull(1) != null)
+        val buyNowData = buttonToRender.firstOrNull().orEmpty
+        val addToCartData = buttonToRender.getOrNull(Int.ONE).orEmpty
+        val shouldParallelLoading =
+            buyNowData.cartType.isNotBlank() && addToCartData.cartType.isNotBlank()
 
-        btnBuyNow.text = availableButton.getOrNull(0)?.text ?: ""
-        btnAddToCart.text = availableButton.getOrNull(1)?.text ?: ""
-        btnAddToCart.isParallelLoading = btnAddToCart.isVisible && btnBuyNow.isVisible
-        btnBuyNow.isParallelLoading = btnAddToCart.isVisible && btnBuyNow.isVisible
-        btnBuyNow.setOnClickListener {
-            buttonListener.buttonCartTypeClick(
-                availableButton.getOrNull(0)?.cartType
-                    ?: "",
-                btnBuyNow.text.toString(),
-                availableButton.getOrNull(0)?.showRecommendation
-                    ?: false
-            )
+        with(btnBuyNow) {
+            showWithCondition(buyNowData.cartType.isNotBlank())
+            btnBuyNow.generateTheme(buyNowData.color)
+
+            text = buyNowData.text
+            isParallelLoading = shouldParallelLoading
+            btnBuyNow.setOnClickListener {
+                buttonListener.buttonCartTypeClick(buyNowData)
+            }
         }
 
-        btnAddToCart.setOnClickListener {
-            buttonListener.buttonCartTypeClick(
-                availableButton.getOrNull(1)?.cartType
-                    ?: "",
-                btnAddToCart.text.toString(),
-                availableButton.getOrNull(1)?.showRecommendation
-                    ?: false
-            )
+        with(btnAddToCart) {
+            showWithCondition(addToCartData.cartType.isNotBlank())
+            generateTheme(addToCartData.color)
+            text = addToCartData.text
+            isParallelLoading = shouldParallelLoading
+            btnAddToCart.setOnClickListener {
+                buttonListener.buttonCartTypeClick(addToCartData)
+            }
         }
-
-        btnBuyNow.generateTheme(availableButton.getOrNull(0)?.color ?: "")
-        btnAddToCart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
     }
 
     private fun renderTokoNowNonVar(
@@ -400,35 +402,26 @@ class PartialButtonActionView private constructor(
             hideButtonEmptyAndTopAds()
 
             btnBuyNow.apply {
-                text = context.getString(
-                    if (preOrder?.isPreOrderActive() == true) {
-                        productdetailR.string.action_preorder
-                    } else {
-                        if (isExpressCheckout) {
-                            productdetailcommonR.string.buy_now
-                        } else {
-                            productdetailR.string.buy
-                        }
-                    }
-                )
+                val button = AvailableButton.createBuyNowButton(context = context)
+                text = button.text
 
                 setOnClickListener {
                     if (hasComponentLoading) return@setOnClickListener
-                    buttonListener.buyNowClick(btnBuyNow.text.toString())
+                    buttonListener.onButtonFallbackClick(button)
                 }
 
-                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN)
+                generateTheme(button.color)
                 show()
             }
 
             btnAddToCart.apply {
-                text =
-                    context.getString(productdetailcommonR.string.plus_product_to_cart)
+                val button = AvailableButton.createAddToCartButton(context = context)
+                text = button.text
                 setOnClickListener {
                     if (hasComponentLoading) return@setOnClickListener
-                    buttonListener.addToCartClick(btnAddToCart.text.toString())
+                    buttonListener.onButtonFallbackClick(button)
                 }
-                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN)
+                generateTheme(button.color)
                 show()
             }
 

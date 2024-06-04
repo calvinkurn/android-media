@@ -20,8 +20,6 @@ class ShopPerformanceDiffUtilCallback(
         return isTheSameHeaderShopPerformanceUiModel(oldItem, newItem) ||
                 isTheSameDetailPerformanceUiModel(oldItem, newItem) ||
                 isTheSameLevelScoreProjectUiModel(oldItem, newItem) ||
-                isTheSameItemStatusPMProUiModel(oldItem, newItem) ||
-                isTheSameItemStatusPMUiModel(oldItem, newItem) ||
                 isTheSameItemStatusRMUiModel(oldItem, newItem) ||
                 isTheSameItemTimerNewSellerUiModel(oldItem, newItem) ||
                 isTheSamePeriodDetailPerformanceUiModel(oldItem, newItem) ||
@@ -86,21 +84,6 @@ class ShopPerformanceDiffUtilCallback(
         newItem: Visitable<*>?
     ): Boolean {
         return oldItem is ItemLevelScoreProjectUiModel && newItem is ItemLevelScoreProjectUiModel
-    }
-
-    private fun isTheSameItemStatusPMProUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is ItemStatusPMProUiModel && newItem is ItemStatusPMProUiModel
-    }
-
-    private fun isTheSameItemStatusPMUiModel(
-        oldItem: Visitable<*>?,
-        newItem: Visitable<*>?
-    ): Boolean {
-        return oldItem is ItemStatusPMUiModel && newItem is ItemStatusPMUiModel &&
-                oldItem.descPM == newItem.descPM
     }
 
     private fun isTheSameItemStatusRMUiModel(

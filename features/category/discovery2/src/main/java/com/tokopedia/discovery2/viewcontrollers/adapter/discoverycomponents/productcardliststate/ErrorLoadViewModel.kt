@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.analytics.byteio.RefreshType
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -20,10 +21,10 @@ import kotlin.coroutines.CoroutineContext
 
 class ErrorLoadViewModel(
     val application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
 ) :
-    DiscoveryBaseViewModel(), CoroutineScope {
+    DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val showLoader: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -101,7 +102,8 @@ class ErrorLoadViewModel(
                             else ->
                                 productCardUseCase?.getProductCardsUseCase(
                                     components.id,
-                                    components.pageEndPoint
+                                    components.pageEndPoint,
+                                    RefreshType.OPEN
                                 )
                         }
                 }

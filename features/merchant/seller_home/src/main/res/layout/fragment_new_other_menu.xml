@@ -36,7 +36,7 @@
                         android:layout_height="154dp"
                         android:scaleType="fitXY"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:srcCompat="@tools:sample/avatars"/>
+                        tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/layout_sah_new_other_info"

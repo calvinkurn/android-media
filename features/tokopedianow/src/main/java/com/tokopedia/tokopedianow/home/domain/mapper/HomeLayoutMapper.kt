@@ -35,24 +35,26 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
-import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_HEADER
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.BundleMapper.mapToProductBundleLayout
@@ -70,6 +72,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmall
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductCarouselChipsMapper.mapResponseToProductCarouselChips
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapResponseToProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapResponseToProductRecomOoc
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingReferralUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
@@ -83,6 +86,7 @@ import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
@@ -95,10 +99,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiMod
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
-import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_HEADER
-import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestCardItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
@@ -137,7 +137,9 @@ object HomeLayoutMapper {
         val headerUiModel = findHeaderUiModel()
         val warehouses = addressData.getWarehousesData()
         val loadingLayout = HomeLayoutItemUiModel(
-            HomeLoadingStateUiModel(id = LOADING_STATE), HomeLayoutItemState.LOADED)
+            HomeLoadingStateUiModel(id = LOADING_STATE),
+            HomeLayoutItemState.LOADED
+        )
 
         clearHomeLayoutItemList()
         addHeader(headerUiModel, warehouses)
@@ -367,7 +369,8 @@ object HomeLayoutMapper {
     ) {
         updateItemById(id) {
             val hasFinishedQuest = questList.lastOrNull { it.isFinished() } != null
-            val currentProgressPosition = if(hasFinishedQuest) {
+            val isQuestStarted = !questList.all { it.isIdle }
+            val currentProgressPosition = if (hasFinishedQuest) {
                 questList.indexOfLast { it.isFinished() } + 1
             } else {
                 DEFAULT_QUEST_PROGRESS
@@ -376,7 +379,8 @@ object HomeLayoutMapper {
                 id = id,
                 title = title,
                 questList = questList,
-                currentProgressPosition = currentProgressPosition
+                currentProgressPosition = currentProgressPosition,
+                isStarted = isQuestStarted
             )
             HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }
@@ -507,9 +511,12 @@ object HomeLayoutMapper {
         warehouses: List<WarehouseData>
     ) {
         if (headerUiModel == null) {
-            add(HomeLayoutItemUiModel(
-                HomeHeaderUiModel(id = HOME_HEADER), HomeLayoutItemState.NOT_LOADED
-            ))
+            add(
+                HomeLayoutItemUiModel(
+                    HomeHeaderUiModel(id = HOME_HEADER),
+                    HomeLayoutItemState.NOT_LOADED
+                )
+            )
         } else {
             val layout = (headerUiModel.layout as HomeHeaderUiModel)
                 .copy(warehouses = warehouses)

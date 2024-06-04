@@ -1,7 +1,6 @@
 package com.tokopedia.shop.score.uitest.features.performance.activity
 
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreUiTest
 import com.tokopedia.shop.score.stub.common.util.onClick
@@ -62,13 +61,5 @@ class ExistingPmActivityUiTest : ShopScoreUiTest() {
         shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showDetailPerformanceExisting()
-    }
-
-    @Test
-    fun show_power_merchant_section() {
-        shopScorePrefManagerStub.setFinishCoachMark(true)
-        activityRule.launchActivity(getShopPerformancePageIntent())
-        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
-        showPowerMerchantSection()
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.topchat.matchers
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
+import com.tokopedia.kotlin.extensions.view.orZero
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 
@@ -12,12 +13,14 @@ import org.hamcrest.Matcher
  */
 fun withTotalItem(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+        private var actualChild = 0
         override fun describeTo(description: Description?) {
-            description?.appendText("$expectedCount child-count")
+            description?.appendText("expected: $expectedCount child-count & actual: $actualChild")
         }
 
         override fun matchesSafely(item: RecyclerView?): Boolean {
             val adapter: RecyclerView.Adapter<*>? = item?.adapter
+            actualChild = adapter?.itemCount.orZero()
             return adapter?.itemCount == expectedCount
         }
     }

@@ -20,20 +20,21 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_REGISTRATION_SHOP_CREATION
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.databinding.FragmentPhoneShopCreationBinding
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
-import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
-import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
+import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.util.PhoneNumberTextWatcher
-import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.loginregister.shopcreation.view.ShopCreationViewModel
+import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -51,6 +52,7 @@ import javax.inject.Inject
 class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private var phone: String = ""
+    private var isAutoFill: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -104,8 +106,30 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkAutoFill()
         initView()
         initObserver()
+    }
+
+    private fun checkAutoFill() {
+        val paramPhone = activity?.intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_PHONE).orEmpty()
+        if (paramPhone.isNotEmpty()) {
+            showLoadingPage(true)
+            val phoneNumber = paramPhone.removePrefix("62")
+            viewBinding?.textFieldPhone?.textFieldInput?.text = Editable.Factory.getInstance().newEditable(phoneNumber)
+            isAutoFill = true
+            onButtonContinueClicked()
+        } else {
+            showLoadingPage(false)
+        }
+    }
+
+    private fun showLoadingPage(isShow: Boolean) {
+        viewBinding?.apply {
+            loader.showWithCondition(isShow)
+            toolbarShopCreation.showWithCondition(!isShow)
+            mainView.showWithCondition(!isShow)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -152,6 +176,9 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
             else -> {
+                if (isAutoFill) {
+                    activity?.finish()
+                }
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
@@ -219,18 +246,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         viewBinding?.btnContinue?.setOnClickListener {
             shopCreationAnalytics.eventClickContinuePhoneShopCreation()
-            phone = viewBinding?.textFieldPhone?.textFieldInput?.text.toString().trim()
-            if (phone.isNotEmpty()) {
-                phone = "0$phone"
-                viewBinding?.btnContinue?.isLoading = true
-                if (userSession.isLoggedIn) {
-                    shopCreationViewModel.validateUserProfile(phone.replace("-", ""))
-                } else {
-                    shopCreationViewModel.registerCheck(phone.replace("-", ""))
-                }
-            } else {
-                emptyStatePhoneField()
-            }
+            onButtonContinueClicked()
         }
 
         viewBinding?.container?.setOnClickListener {
@@ -242,6 +258,21 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             LetUtil.ifLet(context, view?.parent) { (context, view) ->
                 hideKeyboardFrom(context as Context, view as View)
             }
+        }
+    }
+
+    private fun onButtonContinueClicked() {
+        phone = viewBinding?.textFieldPhone?.textFieldInput?.text.toString().trim()
+        if (phone.isNotEmpty()) {
+            phone = "0$phone"
+            viewBinding?.btnContinue?.isLoading = true
+            if (userSession.isLoggedIn) {
+                shopCreationViewModel.validateUserProfile(phone.replace("-", ""))
+            } else {
+                shopCreationViewModel.registerCheck(phone.replace("-", ""))
+            }
+        } else {
+            emptyStatePhoneField()
         }
     }
 

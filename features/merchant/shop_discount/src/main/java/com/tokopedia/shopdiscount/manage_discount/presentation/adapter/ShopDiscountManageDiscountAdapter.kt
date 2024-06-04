@@ -105,9 +105,9 @@ class ShopDiscountManageDiscountAdapter(
         }
     }
 
-    fun getMaxStartDateOfProductList(): Date? {
+    fun getMaxEndDateOfProductList(): Date? {
         return getAllProductData().mapNotNull {
-            it.mappedResultData.minEndDateUnix
+            it.mappedResultData.maxEndDateUnix
         }.maxOfOrNull {
             it
         }?.let {

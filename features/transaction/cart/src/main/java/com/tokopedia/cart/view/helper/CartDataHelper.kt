@@ -208,23 +208,11 @@ object CartDataHelper {
         return null
     }
 
-    fun getCartShopHolderIndexByCartId(
-        cartDataList: ArrayList<Any>,
-        cartId: String
-    ): Int {
-        loop@ for ((index, any) in cartDataList.withIndex()) {
-            if (any is CartGroupHolderData) {
-                any.productUiModelList.let { cartItemHolderDataList ->
-                    innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
-                        if (cartItemHolderData.cartId == cartId) {
-                            return index
-                        }
-                    }
-                }
-            }
+    fun getCartItemIndexByCartId(cartDataList: ArrayList<Any>, cartId: String): Int {
+        // indexOfFirst will return -1 when item not found
+        return cartDataList.indexOfFirst { any ->
+            any is CartItemHolderData && any.cartId == cartId
         }
-
-        return RecyclerView.NO_POSITION
     }
 
     fun getCartShopBottomHolderDataFromIndex(

@@ -5,12 +5,14 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -53,6 +55,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         private const val NUMBER_PATTERN = "#,###,###"
         private const val DISCOUNT_PERCENTAGE_MAX_DIGIT = 2
         private const val ONE_YEAR = 1
+        private const val START_TIME_OFFSET_IN_MINUTES = 10
 
         /**
          * @param bulkUpdateDefaultStartDate
@@ -290,7 +293,23 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     private fun handleAppearanceForBulkApplyModeWithVps(vpsExpiredDate: String) {
         hideAllChips()
         val endDate = vpsExpiredDate.toDate(DateConstant.DATE_TIME)
-        viewModel.setSelectedEndDate(endDate)
+        val finalMaxDate = if (DateUtils.isToday(endDate.time)) {
+            Calendar.getInstance().apply {
+                add(Calendar.YEAR, Int.ONE)
+                add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+            }.time
+        } else {
+            endDate
+        }
+        viewModel.setMaxDate(finalMaxDate)
+        if (bulkUpdateDefaultStartDate != null && bulkUpdateDefaultEndDate != null) {
+            viewModel.setSelectedStartDate(bulkUpdateDefaultStartDate ?: return)
+            viewModel.setSelectedEndDate(bulkUpdateDefaultEndDate ?: return)
+        }
+
+        if (discountStatusId == DiscountStatus.ONGOING) {
+            binding?.tfuStartDate?.isEnabled = false
+        }
     }
 
     private fun handleAppearanceForBulkUpdateMode() {
@@ -299,6 +318,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         if (bulkUpdateDefaultStartDate != null && bulkUpdateDefaultEndDate != null) {
             viewModel.setSelectedStartDate(bulkUpdateDefaultStartDate ?: return)
             viewModel.setSelectedEndDate(bulkUpdateDefaultEndDate ?: return)
+            viewModel.setMaxDate(bulkUpdateDefaultEndDate ?: return)
         }
 
         if (discountStatusId == DiscountStatus.ONGOING) {
@@ -454,7 +474,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             getString(R.string.sd_start_date),
             Date(),
             viewModel.getSelectedStartDate() ?: return,
-            viewModel.getSelectedEndDate() ?: return,
+            viewModel.getMaxDate() ?: return,
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
@@ -466,21 +486,13 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
     private fun displayEndDateTimePicker() {
-        val isUsingCustomPeriod = viewModel.getCurrentSelection().isUsingCustomPeriod
-        val endDate = if (isUsingCustomPeriod) {
-            val selectedStartDate = viewModel.getSelectedStartDate()
-            selectedStartDate?.advanceByOneYear()
-        } else {
-            viewModel.getSelectedEndDate()
-        }
-
         ShopDiscountDatePicker.show(
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_end_date),
             viewModel.getSelectedEndDate() ?: return,
             viewModel.getSelectedStartDate() ?: return,
-            endDate ?: return,
+            viewModel.getMaxDate() ?: return,
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {

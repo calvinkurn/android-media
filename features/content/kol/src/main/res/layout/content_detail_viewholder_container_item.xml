@@ -277,7 +277,7 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/unify_space_16"
-        app:icon_name="SHARE_MOBILE"
+        app:icon_name="SOCIAL_SHARE"
         app:layout_constraintBottom_toBottomOf="@id/like_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/like_button" />

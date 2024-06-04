@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
@@ -16,6 +17,7 @@ import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.DynamicOneLinerCallback
 import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.event.DynamicOneLinerEvent
+import com.tokopedia.unifycomponents.toPx
 
 class DynamicOneLinerViewHolder(
     view: View,
@@ -24,7 +26,6 @@ class DynamicOneLinerViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_one_liner
-        private const val STATUS_HIDE = "hide"
         private const val STATUS_SHOW = "show"
         private const val CHEVRON_POS_FOLLOW = "follow_text"
         private const val CHEVRON_POS_END = "end"
@@ -60,7 +61,11 @@ class DynamicOneLinerViewHolder(
 
         val iconUrl = data.icon
         dynamicOneLinerIconLeft.showIfWithBlock(iconUrl.isNotEmpty()) {
-            setImageUrl(iconUrl)
+            loadImage(iconUrl)
+            setImageSize(
+                imageWidth = data.imageWidthPx,
+                imageHeight = data.imageHeightPx
+            )
         }
 
         val url = data.applink
@@ -103,6 +108,16 @@ class DynamicOneLinerViewHolder(
                 constraintSet.applyTo(dynamicOneLinerContent)
             }
         }
+    }
+
+    private fun setImageSize(
+        imageWidth: Int,
+        imageHeight: Int
+    ) = with(binding) {
+        dynamicOneLinerIconLeft.layoutParams.height =
+            if (imageHeight == 0) 20.toPx() else imageHeight
+        dynamicOneLinerIconLeft.layoutParams.width =
+            if (imageWidth == 0) 20.toPx() else imageHeight
     }
 
     private fun setupClick(

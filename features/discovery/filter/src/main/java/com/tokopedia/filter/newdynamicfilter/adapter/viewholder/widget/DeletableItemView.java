@@ -12,8 +12,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.filter.R;
+import com.tokopedia.unifycomponents.BaseCustomView;
+
 
 /**
  * Created by henrypriyono on 8/18/17.
@@ -30,7 +31,7 @@ public class DeletableItemView extends BaseCustomView {
     private OnTextClickListener onTextClickListener;
 
     @LayoutRes
-    private int layoutRef = R.layout.widget_deletable_item_view;
+    private int layoutRef = R.layout.filter_widget_deletable_item_view;
 
     public DeletableItemView(@NonNull Context context) {
         super(context);
@@ -48,9 +49,9 @@ public class DeletableItemView extends BaseCustomView {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DeletableItemView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.FilterDeletableItemView);
         try {
-            layoutRef = styledAttributes.getResourceId(R.styleable.DeletableItemView_layout, R.layout.widget_deletable_item_view);
+            layoutRef = styledAttributes.getResourceId(R.styleable.FilterDeletableItemView_layout, R.layout.filter_widget_deletable_item_view);
         } finally {
             styledAttributes.recycle();
         }

@@ -436,6 +436,7 @@ const val CART_REVAMP_V4_QUERY =
                             }
                           }
                         }
+                        is_enable_cart_variant
                       }
                       errors
                       messages

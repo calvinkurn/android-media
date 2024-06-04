@@ -22,24 +22,24 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.productcard.compact.common.util.ViewUtil.doOnPreDraw
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_RED
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
-import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.compact.R
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_GREEN
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TEXT_DARK_ORANGE
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TRANSPARENT_BLACK
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getHexColorFromIdColor
 import com.tokopedia.productcard.compact.common.util.ViewUtil.inflateView
 import com.tokopedia.productcard.compact.common.util.ViewUtil.safeParseColor
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactViewBinding
 import com.tokopedia.productcard.compact.productcard.presentation.listener.ProductCardCompactViewListener
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_GREEN
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_RED
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TEXT_DARK_ORANGE
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TRANSPARENT_BLACK
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductCardCompactView @JvmOverloads constructor(
@@ -57,6 +57,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         private const val NO_MARGIN = 0
         private const val NO_DISCOUNT_STRING = "0"
         private const val PERCENTAGE_CHAR = '%'
+        private const val SEPARATOR_STRING = "  • "
     }
 
     private var listener: ProductCardCompactViewListener? = null
@@ -103,7 +104,7 @@ class ProductCardCompactView @JvmOverloads constructor(
             labelGroup = model.getPriceLabelGroup()
         )
         initSlashPriceTypography(
-            slashPrice = model.slashPrice,
+            slashPrice = model.slashPrice
         )
         initProductNameTypography(
             name = model.name,
@@ -111,21 +112,24 @@ class ProductCardCompactView @JvmOverloads constructor(
         )
         initRatingTypography(
             rating = model.rating,
+            sold = model.sold,
             isFlashSale = model.isFlashSale(),
             isNormal = model.isNormal()
         )
         initWeight(
             labelGroup = model.getWeightLabelGroup()
         )
-        initOosLabel(
-            labelGroup = model.getOosLabelGroup(),
-            isOos = model.isOos()
+        initOosAndPreOrderLabel(
+            labelGroupOos = model.getOosLabelGroup(),
+            isOos = model.isOos(),
+            labelGroupPreOrder = model.getPreOrderLabelGroup(),
+            isPreOrder = model.isPreOrder
         )
         initWishlistButton(
             isOos = model.isOos(),
             isShown = model.isWishlistShown,
             hasBeenWishlist = model.hasBeenWishlist,
-            productId = model.productId,
+            productId = model.productId
         )
         initSimilarProductTypography(
             isOos = model.isOos(),
@@ -160,7 +164,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         needToShowQuantityEditor: Boolean,
         hasBlockedAddToCart: Boolean
     ) {
-        if(!isOos && needToShowQuantityEditor) {
+        if (!isOos && needToShowQuantityEditor) {
             inflateQuantityEditor()
             quantityEditor?.apply {
                 this.isVariant = isVariant
@@ -206,16 +210,15 @@ class ProductCardCompactView @JvmOverloads constructor(
         discountInt: Int,
         labelGroup: LabelGroup?
     ) {
-
         val isDiscountNotBlankOrZero = isDiscountNotBlankOrZero(discount, discountInt)
 
-        if(isDiscountNotBlankOrZero || labelGroup != null) {
+        if (isDiscountNotBlankOrZero || labelGroup != null) {
             inflatePromoLayout()
 
             promoLabel?.apply {
                 if (isDiscountNotBlankOrZero) {
                     text = if (discountInt.isZero()) {
-                        if (discount.last() != PERCENTAGE_CHAR) "$discount${PERCENTAGE_CHAR}" else discount
+                        if (discount.last() != PERCENTAGE_CHAR) "$discount$PERCENTAGE_CHAR" else discount
                     } else {
                         context.getString(R.string.product_card_compact_product_card_percentage_format, discountInt)
                     }
@@ -238,7 +241,7 @@ class ProductCardCompactView @JvmOverloads constructor(
     private fun LayoutProductCardCompactViewBinding.initSlashPriceTypography(
         slashPrice: String
     ) {
-        if(slashPrice.isNotBlank()) {
+        if (slashPrice.isNotBlank()) {
             inflatePromoLayout()
             slashPriceTypography?.apply {
                 text = slashPrice
@@ -254,7 +257,7 @@ class ProductCardCompactView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactViewBinding.initProductNameTypography(
         name: String,
-        needToChangeMaxLinesName: Boolean,
+        needToChangeMaxLinesName: Boolean
     ) {
         productNameTypography.showIfWithBlock(name.isNotBlank()) {
             text = MethodChecker.fromHtml(name)
@@ -268,13 +271,27 @@ class ProductCardCompactView @JvmOverloads constructor(
 
     private fun LayoutProductCardCompactViewBinding.initRatingTypography(
         rating: String,
+        sold: String,
         isFlashSale: Boolean,
         isNormal: Boolean
     ) {
         ratingIcon.hide()
-        ratingTypography.showIfWithBlock(rating.isNotBlank() && !isFlashSale) {
-            ratingIcon.show()
-            text = rating
+        ratingTypography.showIfWithBlock(
+            rating.isNotBlank() || sold.isNotBlank() &&
+                !isFlashSale
+        ) {
+            var ratingText = ""
+            if (rating.isNotBlank()) {
+                ratingIcon.show()
+                ratingText += rating
+            }
+            if (sold.isNotBlank()) {
+                if (ratingText.isNotBlank()) {
+                    ratingText += SEPARATOR_STRING
+                }
+                ratingText += " $sold"
+            }
+            text = ratingText
             adjustRatingPosition(isNormal)
         }
     }
@@ -313,18 +330,34 @@ class ProductCardCompactView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutProductCardCompactViewBinding.initOosLabel(
-        labelGroup: LabelGroup?,
-        isOos: Boolean
+    private fun LayoutProductCardCompactViewBinding.initOosAndPreOrderLabel(
+        labelGroupOos: LabelGroup?,
+        isOos: Boolean,
+        labelGroupPreOrder: LabelGroup?,
+        isPreOrder: Boolean
     ) {
-        oosLabel.showIfWithBlock(labelGroup != null && isOos) {
-            labelGroup?.let { labelGroup ->
-                text = labelGroup.title
-                unlockFeature = true
-                adjustBackgroundColor(
-                    colorType = labelGroup.type
-                )
+        when {
+            (labelGroupOos != null && isOos) -> {
+                oosLabel.apply {
+                    show()
+                    text = labelGroupOos.title
+                    unlockFeature = true
+                    adjustBackgroundColor(
+                        colorType = labelGroupOos.type
+                    )
+                }
             }
+            (labelGroupPreOrder != null && isPreOrder) -> {
+                oosLabel.apply {
+                    show()
+                    text = labelGroupPreOrder.title
+                    unlockFeature = true
+                    adjustBackgroundColor(
+                        colorType = labelGroupPreOrder.type
+                    )
+                }
+            }
+            else -> oosLabel.hide()
         }
     }
 
@@ -336,7 +369,7 @@ class ProductCardCompactView @JvmOverloads constructor(
             labelGroup?.let { labelGroup ->
                 text = labelGroup.title
                 setTextColorCompat(unifyprinciplesR.color.Unify_NN600)
-                if(isFlashSale) {
+                if (isFlashSale) {
                     adjustNowUSPConstraint()
                 }
             }
@@ -349,7 +382,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         hasBeenWishlist: Boolean,
         productId: String
     ) {
-        if(isShown && isOos) {
+        if (isShown && isOos) {
             inflateWishlistButton()
             wishlistButton?.bind(
                 isSelected = hasBeenWishlist,
@@ -367,7 +400,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         progressBarLabel: String,
         progressBarPercentage: Int
     ) {
-        if(isFlashSale) {
+        if (isFlashSale) {
             inflateProgressBar()
 
             progressBar?.apply {
@@ -571,7 +604,7 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactViewBinding.inflateWishlistButton() {
-        if(wishlistButtonViewStub.parent != null) {
+        if (wishlistButtonViewStub.parent != null) {
             val view = wishlistButtonViewStub
                 .inflateView(R.layout.layout_product_card_compact_wishlist_button)
             wishlistButton = view as? ProductCardCompactWishlistButtonView
@@ -580,7 +613,7 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactViewBinding.inflateQuantityEditor() {
-        if(quantityEditorViewStub.parent != null) {
+        if (quantityEditorViewStub.parent != null) {
             val view = quantityEditorViewStub
                 .inflateView(R.layout.layout_product_card_compact_quantity_editor)
             quantityEditor = view as? ProductCardCompactQuantityEditorView
@@ -589,14 +622,14 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactViewBinding.inflateProgressBar() {
-        if(progressBarViewStub.parent != null) {
+        if (progressBarViewStub.parent != null) {
             val progressBarView = progressBarViewStub
                 .inflateView(R.layout.layout_product_card_compact_progress_bar)
             progressBar = progressBarView as? ProgressBarUnify
             progressBarViewStub.show()
         }
 
-        if(progressTypographyViewStub.parent != null) {
+        if (progressTypographyViewStub.parent != null) {
             val progressBarTypographyView = progressTypographyViewStub
                 .inflateView(R.layout.layout_product_card_compact_progress_typography)
             progressTypography = progressBarTypographyView as? Typography
@@ -605,7 +638,7 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     private fun LayoutProductCardCompactViewBinding.inflatePromoLayout() {
-        if(promoLayoutViewStub.parent != null) {
+        if (promoLayoutViewStub.parent != null) {
             val view = promoLayoutViewStub
                 .inflateView(R.layout.layout_product_card_promo)
             promoLayout = view.findViewById(R.id.promo_layout)

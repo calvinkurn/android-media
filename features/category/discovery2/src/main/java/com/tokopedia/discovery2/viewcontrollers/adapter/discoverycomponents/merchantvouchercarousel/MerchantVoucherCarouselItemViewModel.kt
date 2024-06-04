@@ -16,9 +16,9 @@ import javax.inject.Inject
 
 class MerchantVoucherCarouselItemViewModel(
     application: Application,
-    val components: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel(components) {
     private val _multiShopData = MutableLiveData<MerchantVoucherCarouselModel>()
     val multiShopModel: LiveData<MerchantVoucherCarouselModel> = _multiShopData
 

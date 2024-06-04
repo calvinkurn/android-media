@@ -6,6 +6,7 @@ import com.tokopedia.home_account.explicitprofile.di.module.ExplicitProfileModul
 import com.tokopedia.home_account.explicitprofile.di.module.ExplicitProfileViewModelModules
 import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileFragment
 import com.tokopedia.home_account.explicitprofile.features.categories.CategoryFragment
+import com.tokopedia.home_account.explicitprofile.personalize.ExplicitPersonalizeActivity
 import dagger.Component
 
 @ActivityScope
@@ -19,4 +20,5 @@ import dagger.Component
 interface ExplicitProfileComponents {
     fun inject(fragment: ExplicitProfileFragment)
     fun inject(fragment: CategoryFragment)
+    fun inject(activity: ExplicitPersonalizeActivity)
 }

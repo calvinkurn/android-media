@@ -29,15 +29,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
@@ -61,6 +62,7 @@ import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
@@ -70,9 +72,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     companion object {
+
+        enum class SearchStyle {
+            SEARCH_DEFAULT, SEARCH_REDESIGN
+        }
+
         object Theme {
             const val TOOLBAR_DARK_TYPE = 0
             const val TOOLBAR_LIGHT_TYPE = 1
@@ -137,6 +145,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private var lightIconColor: Int? = getLightIconColor()
     private var navToolbarIconCustomDarkColor: Int? = null
     private var navToolbarIconCustomLightColor: Int? = null
+    private var searchStyle: SearchStyle = SearchStyle.SEARCH_DEFAULT
 
     private val navIconRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.rv_icon_list)
@@ -161,6 +170,9 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     }
     private val iconSearchMagnify: IconUnify by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.search_magnify_icon)
+    }
+    private val btnSearch: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.tv_search_cta)
     }
 
     @Inject
@@ -248,6 +260,34 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
         configureToolbarContentTypeBasedOnAttribute()
+    }
+
+    fun setSearchStyle(style: SearchStyle, showSearchBtn: Boolean = true) {
+        this.searchStyle = style
+        configureInvertedSearchBar()
+        configureSearchIcon()
+        configureSearchBox()
+        btnSearch.showWithCondition(showSearchBtn)
+    }
+
+    fun updateSearchBarStyle(showSearchBtn: Boolean = true) {
+        this.searchStyle = getSearchBarStyle()
+        configureInvertedSearchBar()
+        configureSearchIcon()
+        configureSearchBox()
+        btnSearch.showWithCondition(showSearchBtn)
+    }
+
+    fun setupItemCoachMark(iconId: Int, onReady: (View) -> Unit) {
+        navIconRecyclerView.post {
+            val itemIndex = navIconAdapter?.indexOf(iconId) ?: return@post
+            if (itemIndex != RecyclerView.NO_POSITION) {
+                val view = runCatching {
+                    navIconRecyclerView.getChildAt(itemIndex)
+                }.getOrNull() ?: return@post
+                onReady(view)
+            }
+        }
     }
 
     /**
@@ -417,6 +457,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         editorActionCallback: ((hint: String) -> Unit)? = null,
         hintImpressionCallback: ((hint: HintData, index: Int) -> Unit)? = null,
         hintClickCallback: ((hint: HintData, index: Int) -> Unit)? = null,
+        searchBtnClickCallback: ((hint: HintData, index: Int, isUsingDefaultHint: Boolean) -> Unit)? = null
     ) {
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
@@ -431,6 +472,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             editorActionCallback = editorActionCallback,
             hintImpressionCallback = hintImpressionCallback,
             hintClickCallback = hintClickCallback,
+            searchBtnClickCallback = searchBtnClickCallback
         )
         this.searchbarType = searchbarType
         searchbarTypeValidation(
@@ -749,10 +791,25 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     private fun configureInvertedSearchBar() {
-        if (invertSearchBarColor) {
-            layoutSearch.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner_inverted)
-        } else {
-            layoutSearch.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner)
+        when (searchStyle) {
+            SearchStyle.SEARCH_REDESIGN -> {
+                layoutSearch.background =
+                    context.getResDrawable(R.drawable.nav_toolbar_searchbar_bg_corner)
+            }
+
+            SearchStyle.SEARCH_DEFAULT -> {
+                if (invertSearchBarColor) {
+                    layoutSearch.background = ContextCompat.getDrawable(
+                        context,
+                        R.drawable.nav_toolbar_searchbar_bg_corner_inverted
+                    )
+                } else {
+                    layoutSearch.background = ContextCompat.getDrawable(
+                        context,
+                        R.drawable.nav_toolbar_searchbar_bg_corner
+                    )
+                }
+            }
         }
     }
 
@@ -983,5 +1040,49 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     ) {
         this.navToolbarIconCustomLightColor = navToolbarIconCustomLightColor
         this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
+    }
+
+    private fun configureSearchIcon() {
+        if (searchStyle == SearchStyle.SEARCH_REDESIGN) {
+            val iconSize = context.dpToPx(20).toInt()
+            iconSearchMagnify.layoutParams.width = iconSize
+            iconSearchMagnify.layoutParams.height = iconSize
+            iconSearchMagnify.requestLayout()
+            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN600)
+            iconSearchMagnify.setImage(
+                newIconId = IconUnify.SEARCH,
+                newLightEnable = iconColor,
+                newDarkEnable = iconColor
+            )
+        } else {
+            val iconSize = context.dpToPx(14).toInt()
+            iconSearchMagnify.layoutParams.width = iconSize
+            iconSearchMagnify.layoutParams.height = iconSize
+            iconSearchMagnify.requestLayout()
+            val iconColor = context.getResColor(unifyprinciplesR.color.Unify_NN950_68)
+            iconSearchMagnify.setImage(
+                newIconId = IconUnify.SEARCH,
+                newLightEnable = iconColor,
+                newDarkEnable = iconColor
+            )
+        }
+    }
+
+    private fun configureSearchBox() {
+        val hintTextColor = if (searchStyle == SearchStyle.SEARCH_REDESIGN) {
+            unifyprinciplesR.color.Unify_NN950_96
+        } else {
+            R.color.searchbar_dms_text_color
+        }
+        etSearch.setHintTextColor(context.getResColor(hintTextColor))
+    }
+
+    private fun getSearchBarStyle(): SearchStyle {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        return if (enableSearchRedesign) {
+            SearchStyle.SEARCH_REDESIGN
+        } else {
+            SearchStyle.SEARCH_DEFAULT
+        }
     }
 }

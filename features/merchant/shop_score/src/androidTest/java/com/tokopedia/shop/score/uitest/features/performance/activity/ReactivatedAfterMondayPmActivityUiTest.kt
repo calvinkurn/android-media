@@ -1,7 +1,6 @@
 package com.tokopedia.shop.score.uitest.features.performance.activity
 
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
@@ -97,10 +96,4 @@ class ReactivatedAfterMondayPmActivityUiTest: ShopScoreUiTest() {
         showProtectedParameterSection(reactivatedAfterMondayPmResponse)
     }
 
-    @Test
-    fun show_power_merchant_section_after_monday_pm() {
-        activityRule.launchActivity(getShopPerformancePageIntent())
-        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
-        showPowerMerchantSection()
-    }
 }

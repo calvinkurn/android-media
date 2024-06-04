@@ -10,6 +10,7 @@ object MainNavSharedPref {
     private const val PREF_KEY_MAIN_NAV_PROFILE_NAME = "main_nav_profile_name_shared_preference"
     private const val PREF_KEY_MAIN_NAV_PROFILE_PIC = "main_nav_profile_pic_shared_preference"
     private const val PREF_KEY_MAIN_NAV_PROFILE_MEMBER_STATUS = "main_nav_profile_member_status_shared_preference"
+    private const val PREF_KEY_MAIN_NAV_ONCE_DOT_BUY_AGAIN = "main_nav_buy_again_once_dot"
 
     private fun setProfileNameCache(context: Context, profileName: String) {
         val sharedPrefs: SharedPreferences = context.getSharedPreferences(
@@ -27,6 +28,12 @@ object MainNavSharedPref {
         val sharedPrefs: SharedPreferences = context.getSharedPreferences(
             PREF_KEY_MAIN_NAV_SHARED_PREF, Context.MODE_PRIVATE)
         sharedPrefs.edit().putString(PREF_KEY_MAIN_NAV_PROFILE_MEMBER_STATUS, memberCacheUrl).apply()
+    }
+
+    fun setTemporaryDotInBuyAgain(context: Context, isShown: Boolean) {
+        val sharedPrefs: SharedPreferences = context.getSharedPreferences(
+            PREF_KEY_MAIN_NAV_SHARED_PREF, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean(PREF_KEY_MAIN_NAV_ONCE_DOT_BUY_AGAIN, isShown).apply()
     }
 
     fun setProfileCacheFromAccountModel(context: Context, accountHeaderDataModel: AccountHeaderDataModel) {

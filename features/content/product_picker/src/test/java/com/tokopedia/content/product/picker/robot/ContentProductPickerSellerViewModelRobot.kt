@@ -2,19 +2,24 @@ package com.tokopedia.content.product.picker.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.uimodel.PlayBroProductSummaryUiState
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserUiState
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -31,7 +36,8 @@ internal class ContentProductPickerSellerViewModelRobot(
     userSession: UserSessionInterface = mockk(relaxed = true),
     isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
-    private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
+    selectedAccount: ContentAccountUiModel = ContentAccountUiModel.Empty,
+    private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
 ) : Closeable {
 
     private val viewModel = ContentProductPickerSellerViewModel(
@@ -42,10 +48,11 @@ internal class ContentProductPickerSellerViewModelRobot(
         isNumerationShown,
         isEligibleForPin,
         fetchCommissionProduct,
+        selectedAccount,
         repo,
         commonRepo,
         userSession,
-        dispatchers,
+        dispatchers
     )
 
     fun recordState(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): ProductChooserUiState {

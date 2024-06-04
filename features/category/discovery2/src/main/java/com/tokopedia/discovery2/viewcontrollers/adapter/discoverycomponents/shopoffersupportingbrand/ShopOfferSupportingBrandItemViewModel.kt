@@ -13,9 +13,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ShopOfferSupportingBrandItemViewModel(
     application: Application,
-    val component: ComponentsItem,
+    component: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(component), CoroutineScope {
 
     private val componentData = MutableLiveData<DataItem>()
     override val coroutineContext: CoroutineContext

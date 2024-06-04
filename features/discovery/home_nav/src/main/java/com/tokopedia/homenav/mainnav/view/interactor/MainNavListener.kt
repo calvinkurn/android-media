@@ -20,6 +20,8 @@ interface MainNavListener : HomeNavListener {
 
     fun onErrorTransactionListClicked(position: Int)
 
+    fun onRefreshBuyAgainIfError()
+
     fun getTrackingQueueObj(): TrackingQueue?
 
     fun putEEToTrackingQueue(data: HashMap<String, Any>)

@@ -19,6 +19,8 @@ data class RatesDetailData(
     val destinationData: DestinationData = DestinationData(),
     @SerializedName("weight")
     val weight: String = "",
+    @SerializedName("paid_section_info")
+    val paidSectionInfo: PaidSectionInfo = PaidSectionInfo(),
     @SerializedName("services")
     val services: List<ServiceData> = listOf(),
     @SerializedName("info")

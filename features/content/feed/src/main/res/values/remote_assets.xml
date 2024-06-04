@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feed_search_not_found_illustration" translatable="false">https://images.tokopedia.net/img/android/content/feed/feed_search_not_found_illustration.png</string>
+    <string name="feed_search_restricted_illustration" translatable="false">https://images.tokopedia.net/img/android/content/feed/feed_search_restricted_illustration.png</string>
+</resources>

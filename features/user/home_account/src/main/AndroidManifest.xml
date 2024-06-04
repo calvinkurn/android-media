@@ -87,6 +87,24 @@
             android:exported="false"/>
 
         <activity
+            android:name="com.tokopedia.home_account.explicitprofile.personalize.ExplicitPersonalizeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_explicit_personalize"/>
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".explicitprofile.features.ExplicitProfileActivity"
             android:label="Preferensi Belanja"
             android:theme="@style/Theme.White"

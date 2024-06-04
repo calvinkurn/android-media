@@ -3,9 +3,14 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 import android.content.Context
 import androidx.lifecycle.*
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.data.ComponentsItem
 
 
-abstract class DiscoveryBaseViewModel : LifecycleObserver {
+abstract class DiscoveryBaseViewModel(val components: ComponentsItem) : LifecycleObserver {
+
+    // this is just to alias to components
+    val component: ComponentsItem = components
+
     open fun initDaggerInject() {}
     val syncData: MutableLiveData<Boolean> = MutableLiveData()
     fun getSyncPageLiveData(): LiveData<Boolean> {

@@ -10,12 +10,17 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation.TAB_TYPE_FEED
+import com.tokopedia.applink.navigation.DeeplinkNavigationUtil
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 
@@ -27,6 +32,8 @@ object DeeplinkMapperContent {
     private const val EXTRA_SOURCE_NAME = "source"
     private const val EXTRA_WIDGET_ID = "widget_id"
     private const val EXTRA_ENTRY_POINT = "entrypoint"
+
+    private val deeplinkNavigationUtil by lazy { DeeplinkNavigationUtil() }
 
     /**
      * https://www.tokopedia.com/
@@ -65,6 +72,12 @@ object DeeplinkMapperContent {
             INTERNAL_FEED_CREATION_SHOP_SEARCH
         } else if (pathSegments.startsWith("hashtag", false)) {
             ""
+        } else if (pathSegments.startsWith("search-result", false)) {
+            INTERNAL_FEED_SEARCH_RESULT
+        } else if (pathSegments.startsWith("search", false)) {
+            INTERNAL_FEED_LOCAL_BROWSE
+        } else if (pathSegments.startsWith("old", false)) {
+            goToAppLinkFeedHomeInternal(uri, isOldNav = true)
         } else {
             goToAppLinkFeedHomeInternal(uri)
         }
@@ -89,11 +102,19 @@ object DeeplinkMapperContent {
      * ?tab={tab_name}
      * ?source={source_name}
      */
-    private fun goToAppLinkFeedHomeInternal(uri: Uri): String {
+    private fun goToAppLinkFeedHomeInternal(uri: Uri, isOldNav: Boolean = false): String {
         return UriUtil.buildUriAppendParams(
-            ApplinkConsInternalHome.HOME_NAVIGATION,
-            buildMap {
-                put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
+            uri = if (!isOldNav && deeplinkNavigationUtil.newHomeNavEnabled()) {
+                ApplinkConsInternalHome.HOME_NAVIGATION
+            } else {
+                ApplinkConsInternalHome.HOME_NAVIGATION_OLD
+            },
+            queryParameters = buildMap {
+                if (!isOldNav && deeplinkNavigationUtil.newHomeNavEnabled()) {
+                    put(EXTRA_TAB_TYPE, TAB_TYPE_FEED)
+                } else {
+                    put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
+                }
 
                 val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)

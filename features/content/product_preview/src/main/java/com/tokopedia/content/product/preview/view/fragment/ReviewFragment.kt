@@ -35,7 +35,6 @@ import com.tokopedia.content.product.preview.utils.isUsingShare
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
-import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_NAME
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
@@ -334,7 +333,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onImpressedImage() {
-        analytics.onImpressImage(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+        analytics.onImpressImage(TAB_REVIEW_NAME)
     }
 
     override fun onImpressedVideo() {

@@ -48,7 +48,7 @@ fun TrackingHistory(
 ) {
     trackHistory?.let { model ->
         val list = model.trackHistory
-        if (list.isNotEmpty() && !model.invalid && model.orderStatus != INVALID_ORDER_STATUS && model.change != 0) {
+        if (list.isNotEmpty() && !model.invalid && model.change != 0) {
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                 repeat(list.size) { index ->
                     TrackingHistoryItem(
@@ -59,8 +59,6 @@ fun TrackingHistory(
                     )
                 }
             }
-        } else {
-            EmptyTracking(model)
         }
     }
 }
@@ -184,74 +182,6 @@ fun TrackingHistoryItem(
     }
 }
 
-@Composable
-fun EmptyTracking(history: TrackOrderModel) {
-    ConstraintLayout(modifier = Modifier.padding(horizontal = 16.dp)) {
-        val (icon, description, invalidTrackingNotes) = createRefs()
-        NestImage(
-            modifier = Modifier.constrainAs(icon) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-            },
-            source = ImageSource.Painter(logisticorderR.drawable.info)
-        )
-        NestTypography(
-            modifier = Modifier.constrainAs(description) {
-                top.linkTo(icon.top)
-                start.linkTo(icon.end, margin = 4.dp)
-            },
-            text = history.emptyTrackingTitle
-        )
-        if (history.invalid) {
-            InvalidTrackingNotes(
-                Modifier.constrainAs(invalidTrackingNotes) {
-                    top.linkTo(description.bottom)
-                    start.linkTo(parent.start)
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun InvalidTrackingNotes(modifier: Modifier) {
-    Column(modifier) {
-        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_1))
-        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_2))
-        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_3))
-    }
-}
-
-@Composable
-private fun InvalidTrackingNotesItem(text: String) {
-    Row(
-        Modifier.padding(top = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.Top
-    ) {
-        Box(
-            modifier = Modifier
-                .size(8.dp, 8.dp)
-                .border(BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300), CircleShape)
-        )
-        NestTypography(
-            text = text
-        )
-    }
-}
-
-private val TrackOrderModel.emptyTrackingTitle: String
-    @Composable get() {
-        return if (invalid) {
-            stringResource(id = logisticorderR.string.warning_courier_invalid)
-        } else if (orderStatus == INVALID_ORDER_STATUS || change == 0 || trackHistory.isEmpty()) {
-            stringResource(id = logisticorderR.string.warning_no_courier_change)
-        } else {
-            ""
-        }
-    }
-
-private const val INVALID_ORDER_STATUS = 501
 
 @Preview
 @Composable
@@ -290,27 +220,3 @@ private fun TrackingHistoryNormalPreview() {
     }
 }
 
-@Preview
-@Composable
-private fun TrackingHistoryEmptyPreview() {
-    val data = TrackOrderModel(
-        trackHistory = listOf()
-    )
-
-    NestTheme {
-        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
-    }
-}
-
-@Preview
-@Composable
-private fun TrackingHistoryInvalidPreview() {
-    val data = TrackOrderModel(
-        trackHistory = listOf(),
-        invalid = true
-    )
-
-    NestTheme {
-        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
-    }
-}

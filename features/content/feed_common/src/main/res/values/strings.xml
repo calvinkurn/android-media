@@ -1,0 +1,17 @@
+<resources>
+    <!-- Comment   -->
+    <string name="content_comment_header">Komentar</string>
+    <string name="content_comment_reply">Balas</string>
+    <string name="content_comment_empty_title">Belum ada komentar</string>
+    <string name="content_comment_empty_desc">Mulai percakapan dengan berikan komentar</string>
+    <string name="content_comment_expand_hide">Sembunyikan</string>
+    <string name="content_comment_expand_visible">Lihat %s Balasan</string>
+    <string name="content_common_menu_delete">Hapus</string>
+    <string name="content_common_menu_report">Laporkan</string>
+    <string name="comment_delete_undo">Kembalikan</string>
+    <string name="comment_delete_kembali">Komentar dihapus.</string>
+    <string name="content_global_error_secondary_text">Ke Pengaturan</string>
+
+    <string name="try_again">Coba Lagi</string>
+    <string name="connection_fail_and_try_again">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+</resources>

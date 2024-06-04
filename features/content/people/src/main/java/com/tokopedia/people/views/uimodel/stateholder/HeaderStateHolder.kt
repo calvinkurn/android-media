@@ -24,7 +24,7 @@ class HeaderStateHolder {
         return mutableListOf<HeaderOptionals>().apply {
             add(
                 HeaderActionButton(
-                    icon = IconSource.Nest(IconUnify.SHARE_MOBILE),
+                    icon = IconSource.Nest(IconUnify.SOCIAL_SHARE),
                     onClicked = onShareClicked,
                 )
             )

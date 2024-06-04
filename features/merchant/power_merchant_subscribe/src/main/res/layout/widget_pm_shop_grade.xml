@@ -151,6 +151,29 @@
             tools:textColor="@color/Unify_NN0" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvNotVerified"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pm_not_yet_verified"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_NN0"
+            app:layout_constraintBottom_toBottomOf="@+id/icNotVerified"
+            app:layout_constraintStart_toEndOf="@+id/icNotVerified"
+            app:layout_constraintTop_toTopOf="@+id/icNotVerified"
+            app:typographyType="display_2"
+            />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/icNotVerified"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="6dp"
+            app:srcCompat="@drawable/ic_pm_verification"
+            app:layout_constraintStart_toStartOf="@+id/tvPmShopGrade"
+            app:layout_constraintTop_toBottomOf="@+id/tvPmShopGrade"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmShopGradeStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -195,6 +218,38 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clVerification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pm_verification"
+        android:padding="16dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/guidelinePmShopGradeRight"
+        app:layout_constraintStart_toStartOf="@+id/imgPmShopGradeBackground"
+        app:layout_constraintTop_toBottomOf="@+id/imgPmShopGradeBackground">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvCaptVerification"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN1000"
+            app:layout_constraintBottom_toBottomOf="@+id/btnStartVerification"
+            app:layout_constraintEnd_toStartOf="@+id/btnStartVerification"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnStartVerification"
+            app:typographyType="paragraph_2"
+            android:text="@string/pm_capt_verification" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnStartVerification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pm_start_verification"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <LinearLayout
         android:id="@+id/wrapperPmShopScore"
         android:layout_width="wrap_content"

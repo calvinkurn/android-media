@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.carouselproductcard.databinding.CarouselProductCardItemListLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselProductCardListViewHolder(
@@ -42,10 +44,35 @@ internal class CarouselProductCardListViewHolder(
         val onItemThreeDotsClickListener = carouselProductCardModel.getOnItemThreeDotsClickListener()
         val onATCNonVariantClickListener = carouselProductCardModel.getOnATCNonVariantClickListener()
         val onAddVariantClickListener = carouselProductCardModel.getAddVariantClickListener()
+        val onViewListener = carouselProductCardModel.getOnViewListener()
 
-        binding.carouselProductCardItem.setOnClickListener {
-            onItemClickListener?.onItemClick(productCardModel, adapterPosition)
-        }
+        binding.carouselProductCardItem.setVisibilityPercentListener(productCardModel.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
+            override fun onShow() {
+                onViewListener?.onViewAttachedToWindow(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onShowOver(maxPercentage: Int) {
+                onViewListener?.onViewDetachedFromWindow(productCardModel, bindingAdapterPosition, maxPercentage)
+            }
+        })
+        binding.carouselProductCardItem.setOnClickListener(object : ProductCardClickListener {
+            override fun onClick(v: View) {
+                onItemClickListener?.onItemClick(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onAreaClicked(v: View) {
+                onItemClickListener?.onAreaClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onProductImageClicked(v: View) {
+                onItemClickListener?.onProductImageClicked(productCardModel, bindingAdapterPosition)
+            }
+
+            override fun onSellerInfoClicked(v: View) {
+                onItemClickListener?.onSellerInfoClicked(productCardModel, bindingAdapterPosition)
+            }
+        })
+
 
         onItemImpressedListener?.getImpressHolder(adapterPosition)?.let {
             binding.carouselProductCardItem.setImageProductViewHintListener(it, object : ViewHintListener {

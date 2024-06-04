@@ -22,9 +22,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ProductCardColumnListViewModel(
     val application: Application,
-    val componentsItem: ComponentsItem,
+    components: ComponentsItem,
     val position: Int
-) : DiscoveryBaseViewModel(), CoroutineScope {
+) : DiscoveryBaseViewModel(components), CoroutineScope {
 
     private val _carouselPagingGroupProductModel: MutableLiveData<CarouselPagingGroupProductModel> =
         MutableLiveData()
@@ -58,8 +58,8 @@ class ProductCardColumnListViewModel(
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
             productCardsUseCase?.loadFirstPageComponents(
-                componentsItem.id,
-                componentsItem.pageEndPoint,
+                components.id,
+                components.pageEndPoint,
                 NO_PRODUCT_PER_PAGE
             )
             setProductList()
@@ -69,7 +69,7 @@ class ProductCardColumnListViewModel(
     }
 
     private fun setProductList() {
-        val componentItems = componentsItem.getComponentsItem()
+        val componentItems = components.getComponentsItem()
         if (!componentItems.isNullOrEmpty()) {
             _carouselPagingGroupProductModel.postValue(componentItems.mapToCarouselPagingGroupProductModel())
         } else {
@@ -78,10 +78,10 @@ class ProductCardColumnListViewModel(
     }
 
     fun getProduct(position: Int): DataItem? =
-        componentsItem.getComponentItem(position)?.data?.firstOrNull()
+        components.getComponentItem(position)?.data?.firstOrNull()
 
     fun getItemPerPage(): Int =
-        if (componentsItem.getComponentsItemSize() < componentsItem.getPropertyRows()) componentsItem.getComponentsItemSize() else componentsItem.getPropertyRows()
+        if (components.getComponentsItemSize() < components.getPropertyRows()) components.getComponentsItemSize() else components.getPropertyRows()
 
     fun isLoggedIn(): Boolean = userSession?.isLoggedIn.orFalse()
 
@@ -89,7 +89,7 @@ class ProductCardColumnListViewModel(
         val dataItem = getProduct(position) ?: return
 
         with(dataItem) {
-            if (isTopads == false || componentsItem.topAdsTrackingStatus) return@with
+            if (isTopads == false || components.topAdsTrackingStatus) return@with
 
             topadsViewUrl?.let {
                 topAdsTrackingUseCase?.hitImpressions(
@@ -99,7 +99,7 @@ class ProductCardColumnListViewModel(
                     name.orEmpty(),
                     imageUrlMobile.orEmpty()
                 )
-                componentsItem.topAdsTrackingStatus = true
+                components.topAdsTrackingStatus = true
             }
         }
     }
