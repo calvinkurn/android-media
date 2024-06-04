@@ -100,7 +100,7 @@ class ProductWidgetViewHolder(
 
     private fun widgetImpressionListener(model: ProductWidgetUiModel) {
         itemView.addOnImpressionListener(model.channelModel) {
-            listener.productImpressed(model, bindingAdapterPosition)
+            listener.productContainerImpressed(model, bindingAdapterPosition)
         }
     }
 
