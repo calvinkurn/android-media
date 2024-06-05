@@ -21,7 +21,6 @@ import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchasePr
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
-import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
 import com.tokopedia.universal_sharing.util.CurrencyUtil.toRupiahFormat
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseBottomSheet
@@ -139,7 +138,7 @@ class UniversalSharingPostPurchaseSharingActivity :
                 ::UniversalSharingPostPurchaseSharingActivity.name
             )
             analytics.onViewSharingChannelBottomSheetSharePostPurchase(
-                userShareType = TYPE_GENERAL,
+                userId = userSession.userId,
                 productId = product.productId,
                 orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
             )
@@ -161,7 +160,7 @@ class UniversalSharingPostPurchaseSharingActivity :
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     analytics.onClickSharingChannelBottomSheetSharePostPurchase(
                         channel = shareModel.channel ?: "",
-                        userShareType = TYPE_GENERAL,
+                        userId = userSession.userId,
                         productId = product.productId,
                         orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
                     )
@@ -169,7 +168,7 @@ class UniversalSharingPostPurchaseSharingActivity :
 
                 override fun onCloseOptionClicked() {
                     analytics.onClickCloseBottomSheetSharePostPurchase(
-                        userShareType = TYPE_GENERAL,
+                        userId = userSession.userId,
                         productId = product.productId,
                         orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
                     )

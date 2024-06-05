@@ -70,6 +70,7 @@ import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -101,6 +102,9 @@ class ThankYouPageActivity :
 
     @Inject
     lateinit var postPurchaseShareHelper: dagger.Lazy<PostPurchaseShareHelper>
+
+    @Inject
+    lateinit var userSession: dagger.Lazy<UserSessionInterface>
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
@@ -471,6 +475,7 @@ class ThankYouPageActivity :
             )
         ).addIcon(IconList.ID_SHARE) {
             thankYouPageAnalytics.get().sendClickShareIcon(
+                userId = userSession.get().userId,
                 orderIdList = postPurchaseShareHelper.get().getOrderIdListString(
                     thanksPageData.shopOrder
                 )
