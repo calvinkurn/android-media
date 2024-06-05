@@ -18,7 +18,7 @@ class InfiniteRecommendationManager(
     private val context: Context,
     val listener: InfiniteRecommendationListener? = null,
     private val headingType: Int = 0,
-    private val additionalAppLogParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
+    private val additionalAppLogParam: AppLogAdditionalParam = AppLogAdditionalParam.None
 ) : InfiniteRecommendationCallback {
 
     val adapter: InfiniteRecommendationAdapter by getAdapter()

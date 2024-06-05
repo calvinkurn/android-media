@@ -3,10 +3,7 @@ package com.tokopedia.loginregister.common.analytics
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.util.Patterns
-import android.widget.Toast
-import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
@@ -18,9 +15,11 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.getClientLabelIfAvailable
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -34,6 +33,8 @@ class LoginRegisterAnalytics @Inject constructor(
         val irisSession: IrisSession
 ) {
 
+    var clientName: String = ""
+    
     fun trackScreen(activity: Activity, screenName: String) {
         val screenNameMessage =  " $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}"
         ServerLogger.log(Priority.P2, "FINGERPRINT", mapOf("screenName" to screenNameMessage))
@@ -53,7 +54,7 @@ class LoginRegisterAnalytics @Inject constructor(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
                         ACTION_CLICK_ON_LOGIN_WITH_EMAIL,
-                        "click - login"
+                        "click - login" + getClientLabelIfAvailable(clientName)
                 )
 
                 if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -64,14 +65,14 @@ class LoginRegisterAnalytics @Inject constructor(
                     EVENT_CLICK_LOGIN,
                     CATEGORY_LOGIN_PAGE,
                     ACTION_CLICK_ON_LOGIN_WITH_PHONE,
-                    "click - login"
+                    "click - login" + getClientLabelIfAvailable(clientName)
             )
             else -> {
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
                         String.format("click on button selanjutnya - %s", "unknown"),
-                        "click"
+                        "click" + getClientLabelIfAvailable(clientName)
                 )
 
                 if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -96,8 +97,8 @@ class LoginRegisterAnalytics @Inject constructor(
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "email"),
-                        String.format("failed - %s", errorMessage)
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "email"),
+                        String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
                 )
 
 
@@ -106,14 +107,14 @@ class LoginRegisterAnalytics @Inject constructor(
                     EVENT_CLICK_LOGIN,
                     CATEGORY_LOGIN_PAGE,
                     "enter login phone number",
-                    String.format("failed - %s", errorMessage)
+                    String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
             )
             else -> {
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "unknown"),
-                        String.format("failed - %s", errorMessage)
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "unknown"),
+                        String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
                 )
 
                 if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -136,8 +137,8 @@ class LoginRegisterAnalytics @Inject constructor(
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "email"),
-                        "success"
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "email"),
+                        "success" + getClientLabelIfAvailable(clientName)
                 )
 
                 if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -148,14 +149,14 @@ class LoginRegisterAnalytics @Inject constructor(
                     EVENT_CLICK_LOGIN,
                     CATEGORY_LOGIN_PAGE,
                     "enter login phone number",
-                    "success"
+                    "success" + getClientLabelIfAvailable(clientName)
             )
             else -> {
                 hashMap = TrackAppUtils.gtmData(
                         EVENT_CLICK_LOGIN,
                         CATEGORY_LOGIN_PAGE,
-                        String.format("click on button selanjutnya - %s", "unknown"),
-                        "success"
+                        String.format(Locale.getDefault(), "click on button selanjutnya - %s", "unknown"),
+                        "success" + getClientLabelIfAvailable(clientName)
                 )
 
                 if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -173,7 +174,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "enter login phone number",
-                "click"
+                "click" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -183,7 +184,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_PHONE,
-                "success - login"
+                "success - login" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -193,7 +194,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "enter login phone number",
-                String.format("failed - %s", errorMessage)
+                String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -203,7 +204,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button ubah",
-                ""
+                "${getClientLabelIfAvailable(clientName, removeDash = true)}"
         ))
     }
 
@@ -213,7 +214,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on hide kata sandi",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -223,7 +224,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on unhide kata sandi",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -233,7 +234,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button masuk",
-                "click"
+                "click" + getClientLabelIfAvailable(clientName)
         )
 
         if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -250,11 +251,14 @@ class LoginRegisterAnalytics @Inject constructor(
 
     //#11
     fun trackClickOnLoginButtonSuccess(isWithSq: Boolean) {
+        var label = if(isWithSq) "success - login - sq" else "success - login - non sq"
+        label+=getClientLabelIfAvailable(clientName)
+
         val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on masuk dengan email",
-                if(isWithSq) "success - login - sq" else "success - login - non sq"
+                label + getClientLabelIfAvailable(clientName)
         )
 
         if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -270,7 +274,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_LOGIN_GOOGLE,
-                "click"
+                "click" + getClientLabelIfAvailable(clientName)
         ))
 
         val map = HashMap<String, Any>()
@@ -285,7 +289,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click back",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -295,7 +299,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_REGISTER_LOGIN,
                 CATEGORY_LOGIN,
                 ACTION_REGISTER,
-                LABEL_REGISTER
+                LABEL_REGISTER + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -304,7 +308,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_ERROR,
                 CATEGORY_LOGIN,
                 ACTION_LOGIN_ERROR,
-                LABEL_PASSWORD
+                LABEL_PASSWORD + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -313,7 +317,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_ERROR,
                 CATEGORY_LOGIN,
                 ACTION_LOGIN_ERROR,
-                LABEL_EMAIL
+                LABEL_EMAIL + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -322,7 +326,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_SUCCESS,
                 CATEGORY_LOGIN,
                 ACTION_LOGIN_SUCCESS,
-                LABEL_EMAIL
+                LABEL_EMAIL + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -331,7 +335,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN_PAGE,
                 "click on button phone number",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
 
         val map = HashMap<String, Any>()
@@ -354,7 +358,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_BACK,
                 CATEGORY_ACTIVATION_PAGE,
                 "click back button",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -363,7 +367,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_ACTIVATION_PAGE,
                 "click on aktivasi",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -372,7 +376,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_ACTIVATION_PAGE,
                 "click on kirim ulang",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -381,7 +385,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER,
                 ACTION_CLICK_CHANNEL,
-                LABEL_EMAIL
+                LABEL_EMAIL + getClientLabelIfAvailable(clientName)
         ))
 
     }
@@ -391,7 +395,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_REGISTER_PAGE,
                 "click on masuk",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -400,7 +404,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER,
                 ACTION_CLICK_CHANNEL,
-                LABEL_GPLUS
+                LABEL_GPLUS + getClientLabelIfAvailable(clientName)
         ))
 
         val map = HashMap<String, Any>()
@@ -414,7 +418,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER,
                 ACTION_CLICK_CHANNEL,
-                name
+                name + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -423,7 +427,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_REGISTER_PAGE,
                 "click on pop up box register (ya, masuk)",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -432,7 +436,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_REGISTER_PAGE,
                 "click on pop up box register (ubah)",
-                "email"
+                "email${getClientLabelIfAvailable(clientName)}"
         ))
     }
 
@@ -441,7 +445,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_REGISTER_PAGE,
                 "click on pop up box register (ya, benar)",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -450,7 +454,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_CONFIRM,
                 CATEGORY_REGISTER_PAGE,
                 "click on pop up box register (ubah)",
-                "phone number"
+                "phone number${getClientLabelIfAvailable(clientName)}"
         ))
     }
 
@@ -459,7 +463,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_BACK,
                 CATEGORY_REGISTER_PAGE,
                 "click back (daftar dengan email)",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -468,7 +472,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 "click on daftar (daftar dengan email)",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -477,7 +481,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
                 ACTION_REGISTER_SUCCESS,
-                LABEL_EMAIL
+                LABEL_EMAIL + getClientLabelIfAvailable(clientName)
         ))
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, "Email")
@@ -497,7 +501,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
                 ACTION_REGISTER_SUCCESS,
-                methodName
+                "$methodName${getClientLabelIfAvailable(clientName)}"
         ))
     }
 
@@ -506,7 +510,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_HOME_PAGE,
                 CATEGORY_WELCOME_PAGE,
                 "click on lanjut",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -515,7 +519,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_USER_PROFILE,
                 CATEGORY_WELCOME_PAGE,
                 "click on lengkapi profil",
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -555,7 +559,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 UserSessionInterface.LOGIN_METHOD_PHONE,
-                "success"
+                "success${getClientLabelIfAvailable(clientName)}"
         ))
     }
 
@@ -564,7 +568,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE,
-                LABEL_LOGIN_SUCCESS
+                LABEL_LOGIN_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -574,7 +578,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_LOGIN_GOOGLE,
-                "success"
+                "success${getClientLabelIfAvailable(clientName)}"
         ))
     }
 
@@ -583,7 +587,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_LOGIN_GOOGLE,
-                LABEL_LOGIN_SUCCESS
+                LABEL_LOGIN_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -593,7 +597,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_SUCCESS,
                 CATEGORY_LOGIN,
                 ACTION_LOGIN_SUCCESS,
-                LABEL_EMAIL
+                LABEL_EMAIL + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -602,7 +606,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
-                LABEL_LOGIN_SUCCESS
+                LABEL_LOGIN_SUCCESS + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -638,7 +642,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
-                LABEL_FAILED + errorMessage
+                LABEL_FAILED + errorMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -647,7 +651,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE,
-                LABEL_FAILED + errorMessage
+                LABEL_FAILED + errorMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -656,7 +660,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 "click on button $GOOGLE",
-                LABEL_FAILED + errorMessage
+                LABEL_FAILED + errorMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -665,7 +669,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_PHONE,
-                LABEL_FAILED + errorMessage
+                LABEL_FAILED + errorMessage + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -675,7 +679,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on masuk dengan $GOOGLE",
-                String.format("failed - %s", errorMessage)
+                String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -684,7 +688,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_EMAIL,
-                String.format("failed - %s", errorMessage)
+                String.format(Locale.getDefault(), "failed - %s", errorMessage) + getClientLabelIfAvailable(clientName)
         )
 
         if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -699,7 +703,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_TICKER_LOGIN,
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -708,7 +712,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_LINK_TICKER_LOGIN,
-                link
+                link + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -717,7 +721,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLOSE_TICKER_LOGIN,
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -726,7 +730,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_SOCMED,
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -735,7 +739,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
-                ""
+                getClientLabelIfAvailable(clientName, true)
         ))
     }
 
@@ -744,7 +748,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN,
-                LABEL_YES + "email"
+                LABEL_YES + "email" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -753,7 +757,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN,
-                LABEL_NO + "email"
+                LABEL_NO + "email" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -762,7 +766,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_VIEW_LOGIN_IRIS,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_VIEW_BANNER,
-                label
+                label + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -780,7 +784,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_PHONE,
-                "click - register"
+                "click - register" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -789,7 +793,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_EMAIL,
-                "click - register"
+                "click - register" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -812,7 +816,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_PHONE,
-                "success - register"
+                "success - register" + getClientLabelIfAvailable(clientName)
         ))
     }
     private fun trackerSuccessRegisterSmartLoginEmail() {
@@ -820,7 +824,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_EMAIL,
-                "success - register"
+                "success - register" + getClientLabelIfAvailable(clientName)
         ))
     }
     private fun trackerSuccessRegisterSmartLoginGoogle() {
@@ -828,7 +832,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_LOGIN_GOOGLE,
-                "success"
+                "success" + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -838,7 +842,7 @@ class LoginRegisterAnalytics @Inject constructor(
             EVENT_CLICK_LOGIN,
             Category.LOGIN_WITH_PHONE,
             Action.LOGIN_SUCCESS,
-            Label.TOKOCASH
+            Label.TOKOCASH + getClientLabelIfAvailable(clientName)
         ))
     }
 
@@ -848,7 +852,7 @@ class LoginRegisterAnalytics @Inject constructor(
             EVENT_CLICK_LOGIN,
             CATEGORY_LOGIN_PAGE,
             ACTION_CLICK_LOGIN_FINGERPRINT,
-            "click")
+            "click" + getClientLabelIfAvailable(clientName))
 
         data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -861,7 +865,7 @@ class LoginRegisterAnalytics @Inject constructor(
             EVENT_CLICK_LOGIN,
             CATEGORY_LOGIN_PAGE,
             ACTION_CLICK_LOGIN_FINGERPRINT,
-            LABEL_SUCCESS)
+            LABEL_SUCCESS + getClientLabelIfAvailable(clientName))
 
         data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -874,7 +878,7 @@ class LoginRegisterAnalytics @Inject constructor(
             EVENT_CLICK_LOGIN,
             CATEGORY_LOGIN_PAGE,
             ACTION_CLICK_LOGIN_FINGERPRINT,
-            "$LABEL_FAILED - $errMsg")
+            "$LABEL_FAILED - $errMsg" + getClientLabelIfAvailable(clientName))
 
         data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE

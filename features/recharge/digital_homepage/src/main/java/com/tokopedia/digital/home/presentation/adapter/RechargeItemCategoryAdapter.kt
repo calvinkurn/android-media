@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class RechargeItemCategoryAdapter(
     var items: List<RechargeHomepageSections.Item>,
@@ -42,7 +42,7 @@ class RechargeItemCategoryAdapter(
             isLastItem: Boolean = false
         ) {
             with(binding) {
-                binding.categoryImage.loadImage(element.mediaUrl)
+                binding.categoryImage.loadImageFresco(element.mediaUrl)
                 binding.categoryName.text = element.title
                 root.setOnClickListener {
                     onItemBindListener.onRechargeSectionItemClicked(element)

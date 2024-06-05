@@ -152,6 +152,7 @@ ext {
             mediapicker                     : ":features:media:mediapicker",
             mediapickerCommon               : ":features:media:mediapicker-common",
             universalEditor                 : ":features:media:universal-editor",
+            medialoaderFresco               : ":features:media:medialoader-fresco",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",

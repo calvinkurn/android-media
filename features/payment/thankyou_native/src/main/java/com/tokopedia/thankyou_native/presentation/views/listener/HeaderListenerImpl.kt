@@ -7,9 +7,11 @@ import com.tokopedia.kotlin.extensions.view.SPACE
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.BankTransfer
+import com.tokopedia.thankyou_native.data.mapper.CtaTypeMapper
 import com.tokopedia.thankyou_native.data.mapper.InstantPaymentPage
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
+import com.tokopedia.thankyou_native.data.mapper.Redirect
 import com.tokopedia.thankyou_native.data.mapper.Retail
 import com.tokopedia.thankyou_native.data.mapper.VirtualAccount
 import com.tokopedia.thankyou_native.data.mapper.WaitingPaymentPage
@@ -86,6 +88,22 @@ class HeaderListenerImpl(
             context?.apply {
                 RouteManager.route(this, applink)
             }
+        }
+    }
+
+    override fun onButtonClick(applink: String, type: String, isPrimary: Boolean, text: String) {
+        thankYouPageAnalytics.sendCtaClickAnalytic(
+            isPrimary,
+            text,
+            applink,
+            thanksPageData.paymentID,
+            thanksPageData.merchantCode,
+            thanksPageData.gatewayName
+        )
+        if (CtaTypeMapper.getType(type) == Redirect) {
+            openApplink(applink)
+        } else {
+            onDialogRedirectListener.refreshThanksPageData()
         }
     }
 

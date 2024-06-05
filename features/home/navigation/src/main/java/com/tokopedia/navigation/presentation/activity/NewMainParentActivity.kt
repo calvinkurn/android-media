@@ -734,16 +734,6 @@ class NewMainParentActivity :
 
         val tabId = getTabIdFromIntent()
         binding.dynamicNavbar.select(tabId)
-
-        if (tabId == BottomNavHomeId) {
-            setHomeNavSelected(tabId, isFirstInit)
-        }
-    }
-
-    private fun setHomeNavSelected(tabId: BottomNavItemId, isFirstInit: Boolean) {
-        if (!isFirstInit) return
-        updateAppLogPageData(tabId, true)
-        sendEnterPage(tabId)
     }
 
     private fun getFragmentById(id: BottomNavItemId, model: BottomNavBarUiModel? = null): Fragment? {
@@ -1106,12 +1096,12 @@ class NewMainParentActivity :
     private fun updateAppLogPageData(tabId: BottomNavItemId, isFirstInit: Boolean) {
         val fragment = getFragmentById(tabId) ?: return
         if (userSession.get().isFirstTimeUser || fragment !is AppLogInterface) return
+        handleAppLogEnterMethod(fragment, isFirstInit)
         val currentPageName = AppLogAnalytics.getCurrentData(PAGE_NAME)
         if (currentPageName == null || fragment.getPageName() != currentPageName.toString()) {
             AppLogAnalytics.pushPageData(fragment)
             AppLogAnalytics.putPageData(IS_MAIN_PARENT, true)
         }
-        handleAppLogEnterMethod(fragment, isFirstInit)
     }
 
     private fun handleAppLogEnterMethod(appLogInterface: AppLogInterface, isFirstInit: Boolean) {

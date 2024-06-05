@@ -309,7 +309,11 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                     )
                 },
                 badges = product.badge.map { badge ->
-                    ShopBadgeUiModel(title = badge.title, imageUrl = badge.imageUrl, show = false)
+                    ShopBadgeUiModel(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl,
+                        show = badge.show
+                    )
                 },
                 id = product.productId,
                 overrideTheme = overrideTheme,

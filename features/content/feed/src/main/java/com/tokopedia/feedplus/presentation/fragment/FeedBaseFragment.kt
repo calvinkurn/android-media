@@ -420,8 +420,6 @@ class FeedBaseFragment :
             getString(R.string.feed_check_next_content)
         )
 
-        binding.viewBlockInteraction.setOnTouchListener { _, _ -> true }
-
         binding.containerFeedTopNav.btnFeedBrowse.doOnLayout {
             val centerX = it.width / 2
 
@@ -879,9 +877,7 @@ class FeedBaseFragment :
                     }
                 )
                 .setListener(object : ImmersiveFeedOnboarding.Listener {
-                    override fun onStarted() {
-                        binding.viewBlockInteraction.show()
-                    }
+                    override fun onStarted() {}
 
                     override fun onCompleteCreateContentOnboarding() {
                         feedMainViewModel.setHasShownCreateContent()
@@ -897,7 +893,6 @@ class FeedBaseFragment :
 
                     override fun onFinished(isForcedDismiss: Boolean) {
                         if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                        binding.viewBlockInteraction.hide()
                     }
                 }).build()
 

@@ -166,6 +166,10 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
         return PageName.INBOX
     }
 
+    override fun shouldTrackEnterPage(): Boolean {
+        return true
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }
