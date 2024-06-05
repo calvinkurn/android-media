@@ -262,19 +262,23 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         configureToolbarContentTypeBasedOnAttribute()
     }
 
-    fun setSearchStyle(style: SearchStyle, showSearchBtn: Boolean = true) {
+    fun setSearchStyle(
+        style: SearchStyle,
+        showSearchBtn: Boolean = true,
+        useDarkerPlaceholder: Boolean = false
+    ) {
         this.searchStyle = style
         configureInvertedSearchBar()
         configureSearchIcon()
-        configureSearchBox()
+        configureSearchBox(useDarkerPlaceholder)
         btnSearch.showWithCondition(showSearchBtn)
     }
 
-    fun updateSearchBarStyle(showSearchBtn: Boolean = true) {
+    fun updateSearchBarStyle(showSearchBtn: Boolean = true, useDarkerPlaceholder: Boolean = false) {
         this.searchStyle = getSearchBarStyle()
         configureInvertedSearchBar()
         configureSearchIcon()
-        configureSearchBox()
+        configureSearchBox(useDarkerPlaceholder)
         btnSearch.showWithCondition(showSearchBtn)
     }
 
@@ -1067,8 +1071,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
-    private fun configureSearchBox() {
-        val hintTextColor = if (searchStyle == SearchStyle.SEARCH_REDESIGN) {
+    private fun configureSearchBox(useDarkerPlaceholder: Boolean) {
+        val hintTextColor = if (searchStyle == SearchStyle.SEARCH_REDESIGN && useDarkerPlaceholder) {
             unifyprinciplesR.color.Unify_NN950_96
         } else {
             R.color.searchbar_dms_text_color

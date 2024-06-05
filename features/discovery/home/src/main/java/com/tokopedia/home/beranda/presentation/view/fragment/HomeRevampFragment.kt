@@ -708,7 +708,7 @@ open class HomeRevampFragment :
             it.addOnImpression1pxListener(ImpressHolder()) {
                 AppLogSearch.eventShowSearch()
             }
-            it.updateSearchBarStyle(showSearchBtn = shouldCombineInboxNotif)
+            it.updateSearchBarStyle(showSearchBtn = shouldCombineInboxNotif, useDarkerPlaceholder = true)
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
