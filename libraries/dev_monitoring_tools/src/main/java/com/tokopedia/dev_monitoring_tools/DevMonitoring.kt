@@ -18,6 +18,7 @@ import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolLogger
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import leakcanary.LeakCanary
 
 /**
  * Created by nathan on 9/16/17.
@@ -51,7 +52,8 @@ class DevMonitoring(private var context: Context) {
     }
 
     fun initLeakCanary(enable: Boolean = false) {
-        DevMonitoringExtension.initLeakCanary(enable)
+        LeakCanary.config = LeakCanary.config.copy(dumpHeap = enable)
+//        DevMonitoringExtension.initLeakCanary(enable)
     }
 
     private fun configCopyCrashStackTraceToClipboard(throwable: Throwable) {
