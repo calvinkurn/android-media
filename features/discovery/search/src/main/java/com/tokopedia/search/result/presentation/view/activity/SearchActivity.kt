@@ -722,6 +722,9 @@ class SearchActivity :
     }
 
     private fun configureSearchBox() {
-        searchNavigationToolbar?.updateSearchBarStyle(showSearchBtn = false)
+        searchNavigationToolbar?.updateSearchBarStyle(
+            showSearchBtn = false,
+            useDarkerPlaceholder = true
+        )
     }
 }
