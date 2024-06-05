@@ -18,7 +18,6 @@ import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolLogger
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import leakcanary.LeakCanary
 
 /**
  * Created by nathan on 9/16/17.
@@ -33,8 +32,13 @@ class DevMonitoring(private var context: Context) {
     fun initCrashMonitoring() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize),
-                    "error" to Log.getStackTraceString(throwable).replace("\n", "").replace("\t", " ")))
+            ServerLogger.log(
+                Priority.P1, "DEV_CRASH", mapOf(
+                    "journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize),
+                    "error" to Log.getStackTraceString(throwable).replace("\n", "")
+                        .replace("\t", " ")
+                )
+            )
             if (isCopyCrashToClipboardEnabled()) {
                 configCopyCrashStackTraceToClipboard(throwable)
             }
@@ -43,12 +47,21 @@ class DevMonitoring(private var context: Context) {
     }
 
     fun initANRWatcher() {
-        ANRWatchDog().setANRListener(ANRListener(devMonitoringToolsConfig.anrIgnoreList, devMonitoringToolsConfig.userJourneySize)).start()
+        ANRWatchDog().setANRListener(
+            ANRListener(
+                devMonitoringToolsConfig.anrIgnoreList,
+                devMonitoringToolsConfig.userJourneySize
+            )
+        ).start()
     }
 
     fun initTooLargeTool(application: Application) {
         val minSizeLog = devMonitoringToolsConfig.tooLargeToolMinSizeLog
-        TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize), TooLargeToolLogger())
+        TooLargeTool.startLogging(
+            application,
+            TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize),
+            TooLargeToolLogger()
+        )
     }
 
     fun initLeakCanary(enable: Boolean = false) {
@@ -76,7 +89,8 @@ class DevMonitoring(private var context: Context) {
     }
 
     private fun isCopyCrashToClipboardEnabled(): Boolean {
-        val isRemoteConfigFtEnabled = DevMonitoringToolsRemoteConfig.isEnableCopyCrashStackTraceToClipboardFeature(context)
+        val isRemoteConfigFtEnabled =
+            DevMonitoringToolsRemoteConfig.isEnableCopyCrashStackTraceToClipboardFeature(context)
         return GlobalConfig.DEBUG && isRemoteConfigFtEnabled
     }
 }
