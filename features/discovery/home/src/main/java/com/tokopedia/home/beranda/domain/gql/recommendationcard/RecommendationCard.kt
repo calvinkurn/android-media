@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.domain.gql.recommendationcard
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 
 data class RecommendationCard(
