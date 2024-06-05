@@ -33,6 +33,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
@@ -51,7 +52,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
@@ -110,6 +110,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
+
 
 class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
@@ -225,6 +226,8 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var composite = CompositeSubscription()
     private var googleMap: GoogleMap? = null
     private var currentPlaceId: String = ""
+
+    private val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     // state
     private var addressUiState: AddressUiState = AddressUiState.AddAddress
@@ -621,8 +624,24 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
-        binding?.mapViews?.onCreate(savedInstanceState)
+
+        var mapViewBundle: Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+
+        binding?.mapViews?.onCreate(mapViewBundle)
         binding?.mapViews?.getMapAsync(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
+        }
+        binding?.mapViews?.onSaveInstanceState(mapViewBundle)
     }
 
     private fun requestPermissionLocation() {
