@@ -1028,7 +1028,9 @@ class AddEditProductDetailFragment :
                 }
             }
         }
-        viewModel.setProductNameInput(detailInputModel.productName)
+        if (detailInputModel.productName.isNotEmpty()) {
+            viewModel.setProductNameInput(detailInputModel.productName)
+        }
         // product sku
         productSkuField?.textFieldInput?.setText(detailInputModel.sku)
         // product showcases
