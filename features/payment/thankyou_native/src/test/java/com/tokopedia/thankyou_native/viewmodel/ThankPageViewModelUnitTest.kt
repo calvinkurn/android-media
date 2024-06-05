@@ -483,7 +483,11 @@ class ThankPageViewModelUnitTest {
             arrayListOf(),
             false,
             "",
+            "",
+            "",
             false,
+            "",
+            "",
             "",
             false,
             ""

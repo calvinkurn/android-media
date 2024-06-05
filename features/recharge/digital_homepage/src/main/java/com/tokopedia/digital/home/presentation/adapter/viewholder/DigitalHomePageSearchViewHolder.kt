@@ -8,7 +8,7 @@ import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListen
 import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class DigitalHomePageSearchViewHolder(
     itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener,
@@ -19,7 +19,7 @@ class DigitalHomePageSearchViewHolder(
     override fun bind(element: DigitalHomePageSearchCategoryModel) {
         val bind = ViewRechargeHomeSearchCategoryItemBinding.bind(itemView)
         with(bind) {
-            digitalHomepageSearchCategoryImage.loadImage(element.icon)
+            digitalHomepageSearchCategoryImage.loadImageFresco(element.icon)
 
             // Add search query shading to category name
             digitalHomepageSearchCategoryName.text =

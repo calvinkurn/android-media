@@ -39,7 +39,7 @@ class PriceCtaSellerOfferingViewHolder(itemView: View, val listener: PriceCtaSel
                 listener?.onSellerOfferingButtonRightClicked(productId = element.productId, shopId = element.shopId)
             }
 
-            val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
+            val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_dynamic_color)
             if (drawable is GradientDrawable) {
                 element.widgetBackgroundColor?.let { drawable.setColor(it) }
                 clInfo.background = drawable

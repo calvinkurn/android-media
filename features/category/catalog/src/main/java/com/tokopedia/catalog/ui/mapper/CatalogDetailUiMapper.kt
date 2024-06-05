@@ -121,9 +121,9 @@ class CatalogDetailUiMapper @Inject constructor(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): CatalogDetailUiModel {
         val widgets = mapToWidgetVisitables(remoteModel)
-        val headerColorProductList = if (remoteModel.productListCfg.headerColor.isNullOrEmpty()){
+        val headerColorProductList = if (remoteModel.productListCfg.headerColor.isNullOrEmpty()) {
             COLOR_DEEP_AZURE
-        }else{
+        } else {
             remoteModel.productListCfg.headerColor
         }
         return CatalogDetailUiModel(
@@ -136,10 +136,12 @@ class CatalogDetailUiMapper @Inject constructor(
             productSortingStatus = remoteModel.basicInfo.productSortingStatus.orZero(),
             catalogUrl = remoteModel.basicInfo.url.orEmpty(),
             shareProperties = mapToShareProperties(remoteModel, widgets),
-            productListConfig = ProductListConfig(remoteModel.productListCfg.limit?:"20",
+            productListConfig = ProductListConfig(
+                remoteModel.productListCfg.limit ?: "20",
                 headerColorProductList,
                 remoteModel.basicInfo.marketPrice?.getOrNull(Int.ZERO)?.min.orZero(),
-                remoteModel.basicInfo.marketPrice?.getOrNull(Int.ZERO)?.max.orZero())
+                remoteModel.basicInfo.marketPrice?.getOrNull(Int.ZERO)?.max.orZero()
+            )
         )
     }
 
@@ -666,11 +668,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     videoLink = it.url,
                     textTitleColor = getTextColor(darkMode),
                     textSubTitleColor = getTextColor(darkMode),
-                    backgroundColor = if (darkMode) {
-                        catalogcommonR.drawable.bg_rounded_border_dark
-                    } else {
-                        catalogcommonR.drawable.bg_rounded_border_light
-                    }
+                    backgroundColor = catalogcommonR.drawable.bg_rounded_border_light
                 )
             }
         )

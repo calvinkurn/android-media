@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class PageInfo(
@@ -19,6 +20,7 @@ data class PageInfo(
         @SerializedName("Identifier")
         val identifier: String? = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("Id")
         val id: Int = 0,
 

@@ -29,9 +29,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.bytedance.applog.util.EventsSenderUtils;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.imagepipeline.core.ImagePipelineFactory;
+import com.facebook.imagepipeline.listener.RequestListener;
+import com.facebook.net.FrescoTTNetFetcher;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.newrelic.agent.android.NewRelic;
+import com.optimize.statistics.FrescoTraceListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
@@ -91,6 +97,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
+import com.tokopedia.media.loaderfresco.tracker.FrescoLogger;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
@@ -125,7 +132,9 @@ import org.jetbrains.annotations.NotNull;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
@@ -234,6 +243,20 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
         initializeAppPerformanceTrace();
+        initFresco();
+    }
+
+    private void initFresco() {
+        Set<RequestListener> listeners = new HashSet<>();
+        listeners.add(new FrescoTraceListener());
+
+        ImagePipelineConfig.Builder imagePipelineBuilder = ImagePipelineConfig.newBuilder(this);
+        imagePipelineBuilder.setRequestListeners(listeners);
+        imagePipelineBuilder.setNetworkFetcher(new FrescoTTNetFetcher());
+
+        ImagePipelineFactory.initialize(imagePipelineBuilder.build());
+        Fresco.initialize(context, imagePipelineBuilder.build());
+        FrescoLogger.INSTANCE.loggerSlardarFresco();
     }
 
     private void initByteIOPlatform() {

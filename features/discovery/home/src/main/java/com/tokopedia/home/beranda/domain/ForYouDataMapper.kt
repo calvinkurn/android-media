@@ -13,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.Recommen
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 
 @RecomTemporary
 object ForYouDataMapper {
@@ -93,7 +94,11 @@ object ForYouDataMapper {
                         reputation = it.reputation,
                         url = it.url
                     )
-                }
+                },
+                recommendationAdsLog = RecommendationAdsLog(
+                    creativeID = recommendationProductItem.recommendationAdsLog.creativeID,
+                    logExtra = recommendationProductItem.recommendationAdsLog.logExtra
+                )
             ),
             pageName = pageName,
             layoutName = layoutName,

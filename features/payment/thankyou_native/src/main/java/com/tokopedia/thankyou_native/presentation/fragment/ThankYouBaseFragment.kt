@@ -41,8 +41,8 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
@@ -223,18 +223,13 @@ open class ThankYouBaseFragment :
             getBottomContentRecyclerView()?.adapter = bottomContentAdapter
             if (isV2Enabled) {
                 getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
+            } else {
+                bindThanksPageDataToUI(thanksPageData)
             }
 
             startAnimate()
             observeViewModel()
             addHeader()
-
-            Handler().postDelayed({
-
-
-//                showOnBoardingShare()
-            }, 5000)
-
             getFeatureRecommendationData()
             addRecommendation(getRecommendationContainer())
             getTopTickerData()
@@ -485,7 +480,7 @@ open class ThankYouBaseFragment :
 
         thanksPageDataViewModel.bottomContentVisitableList.observe(viewLifecycleOwner) {
             bottomContentAdapter.setItems(it)
-            bottomContentAdapter.notifyItemChanged(it.size - 1)
+            bottomContentAdapter.notifyDataSetChanged()
         }
 
         thanksPageDataViewModel.bannerLiveData.observe(viewLifecycleOwner) {
@@ -959,32 +954,7 @@ open class ThankYouBaseFragment :
         setIllustrationVisibility(true)
         context?.let {
             try {
-                if (ivIllustrationView?.context?.isValidGlideContext() == true) {
-                    GlideApp.with(it)
-                        .load(imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .listener(object : RequestListener<Drawable?> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable?>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                showCharacterAnimation()
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable?>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
-                        }).into(ivIllustrationView)
-                }
+                ivIllustrationView.loadImage(imageUrl)
             } catch (e: Throwable) {
             }
         }

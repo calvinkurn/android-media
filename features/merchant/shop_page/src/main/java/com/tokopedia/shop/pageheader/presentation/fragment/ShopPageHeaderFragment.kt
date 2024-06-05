@@ -122,6 +122,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -522,6 +523,7 @@ class ShopPageHeaderFragment :
         onFragmentAttached()
         super.onCreate(savedInstanceState)
         FoldableAndTabletSupportManager(this, activity as AppCompatActivity)
+        SearchRollenceController.fetchInboxNotifTopNavValue()
     }
 
     override fun onCreateView(
@@ -1510,6 +1512,7 @@ class ShopPageHeaderFragment :
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
             }
             setToolbarPageName(SHOP_PAGE)
+            updateSearchBarStyle(showSearchBtn = false)
         }
     }
 

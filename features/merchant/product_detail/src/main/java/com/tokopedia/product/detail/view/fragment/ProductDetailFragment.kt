@@ -1914,7 +1914,7 @@ open class ProductDetailFragment :
         applink: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
-        AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(recommendationWidget.pageName))
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(recommendationWidget.pageName))
         ProductDetailTracking.Click.eventClickSeeMoreRecomWidget(
             recommendationWidget,
             pageName,
@@ -3162,6 +3162,9 @@ open class ProductDetailFragment :
                 val hasInfinite = viewModel.getProductInfoP1?.hasInfiniteRecommendation ?: false
                 if (hasInfinite && concatAdapter?.adapters?.size != 2) {
                     concatAdapter?.addAdapter(it.adapter)
+                }
+
+                if (hasInfinite) {
                     it.requestParam = GetRecommendationRequestParam(
                         pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
                         productIds = listOf(productId.orEmpty()),

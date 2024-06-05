@@ -8,6 +8,7 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
 
@@ -213,7 +214,9 @@ object DynamicChannelComponentMapper {
                             imageUrl = badge.imageUrl
                         )
                     },
-                    position = index
+                    position = index,
+                    logExtra = it.logExtra,
+                    creativeID = it.creativeID
                 )
             }
         )
@@ -330,7 +333,9 @@ object DynamicChannelComponentMapper {
             badges = shopBadges,
             expiredTime = expiredTime,
             categoryBreadcrumbs = categoryBreadcrumbs,
-            position = index
+            position = index,
+            creativeID = creativeID,
+            logExtra = logExtra
         )
     }
 
@@ -441,7 +446,9 @@ object DynamicChannelComponentMapper {
             )
         },
         categoryBreadcrumbs = categoryBreadcrumbs,
-        position = index
+        position = index,
+        creativeID = recommendationAdsLog.creativeID,
+        logExtra = recommendationAdsLog.logExtra
     )
 
     private fun Array<com.tokopedia.home.beranda.domain.model.LabelGroup>.getLabelGroupFulfillment(): LabelGroup? {

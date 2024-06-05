@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.IAppLogPdpActivity
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.ProductType
@@ -44,7 +45,7 @@ import javax.inject.Inject
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
 open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface, HasComponent<ProductDetailComponent>,
-    IAppLogPdpActivity, AppLogInterface {
+    IAppLogPdpActivity, AppLogInterface, IAdsLog {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -517,6 +518,10 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     override fun getPageName(): String {
+        return PageName.PDP
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.PDP
     }
 
