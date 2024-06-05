@@ -52,8 +52,7 @@ class DevMonitoring(private var context: Context) {
     }
 
     fun initLeakCanary(enable: Boolean = false) {
-        LeakCanary.config = LeakCanary.config.copy(dumpHeap = enable)
-//        DevMonitoringExtension.initLeakCanary(enable)
+        DevMonitoringExtension.initLeakCanary(enable)
     }
 
     private fun configCopyCrashStackTraceToClipboard(throwable: Throwable) {
