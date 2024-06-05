@@ -8,12 +8,10 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonComparedWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
-import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonModel

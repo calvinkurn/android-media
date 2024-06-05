@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD_SEE_MORE
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.addHorizontalTrackListener

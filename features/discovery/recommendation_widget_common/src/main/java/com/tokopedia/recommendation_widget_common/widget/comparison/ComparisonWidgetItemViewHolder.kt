@@ -16,7 +16,6 @@ import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
 import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
