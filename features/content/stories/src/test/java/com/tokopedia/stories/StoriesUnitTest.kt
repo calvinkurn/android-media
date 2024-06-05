@@ -2,6 +2,7 @@ package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.track.response.GetReportSummaryResponse
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.data.mock.mockContentTaggedProductUiModel
@@ -185,7 +186,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 3`() {
-        val selectedGroup = 3
+        val selectedGroup = 5
         val selectedDetail = 0
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
@@ -433,6 +434,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -454,6 +457,7 @@ class StoriesUnitTest {
                 actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.OnboardShown)
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -472,6 +476,8 @@ class StoriesUnitTest {
 
             val actualDetail = robot.getViewModel().mDetail
             actualDetail.isContentLoaded.assertTrue()
+
+            coVerify { mockRepository.trackContent(any(), any(), any()) }
         }
     }
 
@@ -483,7 +489,6 @@ class StoriesUnitTest {
 
         coEvery { mockRepository.getStoriesInitialData(any(), any(), any(), any(), any(), any(), any()) } returns expectedData
         coEvery { mockRepository.setStoriesTrackActivity(any()) } returns true
-
         getStoriesRobot().use { robot ->
             robot.setTrackActivity(selectedGroup)
 
@@ -592,7 +597,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when stories open and user tap next detail to close room`() {
-        val selectedGroup = 2
+        val selectedGroup = 4
         val selectedDetail = 2
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 

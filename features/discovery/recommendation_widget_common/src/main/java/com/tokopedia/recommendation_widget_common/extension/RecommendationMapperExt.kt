@@ -8,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.ProductListType
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -23,9 +24,9 @@ import com.tokopedia.unifycomponents.UnifyButton
  * Created by Lukas on 2/15/21.
  */
 
-fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel(): List<RecommendationWidget> {
+fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel(startIndex: Int = 0): List<RecommendationWidget> {
     return map { recommendationData ->
-        recommendationData.toRecommendationWidget()
+        recommendationData.toRecommendationWidget(startIndex)
     }
 }
 
@@ -38,7 +39,7 @@ fun RecommendationEntity.AppLog.toAppLogModel(recParam: String = ""): Recommenda
     )
 }
 
-fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
+fun RecommendationEntity.RecommendationData.toRecommendationWidget(startIndex: Int = 0): RecommendationWidget {
     return RecommendationWidget(
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
             val badges = if (isTokonow()) {
@@ -76,7 +77,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 slashedPriceInt = recommendation.slashedPriceInt,
                 discountPercentage = if (recommendation.discountPercentage > 0) "${recommendation.discountPercentage}%" else "",
                 discountPercentageInt = recommendation.discountPercentage,
-                position = index,
+                position = startIndex + index,
                 shopId = recommendation.shop.id,
                 shopName = recommendation.shop.name,
                 warehouseId = recommendation.warehouseId,
@@ -127,6 +128,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 gridPosition = recommendation.getGridPosition(),
                 appLog = appLog.toAppLogModel(recommendation.recParam),
                 countSold = recommendation.countSold,
+                recommendationAdsLog = RecommendationAdsLog(creativeID = recommendation.adsLog.creativeID, logExtra = recommendation.adsLog.logExtra)
             )
         },
         title = title,

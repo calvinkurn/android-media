@@ -11,7 +11,6 @@ import android.widget.SectionIndexer;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.design.R;
 
 public class AlphabeticalSideBar extends View {
 
@@ -53,10 +52,10 @@ public class AlphabeticalSideBar extends View {
 
     private void init() {
         alphabetText = "A.D.G.J.M.P.S.V.Z";
-        itemTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.sp_12);
-        int magnifierTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.sp_20);
-        magnifierPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_10);
-        int magnifierToSidebarDistance = getContext().getResources().getDimensionPixelSize(R.dimen.dp_20);
+        itemTextSize = getContext().getResources().getDimensionPixelSize(com.tokopedia.filter.R.dimen.sp_12);
+        int magnifierTextSize = getContext().getResources().getDimensionPixelSize(com.tokopedia.filter.R.dimen.sp_20);
+        magnifierPadding = getContext().getResources().getDimensionPixelSize(com.tokopedia.filter.R.dimen.dp_10);
+        int magnifierToSidebarDistance = getContext().getResources().getDimensionPixelSize(com.tokopedia.filter.R.dimen.dp_20);
         magnifierRadius = magnifierTextSize / 2 + magnifierPadding;
         touchAreaLeftOffset = magnifierRadius * 2 + magnifierToSidebarDistance;
         itemTopMargin = magnifierRadius;

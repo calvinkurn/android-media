@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
@@ -85,19 +86,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    true,
-                    "",
-                    false,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = true,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = false,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -154,19 +157,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     verticalBannerHeight = 0
                 ),
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    true,
-                    "",
-                    false,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = true,
+                    labelGroups = emptyList(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = false,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -205,19 +210,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    true,
-                    "",
-                    false,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = true,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = false,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -251,19 +258,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    true,
-                    "",
-                    false,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = true,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = false,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -366,18 +375,20 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             listOf(
                 ProductItemType(
                     productId,
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "Terjual 2rb",
-                    "tokopedia://product/$productId",
-                    true,
-                    productId,
-                    false,
-                    ShopPageColorSchema()
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "tokopedia://product/$productId",
+                    showProductInfo = true,
+                    labelGroups = listOf(LabelGroup(title = "Terjual 2rb"), LabelGroup(title = "Dilayani Tokopedia")),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = productId,
+                    overrideTheme = false,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -431,19 +442,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    productId,
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "Terjual 2rb",
-                    "tokopedia://product/$productId",
-                    showProductInfo,
-                    productId,
-                    overrideTheme,
-                    ShopPageColorSchema()
+                    productId = productId,
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "tokopedia://product/$productId",
+                    showProductInfo = showProductInfo,
+                    labelGroups = listOf(LabelGroup(title = "Terjual 2rb"), LabelGroup(title = "Dilayani Tokopedia")),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = productId,
+                    overrideTheme = overrideTheme,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -495,19 +508,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    showProductInfo,
-                    "",
-                    overrideTheme,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = showProductInfo,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = overrideTheme,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -554,19 +569,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    showProductInfo,
-                    "",
-                    overrideTheme,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = showProductInfo,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = overrideTheme,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -615,19 +632,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    showProductInfo,
-                    "",
-                    overrideTheme,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = showProductInfo,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = overrideTheme,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -676,19 +695,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    false,
-                    "",
-                    true,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = false,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = true,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
         )
@@ -808,19 +829,21 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     verticalBannerHeight = 56
                 ),
                 ProductItemType(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    true,
-                    "",
-                    false,
-                    ShopPageColorSchema()
+                    productId = "",
+                    imageUrl = "",
+                    name = "",
+                    price = "",
+                    slashedPrice = "",
+                    slashedPricePercent = 0,
+                    rating = "",
+                    appLink = "",
+                    showProductInfo = true,
+                    labelGroups = listOf(),
+                    badges = listOf(),
+                    freeOngkir = FreeOngkir(isActive = false, imgUrl = ""),
+                    id = "",
+                    overrideTheme = false,
+                    colorSchema = ShopPageColorSchema()
                 )
             )
 

@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.widget.BalanceWidgetVisitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.recharge_component.visitable.RechargeComponentVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
@@ -17,6 +18,8 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
             oldItem.visitableId() == newItem.visitableId()
         } else if (oldItem is RechargeComponentVisitable && newItem is RechargeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
+        } else if (oldItem is BalanceWidgetVisitable && newItem is BalanceWidgetVisitable) {
+            oldItem.areItemsTheSame(newItem)
         } else false
     }
 
@@ -31,6 +34,8 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
             oldItem.equalsWith(newItem)
         } else if (oldItem is RechargeComponentVisitable && newItem is RechargeComponentVisitable) {
             oldItem.equalsWith(newItem)
+        } else if (oldItem is BalanceWidgetVisitable && newItem is BalanceWidgetVisitable) {
+            oldItem.areContentsTheSame(newItem)
         } else false
     }
 

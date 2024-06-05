@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 
 data class RecommendationCard(
     @SerializedName("applink")
@@ -81,6 +82,10 @@ data class RecommendationCard(
     val wishlistUrl: String = "",
     @SerializedName("recParam")
     val recParam: String = "",
+    @SerializedName("creativeID")
+    val creativeID: String = "",
+    @SerializedName("logExtra")
+    val logExtra: String = "",
     @SerializedName("countSold")
     val countSold: Int = 0,
 ) {
@@ -121,7 +126,11 @@ data class RecommendationCard(
                     url = it.url,
                 )
             },
-            recParam = recParam
+            recParam = recParam,
+            recommendationAdsLog = RecommendationAdsLog(
+                creativeID = creativeID,
+                logExtra = logExtra
+            )
         )
     }
 
@@ -159,6 +168,10 @@ data class RecommendationCard(
                 imageUrl = shop.imageUrl,
                 name = shop.name,
                 reputation = shop.reputation,
+            ),
+            recommendationAdsLog = RecommendationAdsLog(
+                creativeID = creativeID,
+                logExtra = logExtra
             )
         )
     }

@@ -207,19 +207,19 @@ object AppLogPdp {
          * Setting global param source previous page whenever enter the Cart Page, the value is
          * the previous page of the current Cart Page
          * */
-        AppLogAnalytics.putPageData(SOURCE_PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME).toString())
-        AppLogAnalytics.send(
-            EventName.ENTER_PAGE,
-            JSONObject().also {
-                it.addPage()
-                it.put(ENTER_FROM, getLastDataBeforeCurrent(ENTER_FROM))
-                it.addSourcePreviousPage()
-                it.addEnterMethod()
-                it.addEntranceInfoCart()
-                it.put("cart_item_cnt", cartCount)
-                it.put("cart_unavailable_cnt", cartUnavailCount)
-            }
+        AppLogAnalytics.putPageData(
+            SOURCE_PREVIOUS_PAGE,
+            getLastDataBeforeCurrent(PAGE_NAME).toString()
         )
+        AppLogAnalytics.send(EventName.ENTER_PAGE, JSONObject().also {
+            it.addPage()
+            it.put(ENTER_FROM, getLastDataBeforeCurrent(ENTER_FROM))
+            it.addSourcePreviousPage()
+            it.addEnterMethod()
+            it.addEntranceInfoCart()
+            it.put("cart_item_cnt", cartCount)
+            it.put("cart_unavailable_cnt", cartUnavailCount)
+        })
     }
 
     fun sendCartButtonClick(model: CartClickAnalyticsModel) {
@@ -317,11 +317,11 @@ object AppLogPdp {
                     it.put(SOURCE_PAGE_TYPE, PageName.CART)
                 } else {
                     it.addTrackId()
-                    it.put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
+                    it.put(SOURCE_MODULE, AppLogAnalytics.getPreviousDataFrom(PageName.PDP, SOURCE_MODULE))
                     it.addEntranceForm()
                     it.put(
                         AppLogParam.ENTRANCE_INFO,
-                        AppLogAnalytics.getEntranceInfoJsonForCheckoutInstant().toString()
+                        AppLogAnalytics.generateEntranceInfoJson().toString()
                     )
                     it.addSourcePageType()
                 }

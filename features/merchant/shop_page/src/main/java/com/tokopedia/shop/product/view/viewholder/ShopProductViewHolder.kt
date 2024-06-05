@@ -17,8 +17,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.fragment.ShopProductTabInterface
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
-import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -38,7 +38,7 @@ class ShopProductViewHolder(
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val viewBinding: ItemShopNewproductSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
-    
+
     init {
         findViews()
     }
@@ -60,7 +60,7 @@ class ShopProductViewHolder(
         if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
             stockBarLabelColor = ShopUtil.getColorHexString(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                unifyprinciplesR.color.Unify_RN600
             )
         }
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
@@ -70,7 +70,8 @@ class ShopProductViewHolder(
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
             patternType = productTabInterface?.getPatternColorType().orEmpty(),
             backgroundColor = productTabInterface?.getBackgroundColor().orEmpty(),
-            isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse()
+            makeProductCardTransparent = true,
+            atcVariantButtonText = productCard?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
@@ -113,6 +114,12 @@ class ShopProductViewHolder(
                 )
             }
         })
+
+        productCard?.setGenericCtaButtonOnClickListener {
+            shopProductClickedListener?.onProductAtcVariantClick(
+                shopProductUiModel
+            )
+        }
 
         productCard?.setAddVariantClickListener {
             shopProductClickedListener?.onProductAtcVariantClick(

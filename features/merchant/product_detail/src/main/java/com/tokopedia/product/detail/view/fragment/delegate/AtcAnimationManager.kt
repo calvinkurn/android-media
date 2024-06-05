@@ -8,13 +8,13 @@ import android.widget.ImageView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.product.detail.common.pref.ProductRollenceHelper
 import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AnimatedImageAnchor
 import com.tokopedia.product.detail.view.widget.AnimationData
 import com.tokopedia.unifycomponents.toPx
+import timber.log.Timber
 
 class AtcAnimationManager(
     val mediator: PdpComponentCallbackMediator
@@ -38,29 +38,30 @@ class AtcAnimationManager(
     ) {
         if (context == null ||
             binding == null ||
-            !shoudShow ||
-            !ProductRollenceHelper.rollenceAtcAnimationActive()
+            !shoudShow
         ) {
-            return
-        }
-
-        if (mSourceImageView == null) {
             viewModel.onFinishAnimation()
             return
         }
 
-        val toolbar = binding.pdpNavtoolbar
+        val drawable = mSourceImageView?.drawable ?: run {
+            viewModel.onFinishAnimation()
+            return
+        }
+        val cartViewMenu = binding.pdpNavtoolbar.getCartIconPosition() ?: run {
+            viewModel.onFinishAnimation()
+            return
+        }
 
-        val cartViewMenu = toolbar.getCartIconPosition()
-
-        cartViewMenu?.apply {
-            post {
-                renderAnimatedImage(
-                    binding = binding,
-                    target = this,
-                    image = mSourceImageView?.drawable!!.toBitmap()
-                )
-            }
+        runCatching {
+            renderAnimatedImage(
+                binding = binding,
+                target = cartViewMenu,
+                image = drawable.toBitmap()
+            )
+        }.onFailure {
+            Timber.e(it)
+            viewModel.onFinishAnimation()
         }
     }
 

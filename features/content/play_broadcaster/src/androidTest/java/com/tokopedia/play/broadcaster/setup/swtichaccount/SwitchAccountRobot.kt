@@ -12,11 +12,13 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.data.UGCOnboardingRepositoryImpl
 import com.tokopedia.content.common.onboarding.view.bottomsheet.UserCompleteOnboardingBottomSheet
 import com.tokopedia.content.common.onboarding.view.bottomsheet.UserTnCOnboardingBottomSheet
@@ -38,6 +40,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
+import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.parentBroViewModel
 import com.tokopedia.play.broadcaster.setup.preparationBroViewModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
@@ -50,6 +53,7 @@ import com.tokopedia.play.broadcaster.view.fragment.beautification.Beautificatio
 import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationTabFragment
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
+import org.junit.Rule
 import kotlin.LazyThreadSafetyMode.NONE
 import com.tokopedia.content.common.R as contentR
 
@@ -67,6 +71,11 @@ class SwitchAccountRobot(
     sharedPreferences: HydraSharedPreferences,
     playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) {
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+
+    private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_ugc.json"
+
     private val context = InstrumentationRegistry.getInstrumentation().context
 
     private val parentViewModel: PlayBroadcastViewModel by lazy {
@@ -384,6 +393,13 @@ class SwitchAccountRobot(
         delay(500L)
         Espresso.onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary_long))
             .perform(click())
+    }
+
+    fun assertEventAction(eventAction: String) = chainable {
+        ViewMatchers.assertThat(
+            cassavaTestRule.validate(analyticFile),
+            containsEventAction(eventAction)
+        )
     }
 
     private fun chainable(fn: () -> Unit): SwitchAccountRobot {

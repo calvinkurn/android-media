@@ -8,7 +8,7 @@ import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.model.DigitalHomePageCategoryModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class DigitalItemSubMenuCategoryAdapter(
     val submenu: List<DigitalHomePageCategoryModel.Submenu>?,
@@ -41,7 +41,7 @@ class DigitalItemSubMenuCategoryAdapter(
             element: DigitalHomePageCategoryModel.Submenu?,
             onItemBindListener: OnItemBindListener
         ) {
-            binding.categoryImage.loadImage(element?.icon ?: "")
+            binding.categoryImage.loadImageFresco(element?.icon ?: "")
             binding.categoryName.text = element?.label
             itemView.setOnClickListener {
                 onItemBindListener.onCategoryItemClicked(element, adapterPosition + Int.ONE)

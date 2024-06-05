@@ -14,8 +14,8 @@ import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
-import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -26,6 +26,7 @@ import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
+import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -46,13 +47,14 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingDetail
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
-import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
-import com.tokopedia.shop.home.view.model.thematicwidget.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
@@ -61,7 +63,7 @@ object ShopPageHomeMapper {
     private const val ZERO_PRODUCT_DISCOUNT = "0"
 
     private val productCardColorHelper = ShopProductCardColorHelper()
-    
+
     fun mapToHomeProductViewModelForAllProduct(
         shopProduct: ShopProduct,
         isMyOwnProduct: Boolean,
@@ -104,7 +106,8 @@ object ShopPageHomeMapper {
                 it.shopBadgeList = shopProduct.badge.map { badge ->
                     ShopBadgeUiModel(
                         title = badge.title,
-                        imageUrl = badge.imageUrl
+                        imageUrl = badge.imageUrl,
+                        show = true
                     )
                 }
             }
@@ -128,7 +131,11 @@ object ShopPageHomeMapper {
         isHasOCCButton: Boolean,
         occButtonText: String = "",
         widgetName: String = "",
-        forceLightModeColor: Boolean
+        isOverrideTheme: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isFestivity: Boolean,
+        atcButtonText: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -143,6 +150,14 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.isShowFreeOngkir,
             shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
+        )
+
+        val colorMode = productCardColorHelper.determineProductCardColorMode(
+            isFestivity = isFestivity,
+            shouldOverrideTheme = isOverrideTheme,
+            patternColorType = patternColorType,
+            backgroundColor = backgroundColor,
+            makeProductCardTransparent = true
         )
 
         val baseProductCardModel = if (isHasOCCButton) {
@@ -160,7 +175,15 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                forceLightModeColor = forceLightModeColor
+                shopBadgeList = shopHomeProductViewModel.shopBadgeList.map { badge ->
+                    ProductCardModel.ShopBadge(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl,
+                        isShown = badge.show
+                    )
+                },
+                forceLightModeColor = isOverrideTheme,
+                colorMode = colorMode
             )
         } else {
             ProductCardModel(
@@ -174,8 +197,16 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
+                shopBadgeList = shopHomeProductViewModel.shopBadgeList.map { badge ->
+                    ProductCardModel.ShopBadge(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl,
+                        isShown = badge.show
+                    )
+                },
                 hasAddToCartButton = isHasATC,
-                forceLightModeColor = forceLightModeColor
+                forceLightModeColor = isOverrideTheme,
+                colorMode = colorMode
             )
         }
         return if (isShopPersonalizationWidgetEnableDirectPurchase(
@@ -184,7 +215,7 @@ object ShopPageHomeMapper {
             ) && isProductCardIsNotSoldOut(shopHomeProductViewModel.isSoldOut)
         ) {
             if (shopHomeProductViewModel.isVariant) {
-                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel, atcButtonText)
             } else {
                 if (shopHomeProductViewModel.productInCart.isZero()) {
                     createProductCardWithDefaultAddToCardModel(baseProductCardModel)
@@ -217,10 +248,12 @@ object ShopPageHomeMapper {
         shopHomeProductViewModel: ShopHomeProductUiModel,
         isWideContent: Boolean,
         productRating: String,
-        forceLightModeColor: Boolean,
+        isOverrideTheme: Boolean,
         patternColorType: String,
         backgroundColor: String,
-        isDeviceOnDarkModeTheme: Boolean
+        isFestivity: Boolean,
+        makeProductCardTransparent: Boolean,
+        atcVariantButtonText: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -236,7 +269,7 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
-        
+
         val badges = shopHomeProductViewModel.shopBadgeList.map {
             ProductCardModel.ShopBadge(
                 isShown = true,
@@ -246,10 +279,11 @@ object ShopPageHomeMapper {
         }
 
         val productCardColorMode = productCardColorHelper.determineProductCardColorMode(
-            isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
-            shouldOverrideTheme = forceLightModeColor,
+            isFestivity = isFestivity,
+            shouldOverrideTheme = isOverrideTheme,
             patternColorType = patternColorType,
-            backgroundColor = backgroundColor
+            backgroundColor = backgroundColor,
+            makeProductCardTransparent = makeProductCardTransparent
         )
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -267,7 +301,7 @@ object ShopPageHomeMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             isWideContent = isWideContent,
             isWishlisted = shopHomeProductViewModel.isWishList,
-            forceLightModeColor = forceLightModeColor,
+            forceLightModeColor = isOverrideTheme,
             colorMode = productCardColorMode,
             shopBadgeList = badges
         )
@@ -276,7 +310,7 @@ object ShopPageHomeMapper {
             )
         ) {
             val productCardModel = if (shopHomeProductViewModel.isVariant) {
-                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel, atcVariantButtonText)
             } else {
                 if (shopHomeProductViewModel.productInCart.isZero()) {
                     createProductCardWithDefaultAddToCardModel(baseProductCardModel)
@@ -307,14 +341,20 @@ object ShopPageHomeMapper {
 
     private fun createProductCardWithVariantAtcModel(
         shopHomeProductViewModel: ShopHomeProductUiModel,
-        baseProductCardModel: ProductCardModel
+        baseProductCardModel: ProductCardModel,
+        atcButtonText: String
     ): ProductCardModel {
         return baseProductCardModel.copy(
             variant = ProductCardModel.Variant(
                 shopHomeProductViewModel.productInCart
             ),
             nonVariant = null,
-            hasAddToCartButton = false
+            hasAddToCartButton = false,
+            productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                copyWriting = atcButtonText,
+                mainButtonVariant = UnifyButton.Variant.GHOST,
+                mainButtonType = UnifyButton.Type.MAIN
+            )
         )
     }
 
@@ -339,7 +379,12 @@ object ShopPageHomeMapper {
         shopHomeProductViewModel: ShopHomeProductUiModel,
         widgetName: String,
         statusCampaign: String,
-        forceLightModeColor: Boolean
+        isOverrideTheme: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isFestivity: Boolean,
+        makeProductCardTransparent: Boolean = false,
+        atcVariantButtonText: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -373,14 +418,21 @@ object ShopPageHomeMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarLabel = shopHomeProductViewModel.stockLabel,
             stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage,
-            forceLightModeColor = forceLightModeColor,
+            forceLightModeColor = isOverrideTheme,
             shopBadgeList = shopHomeProductViewModel.shopBadgeList.map {
                 ProductCardModel.ShopBadge(
                     isShown = false,
                     imageUrl = it.imageUrl,
                     title = it.title
                 )
-            }
+            },
+            colorMode = productCardColorHelper.determineProductCardColorMode(
+                isFestivity = isFestivity,
+                shouldOverrideTheme = isOverrideTheme,
+                patternColorType = patternColorType,
+                backgroundColor = backgroundColor,
+                makeProductCardTransparent = makeProductCardTransparent
+            )
         )
         return if (isShopCampaignWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,
@@ -389,7 +441,7 @@ object ShopPageHomeMapper {
             isStatusCampaignIsOngoing(statusCampaign)
         ) {
             if (shopHomeProductViewModel.isVariant) {
-                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
+                createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel, atcVariantButtonText)
             } else {
                 if (shopHomeProductViewModel.productInCart.isZero()) {
                     createProductCardWithDefaultAddToCardModel(baseProductCardModel)
@@ -679,7 +731,7 @@ object ShopPageHomeMapper {
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema,
-        shopId: String,
+        shopId: String
     ) = ShopHomeCarousellProductUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
@@ -688,7 +740,7 @@ object ShopPageHomeMapper {
         header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = mapToWidgetProductListPersonalization(widgetResponse, isMyProduct, isEnableDirectPurchase, shopId, widgetResponse.name),
-        shopId = shopId,
+        shopId = shopId
     )
 
     private fun mapToPersoProductComparisonUiModel(
@@ -1054,7 +1106,7 @@ object ShopPageHomeMapper {
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
             firstBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.firstColor.orEmpty(),
             secondBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.secondColor.orEmpty(),
-            campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty(),
+            campaignId = widgetResponse.data.firstOrNull()?.campaignId.orEmpty()
         )
     }
 
@@ -1182,7 +1234,7 @@ object ShopPageHomeMapper {
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
-        widgetName: String,
+        widgetName: String
     ): List<ShopHomeProductUiModel> {
         return widgets.let {
             val appLog = it.tracker.appLog
@@ -1220,6 +1272,13 @@ object ShopPageHomeMapper {
                     this.recParam = it.recParam
                     this.recSessionId = appLog.sessionId
                     this.requestId = appLog.requestId
+                    this.shopBadgeList = listOf(
+                        ShopBadgeUiModel(
+                            title = it.badge.title,
+                            imageUrl = it.badge.imageUrl,
+                            show = true
+                        )
+                    )
                 }
             }
         }
@@ -1296,6 +1355,13 @@ object ShopPageHomeMapper {
             this.parentId = response.parentId
             isFulfillment = ShopUtil.isFulfillmentByGroupLabel(response.labelGroups)
             warehouseId = response.warehouseID
+            shopBadgeList = listOf(
+                ShopBadgeUiModel(
+                    title = response.badge.title,
+                    imageUrl = response.badge.imageUrl,
+                    show = response.badge.show
+                )
+            )
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {
@@ -1379,7 +1445,13 @@ object ShopPageHomeMapper {
                             )
                         },
                         widgetStyle = it.header.widgetStyle
-                    )
+                    ),
+                    it.options.map { option ->
+                        ShopPageWidgetRequestModel.Option(
+                            key = option.key,
+                            value = option.value
+                        )
+                    }
                 )
             }
         )
@@ -1557,5 +1629,53 @@ object ShopPageHomeMapper {
                 totalProduct = it.bmsmTotalProduct
             )
         }
+    }
+
+    fun ProductItemType.toProductCardModel(
+        isOverrideTheme: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isFestivity: Boolean
+    ): ProductCardModel {
+        return ProductCardModel(
+            productImageUrl = imageUrl,
+            productName = name,
+            discountPercentage = slashedPricePercent.toString(),
+            slashedPrice = slashedPrice,
+            formattedPrice = price,
+            labelGroupList = labelGroups.map { labelGroup ->
+                ProductCardModel.LabelGroup(
+                    position = labelGroup.position,
+                    title = labelGroup.title,
+                    imageUrl = labelGroup.url,
+                    styleList = labelGroup.styles.map { style ->
+                        ProductCardModel.LabelGroup.Style(key = style.key, value = style.value)
+                    },
+                    type = labelGroup.type
+                )
+            },
+            freeOngkir = ProductCardModel.FreeOngkir(
+                isActive = freeOngkir.isActive,
+                imageUrl = freeOngkir.imgUrl
+            ),
+            hasThreeDots = false,
+            hasAddToCartButton = false,
+            isWishlisted = false,
+            forceLightModeColor = false,
+            shopBadgeList = badges.map { badge ->
+                ProductCardModel.ShopBadge(
+                    imageUrl = badge.imageUrl,
+                    title = badge.title
+                )
+            },
+            countSoldRating = rating,
+            colorMode = productCardColorHelper.determineProductCardColorMode(
+                isFestivity = isFestivity,
+                shouldOverrideTheme = isOverrideTheme,
+                patternColorType = patternColorType,
+                backgroundColor = backgroundColor,
+                makeProductCardTransparent = true
+            )
+        )
     }
 }

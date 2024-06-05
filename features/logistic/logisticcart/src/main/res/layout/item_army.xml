@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
-    android:foreground="?selectableItemBackground" >
-
+    android:foreground="?selectableItemBackground">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_check"
@@ -17,9 +16,10 @@
         app:icon_color_night_enable="@color/Unify_GN500"
         app:icon_enable_state="true"
         app:icon_name="CHECK_BIG"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        tools:visibility="visible"/>
 
     <FrameLayout
         android:id="@+id/fl_image_container"
@@ -28,7 +28,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/img_logo"
@@ -44,14 +45,15 @@
         android:id="@+id/lbl_cod_available_eta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="visible"
+        app:layout_constrainedWidth="false"
         app:labelType="general_light_grey"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/tv_title"
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_goneMarginStart="0dp"
-        app:layout_constraintStart_toEndOf="@id/fl_image_container"
-        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -61,7 +63,7 @@
         android:layout_marginStart="4dp"
         android:layout_weight="1"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@id/lbl_cod_available_eta"
+        app:layout_constraintStart_toEndOf="@id/fl_image_container"
         app:layout_constraintTop_toTopOf="@id/fl_image_container"
         app:typographyType="display_3"
         tools:text="Kuota: 5x" />
@@ -71,19 +73,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="fl_image_container,lbl_cod_available_eta,tv_kuota_info" />
+        app:constraint_referenced_ids="fl_image_container, tv_kuota_info" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="4dp"
         android:lineSpacingExtra="4sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0.0"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toStartOf="@id/img_check"
+        app:layout_constraintEnd_toStartOf="@id/gl_title_label"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_top_container"
         app:layout_goneMarginEnd="0dp"
@@ -92,15 +97,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_info"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="12dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintEnd_toStartOf="@id/fl_image_container"
+        app:layout_constraintEnd_toStartOf="@id/img_check"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
-        app:layout_goneMarginEnd="0dp"
+        app:layout_goneMarginEnd="16dp"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp3.000" />
@@ -111,7 +116,7 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="barrier_top_container, tv_title, tv_info"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -124,5 +129,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_free_shipping_info"
         tools:layout_constraintTop_toBottomOf="@id/tv_info" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_title_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

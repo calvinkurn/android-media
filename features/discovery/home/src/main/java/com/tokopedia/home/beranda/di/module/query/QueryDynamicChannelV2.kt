@@ -17,6 +17,7 @@ internal object QueryDynamicChannelV2 {
         "      origami\n" +
         "      grids {\n" +
         "        id\n" +
+        "        trackerJson\n" +
         "        url\n" +
         "        name\n" +
         "        shop {\n" +
@@ -33,6 +34,8 @@ internal object QueryDynamicChannelV2 {
         "        label\n" +
         "        stock\n" +
         "        param\n" +
+        "        creativeID\n" +
+        "        logExtra\n" +
         "        rating\n" +
         "        badges {\n" +
         "          title\n" +

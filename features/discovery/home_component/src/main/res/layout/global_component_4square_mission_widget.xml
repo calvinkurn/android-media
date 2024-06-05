@@ -16,7 +16,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         app:card_type="clear"
-        app:cardCornerRadius="8dp">
+        app:card_corner_radius="8dp">
 
         <LinearLayout
             android:orientation="vertical"
@@ -29,7 +29,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="6dp"
                 android:gravity="center_vertical">
 
                 <com.tokopedia.unifyprinciples.Typography

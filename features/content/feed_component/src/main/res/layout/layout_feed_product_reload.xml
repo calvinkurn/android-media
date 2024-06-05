@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:translationZ="12dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_error_load_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="0dp"
+        android:paddingEnd="4dp"
+        android:text="@string/content_failed_product_load"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="0dp"
+        android:paddingEnd="4dp"
+        app:icon_color_light_disabled="@color/Unify_GN500"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_disabled="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_name="RELOAD" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_error_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/feed_content_coba_lagi_text"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="heading_5" />
+
+</LinearLayout>

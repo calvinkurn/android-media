@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel.global
 
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.tracking.RecommendationCarouselWidgetTracking
@@ -43,10 +44,17 @@ data class RecommendationCarouselModel(
             trackingModel: RecommendationWidgetTrackingModel,
             widget: RecommendationWidget,
             source: RecommendationWidgetSource?,
+            appLogAdditionalParam: AppLogAdditionalParam,
             listener: RecommendationWidgetListener?,
-            userId: String
+            userId: String,
         ) = RecommendationCarouselModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel, userId, widget.appLog),
+            visitable = RecommendationVisitable.create(
+                metadata,
+                trackingModel,
+                userId,
+                widget.appLog,
+                appLogAdditionalParam
+            ),
             widget = widget,
             source = source,
             listener = listener,

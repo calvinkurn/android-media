@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 /**
  * @author by resakemal on 15/06/20.
@@ -157,7 +157,7 @@ class RechargeHomepageProductBannerViewHolder(
     }
 
     private fun setProductImage(bind: ViewRechargeHomeProductBannerBinding, imageUrl: String) {
-        bind.viewRechargeHomeProductBannerImage.cardImage.loadImage(imageUrl)
+        bind.viewRechargeHomeProductBannerImage.cardImage.loadImageFresco(imageUrl)
     }
 
     private fun setProductDiscountLabel(bind: ViewRechargeHomeProductBannerBinding, label: String) {

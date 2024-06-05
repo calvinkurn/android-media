@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.domain.coroutines
 import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.byteio.RecommendationByteIoUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
@@ -45,11 +46,12 @@ open class GetRecommendationUseCase @Inject constructor(
 
         return graphqlUseCase.executeOnBackground()
             .productRecommendationWidget.data
-            .mappingToRecommendationModel()
+            .mappingToRecommendationModel(byteIoUseCase.getTotalData(inputParameter.pageName))
             .also {
-                byteIoUseCase.updateSessionId(
+                byteIoUseCase.updateMap(
                     inputParameter.pageName,
-                    it.firstOrNull()?.appLog?.sessionId.orEmpty()
+                    sessionId = it.firstOrNull()?.appLog?.sessionId.orEmpty(),
+                    totalData = it.firstOrNull()?.recommendationItemList?.size.orZero()
                 )
             }
     }

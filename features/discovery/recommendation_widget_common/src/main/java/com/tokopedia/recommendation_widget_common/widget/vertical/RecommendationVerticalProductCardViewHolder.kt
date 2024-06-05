@@ -4,13 +4,19 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalProductcardBinding
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -56,7 +62,32 @@ class RecommendationVerticalProductCardViewHolder(
         with(binding.productCardView) {
             addOnImpressionListener(element.recomItem) { onProductCardImpressed(element) }
             addOnImpression1pxListener(element.recomItem.appLogImpressHolder) { onProductCardImpressed1px(element) }
-            setOnClickListener { onProductClicked(element) }
+            setVisibilityPercentListener(element.recomItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.recomItem.sendShowAdsByteIo(itemView.context)
+                }
+
+                override fun onShowOver(maxPercentage: Int) {
+                    element.recomItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
+                }
+            })
+            setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    onProductClicked(element)
+                }
+
+                override fun onAreaClicked(v: View) {
+                    element.recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    element.recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    element.recomItem.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                }
+            })
         }
     }
 
@@ -80,7 +111,10 @@ class RecommendationVerticalProductCardViewHolder(
 
     private fun onProductCardImpressed1px(element: RecommendationVerticalProductCardModel) {
         AppLogRecommendation.sendProductShowAppLog(
-            element.recomItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
+            element.recomItem.asProductTrackModel(
+                entranceForm = EntranceForm.PURE_GOODS_CARD,
+                additionalParam = element.appLogAdditionalParam
+            )
         )
 
     }
@@ -106,7 +140,10 @@ class RecommendationVerticalProductCardViewHolder(
         )
 
         AppLogRecommendation.sendProductClickAppLog(
-            element.recomItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
+            element.recomItem.asProductTrackModel(
+                entranceForm = EntranceForm.PURE_GOODS_CARD,
+                additionalParam = element.appLogAdditionalParam
+            )
         )
 
         RouteManager.route(binding.productCardView.context, productRecommendation.appUrl)

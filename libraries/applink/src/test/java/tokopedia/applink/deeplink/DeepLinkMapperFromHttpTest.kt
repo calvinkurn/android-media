@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -684,9 +685,9 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check link url for feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
         }
         assertEqualsDeepLinkMapper("https://www.tokopedia.com/feed", expectedDeepLink)
         assertEqualsDeepLinkMapper("https://www.tokopedia.com/content", expectedDeepLink)
@@ -695,9 +696,9 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check link url for explore tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=explore")
         }
@@ -714,9 +715,9 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check link url for video tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=video")
         }
@@ -733,9 +734,9 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check link url for following tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=following")
         }
@@ -752,9 +753,9 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check link url for foryou tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=foryou")
             append("&tab=foryou") // automatically added
@@ -766,9 +767,9 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check link url for relevant post in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID}=123")
         }
@@ -779,9 +780,9 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check link url for relevant post with source name in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME}=detail-immersive")
             append("&")
@@ -790,5 +791,15 @@ class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
         }
         assertEqualsDeepLinkMapper("https://www.tokopedia.com/feed/123?source=detail-immersive", expectedDeepLink)
         assertEqualsDeepLinkMapper("https://www.tokopedia.com/content/123?source=detail-immersive", expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url for me page`() {
+        val expectedDeepLink = buildString {
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
+            append("?")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_ME_PAGE}")
+        }
+        assertEqualsDeepLinkMapper("https://www.tokopedia.com/me-page", expectedDeepLink)
     }
 }

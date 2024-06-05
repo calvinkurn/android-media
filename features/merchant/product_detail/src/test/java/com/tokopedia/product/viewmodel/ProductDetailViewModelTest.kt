@@ -66,8 +66,6 @@ import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -96,12 +94,12 @@ import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -891,12 +889,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             ),
             status = "OK"
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
         viewModel.addToCart(addToCartOcsRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -910,7 +910,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
 
         // assert minicart update
         val p2MiniCart = viewModel.p2Data.value?.miniCart
@@ -923,14 +923,15 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success normal atc`() = runTest {
-        val addToCartOcsRequestParams = AddToCartRequestParams()
+        val addToCartRequestParams = AddToCartRequestParams()
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
-
+        val result = async { viewModel.addToCartResultState.first() }
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.addToCart(addToCartOcsRequestParams)
+        viewModel.addToCart(addToCartRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -944,7 +945,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
     }
 
     @Test
@@ -955,12 +956,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             status = "",
             errorMessage = arrayListOf("gagal ya")
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
         viewModel.addToCart(addToCartOcsRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -974,18 +977,20 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
     }
 
     @Test
     fun `on error normal atc cause result null`() = runTest {
         val addToCartOcsRequestParams = AddToCartRequestParams()
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns null
 
         viewModel.addToCart(addToCartOcsRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -999,19 +1004,21 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
     }
 
     @Test
     fun `on success ocs atc`() = runTest {
         val addToCartOcsRequestParams = AddToCartOcsRequestParams()
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
         viewModel.addToCart(addToCartOcsRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
@@ -1025,7 +1032,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
     }
 
     @Test
@@ -1036,12 +1043,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             status = "",
             errorMessage = arrayListOf("gagal ya")
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
         viewModel.addToCart(addToCartOcsRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
@@ -1055,7 +1064,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
     }
 
     @Test
@@ -1070,12 +1079,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         )
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.addToCart(addToCartOccRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
@@ -1089,7 +1100,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOcsUseCase.createObservable(any()).toBlocking()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(result.await() is Success)
     }
 
     @Test
@@ -1108,12 +1119,14 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             status = "",
             errorMessage = arrayListOf("gagal ya")
         )
+        val result = async { viewModel.addToCartResultState.first() }
 
         coEvery {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseError
 
         viewModel.addToCart(addToCartOccRequestParams)
+        viewModel.onFinishAnimation()
 
         coVerify {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
@@ -1127,7 +1140,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOcsUseCase.createObservable(any()).toBlocking()
         }
 
-        assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(result.await() is Fail)
     }
 
     @Test
@@ -1981,7 +1994,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
             assertTrue(source is AffiliateSdkPageSource.PDP)
         }
 
-        with (subIdsSlot.captured) {
+        with(subIdsSlot.captured) {
             assertEquals(size, 2)
 
             assertEquals(get(0).key, "1")
@@ -3225,57 +3238,31 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //region atc animation
     @Test
-    fun `success atc and animation`() = runTest {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.PDP_ATC_ANIMATION_KEY,
-                ""
-            )
-        } returns RollenceKey.PDP_ATC_ANIMATION_VARIANT
+    fun `success atc and animation not finish`() = runTest {
+        val addToCartRequestParams = AddToCartRequestParams()
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+        val result = mutableListOf<com.tokopedia.usecase.coroutines.Result<AddToCartDataModel>>()
+        backgroundScope.launch { viewModel.addToCartResultState.toList(result) }
 
-        val successAtcAndAnimation = mutableListOf<Boolean>()
-        backgroundScope.launch(UnconfinedTestDispatcher()) {
-            viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.addToCart(addToCartRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
         }
 
-        assertEquals(successAtcAndAnimation.size, 0)
-
-        viewModel.onFinishAnimation()
-        viewModel.onFinishAtc()
-
-        advanceUntilIdle()
-        assertEquals(successAtcAndAnimation.size, 1)
-        assertEquals(successAtcAndAnimation.first(), true)
-
-        viewModel.onFinishAtc()
-        viewModel.onFinishAnimation()
-
-        advanceUntilIdle()
-        assertEquals(successAtcAndAnimation.size, 2)
-        assertEquals(successAtcAndAnimation[1], true)
-    }
-
-    @Test
-    fun `success atc and animation when rollence false`() = runTest {
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.PDP_ATC_ANIMATION_KEY,
-                ""
-            )
-        } returns ""
-
-        val successAtcAndAnimation = mutableListOf<Boolean>()
-        backgroundScope.launch(UnconfinedTestDispatcher()) {
-            viewModel.successAtcAndAnimation.toList(successAtcAndAnimation)
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
         }
 
-        assertEquals(successAtcAndAnimation.size, 0)
+        coVerify(inverse = true) {
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
+        }
 
-        viewModel.onFinishAtc()
-
-        advanceUntilIdle()
-        assertEquals(successAtcAndAnimation.size, 1)
-        assertEquals(successAtcAndAnimation.first(), true)
+        assertTrue(result.isEmpty())
     }
     //endregion
 

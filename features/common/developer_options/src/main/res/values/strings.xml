@@ -114,6 +114,10 @@
     <string name="view_sse_logging">View SSE Logging</string>
     <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
     <string name="view_websocket_logging">View Web Socket Logging</string>
+    <string name="ok_http_timeout">OkHttp Timeout Value</string>
+    <string name="change_ok_http_timeout">Change</string>
+    <string name="change_ok_http_timeout_success_toaster">Success, please restart your app</string>
+    <string name="change_ok_http_timeout_empty_toaster">Timeout value cannot be empty, the default value is 10</string>
 
     <string name="applink_list">Applink List</string>
     <string name="tokopedia_name">Tokopedia</string>
@@ -146,6 +150,7 @@
     <string name="extract_branch_link">Extract Branch Link</string>
     <string name="hint_branch_et">Put your Branch Link Here ex: https://tokopedia.link/5lT0NZpifAb</string>
     <string name="banner_environment">Enable Banner Environment</string>
+    <string name="enable_percent_view_visible">Enable Percent View Visible</string>
 
     <string name="copy_id">Copied Id %s</string>
     <string name="text_login_by_lark">Authorize by Lark</string>

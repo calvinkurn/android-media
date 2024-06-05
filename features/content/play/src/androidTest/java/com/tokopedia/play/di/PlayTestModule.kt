@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -44,6 +45,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import io.mockk.mockk
 import javax.inject.Named
 
 /**
@@ -55,6 +57,7 @@ class PlayTestModule(
     val trackingQueue: TrackingQueue = TrackingQueue(mContext),
     val userSession: (appContext: Context) -> UserSessionInterface = { UserSession(it) },
     val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(mContext),
+    val router: Router = Router(),
     val playPreference: (appContext: Context) -> PlayPreference = {
         PlayPreference(
             it,
@@ -202,4 +205,8 @@ class PlayTestModule(
     fun provideActivityResultRegistry(): ActivityResultRegistry {
         return resultRegistry
     }
+
+    @PlayScope
+    @Provides
+    fun provideRouter() = router
 }

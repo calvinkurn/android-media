@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -486,11 +488,7 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
-        sendProductClickAppLog(
-            model.asProductTrackModel(
-                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
-            )
-        )
+        sendProductClickAppLog(model.asProductTrackModel())
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -578,11 +576,8 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
-        sendCardClickAppLog(
-            model.asCardTrackModel(
-                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
-            )
-        )
+        sendCardClickAppLog(model.asCardTrackModel())
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${model.pageName}_${position + 1}"))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
                 model.topAdsImageUiModel,
@@ -641,11 +636,8 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
-        sendCardClickAppLog(
-            item.asCardTrackModel(
-                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
-            )
-        )
+        sendCardClickAppLog(item.asCardTrackModel())
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${item.pageName}_${position + 1}"))
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -658,11 +650,8 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
-        sendCardClickAppLog(
-            element.asCardTrackModel(
-                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
-            )
-        )
+        sendCardClickAppLog(element.asCardTrackModel())
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format("${element.pageName}_${position + 1}"))
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
             position,
