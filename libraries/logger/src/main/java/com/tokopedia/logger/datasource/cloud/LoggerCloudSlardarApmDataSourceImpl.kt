@@ -17,9 +17,9 @@ class LoggerCloudSlardarApmDataSourceImpl: LoggerCloudSlardarApmDataSource {
             withContext(Dispatchers.IO) {
                 newRelicSdkList.forEach {
                     val logString = gson.toJson(it)
-                    val category = JSONObject()
-                    category.put(JSON_LOG_KEY, logString)
-                    ApmAgent.monitorEvent(SERVICE_NAME, category, null, null)
+                    val extraLog = JSONObject()
+                    extraLog.put(JSON_LOG_KEY, logString)
+                    ApmAgent.monitorEvent(SERVICE_NAME, null, null, extraLog)
                 }
                 true
             }
@@ -34,9 +34,9 @@ class LoggerCloudSlardarApmDataSourceImpl: LoggerCloudSlardarApmDataSource {
             withContext(Dispatchers.IO) {
                 newRelicApiMap.forEach {  (_, it) ->
                     val logString = gson.toJson(it)
-                    val category = JSONObject()
-                    category.put(JSON_LOG_KEY, logString)
-                    ApmAgent.monitorEvent(SERVICE_NAME, category, null, null)
+                    val extraLog = JSONObject()
+                    extraLog.put(JSON_LOG_KEY, logString)
+                    ApmAgent.monitorEvent(SERVICE_NAME, extraLog, null, null)
                 }
                 true
             }
