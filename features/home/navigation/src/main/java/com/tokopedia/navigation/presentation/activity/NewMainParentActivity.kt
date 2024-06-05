@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.bytedance.android.btm.api.BtmSDK
+import com.bytedance.android.btm.api.model.PageShowParams
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -783,8 +785,15 @@ class NewMainParentActivity :
         if (model != null) onTabSelected.forEach { it.onSelected(model) }
 
         AppLogTopAds.updateAdsFragmentPageData(this, PAGE_NAME, getAdsPageName())
+        sendFragmentChangeEventToBtmSDK(fragment)
 
         return true
+    }
+
+    private fun sendFragmentChangeEventToBtmSDK(fragment: Fragment) {
+        val params = PageShowParams()
+        params.reuse = true
+        BtmSDK.onPageShow(fragment, true, params)
     }
 
     private fun checkShouldLogin(id: BottomNavItemId): Boolean {

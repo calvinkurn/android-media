@@ -256,7 +256,7 @@ class FeedBaseFragment :
             }
         }
         super.onCreate(savedInstanceState)
-
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {

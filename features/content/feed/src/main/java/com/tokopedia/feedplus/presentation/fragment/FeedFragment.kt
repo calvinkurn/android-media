@@ -505,7 +505,6 @@ class FeedFragment :
         }
 
         super.onCreate(savedInstanceState)
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
 
         childFragmentManager.addFragmentOnAttachListener(::onAttachChildFragment)
 
