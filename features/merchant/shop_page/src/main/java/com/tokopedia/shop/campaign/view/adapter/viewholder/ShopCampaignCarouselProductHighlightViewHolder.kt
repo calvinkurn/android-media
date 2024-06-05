@@ -24,8 +24,9 @@ import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-//need to surpress this one, since there are no pii related data defined on this class
+// need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ShopCampaignCarouselProductHighlightViewHolder(
     itemView: View,
@@ -78,7 +79,7 @@ class ShopCampaignCarouselProductHighlightViewHolder(
             if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
                 stockBarLabelColor = ShopUtil.getColorHexString(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                    unifyprinciplesR.color.Unify_RN600
                 )
             }
             ShopPageHomeMapper.mapToProductCardCampaignModel(
@@ -87,7 +88,11 @@ class ShopCampaignCarouselProductHighlightViewHolder(
                 shopHomeProductViewModel = it,
                 widgetName = it.name,
                 statusCampaign = uiModel.statusCampaign,
-                forceLightModeColor = false
+                isOverrideTheme = false,
+                patternColorType = listener.getPatternColorType(),
+                backgroundColor = listener.getBackgroundColor(),
+                isFestivity = uiModel.isFestivity,
+                atcVariantButtonText = recyclerView?.context?.getString(R.string.shop_atc).orEmpty()
             ).copy(
                 stockBarLabelColor = stockBarLabelColor
             )
@@ -185,7 +190,7 @@ class ShopCampaignCarouselProductHighlightViewHolder(
                     it,
                     listProductCardModel,
                     carouselProductCardOnItemClickListener,
-                    carouselProductCardOnItemImpressedListener,
+                    carouselProductCardOnItemImpressedListener
                 )
             )
             val totalProductSize = uiModel.productList.size
@@ -204,5 +209,4 @@ class ShopCampaignCarouselProductHighlightViewHolder(
     ): Boolean {
         return shopHomeProductViewModelList.size == TOTAL_PRODUCT_FOR_DOUBLE_PRODUCT_CARD || shopHomeProductViewModelList.size == Int.ONE
     }
-
 }

@@ -15,6 +15,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : RecyclerView.ViewHolder(view) {
+
     val layoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(
             view.context,
@@ -22,6 +23,8 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
             false
         )
     }
+
+    private val rvCarousel: RecyclerView = view.findViewById(R.id.rv_recomm)
 
     fun bind(data: RewardsRecommendation) {
         val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_recomm)
@@ -37,7 +40,6 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
 
         (view.findViewById<View>(R.id.text_sub_title_recomm) as TextView).text =
             view.context.resources.getString(R.string.tp_recom_subtitle)
-        val rvCarousel: RecyclerView = view.findViewById(R.id.rv_recomm)
         rvCarousel?.isDrawingCacheEnabled = true
         rvCarousel.setHasFixedSize(true)
         rvCarousel?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
@@ -52,6 +54,7 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
                 )
             )
         }
+
         rvCarousel.adapter =
             RewardsRecommAdapter(data.recommendationWrapper as ArrayList<RecommendationWrapper> ,listener)
 

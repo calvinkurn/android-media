@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -34,7 +35,7 @@ const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 private const val LOGIN_REQUEST_CODE = 35769
 
-open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppLogInterface {
+open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppLogInterface, IAdsLog {
 
     protected lateinit var discoveryViewModel: DiscoveryViewModel
 
@@ -50,6 +51,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppL
 
     companion object {
         const val END_POINT = "end_point"
+        const val SHOULD_SHOW_GLOBAL_NAV = "should_show_global_nav"
         const val SOURCE = "source"
         const val COMPONENT_ID = "componentID"
         const val ACTIVE_TAB = "activeTab"
@@ -69,6 +71,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppL
         const val AFFILIATE_UNIQUE_ID = "aff_unique_id"
         const val CHANNEL = "channel"
         const val FORCED_NAVIGATION = "forcedNavigation"
+        const val ADDITIONAL_QUERY_PARAMS = "additional_query_params"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -196,5 +199,8 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), AppL
         return (fragment as? AppLogInterface)?.getPageName().orEmpty()
     }
 
+    override fun getAdsPageName(): String {
+        return (fragment as? IAdsLog)?.getAdsPageName().orEmpty()
+    }
 }
 

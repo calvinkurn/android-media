@@ -83,7 +83,14 @@ class ShopProductCarouselViewHolder(
         recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
             productCardModelList = shopProductUiModelList.map {
-                ShopPageProductListMapper.mapToProductCardModel(it, isWideContent = false, isShowThreeDots = false)
+                ShopPageProductListMapper.mapToProductCardModel(
+                    it,
+                    isWideContent = false,
+                    isShowThreeDots = false,
+                    makeProductCardTransparent = false,
+                    atcVariantButtonText = recyclerView?.context?.getString(R.string.shop_atc)
+                        .orEmpty()
+                )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                 override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {

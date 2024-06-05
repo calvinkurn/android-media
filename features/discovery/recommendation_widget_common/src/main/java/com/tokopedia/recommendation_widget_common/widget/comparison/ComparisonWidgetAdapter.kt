@@ -8,12 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
+import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 
 class ComparisonWidgetAdapter(
     var comparisonListModel: ComparisonListModel,
     val comparisonWidgetInterface: ComparisonWidgetInterface,
+    val adsViewListener: AdsViewListener?,
+    val adsItemClickListener: AdsItemClickListener?,
     val trackingQueue: TrackingQueue?,
     val recommendationTrackingModel: RecommendationTrackingModel,
     val userSessionInterface: UserSessionInterface,
@@ -23,10 +27,10 @@ class ComparisonWidgetAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return if (shouldUseReimagineCard) {
             val view = onCreateView(parent, R.layout.item_comparison_reimagine_widget)
-            ComparisonReimagineWidgetItemViewHolder(view)
+            ComparisonReimagineWidgetItemViewHolder(view, adsViewListener, adsItemClickListener)
         } else {
             val view = onCreateView(parent, R.layout.item_comparison_widget)
-            ComparisonWidgetItemViewHolder(view)
+            ComparisonWidgetItemViewHolder(view, adsViewListener, adsItemClickListener,)
         }
     }
 

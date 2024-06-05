@@ -7,4 +7,5 @@
     <string name="path_favorite" translatable="false">/favorite</string>
     <string name="path_inbox" translatable="false">/inbox</string>
     <string name="path_navigation" translatable="false">/navigation</string>
+    <string name="path_navigation_old" translatable="false">/navigation-old</string>
 </resources>

@@ -42,8 +42,11 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_WIDGETS = "widgets"
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
+        private const val BUNDLE_KEY_IS_FESTIVITY = "is_festivity"
         private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
         private const val CORNER_RADIUS_IMAGE_BANNER = 12f
+        private const val BUNDLE_KEY_BACKGROUND_COLOR = "background_color"
+        private const val BUNDLE_KEY_PATTERN_COLOR_TYPE = "pattern_color"
 
         @JvmStatic
         fun newInstance(
@@ -51,7 +54,10 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             widgets: List<BannerProductGroupUiModel.Tab.ComponentList>,
             widgetStyle: String,
             overrideTheme: Boolean,
-            colorScheme: ShopPageColorSchema
+            colorScheme: ShopPageColorSchema,
+            backgroundColor: String,
+            patternColorType: String,
+            isFestivity: Boolean
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
@@ -59,7 +65,10 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
                     putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
                     putBoolean(BUNDLE_KEY_OVERRIDE_THEME, overrideTheme)
+                    putBoolean(BUNDLE_KEY_IS_FESTIVITY, isFestivity)
                     putParcelable(BUNDLE_KEY_COLOR_SCHEME, colorScheme)
+                    putString(BUNDLE_KEY_BACKGROUND_COLOR, backgroundColor)
+                    putString(BUNDLE_KEY_PATTERN_COLOR_TYPE, patternColorType)
                 }
             }
         }
@@ -75,10 +84,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     }
     private val widgetStyle by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_STYLE).orEmpty() }
     private val overrideTheme by lazy { arguments?.getBoolean(BUNDLE_KEY_OVERRIDE_THEME).orFalse() }
+    private val isFestivity by lazy { arguments?.getBoolean(BUNDLE_KEY_IS_FESTIVITY).orFalse() }
 
     private val colorScheme by lazy {
         arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
     }
+    private val backgroundColor by lazy { arguments?.getString(BUNDLE_KEY_BACKGROUND_COLOR).orEmpty() }
+    private val patternColorType by lazy { arguments?.getString(BUNDLE_KEY_PATTERN_COLOR_TYPE).orEmpty() }
     private var onProductSuccessfullyLoaded: (Boolean) -> Unit = {}
 
     @Inject
@@ -97,7 +109,14 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     private var onVerticalBannerClick : (VerticalBannerItemType) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopBannerProductGroupWidgetTabBinding>()
-    private val bannerProductGroupAdapter = ShopHomeBannerProductGroupTabRecyclerViewAdapter()
+    private val bannerProductGroupAdapter by lazy {
+        ShopHomeBannerProductGroupTabRecyclerViewAdapter(
+            isOverrideTheme = overrideTheme,
+            backgroundColor = backgroundColor,
+            patternColorType = patternColorType,
+            isFestivity = isFestivity
+        )
+    }
 
     override fun getScreenName(): String = ShopBannerProductGroupWidgetTabFragment::class.java.canonicalName.orEmpty()
 
@@ -275,7 +294,14 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     @SuppressLint("PII Data Exposure")
     private fun getCarouselWidgets() {
         val userAddress = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        viewModel.getCarouselWidgets(widgets, shopId, userAddress, widgetStyle, overrideTheme, colorScheme)
+        viewModel.getCarouselWidgets(
+            widgets = widgets,
+            shopId = shopId,
+            userAddress = userAddress,
+            widgetStyle = widgetStyle,
+            overrideTheme = overrideTheme,
+            colorSchema = colorScheme
+        )
     }
 
     private fun showProductCarousel(carouselItems: List<ShopHomeBannerProductGroupItemType>) {

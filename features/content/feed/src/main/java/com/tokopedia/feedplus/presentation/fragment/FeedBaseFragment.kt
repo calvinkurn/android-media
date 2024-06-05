@@ -28,6 +28,7 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -46,7 +47,6 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
-import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -104,7 +104,8 @@ class FeedBaseFragment :
     TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
     FragmentListener,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -322,6 +323,10 @@ class FeedBaseFragment :
         return PageName.FEED
     }
 
+    override fun getAdsPageName(): String {
+        return PageName.FEED
+    }
+
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }
@@ -414,8 +419,6 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
-
-        binding.viewBlockInteraction.setOnTouchListener { _, _ -> true }
 
         binding.containerFeedTopNav.btnFeedBrowse.doOnLayout {
             val centerX = it.width / 2
@@ -675,13 +678,7 @@ class FeedBaseFragment :
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                         launch {
-                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
-                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                            binding.containerFeedTopNav.uploadView.hide()
-                                        }
-
-                                        if (uploadResult.data.uploadType == CreationUploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
+                                            creationUploader.removeFailedContentFromQueue(uploadResult.data)
                                         }
                                     }
                                 })
@@ -880,9 +877,7 @@ class FeedBaseFragment :
                     }
                 )
                 .setListener(object : ImmersiveFeedOnboarding.Listener {
-                    override fun onStarted() {
-                        binding.viewBlockInteraction.show()
-                    }
+                    override fun onStarted() {}
 
                     override fun onCompleteCreateContentOnboarding() {
                         feedMainViewModel.setHasShownCreateContent()
@@ -898,7 +893,6 @@ class FeedBaseFragment :
 
                     override fun onFinished(isForcedDismiss: Boolean) {
                         if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                        binding.viewBlockInteraction.hide()
                     }
                 }).build()
 

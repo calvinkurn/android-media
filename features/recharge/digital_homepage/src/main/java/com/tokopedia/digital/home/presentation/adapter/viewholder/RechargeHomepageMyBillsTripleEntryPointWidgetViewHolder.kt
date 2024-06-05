@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
     val binding: ViewRechargeHomeMyBillsTripleEntrypointBinding,
@@ -57,7 +57,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
         with(binding) {
             tvTitle.text = bottomSection.content
             tvSubtitle.text = bottomSection.attributes.soldValue
-            ivProductIcon.loadImage(bottomSection.mediaUrl)
+            ivProductIcon.loadImageFresco(bottomSection.mediaUrl)
             labelWidget.shouldShowWithAction(bottomSection.subtitle.isNotEmpty()) {
                 labelWidget.text = bottomSection.subtitle
             }
@@ -72,7 +72,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
         with(binding) {
             tvLeftTitle.text = leftSection.content
             tvLeftSubtitle.text = leftSection.attributes.soldValue
-            imgLeft.loadImage(leftSection.mediaUrl)
+            imgLeft.loadImageFresco(leftSection.mediaUrl)
 
             containerLeft.setOnClickListener {
                 clickedSection(leftSection)
@@ -85,7 +85,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
         with(binding) {
             tvRightTitle.text = rightSection.content
             tvRightSubtitle.text = rightSection.attributes.soldValue
-            imgRight.loadImage(rightSection.mediaUrl)
+            imgRight.loadImageFresco(rightSection.mediaUrl)
 
             containerRight.setOnClickListener {
                 clickedSection(rightSection)

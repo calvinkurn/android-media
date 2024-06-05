@@ -41,11 +41,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.IAdsLog
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -85,6 +86,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
+import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartDataModel
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -94,6 +96,7 @@ import com.tokopedia.discovery2.di.DiscoveryComponent
 import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ADDITIONAL_QUERY_PARAMS
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -109,6 +112,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOULD_SHOW_GLOBAL_NAV
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
@@ -122,6 +126,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
@@ -174,6 +179,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -226,7 +232,8 @@ open class DiscoveryFragment :
     ScreenShotListener,
     PermissionListener,
     MiniCartWidgetListener,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var bmGmDataParam: BmGmDataParam? = null
     private var recyclerViewPaddingResetNeeded: Boolean = false
@@ -351,6 +358,11 @@ open class DiscoveryFragment :
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        SearchRollenceController.fetchInboxNotifTopNavValue()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -437,13 +449,27 @@ open class DiscoveryFragment :
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                         disableDefaultGtmTracker = true
                     )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+                    .also {
+                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                        it.addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
+                    }
             )
+            configureSearchStyle()
         }
+    }
+
+    private fun configureSearchStyle() {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        val searchStyle = if (enableSearchRedesign) {
+            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
+        } else {
+            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
+        }
+        navToolbar.setSearchStyle(searchStyle, showSearchBtn = false)
     }
 
     @SuppressLint("RestrictedApi")
@@ -692,9 +718,11 @@ open class DiscoveryFragment :
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
-        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "").orEmpty()
+        discoveryViewModel.additionalQueryParamsString = arguments?.getString(ADDITIONAL_QUERY_PARAMS, "").orEmpty()
         pageEndPoint = discoveryViewModel.pageIdentifier
         checkForSamePageOpened()
+        discoveryViewModel.initiateAppLogPageState()
         fetchDiscoveryPageData()
         setUpObserver()
     }
@@ -910,6 +938,8 @@ open class DiscoveryFragment :
                             it.data.requestParams.requestingComponent,
                             it.data.addToCartDataModel.data.cartId
                         )
+
+                        trackSucceedATCAppLog(it)
                     }
                 } else {
                     analytics.trackEventProductATCTokonow(
@@ -975,7 +1005,7 @@ open class DiscoveryFragment :
             }
         }
 
-        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner) { (parentPosition, position) ->
+        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner) { (throwable, parentPosition, position) ->
             if (parentPosition >= 0) {
                 discoveryAdapter.getViewModelAtPosition(parentPosition)
                     ?.let { discoveryBaseViewModel ->
@@ -989,6 +1019,8 @@ open class DiscoveryFragment :
                 discoveryAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is MasterProductCardItemViewModel) {
                         discoveryBaseViewModel.handleATCFailed()
+                    } else if (discoveryBaseViewModel is ProductCardSingleViewModel) {
+                        discoveryBaseViewModel.sendFailedATCAppLog(throwable.message)
                     }
                 }
             }
@@ -1038,6 +1070,21 @@ open class DiscoveryFragment :
                     setupNavScrollListener()
                 }
             }
+    }
+
+    private fun trackSucceedATCAppLog(model: Success<DiscoveryAddToCartDataModel>) {
+        model.data.requestParams.run {
+            val viewPosition = position.coerceAtLeast(parentPosition)
+
+            discoveryAdapter.getViewModelAtPosition(viewPosition)
+                ?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ProductCardSingleViewModel) {
+                        discoveryBaseViewModel.sendSucceedATCAppLog(
+                            model.data.addToCartDataModel.data.cartId
+                        )
+                    }
+                }
+        }
     }
 
     private fun trackEnterPage() {
@@ -1337,11 +1384,14 @@ open class DiscoveryFragment :
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                         disableDefaultGtmTracker = true
                     )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+                    .also {
+                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                        it.addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
+                    }
             )
             navToolbar.updateNotification()
         } else {
@@ -1357,11 +1407,14 @@ open class DiscoveryFragment :
                     onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                     disableDefaultGtmTracker = true
                 )
-                .addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
+                .also {
+                    if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                    it.addIcon(
+                        iconId = IconList.ID_NAV_GLOBAL,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                        disableDefaultGtmTracker = true
+                    )
+                }
         )
         navToolbar.updateNotification()
     }
@@ -1606,7 +1659,8 @@ open class DiscoveryFragment :
             discoveryViewModel.getQueryParameterMapFromBundle(
                 arguments
             ),
-            userAddressData
+            userAddressData,
+
         )
     }
 
@@ -1756,6 +1810,7 @@ open class DiscoveryFragment :
     }
 
     override fun onRefresh() {
+        discoveryViewModel.refreshAppLogPageState()
         refreshPage()
     }
 
@@ -2699,6 +2754,10 @@ open class DiscoveryFragment :
 
     override fun getPageName(): String {
         return pageInfoHolder?.label?.trackingPagename.orEmpty()
+    }
+
+    override fun getAdsPageName(): String {
+        return PageName.DISCOVERY
     }
 
     fun setCurrentTabPosition(tabPosition: Int) {

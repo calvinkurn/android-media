@@ -8,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.ProductListType
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -127,6 +128,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(startIndex: I
                 gridPosition = recommendation.getGridPosition(),
                 appLog = appLog.toAppLogModel(recommendation.recParam),
                 countSold = recommendation.countSold,
+                recommendationAdsLog = RecommendationAdsLog(creativeID = recommendation.adsLog.creativeID, logExtra = recommendation.adsLog.logExtra)
             )
         },
         title = title,

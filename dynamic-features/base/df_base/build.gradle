@@ -143,8 +143,6 @@ dependencies {
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.features.campaignShakeLanding)
-    implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
-    implementation projectOrAar(rootProject.ext.features.managename)
     implementation projectOrAar(rootProject.ext.features.managepassword)
     implementation projectOrAar(rootProject.ext.features.notifCenter)
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)

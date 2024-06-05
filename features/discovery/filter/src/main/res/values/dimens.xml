@@ -27,4 +27,9 @@
     <dimen name="fontvs">12sp</dimen>
     <dimen name="dp_18">18dp</dimen>
     <dimen name="seek_bar_button_size">30dp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="keyboard_min_height">200dp</dimen>
 </resources>

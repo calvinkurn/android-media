@@ -10,7 +10,7 @@
         android:id="@+id/header_rounded_closeable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_header_rounded_closeable_bs"
+        android:background="@drawable/fromtkpddesign_bg_header_rounded_closeable_bs_tokopoints"
         android:orientation="horizontal"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,18 +22,17 @@
             android:layout_width="28dp"
             android:layout_height="4dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/close_button_bottom_sheet" />
+            android:background="@drawable/fromtkpddesign_close_button_bottom_sheet_tokopoints" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/close_button_rounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:padding="8dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close_thin" />
+            app:icon_name="CLOSE" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_closeable_rounded"

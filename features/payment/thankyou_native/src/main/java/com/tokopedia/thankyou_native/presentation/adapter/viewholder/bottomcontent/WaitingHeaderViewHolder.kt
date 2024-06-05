@@ -62,10 +62,10 @@ class WaitingHeaderViewHolder(
             listener.onCopyAccountId(data.accountId)
         }
         binding?.primaryButton?.setOnClickListener {
-            listener.onPrimaryButtonClick()
+            listener.onButtonClick(data.primaryButtonApplink, data.primaryButtonType, true, data.primaryButtonText)
         }
         binding?.secondaryButton?.setOnClickListener {
-            listener.onSecondaryButtonClick()
+            listener.onButtonClick(data.secondaryButtonApplink, data.secondaryButtonType, false, data.secondaryButtonText)
         }
         binding?.seeDetailBtn?.setOnClickListener {
             listener.onSeeDetailInvoice()
