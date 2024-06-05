@@ -104,12 +104,12 @@ class ReplyChatNotification(
         intent.putExtra(MESSAGE_ID, baseNotificationModel.payloadExtra?.topchat?.messageId)
         intent.putExtra(NOTIFICATION_ID, notificationId)
         intent.putExtra(USER_ID, userSession.userId)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getBroadcast(
                 context,
                 notificationId,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         } else {
             PendingIntent.getBroadcast(
