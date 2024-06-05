@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.deeplink.activity;
 
+import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
+
 import static com.tokopedia.applink.internal.ApplinkConsInternalHome.PATH_REKOMENDASI;
 import static com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.HOST_DISCOVERY;
 
@@ -21,6 +23,7 @@ import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.PageName;
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -35,6 +38,7 @@ import com.tokopedia.linker.FirebaseDLWrapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -95,6 +99,7 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
                 List<String> pathSegments = uriData.getPathSegments();
                 if (pathSegments.size() > 0 && pathSegments.get(0).equals(PATH_FIND)) {
                     screenName = PRODUCT_SEARCH_RESULT;
+                    setAdsLogData();
                 } else {
                     screenName = uriData.getPath();
                 }
@@ -120,6 +125,13 @@ public class DeepLinkActivity extends AppCompatActivity implements AppLogInterfa
             AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_EXTERNAL_ADS);
         }
+    }
+
+    private void setAdsLogData() {
+        AppLogTopAds.currentActivityName = DeepLinkActivity.this.getClass().getSimpleName();
+        AppLogTopAds.currentPageName = PageName.FIND_PAGE;
+        AppLogTopAds.putAdsPageData(this, PAGE_NAME, PageName.FIND_PAGE);
+        AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, PageName.FIND_PAGE);
     }
 
     private void initBranchIO(Context context) {

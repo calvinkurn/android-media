@@ -30,6 +30,7 @@ import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificati
 import com.tokopedia.developer_options.presentation.model.OkHttpTimeoutUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
+import com.tokopedia.developer_options.presentation.model.PercentViewUiModel
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
 import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
@@ -127,6 +128,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: DevOptsAuthorizationUiModel): Int
     fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int
     fun type(uiModel: BannerEnvironmentUiModel): Int
+    fun type(uiModel: PercentViewUiModel): Int
     fun type(uiModel: BranchLinkUiModel): Int
     fun type(uiModel: FpiMonitoringUiModel): Int
     fun type(uiModel: UserIdUiModel): Int

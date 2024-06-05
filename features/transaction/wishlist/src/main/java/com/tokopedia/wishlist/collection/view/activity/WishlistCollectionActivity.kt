@@ -3,11 +3,12 @@ package com.tokopedia.wishlist.collection.view.activity
 import android.content.Intent
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.collection.view.fragment.WishlistCollectionFragment
 
-class WishlistCollectionActivity : BaseSimpleActivity(), AppLogInterface {
+class WishlistCollectionActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     override fun getLayoutRes() = R.layout.activity_collection_wishlist
 
     override fun getParentViewResourceID() = R.id.parent_view
@@ -27,6 +28,9 @@ class WishlistCollectionActivity : BaseSimpleActivity(), AppLogInterface {
     override fun shouldTrackEnterPage(): Boolean {
         return true
     }
+
+    override fun getAdsPageName(): String = PageName.WISHLIST
+
 
     override fun isEnterFromWhitelisted() = true
 }

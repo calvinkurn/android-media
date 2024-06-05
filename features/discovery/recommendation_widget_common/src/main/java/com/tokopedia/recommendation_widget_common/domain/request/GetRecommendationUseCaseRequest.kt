@@ -102,6 +102,10 @@ internal class GetRecommendationUseCaseRequest {
                         }
                         parentID
                         recParam
+                        adsLog {
+                          creativeID
+                          logExtra
+                        }
                         countSold
                       }
                     }
@@ -201,6 +205,10 @@ internal class GetRecommendationUseCaseRequest {
                         }
                         parentID
                         recParam
+                        adsLog {
+                           creativeID
+                           logExtra
+                        }
                         countSold
                        }
                    }
