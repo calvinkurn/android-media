@@ -437,47 +437,32 @@ open class DiscoveryFragment :
     }
 
     private fun getIconBuilder(): IconBuilder {
-        val iconBuilder = IconBuilder(IconBuilderFlag(NavSource.SOS))
-        if (SearchRollenceController.shouldCombineInboxNotif()) {
-            iconBuilder.addIcon(
+        return IconBuilder(IconBuilderFlag(NavSource.SOS)).apply {
+            addIcon(
                 IconList.ID_MESSAGE,
                 onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
                 disableDefaultGtmTracker = false
-            ).addIcon(
+            )
+            if (!SearchRollenceController.shouldCombineInboxNotif()) {
+                addIcon(
+                    IconList.ID_NOTIFICATION,
+                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
+                    disableDefaultGtmTracker = false
+                )
+            }
+            addIcon(
                 iconId = IconList.ID_CART,
                 onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                 disableDefaultGtmTracker = true
-            ).also {
-                if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
-                it.addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
-            }
-        } else {
-            iconBuilder.addIcon(
-                IconList.ID_MESSAGE,
-                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
-                disableDefaultGtmTracker = false
-            ).addIcon(
-                IconList.ID_NOTIFICATION,
-                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
-                disableDefaultGtmTracker = false
-            ).addIcon(
-                iconId = IconList.ID_CART,
-                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+            )
+        }.also {
+            if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+            it.addIcon(
+                iconId = IconList.ID_NAV_GLOBAL,
+                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
                 disableDefaultGtmTracker = true
-            ).also {
-                if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
-                it.addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
-            }
+            )
         }
-        return iconBuilder
     }
 
     private fun configureSearchStyle() {
