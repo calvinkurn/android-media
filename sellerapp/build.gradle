@@ -376,7 +376,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
     implementation projectOrAar(rootProject.ext.libraries.keys)
-    implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
 
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.startupRuntime
@@ -398,7 +397,6 @@ dependencies {
     }
 
     implementation rootProject.ext.ktorDependencies.ktorSerializationJson
-    debugImplementation project.ext.debugToolsDependencies.leakCanary
     debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {

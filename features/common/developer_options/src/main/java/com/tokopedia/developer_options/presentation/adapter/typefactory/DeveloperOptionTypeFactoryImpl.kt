@@ -50,7 +50,6 @@ import com.tokopedia.developer_options.presentation.model.SharedPreferencesEdito
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
-import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
 import com.tokopedia.developer_options.presentation.model.TopAdsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggingUiModel
@@ -114,7 +113,6 @@ import com.tokopedia.developer_options.presentation.viewholder.SharedPreferences
 import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.MockDynamicWidgetViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ShowApplinkOnToastViewHolder
-import com.tokopedia.developer_options.presentation.viewholder.StrictModeLeakPublisherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SystemNonSystemAppsViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.TopAdsLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.TopchatWebSocketLoggingViewHolder
@@ -180,7 +178,6 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewAnalyticsLogUiModel): Int = ViewAnalyticsLogViewHolder.LAYOUT
     override fun type(uiModel: ViewIrisLogUiModel): Int = ViewIrisLogViewHolder.LAYOUT
     override fun type(uiModel: LeakCanaryUiModel): Int = LeakCanaryViewHolder.LAYOUT
-    override fun type(uiModel: StrictModeLeakPublisherUiModel): Int = StrictModeLeakPublisherViewHolder.LAYOUT
     override fun type(uiModel: RemoteConfigEditorUiModel): Int = RemoteConfigEditorViewHolder.LAYOUT
     override fun type(uiModel: RouteManagerUiModel): Int = RouteManagerViewHolder.LAYOUT
     override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
@@ -251,7 +248,6 @@ class DeveloperOptionTypeFactoryImpl(
             ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
             ViewServerLogViewHolder.LAYOUT -> ViewServerLogViewHolder(view)
             LeakCanaryViewHolder.LAYOUT -> LeakCanaryViewHolder(view)
-            StrictModeLeakPublisherViewHolder.LAYOUT -> StrictModeLeakPublisherViewHolder(view)
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
             RouteManagerViewHolder.LAYOUT -> RouteManagerViewHolder(view)
             LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)

@@ -50,12 +50,8 @@ class DevMonitoring(private var context: Context) {
         TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize), TooLargeToolLogger())
     }
 
-    fun initLeakCanary(enable: Boolean = true, isEnableStrictMode: Boolean = false, application: Application) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            DevMonitoringExtension.initLeakCanary(enable, isEnableStrictMode, application)
-        } else {
-            // no-op
-        }
+    fun initLeakCanary(enable: Boolean = false) {
+        DevMonitoringExtension.initLeakCanary(enable)
     }
 
     private fun configCopyCrashStackTraceToClipboard(throwable: Throwable) {
