@@ -1134,7 +1134,7 @@ class PlayUserInteractionFragment @Inject constructor(
                                 shareExInitializer = ShareExInitializer(requireContext())
                             }
                             val label = "$SHARE_ID_KEY - ${event.channelId} - ${event.partnerId} - ${event.channelType}"
-                            val labelActionClick = "$CHANNEL_KEY - ${event.channelId} - ${event.partnerId} - ${event.channelType}"
+                            val labelActionClick = "$CHANNEL_KEY - $SHARE_ID_KEY - ${event.channelId} - ${event.partnerId} - ${event.channelType}"
                             shareExInitializer?.openShareBottomSheet(
                                 bottomSheetArg = ShareExBottomSheetArg.Builder(
                                     pageTypeEnum = ShareExPageTypeEnum.PLAY,
