@@ -435,6 +435,8 @@ class RegisterInitialFragment :
                 }
             }
 
+            viewBinding?.btnLoginGoogle?.showWithCondition(false)
+
             viewBinding?.socmedBtn?.setOnClickListener {
                 if (!isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
                     if (isUsingRedefineRegisterEmailControlVariant()) {
