@@ -148,6 +148,7 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         bundle: Bundle? = null
     ): Intent {
         return RouteManager.getIntent(context, applinks).apply {
+            setPackage(context.packageName)
             action = Intent.ACTION_VIEW
             data = Uri.parse(applinks)
             bundle?.let {
