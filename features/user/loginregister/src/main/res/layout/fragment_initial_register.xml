@@ -89,7 +89,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/button_login_google"
                 android:textAllCaps="false"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />
 
