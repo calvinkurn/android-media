@@ -515,8 +515,9 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
-        sendCardShowAppLog(model.asCardTrackModel())
-
+        sendCardShowAppLog(
+            model.asCardTrackModel()
+        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressBannerTopAdsTracking(
                 model,
@@ -590,8 +591,8 @@ class HomeGlobalRecommendationFragment :
 
     override fun onRetryGetProductRecommendationData() {
         viewModel.fetchHomeRecommendation(
-            tabName,
-            getLocationParamString(),
+            tabName = tabName,
+            locationParam = getLocationParamString(),
             sourceType = sourceType,
             refreshType = RefreshType.REFRESH,
             tabIndex = tabIndex
@@ -679,8 +680,8 @@ class HomeGlobalRecommendationFragment :
             hasLoadData = true
 
             viewModel.fetchHomeRecommendation(
-                tabName,
-                getLocationParamString(),
+                tabName = tabName,
+                locationParam = getLocationParamString(),
                 sourceType = sourceType,
                 refreshType = refreshType.toRecomRequestType(),
                 tabIndex = tabIndex

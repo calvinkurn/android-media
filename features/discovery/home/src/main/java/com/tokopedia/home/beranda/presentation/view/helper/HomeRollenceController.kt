@@ -12,14 +12,13 @@ object HomeRollenceController {
     private const val EMPTY_VALUE = ""
 
     var rollenceLoadTime: String = ""
-    var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
     var iconJumperValue: String = RollenceKey.ICON_JUMPER_DEFAULT
+    var iconJumperSREValue: String = ""
     var shouldGlobalComponentRecomEnabled: Boolean = false
     var isMegaTabEnabled = false
 
     fun fetchHomeRollenceValue() {
         fetchLoadTimeRollenceValue()
-        fetchAtfCacheRollenceValue()
         fetchHomeMegaTabRollenceValue()
         HomeComponentFeatureFlag.fetchMissionRollenceValue()
         SearchRollenceController.fetchInboxNotifTopNavValue()
@@ -44,19 +43,6 @@ object HomeRollenceController {
         }
     }
 
-    private fun fetchAtfCacheRollenceValue() {
-        // set the default value to exp variant so that users that are not included
-        // in the experiment still get the new caching mechanism
-        rollenceLoadAtfCache = try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_KEY,
-                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
-            )
-        } catch (_: Exception) {
-            RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
-        }
-    }
-
     private fun fetchHomeMegaTabRollenceValue() {
         // set the default value to exp variant so that users that are not included
         // in the experiment still get the new caching mechanism
@@ -74,10 +60,6 @@ object HomeRollenceController {
 
     fun shouldCombineInboxNotif(): Boolean {
         return SearchRollenceController.shouldCombineInboxNotif()
-    }
-
-    fun isLoadAtfFromCache(): Boolean {
-        return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
     }
 
     @JvmStatic

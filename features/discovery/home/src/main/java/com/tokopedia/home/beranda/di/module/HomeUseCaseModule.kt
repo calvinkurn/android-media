@@ -44,7 +44,6 @@ import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitD
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitTabRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeCloseChannelRepository
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeDataRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeHeadlineAdsRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
@@ -113,12 +112,7 @@ class HomeUseCaseModule {
         homeDataMapper: HomeDataMapper,
         bestSellerRevampMapper: BestSellerRevampMapper,
         homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
-        homeDataRepository: HomeDataRepository,
-        homeAtfRepository: HomeAtfRepository,
         homeUserStatusRepository: HomeUserStatusRepository,
-        homePageBannerRepository: HomePageBannerRepository,
-        homeIconRepository: HomeIconRepository,
-        homeTickerRepository: HomeTickerRepository,
         homeRoomDataSource: HomeRoomDataSource,
         homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
         @ApplicationContext context: Context,
@@ -133,10 +127,8 @@ class HomeUseCaseModule {
         homeTopadsImageRepository: HomeTopadsImageRepository,
         homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
         homeSalamWidgetRepository: HomeSalamWidgetRepository,
-        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
         homeChooseAddressRepository: HomeChooseAddressRepository,
         homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
-        userSession: UserSessionInterface,
         homeMissionWidgetRepository: HomeMissionWidgetRepository,
         homeTodoWidgetRepository: HomeTodoWidgetRepository,
         homeAtfUseCase: HomeAtfUseCase,
@@ -146,11 +138,7 @@ class HomeUseCaseModule {
         homeDataMapper = homeDataMapper,
         bestSellerRevampMapper = bestSellerRevampMapper,
         homeDynamicChannelsRepository = homeDynamicChannelsRepository,
-        atfDataRepository = homeAtfRepository,
         homeUserStatusRepository = homeUserStatusRepository,
-        homePageBannerRepository = homePageBannerRepository,
-        homeIconRepository = homeIconRepository,
-        homeTickerRepository = homeTickerRepository,
         getHomeRoomDataSource = homeRoomDataSource,
         homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
         applicationContext = context,
@@ -165,10 +153,8 @@ class HomeUseCaseModule {
         homeTopadsImageRepository = homeTopadsImageRepository,
         homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
         homeSalamWidgetRepository = homeSalamWidgetRepository,
-        homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
         homeChooseAddressRepository = homeChooseAddressRepository,
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
-        userSessionInterface = userSession,
         homeMissionWidgetRepository = homeMissionWidgetRepository,
         homeTodoWidgetRepository = homeTodoWidgetRepository,
         homeAtfUseCase = homeAtfUseCase,

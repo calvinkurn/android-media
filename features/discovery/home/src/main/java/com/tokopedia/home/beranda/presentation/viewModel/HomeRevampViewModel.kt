@@ -21,7 +21,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseC
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeClaimCouponUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomePlayUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomePopularKeywordUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeBuWidgetUseCase
@@ -30,7 +29,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
@@ -46,12 +44,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PullToRefreshDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.balance.item.BalanceItemVisitable
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
@@ -79,7 +74,6 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -114,16 +108,12 @@ open class HomeRevampViewModel @Inject constructor(
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
-    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
-    private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>,
     private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
     private val homeRateLimit: RateLimiter<String>,
-    private val homeRemoteConfigController: Lazy<HomeRemoteConfigController>,
     private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
     private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
     private val homeThematicUseCase: Lazy<ThematicUseCase>,
     private val claimCouponUseCase: Lazy<HomeClaimCouponUseCase>,
-    private val remoteConfig: Lazy<RemoteConfig>,
     private val libraInstance: Lazy<LibraInstance>,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
@@ -194,11 +184,9 @@ open class HomeRevampViewModel @Inject constructor(
     var refreshType: HomeRefreshType = HomeRefreshType.FIRST_OPEN
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return if (homeRemoteConfigController.get().isUsingNewAtf()) {
-            homeUseCase.get().getNewHomeDataFlow().flowOn(homeDispatcher.get().io)
-        } else {
-            homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
-        }
+        return homeUseCase.get()
+            .getNewHomeDataFlow()
+            .flowOn(homeDispatcher.get().io)
     }
 
     var getHomeDataJob: Job? = null
@@ -364,9 +352,7 @@ open class HomeRevampViewModel @Inject constructor(
     private fun initFlow() {
         homeFlowStarted = true
         getThematicBackground()
-        if (homeRemoteConfigController.get().isUsingNewAtf()) {
-            homeAtfUseCase.get().fetchAtfDataList()
-        }
+        homeAtfUseCase.get().fetchAtfDataList()
 
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
@@ -397,9 +383,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun validateAtfError(homeNewDataModel: HomeDynamicChannelModel?) {
-        if (homeRemoteConfigController.get().isUsingNewAtf() &&
-            shouldShowAtfGeneralError(homeNewDataModel)
-        ) {
+        if (shouldShowAtfGeneralError(homeNewDataModel)) {
             _updateNetworkLiveData.postValue(
                 Result.errorGeneral(
                     error = Throwable("Atf is error"),
@@ -435,10 +419,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            homeUseCase.get().updateHomeData(
-                homeRemoteConfigController.get().isUsingNewAtf(),
-                isFirstLoad,
-            ).collect {
+            homeUseCase.get().updateHomeData(isFirstLoad).collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()
@@ -457,8 +438,6 @@ open class HomeRevampViewModel @Inject constructor(
     fun getUserId() = userSession.get().userId ?: ""
 
     fun getUserName() = userSession.get().name ?: ""
-
-    fun getRemoteConfig() = remoteConfig.get()
 
     fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false, refreshType: HomeRefreshType) {
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
@@ -681,22 +660,10 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun getMissionWidgetRefresh() {
-        findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
+        findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, _ ->
             launch {
-                if (missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF &&
-                    homeRemoteConfigController.get().isUsingNewAtf()
-                ) {
+                if (missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF) {
                     homeAtfUseCase.get().refreshData(missionWidgetListDataModel.id)
-                } else {
-                    updateWidget(
-                        missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
-                        position
-                    )
-                    updateWidget(
-                        homeMissionWidgetUseCase.get()
-                            .onMissionWidgetRefresh(missionWidgetListDataModel),
-                        position
-                    )
                 }
             }
         }
@@ -705,20 +672,8 @@ open class HomeRevampViewModel @Inject constructor(
     fun getTodoWidgetRefresh() {
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
-                if (todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF &&
-                    homeRemoteConfigController.get().isUsingNewAtf()
-                ) {
+                if (todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF) {
                     homeAtfUseCase.get().refreshData(todoWidgetListDataModel.id)
-                } else {
-                    updateWidget(
-                        todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
-                        position
-                    )
-                    updateWidget(
-                        homeTodoWidgetUseCase.get()
-                            .onTodoWidgetRefresh(todoWidgetListDataModel),
-                        position
-                    )
                 }
             }
         }
@@ -938,25 +893,8 @@ open class HomeRevampViewModel @Inject constructor(
             )
 
             try {
-                if (homeRemoteConfigController.get().isUsingNewAtf()) {
-                    todoWidgetRepository.get().dismissItemAt(horizontalPosition, param)
-                } else {
-                    findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
-                        if (item.todoWidgetList.size == 1) {
-                            deleteWidget(item, verticalPosition)
-                        } else {
-                            val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
-                                removeAt(horizontalPosition)
-                            }
-                            val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
-                            homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
-                                updateHomeData(homeDataModel)
-                            }
-                        }
-                    }
-                }
-            } catch (_: Exception) {
-            }
+                todoWidgetRepository.get().dismissItemAt(horizontalPosition, param)
+            } catch (_: Exception) {}
         }
     }
 
