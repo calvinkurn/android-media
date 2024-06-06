@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
@@ -25,18 +24,6 @@ class GetInsuranceDetailUseCase @Inject constructor(
         emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
     }.catch {
         emit(GetInsuranceDetailRequestState.Complete.Error(it))
-    }.onCompletion {
-        logCompletionBreadcrumb(params, it)
-    }
-
-    private fun logCompletionBreadcrumb(params: GetInsuranceDetailParams, throwable: Throwable?) {
-        runCatching {
-            if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Success: $params")
-            } else {
-                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Error: ${throwable.stackTraceToString()}")
-            }
-        }
     }
 
     private fun createRequestParam(params: GetInsuranceDetailParams): Map<String, Any> {

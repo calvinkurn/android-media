@@ -916,7 +916,6 @@ open class HomeRevampFragment :
             }
         })
         trackVerticalScroll()
-        setupEmbraceBreadcrumbListener()
         setupHomePlayWidgetListener()
     }
 
@@ -928,17 +927,6 @@ open class HomeRevampFragment :
             )
         }
         hasApplogScrollListener = true
-    }
-
-    private fun setupEmbraceBreadcrumbListener() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB)) {
-            homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    trackEmbraceBreadcrumbPosition()
-                }
-            })
-        }
     }
 
     private fun setupHomePlayWidgetListener() {
@@ -991,19 +979,6 @@ open class HomeRevampFragment :
     private fun updateThematicVerticalPosition() {
         thematicBackground?.let { thematicScrollListener.invoke(it) }
         thematicForeground?.let { thematicScrollListener.invoke(it) }
-    }
-
-    private fun trackEmbraceBreadcrumbPosition() {
-        if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
-            fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition() ?: -1
-            HomeServerLogger.sendEmbraceBreadCrumb(
-                fragment = this@HomeRevampFragment,
-                isLoggedIn = userSession.isLoggedIn,
-                isCache = fragmentCurrentCacheState,
-                visitableListCount = fragmentCurrentVisitableCount,
-                scrollPosition = fragmentCurrentScrollPosition
-            )
-        }
     }
 
     private fun setupStatusBar() {
@@ -1554,13 +1529,6 @@ open class HomeRevampFragment :
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
 
-            HomeServerLogger.sendEmbraceBreadCrumb(
-                fragment = this,
-                isLoggedIn = userSession.isLoggedIn,
-                isCache = isCache,
-                visitableListCount = data.size,
-                scrollPosition = layoutManager?.findLastVisibleItemPosition()
-            )
             val takeLimit: Int = if ((
                 layoutManager?.findLastVisibleItemPosition()
                     ?: DEFAULT_BLOCK_SIZE

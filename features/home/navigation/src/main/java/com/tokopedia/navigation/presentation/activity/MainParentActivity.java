@@ -265,7 +265,6 @@ public class MainParentActivity extends BaseActivity implements
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
-    private String embracePageName = "";
 
     private LottieBottomNavbar bottomNavigation;
 
@@ -1444,8 +1443,6 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
-        this.embracePageName = pageTitle;
-        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, getAdsPageName());
 
         if (index != currentSelectedFragmentPosition) {
@@ -1523,7 +1520,7 @@ public class MainParentActivity extends BaseActivity implements
     //MIGRATED
     @Override
     public String currentVisibleFragment() {
-        return embracePageName;
+        return "";
     }
 
     // MIGRATED

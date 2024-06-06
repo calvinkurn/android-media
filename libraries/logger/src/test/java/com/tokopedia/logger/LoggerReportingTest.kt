@@ -62,33 +62,6 @@ class LoggerReportingTest {
     }
 
     @Test
-    fun `set populate tag maps of embrace should return equal value`() {
-        val mockEmbrace = TestUtilsHelper.createSuccessResponse(EMBRACE_SUCCESS_RESPONSE) as DataLogConfig
-        val mockTagEmbrace = mockEmbrace.tags
-        val expectedTagEmbrace = mutableMapOf<String, Tag>().apply {
-            put("P1#DEV_CRASH", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DEV_ANR", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DEV_TOO_LARGE", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DFM", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DFM_DEFERRED", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DFM_FALLBACK", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DFM_OPENED", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DFM_DOWNLOAD_PAGE", Tag(TestUtilsHelper.getPriority("offline")))
-        }
-
-        LoggerReporting.getInstance().setPopulateTagMapsEmbrace(mockTagEmbrace)
-
-        LoggerReporting.getInstance().tagMapsEmbrace.keys.forEach { key ->
-            val keyActualResult = LoggerReporting.getInstance().tagMapsEmbrace.entries.first {
-                it.value == LoggerReporting.getInstance().tagMapsEmbrace.getValue(key)
-            }.key
-            val valueActualResult = LoggerReporting.getInstance().tagMapsEmbrace.getValue(key).postPriority
-            assertEquals(keyActualResult, expectedTagEmbrace.entries.firstOrNull { it.key == key }?.key)
-            assertEquals(valueActualResult, expectedTagEmbrace.getValue(key).postPriority)
-        }
-    }
-
-    @Test
     fun `set populate tag maps of scalyr with empty value should return false`() {
         val mockScalyr = TestUtilsHelper.createSuccessResponse(SCALYR_FAIL_RESPONSE) as DataLogConfig
         val mockTagScalyr = mockScalyr.tags?.take(5)
@@ -137,30 +110,6 @@ class LoggerReportingTest {
     }
 
     @Test
-    fun `set populate tag maps of embrace with empty value should return false`() {
-        val mockEmbrace = TestUtilsHelper.createSuccessResponse(EMBRACE_FAIL_RESPONSE) as DataLogConfig
-        val mockTagEmbrace = mockEmbrace.tags
-        val expectedTagMapsEmbrace = mutableMapOf<String, Tag>().apply {
-            put("P1#DEV_CRASH", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DEV_ANR", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DEV_TOO_LARGE", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DFM", Tag(TestUtilsHelper.getPriority("offline")))
-            put("P1#DFM_DEFERRED", Tag(TestUtilsHelper.getPriority("offline")))
-        }
-
-        LoggerReporting.getInstance().setPopulateTagMapsEmbrace(mockTagEmbrace)
-
-        LoggerReporting.getInstance().tagMapsEmbrace.keys.forEach { key ->
-            val keyActualResult = LoggerReporting.getInstance().tagMapsEmbrace.entries.first {
-                it.value == LoggerReporting.getInstance().tagMapsEmbrace.getValue(key)
-            }.key
-            val valueActualResult = LoggerReporting.getInstance().tagMapsEmbrace.getValue(key).postPriority
-            assertTrue(keyActualResult != expectedTagMapsEmbrace.entries.firstOrNull { it.key == key }?.key)
-            assertTrue(valueActualResult != expectedTagMapsEmbrace.getValue(key).postPriority)
-        }
-    }
-
-    @Test
     fun `set query limits of scalyr with value should return equal`() {
         val mockScalyr = TestUtilsHelper.createSuccessResponse(SCALYR_SUCCESS_RESPONSE) as DataLogConfig
         val mockQueryLimitsScalyr = mockScalyr.queryLimits
@@ -194,23 +143,6 @@ class LoggerReportingTest {
     }
 
     @Test
-    fun `set query limits of embrace with value should return equal`() {
-        val mockEmbrace = TestUtilsHelper.createSuccessResponse(EMBRACE_SUCCESS_RESPONSE) as DataLogConfig
-        val mockQueryLimitsEmbrace = mockEmbrace.queryLimits
-        val expectedQueryLimitsEmbrace = mutableListOf<Int>().apply {
-            add(50)
-            add(50)
-            add(50)
-        }
-
-        LogManager.queryLimits = mockQueryLimitsEmbrace?.toList() ?: listOf()
-
-        LogManager.queryLimits.forEachIndexed { index, query ->
-            assertEquals(query, expectedQueryLimitsEmbrace[index])
-        }
-    }
-
-    @Test
     fun `set query limits of scalyr with empty value should return empty`() {
         val mockScalyr = TestUtilsHelper.createSuccessResponse(SCALYR_FAIL_RESPONSE) as DataLogConfig
         val mockQueryLimitsScalyr = mockScalyr.queryLimits
@@ -226,16 +158,6 @@ class LoggerReportingTest {
         val mockQueryLimitsNewRelic = mockNewRelic.queryLimits
 
         LogManager.queryLimits = mockQueryLimitsNewRelic?.toList() ?: listOf()
-
-        assertTrue(LogManager.queryLimits.isEmpty())
-    }
-
-    @Test
-    fun `set query limits of embrace with empty value should return empty`() {
-        val mockEmbrace = TestUtilsHelper.createSuccessResponse(EMBRACE_FAIL_RESPONSE) as DataLogConfig
-        val mockQueryLimitsEmbrace = mockEmbrace.queryLimits
-
-        LogManager.queryLimits = mockQueryLimitsEmbrace?.toList() ?: listOf()
 
         assertTrue(LogManager.queryLimits.isEmpty())
     }
@@ -276,7 +198,5 @@ class LoggerReportingTest {
         const val NEW_RELIC_SUCCESS_V3_RESPONSE = "json/mock_new_relic_v3_success_response.json"
         const val SCALYR_FAIL_RESPONSE = "json/mock_scalyr_fail_response.json"
         const val NEW_RELIC_FAIL_RESPONSE = "json/mock_new_relic_fail_response.json"
-        const val EMBRACE_SUCCESS_RESPONSE = "json/mock_embrace_success_response.json"
-        const val EMBRACE_FAIL_RESPONSE = "json/mock_embrace_fail_response.json"
     }
 }

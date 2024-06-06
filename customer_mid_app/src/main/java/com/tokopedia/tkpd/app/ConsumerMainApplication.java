@@ -49,14 +49,12 @@ import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
-import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.mapper.ConfigMapper;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -141,7 +139,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
-import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
@@ -171,7 +168,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_v3_new_relic";
-    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
     private static final String REMOTE_CONFIG_TELEMETRY_ENABLED = "android_telemetry_enabled";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
@@ -236,10 +232,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppPackageNameAsync();
 
         initializationNewRelic();
-        if (getUserSession().isLoggedIn()) {
-            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
-        }
-        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
@@ -631,7 +623,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createCustomSoundNotificationChannel();
 
         initLogManager();
-        initEmbraceConfig();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
@@ -784,28 +775,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             public String getNewRelicConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
-
-            @NotNull
-            @Override
-            public String getEmbraceConfig() {
-                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
-            }
         });
     }
 
     private void initTranslator() {
         if (GlobalConfig.isAllowDebuggingTools()) {
             TranslatorManager.init(this, "");
-        }
-    }
-
-    private void initEmbraceConfig() {
-        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
-        if (!TextUtils.isEmpty(logEmbraceConfigString)) {
-            EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
-
-            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().clear();
-            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
         }
     }
 

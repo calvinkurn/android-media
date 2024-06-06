@@ -17,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -620,7 +619,6 @@ open class BuyerOrderDetailFragment :
         updateBrcCsatWidget(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
-        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_DATA)
     }
 
     private fun showGlobalErrorState() {
@@ -798,14 +796,12 @@ open class BuyerOrderDetailFragment :
         stickyActionButton?.hideSavingWidget()
         binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.getDefaultState())
         stopLoadTimeMonitoring()
-        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_ERROR)
     }
 
     private fun onFullscreenLoadingBuyerOrderDetail() {
         showLoader()
         toolbarMenuAnimator?.transitionToEmpty()
         binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.getDefaultState())
-        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_FULL_SCREEN_LOADING)
     }
 
     private fun onPullRefreshLoadingBuyerOrderDetail(
@@ -817,7 +813,6 @@ open class BuyerOrderDetailFragment :
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
         updateBrcCsatWidget(uiState)
-        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_PULL_REFRESH_LOADING)
     }
 
     private fun GlobalError.showMessageExceptionError(
