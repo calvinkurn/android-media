@@ -263,7 +263,7 @@ class CheckoutFragment :
 
     private var loader: LoaderDialog? = null
 
-    private var toasterErrorAkamai: Snackbar? = null
+    private var toasterError: Snackbar? = null
 
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
@@ -616,7 +616,11 @@ class CheckoutFragment :
                 }
 
                 is CheckoutPageState.AkamaiRatesError -> {
-                    showToastErrorAkamai(it.message)
+                    showToastError(it.message)
+                }
+
+                is CheckoutPageState.MessageErrorException -> {
+                    showToastError(it.message)
                 }
 
                 is CheckoutPageState.ShipmentActionPopUpConfirmation -> {
@@ -712,12 +716,12 @@ class CheckoutFragment :
         }
     }
 
-    fun showToastErrorAkamai(message: String) {
+    fun showToastError(message: String) {
         view?.let { v ->
-            if (toasterErrorAkamai == null) {
+            if (toasterError == null) {
                 val actionText =
                     v.context.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok)
-                toasterErrorAkamai = Toaster.build(
+                toasterError = Toaster.build(
                     v,
                     message,
                     Toaster.LENGTH_LONG,
@@ -725,8 +729,8 @@ class CheckoutFragment :
                     actionText
                 )
             }
-            if (toasterErrorAkamai?.isShownOrQueued == false) {
-                toasterErrorAkamai?.show()
+            if (toasterError?.isShownOrQueued == false) {
+                toasterError?.show()
             }
         }
     }

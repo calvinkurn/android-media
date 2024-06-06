@@ -18,6 +18,7 @@ sealed class CheckoutPageState {
     data class Prompt(val prompt: com.tokopedia.checkout.domain.model.checkout.Prompt) : CheckoutPageState()
     object EpharmacyCoachMark : CheckoutPageState()
     data class AkamaiRatesError(val message: String) : CheckoutPageState()
+    data class MessageErrorException(val message: String) : CheckoutPageState()
     data class ShipmentActionPopUpConfirmation(val cartStringGroup: String, val action: ShipmentAction) : CheckoutPageState()
 }
 

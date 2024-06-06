@@ -1489,6 +1489,9 @@ class CheckoutViewModel @Inject constructor(
                         isTradeInByDropOff,
                         boPromoCode
                     )
+                    ratesError.message?.let {
+                        pageState.value = CheckoutPageState.MessageErrorException(it)
+                    }
                 } else if (ratesError is AkamaiErrorException) {
                     ratesError.message?.let {
                         pageState.value = CheckoutPageState.AkamaiRatesError(it)
