@@ -103,7 +103,7 @@ data class ShopProduct(
         @Expose
         val title: String = "",
 
-        @SerializedName("imageUrl")
+        @SerializedName(value = "imageUrl", alternate = ["image_url"])
         @Expose
         val imageUrl: String = "",
 
