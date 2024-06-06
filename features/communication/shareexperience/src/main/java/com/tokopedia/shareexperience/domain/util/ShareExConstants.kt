@@ -6,6 +6,7 @@ object ShareExConstants {
         const val ROLLENCE_SHARE_EX = "shareex_an_ma"
         const val ROLLENCE_SHARE_EX_SA = "shareex_an_sa"
         const val ROLLENCE_SHARE_EX_REVIEW = "an_sharexreview"
+        const val ROLLENCE_SHARE_EX_TY = "shareex_an_typv1"
         const val ROLLANCE_SHARE_EX_PLAY = "shareex_play"
     }
 

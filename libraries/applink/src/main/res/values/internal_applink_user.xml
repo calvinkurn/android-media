@@ -83,6 +83,8 @@
     //Login
     <string name="applink_login">/login</string>
     <string name="applink_login_seamless">/login-seamless</string>
+    <string name="applink_login_tiktok">/login-tiktok</string>
+    <string name="applink_login_sdk">/login-sdk</string>
 
     <string name="applink_term_privacy">/term-privacy/.*\</string>
 

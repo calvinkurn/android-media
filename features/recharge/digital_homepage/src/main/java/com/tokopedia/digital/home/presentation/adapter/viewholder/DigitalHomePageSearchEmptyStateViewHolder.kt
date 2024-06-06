@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewDigitalHomeSearchEmptyBinding
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class DigitalHomePageSearchEmptyStateViewHolder (itemView: View?, val emptyListener: DigitalHomepageSearchEmptyListener) :
         AbstractViewHolder<EmptyModel>(itemView) {
@@ -24,7 +24,7 @@ class DigitalHomePageSearchEmptyStateViewHolder (itemView: View?, val emptyListe
                 errorAction.setOnClickListener {
                     emptyListener.clearEmptyStateListener()
                 }
-                errorIllustration.loadImage(IMG_LINK)
+                errorIllustration.loadImageFresco(IMG_LINK)
                 errorIllustration.adjustViewBounds = true
             }
         }

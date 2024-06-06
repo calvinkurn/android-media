@@ -22,6 +22,8 @@ object RollenceKey {
     const val HOME_MISSION_SIZE_CONTROL = "control_var"
     const val HOME_MISSION_SIZE_VARIANT = "exp_var"
     const val HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom"
+    const val HOME_COMBINE_INBOX_NOTIF_KEY = "Declutter_TopNav"
+    const val HOME_COMBINE_INBOX_NOTIF = "combine_inboxnotif"
     // end of home rollence section
 
     // TBD
@@ -90,6 +92,9 @@ object RollenceKey {
 
     // BCA Rollence
     const val BCA_ROLLENCE = "android_flazzrollout"
+
+    // Fresco Image
+    const val FRESCO_IMAGE = "android_fresco"
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"

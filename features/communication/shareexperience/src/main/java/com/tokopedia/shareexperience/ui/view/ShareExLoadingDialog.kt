@@ -105,7 +105,7 @@ class ShareExLoadingDialog(
 
     private fun getRequest(): ShareExBottomSheetRequest {
         return when (arg.pageTypeEnum) {
-            ShareExPageTypeEnum.PDP -> {
+            ShareExPageTypeEnum.PDP, ShareExPageTypeEnum.THANK_YOU_PRODUCT -> {
                 ShareExProductBottomSheetRequest(
                     pageType = arg.pageTypeEnum.valueInt,
                     productId = arg.productId

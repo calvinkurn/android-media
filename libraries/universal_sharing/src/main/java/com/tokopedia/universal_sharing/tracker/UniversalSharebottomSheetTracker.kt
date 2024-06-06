@@ -58,8 +58,6 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
         private const val TICKER_TYPE_AFFILIATE = "is_affiliate"
         private const val TICKER_TYPE_NON_AFFILIATE = "non_affiliate"
         private const val NOT_SET = "notset"
-
-        const val TYPE_GENERAL = "general"
     }
 
     fun trackClickShare(id: String, eventCategory: String, trackerId: String, currentSite: String) {
@@ -156,12 +154,12 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
     }
 
     fun onClickShareProductPostPurchase(
-        userShareType: String,
+        userId: String,
         productId: String,
         orderId: String
     ) {
         trackShare(
-            eventLabel = "$userShareType - $productId - $orderId",
+            eventLabel = "$userId - $productId - $orderId",
             event = VALUE_EVENT_CLICK,
             eventCategory = VALUE_CATEGORY_THANKYOU,
             eventAction = VALUE_ACTION_CLICK_SHARE,
@@ -171,12 +169,12 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
     }
 
     fun onClickCloseBottomSheetSharePostPurchase(
-        userShareType: String,
+        userId: String,
         productId: String,
         orderId: String
     ) {
         trackShare(
-            eventLabel = "$userShareType - $productId - $orderId",
+            eventLabel = "$userId - $productId - $orderId",
             event = VALUE_EVENT_CLICK,
             eventCategory = VALUE_CATEGORY_THANKYOU,
             eventAction = VALUE_ACTION_CLOSE_SHARE,
@@ -187,12 +185,12 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
 
     fun onClickSharingChannelBottomSheetSharePostPurchase(
         channel: String,
-        userShareType: String,
+        userId: String,
         productId: String,
         orderId: String,
     ) {
         trackShare(
-            eventLabel = "$channel - $userShareType - $productId - $orderId",
+            eventLabel = "$channel - $userId - $productId - $orderId",
             event = VALUE_EVENT_CLICK,
             eventCategory = VALUE_CATEGORY_THANKYOU,
             eventAction = VALUE_ACTION_CLICK_CHANNEL,
@@ -202,12 +200,12 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
     }
 
     fun onViewSharingChannelBottomSheetSharePostPurchase(
-        userShareType: String,
+        userId: String,
         productId: String,
         orderId: String
     ) {
         trackShare(
-            eventLabel = "$userShareType - $productId - $orderId",
+            eventLabel = "$userId - $productId - $orderId",
             event = VALUE_EVENT_VIEW_COMMUNICATION,
             eventCategory = VALUE_CATEGORY_THANKYOU,
             eventAction = VALUE_ACTION_VIEW_SHARE,
@@ -217,12 +215,12 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
     }
 
     fun onViewProductListPostPurchase(
-        userShareType: String,
+        userId: String,
         productIdList: String,
         orderIdList: String
     ) {
         trackShare(
-            eventLabel = "$userShareType - $productIdList - $orderIdList",
+            eventLabel = "$userId - $productIdList - $orderIdList",
             event = VALUE_EVENT_VIEW_COMMUNICATION,
             eventCategory = VALUE_CATEGORY_THANKYOU,
             eventAction = VALUE_ACTION_VIEW_PRODUCT_LIST,
@@ -232,11 +230,11 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
     }
 
     fun onClickCloseProductListPostPurchase(
-        userShareType: String,
+        userId: String,
         orderIdList: String
     ) {
         trackShare(
-            eventLabel = "$userShareType - $orderIdList",
+            eventLabel = "$userId - $orderIdList",
             event = VALUE_EVENT_CLICK,
             eventCategory = VALUE_CATEGORY_THANKYOU,
             eventAction = VALUE_ACTION_CLICK_CLOSE_SHARE_PRODUCT_LIST,

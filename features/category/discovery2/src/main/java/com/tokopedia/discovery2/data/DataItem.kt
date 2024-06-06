@@ -18,8 +18,6 @@ import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_INDEX
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
@@ -28,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
+import com.tokopedia.purchase_platform.common.utils.isBlankOrZero
 
 @SuppressLint("Invalid Data Type")
 data class DataItem(
@@ -635,6 +634,9 @@ data class DataItem(
     @SerializedName("inactive_text_color")
     val inactiveFontColor: String? = "",
 
+    @SerializedName("anchor_product_id")
+    val anchorProductId: String? = "",
+
     /**
      * calendar improvement START
      * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/1717436428/Calendar
@@ -757,14 +759,24 @@ data class DataItem(
         return appLog
     }
 
+    fun getAppLogSPUId(): String {
+        return parentProductId?.let {
+            if (it.isBlankOrZero()) {
+                productId.orEmpty()
+            } else {
+                it
+            }
+        } ?: productId.orEmpty()
+    }
+
     fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
         return AdsLogRealtimeClickModel(refer,
             topAdsCreativeId.toLongOrZero(),
             topAdsLogExtra.orEmpty(),
             AdsLogRealtimeClickModel.AdExtraData(
-            productId = productId.orEmpty(),
-            productName = getRealProductName(),
-        ))
+                productId = productId.orEmpty(),
+                productName = getRealProductName(),
+            ))
     }
 
     fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
@@ -783,9 +795,9 @@ data class DataItem(
             topAdsCreativeId.toLongOrZero(),
             topAdsLogExtra.orEmpty(),
             AdsLogShowModel.AdExtraData(
-            productId = productId.orEmpty(),
-            productName = getRealProductName(),
-        ))
+                productId = productId.orEmpty(),
+                productName = getRealProductName(),
+            ))
     }
 
     private fun getRealProductName() = if (productName?.isNotBlank().orFalse()) productName.orEmpty() else name.orEmpty()

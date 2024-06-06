@@ -36,6 +36,8 @@ import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
+import com.tokopedia.recommendation_widget_common.infinite.main.InfiniteRecommendationAdapter
+import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -339,6 +341,28 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     private fun decideSpanSize(position: Int): Int {
         val isPageError = productAdapter?.currentList.orEmpty().any {
             it is PageErrorDataModel || it is ProductLoadingDataModel
+        }
+
+        /**
+         * Infinite recom needs to treat differently when deciding span,
+         * because the default implementation is only for StaggeredGridLayoutManager
+         *
+         * It needs to be manually decide the span here as GridLayoutManager
+         */
+        val infiniteAdapter = concatAdapter?.adapters?.last() as? InfiniteRecommendationAdapter
+        if (infiniteAdapter != null &&
+            position > productAdapter?.currentList?.size?.dec().orZero()
+        ) {
+            val infinitePosition = position - productAdapter?.currentList?.size.orZero()
+            val data =
+                infiniteAdapter.currentList
+                    .getOrNull(infinitePosition) as InfiniteRecommendationUiModel
+
+            return if (data.isFullSpan) {
+                2
+            } else {
+                1
+            }
         }
 
         return if (position > 1 || isPageError) {

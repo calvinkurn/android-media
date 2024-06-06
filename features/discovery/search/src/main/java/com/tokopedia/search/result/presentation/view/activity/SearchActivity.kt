@@ -36,9 +36,9 @@ import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchSessionId
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
@@ -82,6 +82,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -151,6 +152,7 @@ class SearchActivity :
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
+        fetchRollence()
 
         setStatusBarColor()
         proceed()
@@ -171,6 +173,10 @@ class SearchActivity :
     private fun setAdsPageData() {
         AppLogTopAds.currentPageName = PageName.SEARCH_RESULT
         AppLogTopAds.putAdsPageData(this, AppLogParam.PAGE_NAME, PageName.SEARCH_RESULT)
+    }
+
+    private fun fetchRollence() {
+        SearchRollenceController.fetchInboxNotifTopNavValue()
     }
 
     private fun observeSearchState() {
@@ -245,6 +251,7 @@ class SearchActivity :
     private fun proceed() {
         findViews()
         prepareView()
+        configureSearchBox()
     }
 
     private fun findViews() {
@@ -712,5 +719,9 @@ class SearchActivity :
             }
             searchNavigationToolbar?.setBackgroundAlpha(0f)
         }
+    }
+
+    private fun configureSearchBox() {
+        searchNavigationToolbar?.updateSearchBarStyle(showSearchBtn = false)
     }
 }
