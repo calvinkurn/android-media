@@ -88,7 +88,9 @@ class PlayViewModelShareExperienceTest {
             title = channelInfo.title,
             coverUrl = channelInfo.coverUrl,
             userId = "",
-            channelId = channelId
+            channelId = channelId,
+            partnerId = "123",
+            channelType = "live"
         )
 
         val robot = createPlayViewModelRobot(
@@ -96,6 +98,7 @@ class PlayViewModelShareExperienceTest {
             playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience
         ) {
+            setLoggedIn(true)
             createPage(channelData)
             focusPage(channelData)
         }
@@ -123,7 +126,9 @@ class PlayViewModelShareExperienceTest {
             title = channelInfo.title,
             coverUrl = channelInfo.coverUrl,
             userId = "",
-            channelId = channelId
+            channelId = channelId,
+            partnerId = "123",
+            channelType = "live"
         )
 
         val robot = createPlayViewModelRobot(
@@ -131,6 +136,7 @@ class PlayViewModelShareExperienceTest {
             playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience
         ) {
+            setLoggedIn(true)
             createPage(channelData)
             focusPage(channelData)
         }
@@ -216,7 +222,9 @@ class PlayViewModelShareExperienceTest {
             title = channelInfo.title,
             coverUrl = channelInfo.coverUrl,
             userId = "",
-            channelId = channelId
+            channelId = channelId,
+            partnerId = "123",
+            channelType = "live"
         )
 
         val robot = createPlayViewModelRobot(
@@ -224,6 +232,7 @@ class PlayViewModelShareExperienceTest {
             playAnalytic = mockPlayNewAnalytic,
             playShareExperience = mockPlayShareExperience
         ) {
+            setLoggedIn(true)
             createPage(channelData)
             focusPage(channelData)
         }
