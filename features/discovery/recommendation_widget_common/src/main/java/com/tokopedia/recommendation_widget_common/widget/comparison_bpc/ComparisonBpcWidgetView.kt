@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD_FMT_PAGENAME
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.addHorizontalTrackListener
@@ -151,7 +152,10 @@ class ComparisonBpcWidgetView :
 
     override fun onViewAllCardClicked(element: ComparisonBpcSeeMoreDataModel) {
         adapter.showNextPage()
-        AppLogAnalytics.setGlobalParams(enterMethod = ENTER_METHOD_SEE_MORE.format(element.recomPageName))
+        AppLogAnalytics.setGlobalParamOnClick(
+            enterMethod = ENTER_METHOD_FMT_PAGENAME.format(element.recomPageName)
+        )
+
         ComparisonBpcWidgetTracking.sendClickSeeAll(element.trackingModel.androidPageName, userSession.userId, element.productAnchor?.anchorProductId.orEmpty())
     }
 
