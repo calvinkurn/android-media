@@ -123,7 +123,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, getPreviousDataFrom(PageName.PDP, ENTRANCE_FORM, true))
+        put(ENTRANCE_FORM, getPreviousDataOfProduct(ENTRANCE_FORM, true))
     }
 
     fun generateEntranceInfoJson(): JSONObject {
@@ -132,7 +132,7 @@ object AppLogAnalytics {
             it.addEntranceForm()
             it.addSourcePageType()
             it.addTrackId()
-            it.put(IS_AD, getPreviousDataFrom(PageName.PDP, IS_AD, true))
+            it.put(IS_AD, getPreviousDataOfProduct(IS_AD, true))
             it.addRequestId()
             it.addSourceModulePdp()
             it.addEnterMethodPdp()
@@ -143,9 +143,15 @@ object AppLogAnalytics {
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
             it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
             it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
-            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true))
-            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID, true))
-            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID, true))
+            it.put(
+                PARENT_PRODUCT_ID,
+                getPreviousDataOfProduct(PARENT_PRODUCT_ID, true)
+            )
+            it.put(PARENT_TRACK_ID, getPreviousDataOfProduct(PARENT_TRACK_ID, true))
+            it.put(
+                PARENT_REQUEST_ID,
+                getPreviousDataOfProduct(PARENT_REQUEST_ID, true)
+            )
         }
     }
 
@@ -191,23 +197,23 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(SOURCE_PAGE_TYPE, getPreviousDataFrom(PageName.PDP, SOURCE_PAGE_TYPE, true))
+        put(SOURCE_PAGE_TYPE, getPreviousDataOfProduct(SOURCE_PAGE_TYPE, true))
     }
 
     internal fun JSONObject.addSourceModulePdp() {
-        put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE, true))
+        put(SOURCE_MODULE, getPreviousDataOfProduct(SOURCE_MODULE, true))
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
-        put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD, true))
+        put(ENTER_METHOD, getPreviousDataOfProduct(ENTER_METHOD, true))
     }
 
     internal fun JSONObject.addRequestId() {
-        put(REQUEST_ID, getPreviousDataFrom(PageName.PDP, REQUEST_ID, true))
+        put(REQUEST_ID, getPreviousDataOfProduct(REQUEST_ID, true))
     }
 
     internal fun JSONObject.addTrackId() {
-        put(TRACK_ID, getPreviousDataFrom(PageName.PDP, TRACK_ID, true))
+        put(TRACK_ID, getPreviousDataOfProduct(TRACK_ID, true))
     }
 
     internal fun JSONObject.addEnterMethod() {
@@ -555,10 +561,11 @@ object AppLogAnalytics {
     }
 
     /**
-     * Starting from N-1, this method will start searching for a key after the current item is the anchor
+     * Starting from N-1, this method will start searching for a key after product item, can be PDP or SKU
      * If isOneStep is true then it will always return N-1 data
      * */
-    fun getPreviousDataFrom(anchor: String, key: String, isOneStep: Boolean = false): Any? {
+    fun getPreviousDataOfProduct(key: String, isOneStep: Boolean = false): Any? {
+        val anchor = PageName.PDP
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
@@ -572,12 +579,17 @@ object AppLogAnalytics {
                 }
             }
 
-            if (map[PAGE_NAME] == anchor) {
+            if (map[PAGE_NAME] == anchor ||
+                (map[PAGE_NAME] == PageName.SKU && _pageDataList.lastTwoPageName(idx) != PageName.PDP)
+            ) {
                 start = true
             }
             idx--
         }
         return null
     }
+
+    private fun ArrayList<HashMap<String, Any>>.lastTwoPageName(index: Int): String? =
+        getOrNull(index - 1)?.get(PAGE_NAME)?.toString()
 
 }
