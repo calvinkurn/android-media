@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.usecase.coroutines.Fail
@@ -20,6 +21,7 @@ import com.tokopedia.wishlist.collection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlist.collection.domain.GetWishlistCollectionUseCase
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_DIVIDER
+import com.tokopedia.wishlist.collection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlist.collection.util.WishlistCollectionUtils
 import com.tokopedia.wishlist.detail.data.model.WishlistCollectionState
 import com.tokopedia.wishlist.detail.data.model.WishlistRecommendationDataModel
@@ -45,7 +47,8 @@ class WishlistCollectionViewModel @Inject constructor(
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
     private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase,
     private val affiliateUserDetailOnBoardingBottomSheetUseCase: AffiliateUserDetailOnBoardingBottomSheetUseCase,
-    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
+    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase,
+    private val wishlistCollectionPrefs: WishlistCollectionPrefs
 ) : BaseViewModel(dispatcher.main) {
 
     private var recommSrc = ""
@@ -90,7 +93,10 @@ class WishlistCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
-                val wishlistData = WishlistCollectionUtils.mapCollection(result.getWishlistCollections.data)
+                val wishlistData = WishlistCollectionUtils.mapCollection(
+                    data = result.getWishlistCollections.data,
+                    tickerHasBeenClosed = wishlistCollectionPrefs.getHasClosed().orFalse()
+                )
                 val recommendationData = if(_collectionData.value != null) {
                     (_collectionData.value as WishlistCollectionState.Set).items.filter {
                         it.typeLayout == TYPE_COLLECTION_DIVIDER
@@ -123,12 +129,13 @@ class WishlistCollectionViewModel @Inject constructor(
             _collectionData.value = WishlistCollectionState.InitialLoading
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
-                recommSrc =
-                    if (result.getWishlistCollections.data.isEmptyState) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
+                recommSrc = if (result.getWishlistCollections.data.isEmptyState) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 _collections.value = Success(result.getWishlistCollections)
-                _collectionData.value =
-                    WishlistCollectionState.Set(
-                        items = WishlistCollectionUtils.mapCollection(result.getWishlistCollections.data),
+                _collectionData.value = WishlistCollectionState.Set(
+                        items = WishlistCollectionUtils.mapCollection(
+                            data = result.getWishlistCollections.data,
+                            tickerHasBeenClosed = wishlistCollectionPrefs.getHasClosed().orFalse()
+                        ),
                         shouldUpdateRecommendationScrollState = false
                     )
 
@@ -136,8 +143,9 @@ class WishlistCollectionViewModel @Inject constructor(
                 _collectionData.value =
                     WishlistCollectionState.Set(
                         items = WishlistCollectionUtils.mapCollection(
-                            result.getWishlistCollections.data,
-                            recommendationResult
+                            data = result.getWishlistCollections.data,
+                            recomm = recommendationResult,
+                            tickerHasBeenClosed = wishlistCollectionPrefs.getHasClosed().orFalse()
                         ),
                         shouldUpdateRecommendationScrollState = true
                     )
@@ -164,6 +172,10 @@ class WishlistCollectionViewModel @Inject constructor(
         }, onError = {
                 _deleteCollectionResult.value = Fail(it)
             })
+    }
+
+    fun closeTicker(hasClosed: Boolean) {
+        wishlistCollectionPrefs.setHasClosed(hasClosed)
     }
 
     suspend fun getRecommendationWishlistV2(
