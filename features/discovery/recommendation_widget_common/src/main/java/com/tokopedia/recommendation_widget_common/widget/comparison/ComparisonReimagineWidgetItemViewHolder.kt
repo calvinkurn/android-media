@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
@@ -144,6 +143,14 @@ class ComparisonReimagineWidgetItemViewHolder(
     ) {
         // GTM
         binding?.productCardView?.addOnImpressionListener(comparisonModel.recommendationItem) {
+            // ByteIO
+            AppLogRecommendation.sendProductShowAppLog(
+                comparisonModel.recommendationItem.asProductTrackModel(
+                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                    additionalParam = comparisonListModel.appLogAdditionalParam,
+                )
+            )
+
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
                 TopAdsUrlHitter(context).hitImpressionUrl(
@@ -164,16 +171,6 @@ class ComparisonReimagineWidgetItemViewHolder(
                 )
             )
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
-        }
-
-        // ByteIO
-        binding?.productCardView?.addOnImpression1pxListener(comparisonModel.recommendationItem.appLogImpressHolder) {
-            AppLogRecommendation.sendProductShowAppLog(
-                comparisonModel.recommendationItem.asProductTrackModel(
-                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
-                    additionalParam = comparisonListModel.appLogAdditionalParam,
-                )
-            )
         }
     }
 }

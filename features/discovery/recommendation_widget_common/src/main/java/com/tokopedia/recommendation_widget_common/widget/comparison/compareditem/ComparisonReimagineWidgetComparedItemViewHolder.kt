@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
@@ -147,8 +146,16 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
         trackingQueue: TrackingQueue?,
         userSession: UserSessionInterface,
     ) {
-        // GTM
         binding?.productCardView?.addOnImpressionListener(comparisonModel.recommendationItem) {
+            // ByteIO
+            AppLogRecommendation.sendProductShowAppLog(
+                comparisonModel.recommendationItem.asProductTrackModel(
+                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                    additionalParam = comparisonListModel.appLogAdditionalParam,
+                )
+            )
+
+            // GTM
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
                 TopAdsUrlHitter(context).hitImpressionUrl(
@@ -169,16 +176,6 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
                 )
             )
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
-        }
-
-        // ByteIO
-        binding?.productCardView?.addOnImpression1pxListener(comparisonModel.recommendationItem.appLogImpressHolder) {
-            AppLogRecommendation.sendProductShowAppLog(
-                comparisonModel.recommendationItem.asProductTrackModel(
-                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
-                    additionalParam = comparisonListModel.appLogAdditionalParam,
-                )
-            )
         }
     }
 }

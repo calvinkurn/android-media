@@ -142,8 +142,16 @@ class ComparisonWidgetItemViewHolder(
             }
         })
 
-        // GTM
         binding?.productCardView?.addOnImpressionListener(comparisonModel) {
+            // ByteIO
+            AppLogRecommendation.sendProductShowAppLog(
+                comparisonModel.recommendationItem.asProductTrackModel(
+                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                    additionalParam = comparisonListModel.appLogAdditionalParam,
+                )
+            )
+
+            // GTM
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
                 TopAdsUrlHitter(context).hitImpressionUrl(
@@ -164,16 +172,6 @@ class ComparisonWidgetItemViewHolder(
                 )
             )
             comparisonWidgetInterface.onProductCardImpressed(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
-        }
-
-        // ByteIO
-        binding?.productCardView?.addOnImpression1pxListener(comparisonModel) {
-            AppLogRecommendation.sendProductShowAppLog(
-                comparisonModel.recommendationItem.asProductTrackModel(
-                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
-                    additionalParam = comparisonListModel.appLogAdditionalParam,
-                )
-            )
         }
     }
 }
