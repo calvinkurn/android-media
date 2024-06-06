@@ -5372,7 +5372,7 @@ class CartRevampFragment :
                                 if (nearestCartItemViewHolder.isUsingNewQuantityEditor()) {
                                     nearestCartItemViewHolder.getNewQuantityEditorAnchorView().anchorMinusButton
                                 } else {
-                                    nearestCartItemViewHolder.getOldQuantityEditorAnchorView().subtractButton
+                                    nearestCartItemViewHolder.getOldQuantityEditorAnchorView().anchorMinusButton
                                 }
                             minusButtonAnchorView?.let { anchorView ->
                                 bulkActionCoachMarkItems.add(
