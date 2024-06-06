@@ -15,7 +15,7 @@ import com.tokopedia.cart.databinding.LayoutCartQuantityEditorBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-class CartQuantityEditorView @JvmOverloads constructor(
+open class CartQuantityEditorView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -25,13 +25,7 @@ class CartQuantityEditorView @JvmOverloads constructor(
 
     val anchorMinusButton: IconUnify
 
-    var skipListener: Boolean = false
-
     private var qty: Int = 0
-        set(value) {
-            field = value
-            binding.cartQtyTextField.setText("$value")
-        }
 
     var minQty = 0
     var maxQty = 0
@@ -59,24 +53,28 @@ class CartQuantityEditorView @JvmOverloads constructor(
         focusedBackground = AppCompatResources.getDrawable(context, R.drawable.bg_cart_quantity_editor_focused)
         binding.root.background = defaultBackground
 
-        anchorMinusButton = binding.cartQtyMinusButton
+        anchorMinusButton = binding.quantityEditorMin
 
-        binding.cartQtyPlusButton.setOnClickListener {
+        binding.quantityEditorPlus.setOnClickListener {
             if (qty < maxQty) {
                 onPlusClickListener.invoke()
                 qty++
+                binding.quantityEditorQty.setText("$qty")
+                setupButtons(qty)
                 onValueChanged.invoke(qty)
             }
         }
 
-        binding.cartQtyMinusButton.setOnClickListener {
+        binding.quantityEditorMin.setOnClickListener {
             if (onMinusClickListener.invoke()) {
                 qty--
+                binding.quantityEditorQty.setText("$qty")
+                setupButtons(qty)
                 onValueChanged.invoke(qty)
             }
         }
 
-        binding.cartQtyTextField.addTextChangedListener(object : TextWatcher {
+        binding.quantityEditorQty.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -86,22 +84,19 @@ class CartQuantityEditorView @JvmOverloads constructor(
             }
 
             override fun afterTextChanged(s: Editable?) {
-//                if (!skipListener) {
-//                    onValueChanged.invoke(s.toString().toIntOrZero())
-//                }
-//                skipListener = false
-                setupButtons(s.toString().toIntOrZero())
+                val value = s.toString().toIntOrZero()
+                setupButtons(value)
+                qty = value
             }
         })
 
-        binding.cartQtyTextField.setOnFocusChangeListener { v, hasFocus ->
+        binding.quantityEditorQty.setOnFocusChangeListener { v, hasFocus ->
             binding.root.background = if (hasFocus) focusedBackground else defaultBackground
             onFocusChanged.invoke(v, hasFocus)
         }
 
-        binding.cartQtyTextField.setOnEditorActionListener { v, actionId, event ->
+        binding.quantityEditorQty.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                qty = binding.cartQtyTextField.text.toString().toIntOrZero()
                 onDoneListener.invoke()
             }
             false
@@ -109,18 +104,17 @@ class CartQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun setupButtons(qty: Int) {
-        binding.cartQtyPlusButton.isEnabled = qty < maxQty
+        binding.quantityEditorPlus.isEnabled = qty < maxQty
         val newIconId = if (qty <= minQty) IconUnify.DELETE_SMALL else IconUnify.REMOVE_16
-        if (binding.cartQtyMinusButton.iconId != newIconId) {
-            binding.cartQtyMinusButton.setImage(newIconId)
+        if (binding.quantityEditorMin.iconId != newIconId) {
+            binding.quantityEditorMin.setImage(newIconId)
         }
     }
 
     fun setQuantity(qty: Int) {
-        skipListener = true
         this.qty = qty
         setupButtons(qty)
-        onValueChanged.invoke(qty)
+        binding.quantityEditorQty.setText("$qty")
     }
 
     fun getQuantity(): Int {
