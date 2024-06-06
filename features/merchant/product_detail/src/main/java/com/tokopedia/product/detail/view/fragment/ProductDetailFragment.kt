@@ -526,6 +526,9 @@ open class ProductDetailFragment :
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
+    private val handler by lazyThreadSafetyNone {
+        Handler(Looper.getMainLooper())
+    }
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ProductDetailViewModel::class.java]
@@ -3188,7 +3191,7 @@ open class ProductDetailFragment :
             additionalAppLogParam = getAppLogAdditionalParam()
         )
         getRecyclerView()?.addOneTimeGlobalLayoutListener {
-            Handler().postDelayed({
+            handler.postDelayed({
                 infiniteRecommManager?.let {
                     val hasInfinite = viewModel.getProductInfoP1?.hasInfiniteRecommendation ?: false
                     if (hasInfinite && concatAdapter?.adapters?.size != 2) {
