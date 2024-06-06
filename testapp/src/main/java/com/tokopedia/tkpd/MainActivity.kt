@@ -164,7 +164,6 @@ class MainActivity : BaseActivity() {
         } else {
             Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
-//        RouteManager.route(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
     }
 
     private fun getDefaultAppLink(): String {
