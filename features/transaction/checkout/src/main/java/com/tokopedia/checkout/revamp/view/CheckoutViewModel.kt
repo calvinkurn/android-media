@@ -1489,6 +1489,26 @@ class CheckoutViewModel @Inject constructor(
                         isTradeInByDropOff,
                         boPromoCode
                     )
+
+                    val checkoutItems = listData.value.toMutableList()
+                    val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+                    val shipment = checkoutOrderModel.shipment
+                    val newShipment = shipment.copy(
+                        isLoading = false,
+                        courierItemData = CourierItemData(),
+                        insurance = generateCheckoutOrderInsuranceFromCourier(
+                            CourierItemData(),
+                            checkoutOrderModel
+                        ),
+                        isHasShownCourierError = false
+                    )
+                    val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                    cartProcessor.processSaveShipmentState(
+                        newOrder,
+                        listData.value.address()!!.recipientAddressModel,
+                        listData.value
+                    )
+
                     ratesError.message?.let {
                         pageState.value = CheckoutPageState.MessageErrorException(it)
                     }
