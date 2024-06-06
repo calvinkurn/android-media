@@ -65,7 +65,7 @@ public class InitTTNetHelper {
                     if (StringUtils.isEmpty(remoteIp[0])) {
                        remoteIp[0] = info.remoteIp;
                     }
-//                    packageRequestParamters(info, jsonObject);
+                    packageRequestParamters(info, jsonObject);
                     ApmAgent.monitorSLA(duration, sendTime, url, remoteIp[0], traceCode, status, jsonObject);
                  } catch (Throwable throwable) {
 
