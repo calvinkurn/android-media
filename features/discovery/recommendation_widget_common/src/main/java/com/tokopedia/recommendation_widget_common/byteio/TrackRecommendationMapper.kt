@@ -13,11 +13,11 @@ import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.content.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 object TrackRecommendationMapper {
@@ -27,7 +27,7 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
-                productId = productId.orZero().toString(),
+                productId = absoluteProductId,
                 productName = name,
             ))
     }
@@ -36,7 +36,10 @@ object TrackRecommendationMapper {
         return AdsLogShowOverModel(
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
-            AdsLogShowOverModel.AdExtraData(productId = productId.orZero().toString(), productName = name, sizePercent = visiblePercentage.toString()))
+            AdsLogShowOverModel.AdExtraData(productId = absoluteProductId,
+                productName = name,
+                sizePercent = visiblePercentage.toString())
+        )
     }
 
     fun RecommendationItem.asAdsLogShowModel(): AdsLogShowModel {
@@ -44,7 +47,7 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogShowModel.AdExtraData(
-            productId = productId.orZero().toString(),
+            productId = absoluteProductId,
             productName = name,
         ))
     }
@@ -54,8 +57,8 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogRealtimeClickModel.AdExtraData(
-            productId = id,
-            productName = name,
+                productId = absoluteProductId,
+                productName = name,
         ))
     }
 
@@ -64,9 +67,9 @@ object TrackRecommendationMapper {
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
             AdsLogShowOverModel.AdExtraData(
-            productId = id,
-            sizePercent = visiblePercentage.toString(),
-            productName = name,
+                productId = absoluteProductId,
+                sizePercent = visiblePercentage.toString(),
+                productName = name,
         ))
     }
 
@@ -74,7 +77,9 @@ object TrackRecommendationMapper {
         return AdsLogShowModel(
             recommendationAdsLog.creativeID.toLongOrZero(),
             recommendationAdsLog.logExtra,
-            AdsLogShowModel.AdExtraData(productId = id, productName = name)
+            AdsLogShowModel.AdExtraData(
+                productId = absoluteProductId,
+                productName = name)
         )
     }
 

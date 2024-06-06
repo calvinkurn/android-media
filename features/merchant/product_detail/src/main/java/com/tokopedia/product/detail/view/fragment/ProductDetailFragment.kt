@@ -5216,7 +5216,7 @@ open class ProductDetailFragment :
 
     private fun ProductShopCredibilityDataModel.toShopPrefetchData(): ShopPrefetchData {
         val averageShopRatingId = context?.getString(R.string.pdp_product_average_review).orEmpty()
-        val shopRating = infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value
+        val shopRating = infoShopData.firstOrNull { it.value.contains(averageShopRatingId) }?.value
         val castedShopRating = try {
             shopRating.toFloatOrZero()
         } catch (e: Exception) {

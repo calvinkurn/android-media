@@ -54,4 +54,8 @@ data class ChannelGrid(
     val position: Int = -1,
     val creativeID: String = "",
     val logExtra: String = ""
-): ImpressHolder()
+): ImpressHolder() {
+
+    val absoluteProductId: String
+        get() = if (parentProductId.isBlank() || parentProductId == "0") id else parentProductId
+}

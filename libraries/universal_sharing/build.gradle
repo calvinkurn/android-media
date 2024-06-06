@@ -105,6 +105,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.shareexperience)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 

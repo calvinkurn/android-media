@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.infinite.foryou.entity
+package com.tokopedia.recommendation_widget_common.infinite.foryou.content
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -7,7 +7,6 @@ import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouContentCardBinding
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ContentCardViewHolder constructor(

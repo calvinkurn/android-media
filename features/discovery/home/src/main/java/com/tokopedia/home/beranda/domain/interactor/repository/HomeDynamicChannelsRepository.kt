@@ -10,7 +10,6 @@ import com.tokopedia.home.beranda.di.module.query.DynamicChannelQueryV2
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -82,13 +81,8 @@ class HomeDynamicChannelsRepository @Inject constructor(
             params.putString(GROUP_IDS, groupIds)
             params.putString(CHANNEL_IDS, channelIds)
             params.putString(LOCATION, locationParams)
-            params.putString(PRODUCT_CARD_VERSION, getProductCardVersion())
+            params.putString(PRODUCT_CARD_VERSION, PRODUCT_CARD_VERSION_V5)
             return params
-        }
-
-        private fun getProductCardVersion(): String {
-            val isReimagine = ProductCardExperiment.isReimagine()
-            return if(isReimagine) PRODUCT_CARD_VERSION_V5 else ""
         }
     }
 

@@ -59,6 +59,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityD
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShopCredibilityUiData.Companion.asUiData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
@@ -500,19 +501,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
                     shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
-                    infoShopData = if (context == null) {
-                        listOf()
-                    } else {
-                        getTwoShopInfoHieararchy(
-                            context,
-                            it.shopSpeed,
-                            it.shopChatSpeed.toLongOrZero(),
-                            it.shopInfo.activeProduct.toLongOrZero(),
-                            it.shopInfo.createdInfo.shopCreated,
-                            it.shopRating,
-                            it.shopFinishRate
-                        )
-                    }
+                    infoShopData = it.shopInfo.shopCredibility.stats.asUiData()
                     tickerDataResponse = it.shopInfo.tickerData
                 }
             }

@@ -94,7 +94,6 @@ class HomeViewModelMissionWidgetUnitTest {
     @Test
     fun `given failed mission widget when refresh data mission widget when using new atf mechanism then get success data mission widget`() {
         val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
-        every { homeRemoteConfigController.isUsingNewAtf() } returns true
         val homeAtfUseCase = mockk<HomeAtfUseCase>(relaxed = true)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(

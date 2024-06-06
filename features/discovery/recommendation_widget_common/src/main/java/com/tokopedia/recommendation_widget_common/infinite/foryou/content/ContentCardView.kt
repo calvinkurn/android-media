@@ -1,64 +1,57 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
+@file:SuppressLint("EntityFieldAnnotation")
+
+package com.tokopedia.recommendation_widget_common.infinite.foryou.content
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
+import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
-import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
-import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
-import com.tokopedia.unifyprinciples.modeAware
-import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifyprinciples.modeAware
+import timber.log.Timber
 
-class RecomEntityCardViewHolder(
-    view: View,
-    private val listener: GlobalRecomListener
-) : BaseRecommendationViewHolder<RecomEntityCardUiModel>(
-    view,
-    RecomEntityCardUiModel::class.java
-) {
+class ContentCardView @JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null
+) : FrameLayout(context, attributeSet) {
 
-    companion object {
-        @LayoutRes
-        val LAYOUT = recommendation_widget_commonR.layout.item_recom_entity_card
-
-        private const val mingHeightCard = 320f
-        internal const val SQUARE_IMAGE_RATIO = "1:1"
-    }
-
-    private val binding = ItemRecomEntityCardBinding.bind(itemView)
+    private val binding = ItemRecomEntityCardBinding.inflate(LayoutInflater.from(context))
+    private var listener: Listener? = null
 
     init {
+        addView(binding.root)
+
         binding.entryPointCard.animateOnPress = CardUnify2.ANIMATE_BOUNCE
     }
 
-    override fun bind(element: RecomEntityCardUiModel) {
-        setBackgroundCardColor(element.backgroundColor)
-        setProductName(element.title)
-        setProductSubtitle(element.subTitle)
-        setProductImageUrl(element.imageUrl)
-        setLabelTitle(element.labelState)
-        setLabelIcon(element.labelState.iconUrl)
+    fun setupView(model: ContentCardModel) {
+        if (listener == null) Timber.w(Throwable("RecomEntityCardView: You haven't set the listener yet."))
+
+        setBackgroundCardColor(model.backgroundColor)
+        setProductName(model.title)
+        setProductSubtitle(model.subTitle)
+        setProductImageUrl(model.imageUrl)
+        setLabelTitle(model.labelState)
+        setLabelIcon(model.labelState.iconUrl)
         setupImageRatio(
             binding.clEntryPointCard,
             binding.imgEntryPointCard,
@@ -66,22 +59,30 @@ class RecomEntityCardViewHolder(
             SQUARE_IMAGE_RATIO
         )
         setMinHeightEntryPointCard()
-        setOnCardImpressionListener(element)
-        setOnCardClickListener(element)
+        setOnCardImpressionListener(model)
+        setOnCardClickListener(model)
     }
 
-    private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    fun removeListener() {
+        listener = null
+    }
+
+    private fun setOnCardClickListener(element: ContentCardModel) {
         binding.entryPointCard.setOnClickListener {
-            listener.onContentCardClicked(element.toModel(), bindingAdapterPosition)
+            listener?.onContentCardClicked(element)
         }
     }
 
-    private fun setOnCardImpressionListener(element: RecomEntityCardUiModel) {
+    private fun setOnCardImpressionListener(element: ContentCardModel) {
         binding.entryPointCard.addOnImpressionListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onContentCardImpressed(element.toModel(), bindingAdapterPosition)
+                    listener?.onContentCardImpressed(element)
                 }
             }
         )
@@ -106,26 +107,15 @@ class RecomEntityCardViewHolder(
     }
 
     private fun getTextColorLightModeAware(): Int {
-        val ctx = itemView.context.modeAware(ColorMode.LIGHT_MODE) ?: itemView.context
+        val ctx = context.modeAware(ColorMode.LIGHT_MODE) ?: context
         return ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN950)
     }
 
-    @SuppressLint("ResourcePackage")
     private fun setProductImageUrl(productImageUrl: String) {
-        binding.imgEntryPointCard.apply {
-            loadImage(productImageUrl)
-
-            setColorFilter(
-                ContextCompat.getColor(
-                    context,
-                    productcardR.color.dms_product_card_reimagine_image_overlay,
-                ),
-                PorterDuff.Mode.SRC_OVER
-            )
-        }
+        binding.imgEntryPointCard.loadImage(productImageUrl)
     }
 
-    private fun setLabelTitle(labelState: RecomEntityCardUiModel.LabelState) {
+    private fun setLabelTitle(labelState: ContentCardModel.LabelState) {
         with(binding.tvLabelState) {
             shouldShowWithAction(labelState.title.isNotBlank()) {
                 text = labelState.title
@@ -144,7 +134,7 @@ class RecomEntityCardViewHolder(
 
     private fun setMinHeightEntryPointCard() {
         with(binding.entryPointCard) {
-            val minHeightInPx = convertDpToPixel(mingHeightCard, context)
+            val minHeightInPx = convertDpToPixel(MIN_HEIGHT_CARD, context)
             if (height < minHeightInPx) {
                 val widthSpec =
                     View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
@@ -195,5 +185,15 @@ class RecomEntityCardViewHolder(
             configureConstraintSet(constraintSet)
             constraintSet.applyTo(it)
         }
+    }
+
+    interface Listener {
+        fun onContentCardImpressed(item: ContentCardModel)
+        fun onContentCardClicked(item: ContentCardModel)
+    }
+
+    companion object {
+        private const val MIN_HEIGHT_CARD = 320f
+        internal const val SQUARE_IMAGE_RATIO = "1:1"
     }
 }

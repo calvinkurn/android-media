@@ -273,8 +273,6 @@ public class RemoteConfigKey {
 
     public static final String CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL = "android_content_exoplayer_custom_load_control";
 
-    public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
-
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
     public static final String HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom";

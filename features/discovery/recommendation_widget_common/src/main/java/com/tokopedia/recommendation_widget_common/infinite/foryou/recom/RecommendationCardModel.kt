@@ -83,5 +83,8 @@ data class RecommendationCardModel(
             val reputation: String = "",
             val url: String = ""
         )
+
+        val absoluteProductId: String
+            get() = if (parentProductId == "0" || parentProductId.isBlank()) id else parentProductId
     }
 }

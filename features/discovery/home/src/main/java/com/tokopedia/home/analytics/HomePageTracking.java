@@ -5,19 +5,15 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
 import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.builder.BaseTrackerBuilder;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -280,55 +276,6 @@ public class HomePageTracking {
                     LABEL_EMPTY
             );
         }
-    }
-
-
-    private static List<Object> convertBannerFeedViewModelListToObjectData(
-            BannerRecommendationModel bannerRecommendationDataModel,
-            String tabName
-    ) {
-        List<Object> objects = new ArrayList<>();
-        objects.add(
-                DataLayer.mapOf(
-                        FIELD_ID, bannerRecommendationDataModel.getId(),
-                        FIELD_NAME, String.format(
-                                VALUE_CREATIVE_BANNER_INSIDE_RECOM_TAB, tabName
-                        ),
-                        FIELD_CREATIVE, String.format(
-                                FORMAT_2_VALUE_UNDERSCORE, bannerRecommendationDataModel.getBuAttribution(), bannerRecommendationDataModel.getCreativeName()
-                        ),
-                        FIELD_CREATIVE_URL, bannerRecommendationDataModel.getImageUrl(),
-                        FIELD_POSITION, String.valueOf(bannerRecommendationDataModel.getPosition()),
-                        FIELD_PROMO_ID, LABEL_EMPTY,
-                        FIELD_PROMO_CODE, LABEL_EMPTY
-                )
-        );
-        return objects;
-    }
-
-    public static void eventClickOnBannerFeed(
-            BannerRecommendationModel bannerRecommendationDataModel,
-            String tabName) {
-
-        ContextAnalytics tracker = getTracker();
-
-        Map<String, Object> data = DataLayer.mapOf(
-                EVENT, PROMO_CLICK,
-                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
-                EVENT_ACTION, EVENT_ACTION_CLICK_ON_BANNER_INSIDE_RECOMMENDATION_TAB,
-                EVENT_LABEL, tabName,
-                ATTRIBUTION, bannerRecommendationDataModel.getGalaxyAttribution(),
-                AFFINITY_LABEL, bannerRecommendationDataModel.getAffinityLabel(),
-                GALAXY_CATEGORY_ID, bannerRecommendationDataModel.getCategoryPersona(),
-                SHOP_ID, bannerRecommendationDataModel.getShopId(),
-                ECOMMERCE, DataLayer.mapOf(
-                        PROMO_CLICK, DataLayer.mapOf(
-                                PROMOTIONS,
-                                convertBannerFeedViewModelListToObjectData(bannerRecommendationDataModel, tabName)
-                        )
-                )
-        );
-        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static Map<String, Object> getEnhanceClickDynamicIconHomePage(int position, DynamicHomeIcon.DynamicIcon homeIconItem) {
