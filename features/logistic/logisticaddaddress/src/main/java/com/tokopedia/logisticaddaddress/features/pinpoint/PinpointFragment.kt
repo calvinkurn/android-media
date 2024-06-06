@@ -124,6 +124,8 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
         private const val GPS_DELAY = 1000L
 
+        private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
+
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
 
@@ -226,8 +228,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var composite = CompositeSubscription()
     private var googleMap: GoogleMap? = null
     private var currentPlaceId: String = ""
-
-    private val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     // state
     private var addressUiState: AddressUiState = AddressUiState.AddAddress
