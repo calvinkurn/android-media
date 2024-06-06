@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.text.color
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.checkout.R
@@ -47,14 +48,17 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.nest.components.quantityeditor.QtyField
 import com.tokopedia.nest.components.quantityeditor.QtyState
+import com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -90,19 +94,37 @@ class CheckoutProductViewHolder(
                 qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
             )
         }
+        bmgmBinding.qtyEditorProductBmgm.apply {
+            isExpand = true
+            expandState.value = true
+            enableManualInput.value = true
+            configState.value = configState.value.copy(
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
+            )
+        }
+        bundleBinding.qtyEditorProductBundle.apply {
+            isExpand = true
+            expandState.value = true
+            enableManualInput.value = true
+            configState.value = configState.value.copy(
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
+            )
+        }
     }
 
     fun bind(product: CheckoutProductModel) {
         renderErrorAndWarningGroup(product)
         if (product.isBundlingItem) {
             renderBundleItem(product)
+            setNoteAnimationResource(bundleBinding.buttonChangeNoteLottieBundle)
         } else if (product.isBMGMItem) {
             renderBMGMItem(product)
+            setNoteAnimationResource(bmgmBinding.buttonChangeNoteLottieBmgm)
         } else {
             renderProductItem(product)
+            setNoteAnimationResource(productBinding.buttonChangeNoteLottie)
         }
         renderErrorProduct(product)
-        setNoteAnimationResource()
     }
 
     @SuppressLint("SetTextI18n")
@@ -185,6 +207,8 @@ class CheckoutProductViewHolder(
 
         renderAddOnProductBundle(product)
         renderAddOnGiftingProductBundle(product)
+        renderNotes(product, bundleBinding.buttonChangeNoteBundle, bundleBinding.buttonChangeNoteLottieBundle)
+        renderQuantity(product, bundleBinding.qtyEditorProductBundle, bundleBinding.labelQuantityErrorBundle)
     }
 
     private fun hideProductViews() {
@@ -200,6 +224,10 @@ class CheckoutProductViewHolder(
             tvProductAddOnsSeeAll.isVisible = false
             llAddonProductItems.isVisible = false
             buttonGiftingAddonProduct.isVisible = false
+            qtyEditorProduct.isVisible = false
+            labelQuantityError.isVisible = false
+            buttonChangeNote.isVisible = false
+            buttonChangeNoteLottie.isVisible = false
         }
     }
 
@@ -269,39 +297,38 @@ class CheckoutProductViewHolder(
             productBinding.tvProductNotes.isVisible = false
         }
 
-        renderNotes(product)
-        renderQuantity(product)
+        renderNotes(product, productBinding.buttonChangeNote, productBinding.buttonChangeNoteLottie)
+        renderQuantity(product, productBinding.qtyEditorProduct, productBinding.labelQuantityError)
         renderAddOnProduct(product)
         renderAddOnGiftingProduct(product)
     }
 
-    private fun renderNotes(product: CheckoutProductModel) {
+    private fun renderNotes(product: CheckoutProductModel, buttonChangeNote: ImageUnify, notesLottie: LottieAnimationView) {
         if (product.enableNoteEdit) {
-            productBinding.buttonChangeNote.show()
+            buttonChangeNote.show()
             if (product.shouldShowLottieNotes) {
-                productBinding.buttonChangeNoteLottie.visible()
+                notesLottie.visible()
                 listener.onShowLottieNotes(
-                    productBinding.buttonChangeNote,
-                    productBinding.buttonChangeNoteLottie,
+                    buttonChangeNote,
+                    notesLottie,
                     bindingAdapterPosition
                 )
             } else {
-                productBinding.buttonChangeNoteLottie.gone()
+                notesLottie.gone()
             }
-            productBinding.buttonChangeNote.setOnClickListener {
+            buttonChangeNote.setOnClickListener {
                 listener.onNoteClicked(product, bindingAdapterPosition)
             }
             if (product.noteToSeller.isNotBlank()) {
-                renderNotesFilled(productBinding)
+                renderNotesFilled(buttonChangeNote)
             } else {
-                renderNotesEmpty(productBinding)
+                renderNotesEmpty(buttonChangeNote)
             }
         }
     }
 
-    private fun renderQuantity(product: CheckoutProductModel) {
+    private fun renderQuantity(product: CheckoutProductModel, qtyEditorProduct: QuantityEditorView, labelQuantityError: Typography) {
         if (product.enableQtyEdit) {
-            val qtyEditorProduct = productBinding.qtyEditorProduct
             if (product.isError) {
                 qtyEditorProduct.gone()
                 return
@@ -314,7 +341,7 @@ class CheckoutProductViewHolder(
             } else {
                 product.maxOrder
             }
-            showHideQuantityError(product, maxQty)
+            showHideQuantityError(product, labelQuantityError)
 
             qtyEditorProduct.apply {
                 onFocusChanged = { focus ->
@@ -376,10 +403,10 @@ class CheckoutProductViewHolder(
         }
     }
 
-    private fun showHideQuantityError(product: CheckoutProductModel, maxQty: Int) {
+    private fun showHideQuantityError(product: CheckoutProductModel, labelQuantityError: Typography) {
         if (product.shouldShowMaxQtyError || product.shouldShowMinQtyError) {
-            productBinding.labelQuantityError.show()
-            productBinding.labelQuantityError.setPadding(
+            labelQuantityError.show()
+            labelQuantityError.setPadding(
                 0,
                 0,
                 0,
@@ -391,39 +418,39 @@ class CheckoutProductViewHolder(
                 } else {
                     product.maxOrder
                 }
-                productBinding.labelQuantityError.text = String.format(
+                labelQuantityError.text = String.format(
                     itemView.context.resources.getString(R.string.checkout_max_quantity_error),
                     maxQty
                 )
             }
             if (product.shouldShowMinQtyError) {
-                productBinding.labelQuantityError.text = String.format(
+                labelQuantityError.text = String.format(
                     itemView.context.resources.getString(R.string.checkout_min_quantity_error),
                     product.minOrder
                 )
             }
         } else {
-            productBinding.labelQuantityError.gone()
+            labelQuantityError.gone()
         }
     }
 
-    private fun renderNotesEmpty(productBinding: LayoutCheckoutProductBinding) {
-        productBinding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
-        productBinding.buttonChangeNote.contentDescription =
+    private fun renderNotesEmpty(buttonChangeNote: ImageUnify) {
+        buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
+        buttonChangeNote.contentDescription =
             binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
     }
 
-    private fun renderNotesFilled(productBinding: LayoutCheckoutProductBinding) {
-        productBinding.buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
-        productBinding.buttonChangeNote.contentDescription =
+    private fun renderNotesFilled(buttonChangeNote: ImageUnify) {
+        buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
+        buttonChangeNote.contentDescription =
             binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
     }
 
-    private fun setNoteAnimationResource() {
+    private fun setNoteAnimationResource(notesLottie: LottieAnimationView) {
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            productBinding.buttonChangeNoteLottie.setAnimation(R.raw.anim_checkout_note_dark)
+            notesLottie.setAnimation(R.raw.anim_checkout_note_dark)
         } else {
-            productBinding.buttonChangeNoteLottie.setAnimation(R.raw.anim_checkout_note)
+            notesLottie.setAnimation(R.raw.anim_checkout_note)
         }
     }
 
@@ -443,6 +470,10 @@ class CheckoutProductViewHolder(
             tvProductAddOnsSeeAllBundle.isVisible = false
             llAddonProductItemsBundle.isVisible = false
             buttonGiftingAddonProductBundle.isVisible = false
+            qtyEditorProductBundle.isVisible = false
+            labelQuantityErrorBundle.isVisible = false
+            buttonChangeNoteBundle.isVisible = false
+            buttonChangeNoteLottieBundle.isVisible = false
         }
     }
 
@@ -535,8 +566,8 @@ class CheckoutProductViewHolder(
         renderAdjustableFirstItemMarginBmgm()
         renderAdjustableSeparatorMarginBmgm()
 
-        renderNotes(product)
-        renderQuantity(product)
+        renderNotes(product, bmgmBinding.buttonChangeNoteBmgm, bmgmBinding.buttonChangeNoteLottieBmgm)
+        renderQuantity(product, bmgmBinding.qtyEditorProductBmgm, bmgmBinding.labelQuantityErrorBmgm)
         renderAddOnBMGM(product)
         renderAddOnGiftingProductBmgm(product)
     }
@@ -554,6 +585,10 @@ class CheckoutProductViewHolder(
             tvProductAddOnsSeeAllBmgm.hide()
             llAddonProductItemsBmgm.hide()
             buttonGiftingAddonProductBmgm.hide()
+            qtyEditorProductBmgm.hide()
+            labelQuantityErrorBmgm.hide()
+            buttonChangeNoteBmgm.hide()
+            buttonChangeNoteLottieBmgm.hide()
         }
     }
 

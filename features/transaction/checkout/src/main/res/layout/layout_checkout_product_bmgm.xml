@@ -99,7 +99,55 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="iv_product_image_frame_bmgm,tv_product_price_bmgm,tv_product_notes_bmgm" />
+        app:constraint_referenced_ids="tv_product_notes_bmgm" />
+
+    <com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
+        android:id="@+id/qty_editor_product_bmgm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_info_bmgm" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_quantity_error_bmgm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/qty_editor_product_bmgm"
+        app:layout_constraintTop_toBottomOf="@id/qty_editor_product_bmgm"
+        app:typographyType="display_3"
+        tools:text="Min. beli 2" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/button_change_note_bmgm"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@id/qty_editor_product_bmgm"
+        app:layout_constraintTop_toTopOf="@id/qty_editor_product_bmgm"
+        app:layout_constraintBottom_toBottomOf="@id/qty_editor_product_bmgm"
+        app:srcCompat="@drawable/ic_pp_add_note"
+        android:visibility="gone"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/button_change_note_lottie_bmgm"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/qty_editor_product_bmgm"
+        app:layout_constraintTop_toTopOf="@id/qty_editor_product_bmgm"
+        app:layout_constraintBottom_toBottomOf="@id/qty_editor_product_bmgm"
+        app:lottie_autoPlay="false"
+        app:lottie_rawRes="@raw/anim_checkout_note_dark" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_add_ons_section_title_bmgm"
