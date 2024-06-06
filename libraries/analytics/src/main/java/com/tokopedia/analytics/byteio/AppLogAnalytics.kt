@@ -194,7 +194,7 @@ object AppLogAnalytics {
 
     private fun generateEntranceInfoCartJson(): JSONObject {
         return JSONObject().also {
-            put(ENTER_FROM_INFO, getEnterFromBeforeCart())
+            it.put(ENTER_FROM_INFO, getEnterFromBeforeCart())
             it.put(ENTRANCE_FORM, PageName.CART)
             it.put(SOURCE_PAGE_TYPE, PageName.CART)
         }
