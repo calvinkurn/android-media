@@ -22,7 +22,6 @@ import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseB
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
-import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
 import com.tokopedia.universal_sharing.util.NetworkUtil
 import com.tokopedia.universal_sharing.util.Result
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseAction
@@ -32,6 +31,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.Un
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseProductListener
 import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSharingTypeFactoryImpl
 import com.tokopedia.universal_sharing.view.model.UniversalSharingGlobalErrorUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
@@ -46,6 +46,9 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     @Inject
     lateinit var networkUtil: NetworkUtil
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var analytics: UniversalSharebottomSheetTracker
@@ -262,7 +265,7 @@ class UniversalSharingPostPurchaseBottomSheet :
                 )
             )
             analytics.onClickShareProductPostPurchase(
-                userShareType = TYPE_GENERAL,
+                userId = userSession.userId,
                 productId = productId,
                 orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
             )
@@ -299,7 +302,7 @@ class UniversalSharingPostPurchaseBottomSheet :
             }
         }
         analytics.onViewProductListPostPurchase(
-            userShareType = TYPE_GENERAL,
+            userId = userSession.userId,
             productIdList = productIdList.joinToString(","),
             orderIdList = orderIdList.joinToString(",") {
                 it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
@@ -309,7 +312,7 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     private fun trackClose() {
         analytics.onClickCloseProductListPostPurchase(
-            userShareType = TYPE_GENERAL,
+            userId = userSession.userId,
             orderIdList = orderIdList.joinToString(",") {
                 it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
             }

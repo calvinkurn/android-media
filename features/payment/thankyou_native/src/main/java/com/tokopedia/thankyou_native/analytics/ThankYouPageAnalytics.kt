@@ -467,14 +467,14 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun sendClickShareIcon(
-        userShareType: String = "general",
+        userId: String,
         orderIdList: String
     ) {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_CLICK_COMMUNICATION,
             EVENT_CATEGORY_SHARE,
             EVENT_ACTION_CLICK_SHARE,
-            "$userShareType - $orderIdList"
+            "$userId - $orderIdList"
         )
         map[KEY_TRACKER_ID] = TRACKER_46218
         map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARE
