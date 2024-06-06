@@ -141,8 +141,8 @@ class DigitalCartFragment :
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.DgCheckout)
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.DgCheckout)
 
         cartPassData = arguments?.getParcelable(ARG_PASS_DATA)
         val subParams: DigitalSubscriptionParams? =

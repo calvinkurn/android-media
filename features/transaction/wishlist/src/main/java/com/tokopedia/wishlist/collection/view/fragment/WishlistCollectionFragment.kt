@@ -157,10 +157,6 @@ class WishlistCollectionFragment :
 
     private var hasApplogScrollListener: Boolean = false
 
-//    init {
-//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Wishlist)
-//    }
-
     override fun getScreenName(): String = ""
 
     override fun getPageName(): String {

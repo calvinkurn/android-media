@@ -36,11 +36,6 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface, IAdsLo
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-//    init {
-//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.OfficialStore)
-//    }
-
     override fun provideAnalytics(): BaseDiscoveryAnalytics {
         return DiscoveryAnalytics(
             discoveryViewModel.pageType,

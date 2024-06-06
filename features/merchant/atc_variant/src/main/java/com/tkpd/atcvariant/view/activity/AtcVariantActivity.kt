@@ -11,8 +11,6 @@ import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.IAppLogActivity
@@ -52,7 +50,6 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Sku)
         val paramsData = getParamsFromBundle()
         super.onCreate(savedInstanceState)
 

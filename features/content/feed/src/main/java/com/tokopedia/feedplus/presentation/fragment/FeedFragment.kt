@@ -226,10 +226,6 @@ class FeedFragment :
 
     private var mDataSource: DataSource? = null
 
-//    init {
-//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
-//    }
-
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = { parentFragment ?: this },
         factoryProducer = {

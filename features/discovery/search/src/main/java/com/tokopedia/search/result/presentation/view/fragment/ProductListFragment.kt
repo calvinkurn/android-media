@@ -328,10 +328,6 @@ class ProductListFragment :
     private lateinit var videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator
     private lateinit var networkMonitor: DefaultNetworkMonitor
 
-//    init {
-//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.ProductSearchResult)
-//    }
-
     override fun getFragment(): Fragment = this
 
     //region onCreate Fragments

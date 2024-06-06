@@ -470,10 +470,6 @@ open class HomeRevampFragment :
 
     private var hasApplogScrollListener = false
 
-//    init {
-//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.HomePage)
-//    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()

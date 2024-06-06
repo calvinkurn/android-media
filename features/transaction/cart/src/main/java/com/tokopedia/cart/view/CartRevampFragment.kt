@@ -496,8 +496,8 @@ class CartRevampFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Cart)
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Cart)
 
         activity?.let {
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)

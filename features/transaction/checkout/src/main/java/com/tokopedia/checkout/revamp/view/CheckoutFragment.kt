@@ -325,8 +325,8 @@ class CheckoutFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BtmApi.registerBtmPageOnCreate(this, Tokopedia.PgCheckout)
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.PgCheckout)
         if (viewModel.pageState.value == CheckoutPageState.Loading) {
             shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE)
         }

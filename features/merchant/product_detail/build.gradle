@@ -204,7 +204,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.accompanistFlowLayout
-
 }
 
 project.ext {

@@ -10,12 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.analytics.btm.BtmApi
-import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.IAppLogPdpActivity
 import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace

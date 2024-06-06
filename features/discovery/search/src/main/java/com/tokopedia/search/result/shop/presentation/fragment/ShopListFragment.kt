@@ -113,10 +113,6 @@ internal class ShopListFragment @Inject constructor(
 
     private var binding by autoClearedNullable<SearchResultShopFragmentLayoutBinding>()
 
-//    init {
-//        BtmApi.registerBtmPageOnCreate(this, Tokopedia.ShopSearchResult)
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         BtmApi.registerBtmPageOnCreate(this, Tokopedia.ShopSearchResult)

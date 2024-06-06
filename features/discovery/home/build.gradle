@@ -199,7 +199,6 @@ dependencies {
 
     //Slardar
     implementation rootProject.ext.slardarDependencies.commonMonitor
-
 }
 
 project.ext {
