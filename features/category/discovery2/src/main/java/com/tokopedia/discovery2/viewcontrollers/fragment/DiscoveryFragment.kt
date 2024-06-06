@@ -432,33 +432,37 @@ open class DiscoveryFragment :
         )
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-            navToolbar.setIcon(
-                IconBuilder(IconBuilderFlag(NavSource.SOS))
-                    .addIcon(
-                        IconList.ID_MESSAGE,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
-                        disableDefaultGtmTracker = false
-                    )
-                    .addIcon(
-                        IconList.ID_NOTIFICATION,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
-                        disableDefaultGtmTracker = false
-                    )
-                    .addIcon(
-                        iconId = IconList.ID_CART,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
-                        disableDefaultGtmTracker = true
-                    )
-                    .also {
-                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
-                        it.addIcon(
-                            iconId = IconList.ID_NAV_GLOBAL,
-                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                            disableDefaultGtmTracker = true
-                        )
-                    }
-            )
+            navToolbar.setIcon(getIconBuilder())
             configureSearchStyle()
+        }
+    }
+
+    private fun getIconBuilder(): IconBuilder {
+        return IconBuilder(IconBuilderFlag(NavSource.SOS)).apply {
+            addIcon(
+                IconList.ID_MESSAGE,
+                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
+                disableDefaultGtmTracker = false
+            )
+            if (!SearchRollenceController.shouldCombineInboxNotif()) {
+                addIcon(
+                    IconList.ID_NOTIFICATION,
+                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
+                    disableDefaultGtmTracker = false
+                )
+            }
+            addIcon(
+                iconId = IconList.ID_CART,
+                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                disableDefaultGtmTracker = true
+            )
+        }.also {
+            if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+            it.addIcon(
+                iconId = IconList.ID_NAV_GLOBAL,
+                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                disableDefaultGtmTracker = true
+            )
         }
     }
 

@@ -91,6 +91,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -565,7 +566,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             )
             icons.apply {
                 addIcon(IconList.ID_MESSAGE) {}
-                addIcon(IconList.ID_NOTIFICATION) {}
+                if (!SearchRollenceController.shouldCombineInboxNotif()) {
+                    addIcon(IconList.ID_NOTIFICATION) {}
+                }
                 addIcon(IconList.ID_CART) {}
                 if (arguments?.getBoolean(PARAM_SHOULD_SHOW_GLOBAL_NAV, true) != false) addIcon(IconList.ID_NAV_GLOBAL) {}
             }
