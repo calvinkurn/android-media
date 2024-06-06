@@ -12,7 +12,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 /**
  * @author by resakemal on 15/06/20.
@@ -52,7 +52,7 @@ class RechargeHomepageVideoHighlightViewHolder(
 
         val item = section.items[0]
         thumbnailView.show()
-        thumbnailView.loadImage(item.mediaUrl)
+        thumbnailView.loadImageFresco(item.mediaUrl)
 
         broadcasterName.text = item.label2
         titlePlay.text = item.label1

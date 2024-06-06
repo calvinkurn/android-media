@@ -2184,7 +2184,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check notification setting appLink then should return device notification setting in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.DEVICE_NOTIFICATION_SETTINGS, "")
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.DEVICE_NOTIFICATION_SETTINGS,
+            ApplinkConstInternalMarketplace.DEVICE_NOTIFICATION_SETTING
+        )
     }
 
     @Test

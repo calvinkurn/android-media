@@ -48,9 +48,6 @@ class ServerChannelAdapter :
                     ServerLoggerConstants.NEW_RELIC -> {
                         labelServerLogger.setLabelType(Label.HIGHLIGHT_DARK_GREEN)
                     }
-                    ServerLoggerConstants.EMBRACE -> {
-                        labelServerLogger.setLabelType(Label.HIGHLIGHT_DARK_BLUE)
-                    }
                 }
             }
         }

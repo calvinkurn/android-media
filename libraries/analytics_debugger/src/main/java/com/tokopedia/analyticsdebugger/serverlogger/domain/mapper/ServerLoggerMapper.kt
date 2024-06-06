@@ -42,9 +42,6 @@ class ServerLoggerMapper @Inject constructor(
             loggerReporting.tagMapsNewRelic[tagMapsValue]?.let {
                 serverChannelList.add(ServerLoggerConstants.NEW_RELIC)
             }
-            loggerReporting.tagMapsEmbrace[tagMapsValue]?.let {
-                serverChannelList.add(ServerLoggerConstants.EMBRACE)
-            }
 
             val loggerUiModel = ItemServerLoggerUiModel(
                 serverChannel = serverChannelList,

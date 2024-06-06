@@ -11,21 +11,13 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.concurrent.TimeUnit
-class HomeRoomDataSource(
-        private val homeDao: HomeDao) {
+class HomeRoomDataSource(private val homeDao: HomeDao) {
+
     companion object {
         private const val ONE_MONTH_DAYS = 30L
     }
+
     private val timeout = TimeUnit.DAYS.toMillis(ONE_MONTH_DAYS)
-
-    suspend fun saveCachedAtf(items: List<AtfCacheEntity>) {
-        homeDao.deleteAtfTable()
-        homeDao.save(items)
-    }
-
-    fun getCachedAtfData(): Flow<List<AtfCacheEntity>> {
-        return homeDao.getHomeDataObject()
-    }
 
     fun getCachedHomeData(): Flow<HomeData?> {
         BenchmarkHelper.beginSystraceSection(TRACE_GET_CACHED_DATA_SOURCE)

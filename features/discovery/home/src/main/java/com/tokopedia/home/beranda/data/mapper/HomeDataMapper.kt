@@ -16,61 +16,6 @@ class HomeDataMapper(
     private val trackingQueue: TrackingQueue,
     private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) {
-    companion object {
-        private const val ATF_ERROR_MESSAGE = "Showing cache data because atf is error"
-        private const val DC_ERROR_MESSAGE = "Showing cache data because dynamic channel is error"
-        private const val SHIMMERING_CHANNEL_ID_0 = "0"
-        private const val SHIMMERING_CHANNEL_ID_1 = "1"
-    }
-
-    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false, haveCachedData: Boolean = false): HomeDynamicChannelModel {
-        BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
-        if (homeData == null) return HomeDynamicChannelModel(isCache = isCache, flowCompleted = true)
-        var processingAtf = homeData.atfData?.isProcessingAtf ?: false
-        var processingDynamicChannel = homeData.isProcessingDynamicChannel
-
-        if (isCache) {
-            processingAtf = false
-            processingDynamicChannel = false
-        } else {
-            if (homeData.atfData?.dataList?.isEmpty() == true && haveCachedData) {
-                throw IllegalStateException(ATF_ERROR_MESSAGE)
-            }
-            if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
-                throw IllegalStateException(DC_ERROR_MESSAGE)
-            }
-        }
-        val firstPage = homeData.token.isNotEmpty()
-        val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
-            homeData,
-            isCache,
-            trackingQueue,
-            context,
-            homeDynamicChannelDataMapper
-        )
-            .addHomeHeader()
-            .addAtfComponentVisitable(processingAtf, isCache)
-
-        if (!processingDynamicChannel && !isLoadingAtf) {
-            factory.addDynamicChannelVisitable(firstPage, true)
-                .build()
-        }
-
-        BenchmarkHelper.endSystraceSection()
-        val mutableVisitableList = factory.build().toMutableList()
-        if (addShimmeringChannel && mutableVisitableList.size > 1) {
-            mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_0))
-            mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_1))
-        }
-
-        return HomeDynamicChannelModel(
-            list = mutableVisitableList,
-            isCache = isCache,
-            isFirstPage = firstPage,
-            homeChooseAddressData = HomeChooseAddressData(true),
-            flowCompleted = false
-        )
-    }
 
     /**
      * for the new atf mechanism.

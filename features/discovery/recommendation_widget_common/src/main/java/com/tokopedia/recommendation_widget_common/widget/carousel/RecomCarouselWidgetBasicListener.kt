@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel
 
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -23,6 +24,17 @@ interface RecomCarouselWidgetBasicListener {
         itemPosition: Int,
         adapterPosition: Int
     )
+
+    interface OnAdsItemClickListener {
+        fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {}
+        fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {}
+        fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {}
+    }
+
+    interface OnAdsViewListener {
+        fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int)
+        fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int)
+    }
 
     fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int)
     fun onRecomBannerClicked(

@@ -49,8 +49,6 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.analytics.performance.util.EmbraceKey
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -499,7 +497,6 @@ class CartRevampFragment :
         activity?.let {
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             if (viewModel.cartModel.wishlists == null) {
-                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring =
                     PerformanceMonitoring.start(CART_ALL_TRACE)
@@ -769,7 +766,6 @@ class CartRevampFragment :
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener {
                 guardCartClick {
-                    EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_BUY)
                     checkGoToShipment("")
                 }
             }
@@ -5544,7 +5540,6 @@ class CartRevampFragment :
 
     private fun stopCartPerformanceTrace() {
         if (!isTraceCartStopped) {
-            EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }

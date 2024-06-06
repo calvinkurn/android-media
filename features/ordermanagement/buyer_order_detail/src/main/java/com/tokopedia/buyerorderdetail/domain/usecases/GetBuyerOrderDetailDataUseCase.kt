@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
@@ -100,17 +99,5 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                 )
             )
         )
-    }.onCompletion {
-        logCompletionBreadcrumb(params, it)
-    }
-
-    private fun logCompletionBreadcrumb(params: GetBuyerOrderDetailDataParams, throwable: Throwable?) {
-        runCatching {
-            if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailDataUseCase - Success: $params")
-            } else {
-                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailDataUseCase - Error: ${throwable.stackTraceToString()}")
-            }
-        }
     }
 }

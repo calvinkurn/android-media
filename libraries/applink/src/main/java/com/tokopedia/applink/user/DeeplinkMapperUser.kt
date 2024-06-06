@@ -32,9 +32,9 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.User.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> ApplinkConstInternalUserPlatform.PRIVACY_CENTER
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
-            deeplink == ApplinkConst.LOGIN -> ApplinkConstInternalUserPlatform.LOGIN
+            deeplink.startsWith(ApplinkConst.LOGIN) -> ApplinkConstInternalUserPlatform.LOGIN
             deeplink == ApplinkConst.User.QR_LOGIN -> ApplinkConstInternalUserPlatform.QR_LOGIN
-            deeplink == ApplinkConst.User.REGISTER_INIT || deeplink == ApplinkConst.User.REGISTER -> ApplinkConstInternalUserPlatform.INIT_REGISTER
+            deeplink.startsWith(ApplinkConst.User.REGISTER_INIT) || deeplink.startsWith(ApplinkConst.User.REGISTER) -> ApplinkConstInternalUserPlatform.INIT_REGISTER
             deeplink == ApplinkConst.User.RESET_PASSWORD -> ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
             deeplink == ApplinkConst.User.HAS_PASSWORD -> ApplinkConstInternalUserPlatform.HAS_PASSWORD
             deeplink == ApplinkConst.ADD_NAME_PROFILE -> ApplinkConstInternalUserPlatform.MANAGE_NAME

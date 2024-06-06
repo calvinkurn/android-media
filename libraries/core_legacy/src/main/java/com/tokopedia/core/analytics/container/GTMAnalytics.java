@@ -25,8 +25,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.analytics.mapper.model.EmbraceConfig;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -117,11 +115,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String ANDROID_CACHE_CLIENT_ID = "android_cache_client_id";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
-    private static final String EMBRACE_BREADCRUMB_FORMAT = "%s, %s";
-    private static final String EMBRACE_KEY = "GTMAnalytics";
-    private static final String EMBRACE_EVENT_NAME = "eventName";
-    private static final String EMBRACE_EVENT_ACTION = "eventAction";
-    private static final String EMBRACE_EVENT_LABEL = "eventLabel";
 
     private static String UTM_SOURCE_HOLDER = "";
     private static String UTM_MEDIUM_HOLDER = "";
@@ -1201,7 +1194,6 @@ public class GTMAnalytics extends ContextAnalytics {
 
             pushGeneralEcommerce(bundle);
 
-            trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1394,41 +1386,6 @@ public class GTMAnalytics extends ContextAnalytics {
             }
             return ecommerceBundleGA4;
         }
-    }
-
-    private void trackEmbraceBreadcrumb(String eventName, Bundle bundle) {
-        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
-        try {
-            EmbraceConfig config = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
-            if (bundle.containsKey(KEY_CATEGORY)) {
-                String eventCategoryValue = bundle.getString(KEY_CATEGORY);
-                if (config.getBreadcrumb_categories().contains(eventCategoryValue)) {
-                    EmbraceMonitoring.INSTANCE.logBreadcrumb(String.format(EMBRACE_BREADCRUMB_FORMAT, EMBRACE_KEY, createJsonFromBundle(eventName, bundle)));
-                }
-            }
-        } catch (Exception e) {
-        }
-    }
-
-    private JSONObject createJsonFromBundle(String eventName, Bundle bundle) {
-        JSONObject json = new JSONObject();
-        Set<String> keys = bundle.keySet();
-        try {
-            json.put(EMBRACE_EVENT_NAME, eventName);
-
-            if (bundle.containsKey(KEY_ACTION)) {
-                String action = bundle.getString(KEY_ACTION);
-                json.put(EMBRACE_EVENT_ACTION, action);
-            }
-
-            if (bundle.containsKey(KEY_LABEL)) {
-                String label = bundle.getString(KEY_LABEL);
-                json.put(EMBRACE_EVENT_LABEL, label);
-            }
-        } catch (JSONException e) {
-            //Handle exception here
-        }
-        return json;
     }
 
     private void pushGeneralEcommerce(Bundle values) {

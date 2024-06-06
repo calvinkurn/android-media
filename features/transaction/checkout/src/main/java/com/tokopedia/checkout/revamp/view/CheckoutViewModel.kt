@@ -6,8 +6,6 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.analytics.performance.util.EmbraceKey
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartPaymentRequest
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
@@ -210,7 +208,6 @@ class CheckoutViewModel @Inject constructor(
 
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
-        EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
     }
 
     fun loadSAF(
@@ -239,7 +236,6 @@ class CheckoutViewModel @Inject constructor(
                 shipmentAction,
                 listPromoExternalAutoApplyCode
             )
-            stopEmbraceTrace()
             when (saf) {
                 is CheckoutPageState.Success -> {
                     try {
