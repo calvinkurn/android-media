@@ -17,7 +17,6 @@ const val PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_NE
 const val PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_NEW_TOKOPOINT"
 const val PREF_KEY_HOME_TOKONOW_COACHMARK = "PREF_KEY_HOME_TOKONOW_COACHMARK"
 const val PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_SUBSCRIPTION"
-const val PREF_KEY_HOME_INBOX_ICON_COACH_MARK = "PREF_KEY_HOME_INBOX_ICON_COACH_MARK"
 
 fun setSubscriptionCoachmarkShown(context: Context) {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
@@ -42,18 +41,3 @@ fun isHomeTokonowCoachmarkShown(context: Context): Boolean {
             PREF_KEY_HOME_TOKONOW_COACHMARK, Context.MODE_PRIVATE)
     return sharedPrefs.getBoolean(PREF_KEY_HOME_TOKONOW_COACHMARK, false)
 }
-
-fun hasInboxCoachMarkShown(context: Context): Boolean {
-    val sharedPrefs: SharedPreferences = context.getSharedPreferences(
-        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE
-    )
-    return sharedPrefs.getBoolean(PREF_KEY_HOME_INBOX_ICON_COACH_MARK, false)
-}
-
-fun setInboxCoachMarkHasShown(context: Context) {
-    val sp: SharedPreferences = context.getSharedPreferences(
-        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE
-    )
-    sp.edit().putBoolean(PREF_KEY_HOME_INBOX_ICON_COACH_MARK, true).apply()
-}
-

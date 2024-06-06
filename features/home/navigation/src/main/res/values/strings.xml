@@ -77,4 +77,7 @@
 
     <string name="me_page_icon_coach_mark_title">Akunmu pindah ke bawah 👇</string>
     <string name="me_page_icon_coach_mark_content">Wishlist dan informasi lain terkait akunmu bisa dicek lewat sini, ya!</string>
+
+    <string name="home_inbox_coach_mark_title">Notifikasi kini ada di Inbox, ya~</string>
+    <string name="home_inbox_coach_mark_description">Sekarang jadi lebih mudah dan bisa sekalian akses Chat, lho!</string>
 </resources>
