@@ -29,9 +29,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.bytedance.applog.util.EventsSenderUtils;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.imagepipeline.core.ImagePipelineFactory;
+import com.facebook.imagepipeline.listener.RequestListener;
+import com.facebook.net.FrescoTTNetFetcher;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.newrelic.agent.android.NewRelic;
+import com.optimize.statistics.FrescoTraceListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
@@ -43,14 +49,12 @@ import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
-import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 import com.tokopedia.analytics.performance.perf.performanceTracing.config.mapper.ConfigMapper;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -93,6 +97,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
+import com.tokopedia.media.loaderfresco.tracker.FrescoLogger;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.ttnet.TTNetHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
@@ -127,12 +132,13 @@ import org.jetbrains.annotations.NotNull;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
-import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
@@ -162,7 +168,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_v3_new_relic";
-    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
     private static final String REMOTE_CONFIG_TELEMETRY_ENABLED = "android_telemetry_enabled";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
@@ -227,10 +232,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppPackageNameAsync();
 
         initializationNewRelic();
-        if (getUserSession().isLoggedIn()) {
-            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
-        }
-        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
@@ -242,6 +243,20 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
         initializeAppPerformanceTrace();
+        initFresco();
+    }
+
+    private void initFresco() {
+        Set<RequestListener> listeners = new HashSet<>();
+        listeners.add(new FrescoTraceListener());
+
+        ImagePipelineConfig.Builder imagePipelineBuilder = ImagePipelineConfig.newBuilder(this);
+        imagePipelineBuilder.setRequestListeners(listeners);
+        imagePipelineBuilder.setNetworkFetcher(new FrescoTTNetFetcher());
+
+        ImagePipelineFactory.initialize(imagePipelineBuilder.build());
+        Fresco.initialize(context, imagePipelineBuilder.build());
+        FrescoLogger.INSTANCE.loggerSlardarFresco();
     }
 
     private void initByteIOPlatform() {
@@ -608,7 +623,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createCustomSoundNotificationChannel();
 
         initLogManager();
-        initEmbraceConfig();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
@@ -761,28 +775,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             public String getNewRelicConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
-
-            @NotNull
-            @Override
-            public String getEmbraceConfig() {
-                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
-            }
         });
     }
 
     private void initTranslator() {
         if (GlobalConfig.isAllowDebuggingTools()) {
             TranslatorManager.init(this, "");
-        }
-    }
-
-    private void initEmbraceConfig() {
-        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
-        if (!TextUtils.isEmpty(logEmbraceConfigString)) {
-            EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
-
-            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().clear();
-            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
         }
     }
 

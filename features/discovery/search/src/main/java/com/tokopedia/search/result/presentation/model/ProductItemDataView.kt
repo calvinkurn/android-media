@@ -8,8 +8,14 @@ import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -91,6 +97,7 @@ class ProductItemDataView:
     var isImageBlurred: Boolean = false
     var byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData()
     val byteIOImpressHolder = ImpressHolder()
+    var recommendationAdsLog: RecommendationAdsLog = RecommendationAdsLog()
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.productID == productID) {
@@ -209,6 +216,44 @@ class ProductItemDataView:
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
 
+    private val productIdByteIo: String
+        get() = if (parentId.isBlank() || parentId == "0") productID else parentId
+
+    fun asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowModel.AdExtraData(
+                productId = productIdByteIo,
+                productName = productName
+            )
+        )
+    }
+
+    fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogShowOverModel.AdExtraData(
+                productId = productIdByteIo,
+                productName = productName,
+                sizePercent = visiblePercentage.toString()
+            )
+        )
+    }
+
+    fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(
+            refer,
+            recommendationAdsLog.creativeID.toLongOrZero(),
+            recommendationAdsLog.logExtra,
+            AdsLogRealtimeClickModel.AdExtraData(
+                productId = productIdByteIo,
+                productName = productName
+            )
+        )
+    }
+
     fun asByteIOSearchResult(aladdinButtonType: String?) =
         AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
@@ -304,6 +349,7 @@ class ProductItemDataView:
             item.showButtonAtc = showButtonAtc
             item.parentId = topAds.product.parentId
             item.byteIOTrackingData = byteIOTrackingData
+            item.recommendationAdsLog = RecommendationAdsLog(topAds.creativeId, topAds.logExtra)
             return item
         }
 

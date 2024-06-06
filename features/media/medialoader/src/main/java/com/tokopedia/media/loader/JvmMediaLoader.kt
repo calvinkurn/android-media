@@ -1,5 +1,6 @@
 package com.tokopedia.media.loader
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.ImageView
@@ -9,6 +10,7 @@ import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.wrapper.MediaDataSource
+import java.io.File
 
 /**
  * A static function to loading any images and video thumbnail for java-based.
@@ -49,27 +51,85 @@ object JvmMediaLoader {
         imageView.loadImage(uri, properties)
     }
 
+    @JvmStatic fun loadGif(
+        imageView: ImageView,
+        url: String,
+        properties: Properties.() -> Unit,
+        onSuccess: (GifDrawable?, MediaDataSource?) -> Unit,
+        onError: (MediaException?) -> Unit
+    ) {
+        imageView.loadAsGif(url){
+            this.apply(properties)
+            listener(
+                onSuccessGif = {gifDrawable, mediaDataSource ->
+                    onSuccess(gifDrawable, mediaDataSource)
+                },
+                onError = {
+                    onError(it)
+                }
+            )
+        }
+    }
+
     @JvmStatic
     fun loadImage(
         imageView: ImageView,
         url: String,
-        onSuccess: (Bitmap?, MediaDataSource?) -> Unit,
+        properties: Properties.() -> Unit,
+        onSuccess: (Bitmap?, MediaDataSource?, Boolean) -> Unit,
         onError: (MediaException?) -> Unit
     ) {
         imageView.loadImage(url) {
-            this.loaderListener = object : MediaListener {
-                // for GIF format
-                override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {}
-
-                override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
-                    onSuccess(resource, dataSource)
+            this.apply(properties)
+            this.listener(
+                onSuccessWithResource = {bitmap, mediaDataSource, isFirstResource ->
+                    onSuccess(bitmap, mediaDataSource, isFirstResource)
+                },
+                onError = { exception ->
+                    onError(exception)
                 }
-
-                override fun onFailed(error: MediaException?) {
-                    onError(error)
-                }
-            }
+            )
         }
+    }
+
+    @JvmStatic
+    fun getBitmapImageUrl(
+        context: Context,
+        url: String,
+        properties: Properties.() -> Unit,
+        onSuccess: (Bitmap?, MediaDataSource?, Boolean) -> Unit,
+        onError: (MediaException?) -> Unit
+    ) {
+        url.getBitmapImageUrl(context, {
+            this.apply(properties)
+            listener(
+                onSuccessWithResource = {bitmap, mediaDataSource, isFirstResource ->
+                    onSuccess(bitmap, mediaDataSource, isFirstResource)
+                },
+                onError = {
+                    onError(it)
+                }
+            )
+        })
+    }
+
+    @JvmStatic
+    fun downloadBitmapFromUrl(
+        context: Context,
+        url: String,
+        properties: Properties.() -> Unit
+    ): File? {
+        return url.downloadImageFromUrl(context, properties = properties)
+    }
+
+    @JvmStatic
+    fun getBitmapImageUrl(
+        context: Context,
+        url: String,
+        timeout: Long,
+        properties: Properties.() -> Unit
+    ): Bitmap?{
+        return url.getBitmapFromUrl(context, timeout, properties = properties)
     }
 
     @JvmStatic

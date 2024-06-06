@@ -122,7 +122,11 @@ data class ShopInfo(
 
     @SerializedName("partnerLabel")
     @Expose
-    val partnerLabel: String = String.EMPTY
+    val partnerLabel: String = String.EMPTY,
+
+    @SerializedName("shopCredibility")
+    @Expose
+    val shopCredibility: ShopCredibility = ShopCredibility()
 ) {
     fun isShopInfoNotEmpty(): Boolean {
         return shopCore.shopID.isNotEmpty()
@@ -365,6 +369,23 @@ data class ShopInfo(
         @Expose
         val totalShowcase: String = ""
     )
+
+    data class ShopCredibility(
+        @SerializedName("stats")
+        @Expose
+        val stats: List<Status> = emptyList()
+    ) {
+
+        data class Status(
+            @SerializedName("icon")
+            @Expose
+            val icon: String = "",
+
+            @SerializedName("value")
+            @Expose
+            val value: String = ""
+        )
+    }
 
     data class TickerDataResponse(
         @SerializedName("title")

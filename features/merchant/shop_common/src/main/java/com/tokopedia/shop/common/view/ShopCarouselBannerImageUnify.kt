@@ -16,21 +16,15 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.gif.GifDrawable
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.*
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.loadAsGif
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import java.io.File
@@ -258,7 +252,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
 
     fun setGif(drawable: Int) {
         if(!context.isValidGlideContext()) return
-        Glide.with(context).asGif().load(drawable).into(this)
+        this.loadAsGif(drawable)
     }
 
     fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false, isOverrideScaleType: Boolean = true) {
@@ -369,110 +363,66 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
 
     private fun loadGif(url: String, placeholderHeight: Int?) {
         if(!context.isValidGlideContext()) return
-        val mRequestBuilder: RequestBuilder<GifDrawable> = Glide.with(context).asGif().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
 
-        if (heightRatio == null) mRequestBuilder.dontTransform()
+        this.loadAsGif(url) {
+            listener(
+                onError = {
+                    clearShimmerAnimation()
 
-        mRequestBuilder.load(url).error(com.tokopedia.unifycomponents.R.drawable.ic_broken_image)
-                .listener(object : RequestListener<GifDrawable> {
-                    override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<GifDrawable>?,
-                            isFirstResource: Boolean
-                    ): Boolean {
-                        clearShimmerAnimation()
+                    onError()
+                },
+                onSuccessGif = { resource, _ ->
+                    clearShimmerAnimation()
 
-                        onError()
-                        return false
+                    onUrlLoaded?.invoke(true)
+                    this@ShopCarouselBannerImageUnify.isImageLoaded = true
+
+                    if (resource != null) {
+                        renderSource(
+                            resource.intrinsicHeight,
+                            resource.intrinsicHeight,
+                            placeholderHeight
+                        )
                     }
-
-                    override fun onResourceReady(
-                            resource: GifDrawable?,
-                            model: Any?,
-                            target: Target<GifDrawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                    ): Boolean {
-                        clearShimmerAnimation()
-
-                        onUrlLoaded?.invoke(true)
-                        this@ShopCarouselBannerImageUnify.isImageLoaded = true
-
-                        if (resource != null) {
-                            renderSource(
-                                    resource.intrinsicHeight,
-                                    resource.intrinsicHeight,
-                                    placeholderHeight
-                            )
-                        }
-                        return false
-                    }
-                })
-                .into(this)
+                }
+            )
+        }
     }
 
     private fun loadImageTileMode(url: String) {
         if(!context.isValidGlideContext()) return
 
-        Glide.with(this)
-            .asBitmap()
-            .load(url)
-            .into(object : CustomTarget<Bitmap?>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onResourceReady(
-                    resource: Bitmap,
-                    transition: Transition<in Bitmap?>?
-                ) {
-                    val bitmapDrawable = BitmapDrawable(context.resources, resource)
-                    bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-                    this@ShopCarouselBannerImageUnify.setImageDrawable(bitmapDrawable)
-                }
-            })
+        url.getBitmapImageUrl(context) {
+            val bitmapDrawable = BitmapDrawable(context.resources, it)
+            bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+            this@ShopCarouselBannerImageUnify.setImageDrawable(bitmapDrawable)
+        }
     }
 
     private fun loadImage(url: String, placeholderHeight: Int?, isSkipCache: Boolean) {
         if(!context.isValidGlideContext()) return
-        val mRequestBuilder: RequestBuilder<Bitmap> = Glide.with(context).asBitmap().override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
 
-        if (heightRatio == null) mRequestBuilder.dontTransform()
+        this.loadImage(url) {
+            useCache(!isSkipCache)
+            setCacheStrategy(if(!isSkipCache) MediaCacheStrategy.NONE else MediaCacheStrategy.AUTOMATIC)
+            listener(
+                onSuccess = { resource, _ ->
+                    clearShimmerAnimation()
 
-        mRequestBuilder.load(url).error(if (isRetryable) reloadDrawable else errorDrawable)
-                .listener(object : RequestListener<Bitmap> {
-                    override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Bitmap>?,
-                            isFirstResource: Boolean
-                    ): Boolean {
-                        clearShimmerAnimation()
+                    onUrlLoaded?.invoke(true)
+                    this@ShopCarouselBannerImageUnify.isImageLoaded = true
 
-                        onError()
-                        return false
+                    if (resource != null) {
+                        renderSource(resource.width, resource.height, placeholderHeight)
                     }
+                },
+                onError = {
+                    clearShimmerAnimation()
 
-                    override fun onResourceReady(
-                            resource: Bitmap?,
-                            model: Any?,
-                            target: Target<Bitmap>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                    ): Boolean {
-                        clearShimmerAnimation()
-
-                        onUrlLoaded?.invoke(true)
-                        this@ShopCarouselBannerImageUnify.isImageLoaded = true
-
-                        if (resource != null) {
-                            renderSource(resource.width, resource.height, placeholderHeight)
-                        }
-                        return false
-                    }
-                })
-                .skipMemoryCache(isSkipCache)
-                .diskCacheStrategy(if(isSkipCache) DiskCacheStrategy.NONE else DiskCacheStrategy.AUTOMATIC)
-                .into(this)
-
+                    onError()
+                }
+            )
+        }
     }
 
     private fun renderSource(w: Int, h: Int, placeholderHeight: Int?) {

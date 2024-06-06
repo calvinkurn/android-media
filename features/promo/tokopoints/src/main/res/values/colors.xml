@@ -45,4 +45,5 @@
     <color name="tp_bg_tokomember_clr">#E5E7E9</color>
     <color name="tp_user_saving_title_clr">#F531353B</color>
     <color name="tp_merchant_deals_border">#FF5C84</color>
+    <color name="tp_transparent">#00000000</color>
 </resources>

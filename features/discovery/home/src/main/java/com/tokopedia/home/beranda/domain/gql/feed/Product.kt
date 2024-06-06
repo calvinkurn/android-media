@@ -3,9 +3,7 @@ package com.tokopedia.home.beranda.domain.gql.feed
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 
 data class Product(
     @SerializedName("id") @Expose
@@ -89,34 +87,6 @@ data class Product(
     val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
 ) {
 
-    fun mapToHomeRecommendationProductItem(): HomeRecommendationItemDataModel.HomeRecommendationProductItem {
-        return HomeRecommendationItemDataModel.HomeRecommendationProductItem(
-            id = id,
-            name = name,
-            imageUrl = imageUrl,
-            recommendationType = recommendationType,
-            priceInt = priceInt,
-            slashedPriceInt = slashedPriceInt,
-            freeOngkirIsActive = freeOngkirInformation.isActive,
-            labelGroup = labelGroup.map {
-                HomeRecommendationItemDataModel.HomeRecommendationProductItem.LabelGroup(
-                    position = it.position,
-                    title = it.title,
-                    type = it.type,
-                    url = it.imageUrl
-                )
-            },
-            categoryBreadcrumbs = categoryBreadcrumbs,
-            clusterID = clusterId,
-            isTopAds = isTopads,
-            trackerImageUrl = trackerImageUrl,
-            clickUrl = clickUrl,
-            isWishlist = isWishlist,
-            wishListUrl = wishlistUrl
-        )
-    }
-
-    @RecomTemporary
     fun mapToHomeGlobalRecommendationProductItem(): RecommendationCardModel.ProductItem {
         return RecommendationCardModel.ProductItem(
             id = id,

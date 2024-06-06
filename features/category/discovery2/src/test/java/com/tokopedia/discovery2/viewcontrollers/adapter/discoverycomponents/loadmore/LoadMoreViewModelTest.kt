@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loa
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.analytics.byteio.RefreshType
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -177,7 +178,10 @@ class LoadMoreViewModelTest {
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getProductCardsUseCase(
-                    componentsItem.id, componentsItem.pageEndPoint)
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                RefreshType.LOAD_MORE
+            )
         } throws Exception("Error")
 
         viewModel.onAttachToViewHolder()
@@ -192,7 +196,11 @@ class LoadMoreViewModelTest {
         every { componentsItem.loadForHorizontal } returns false
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
-            productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
+            productCardUseCase.getProductCardsUseCase(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                RefreshType.LOAD_MORE
+            )
         } returns true
 
         viewModel.onAttachToViewHolder()
@@ -206,7 +214,11 @@ class LoadMoreViewModelTest {
         every { componentsItem.loadForHorizontal } returns false
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
-            productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
+            productCardUseCase.getProductCardsUseCase(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                RefreshType.LOAD_MORE
+            )
         } returns false
 
         viewModel.onAttachToViewHolder()

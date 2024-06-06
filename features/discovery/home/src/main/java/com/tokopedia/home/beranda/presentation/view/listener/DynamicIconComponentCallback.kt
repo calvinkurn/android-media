@@ -4,8 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
-import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD_DEFAULT_FORMAT
-import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD_FMT_PAGENAME
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.DynamicIconTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -27,7 +26,7 @@ class DynamicIconComponentCallback(private val context: Context?, private val ho
             iconPosition = iconPosition,
             dynamicIcon = dynamicIcon
         )
-        setAppLogEnterMethod()
+        setAppLogEnterMethod(iconPosition)
         RouteManager.route(context, dynamicIcon.applink)
     }
 
@@ -56,9 +55,9 @@ class DynamicIconComponentCallback(private val context: Context?, private val ho
     override fun onSuccessLoadImage() {
     }
 
-    private fun setAppLogEnterMethod() {
-        val pageName = AppLogAnalytics.getCurrentData(PAGE_NAME)?.toString().orEmpty()
-        val enterMethod = ENTER_METHOD_DEFAULT_FORMAT.format(pageName)
-        AppLogAnalytics.putPageData(ENTER_METHOD, enterMethod)
+    private fun setAppLogEnterMethod(position: Int) {
+        AppLogAnalytics.setGlobalParamOnClick(
+            enterMethod = ENTER_METHOD_FMT_PAGENAME.format("channel_icon_${position + 1}")
+        )
     }
 }

@@ -15,6 +15,7 @@ import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_NAM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_CURRENT_SITE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ENVIRONMENT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_ACTION
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_CATEGORY
@@ -23,7 +24,9 @@ import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_SELEC
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_VIEW_ITEM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_MERCHANT_CODE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_ID
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_METHOD
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PROMOTIONS
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_SCROOGE_ID
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_TRACKER_ID
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
@@ -464,14 +467,14 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun sendClickShareIcon(
-        userShareType: String = "general",
+        userId: String,
         orderIdList: String
     ) {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME_CLICK_COMMUNICATION,
             EVENT_CATEGORY_SHARE,
             EVENT_ACTION_CLICK_SHARE,
-            "$userShareType - $orderIdList"
+            "$userId - $orderIdList"
         )
         map[KEY_TRACKER_ID] = TRACKER_46218
         map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARE
@@ -487,8 +490,27 @@ class ThankYouPageAnalytics @Inject constructor(
         }
     }
 
+    fun sendCtaClickAnalytic(isPrimary: Boolean, text: String, applink: String, paymentId: String, merchantCode: String?, paymentMethod: String) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_PAMENT,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            if (isPrimary) EVENT_ACTION_CLICK_PRIMARY_CTA else EVENT_ACTION_CLICK_SECONDARY_CTA,
+            "$text - $applink"
+        )
+        val trackerId = if (isPrimary) TRACKER_50686 else TRACKER_50687
+        map[KEY_TRACKER_ID] = trackerId
+        map[KEY_CURRENT_SITE] = CURRENT_SITE_MARKETPLACE
+        map[KEY_MERCHANT_CODE] = merchantCode.orEmpty()
+        map[KEY_SCROOGE_ID] = String.EMPTY
+        map[KEY_PAYMENT_METHOD] = paymentMethod
+        map[KEY_ENVIRONMENT] = ANDROID
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
+    }
+
     companion object {
         const val EVENT_NAME_CLICK_ORDER = "clickOrder"
+        const val EVENT_NAME_CLICK_PAMENT = "clickPayment"
         const val EVENT_NAME_VIEW_COMMUNICATION = "viewCommunicationIris"
         const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"
 
@@ -506,6 +528,8 @@ class ThankYouPageAnalytics @Inject constructor(
         const val EVENT_ACTION_VIEW_BANNER = "view banner in thank you page"
         const val EVENT_ACTION_VIEW_SHARE = "view - share on thank you page"
         const val EVENT_ACTION_CLICK_SHARE = "click - share on thank you page"
+        const val EVENT_ACTION_CLICK_PRIMARY_CTA = "click primary button (right button)"
+        const val EVENT_ACTION_CLICK_SECONDARY_CTA = "click secondary button (left button)"
 
         const val EVENT_LABEL_INSTANT = "instant"
         const val EVENT_LABEL_DEFERRED = "deffer"
@@ -516,9 +540,12 @@ class ThankYouPageAnalytics @Inject constructor(
         const val TRACKER_45031 = "45031"
         const val TRACKER_46217 = "46217"
         const val TRACKER_46218 = "46218"
+        const val TRACKER_50686 = "50686"
+        const val TRACKER_50687 = "50687"
 
         const val BUSINESS_UNIT_SHARE = "sharingexperience"
         const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
+        const val ANDROID = "android"
     }
 }
 
@@ -535,6 +562,9 @@ object ParentTrackingKey {
     val KEY_EVENT_SELECT_CONTENT = "select_content"
     val PROMO_CLICK = "promoClick"
     val PROMO_VIEW = "promoView"
+    val KEY_SCROOGE_ID = "scroogeId"
+    val KEY_PAYMENT_METHOD = "paymentMethod"
+    val KEY_ENVIRONMENT = "environment"
 
     val KEY_SHOP_ID = "shopId"
     val KEY_SHOP_TYPE = "shopType"

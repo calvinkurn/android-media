@@ -8,7 +8,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
@@ -2197,7 +2196,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check notification setting appLink then should return device notification setting in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.DEVICE_NOTIFICATION_SETTINGS, "")
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.DEVICE_NOTIFICATION_SETTINGS,
+            ApplinkConstInternalMarketplace.DEVICE_NOTIFICATION_SETTING
+        )
     }
 
     @Test

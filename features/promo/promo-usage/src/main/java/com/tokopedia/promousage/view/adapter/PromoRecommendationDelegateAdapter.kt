@@ -12,20 +12,17 @@ import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.PromoItem
@@ -180,29 +177,12 @@ internal class PromoRecommendationDelegateAdapter(
 
         private fun setImageBackground(imageUrl: String) {
             try {
-                Glide.with(binding.ivPromoRecommendationBackground.context)
-                    .load(imageUrl)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            setImageBackgroundDefault(imageUrl)
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            if (resource != null) {
+                binding.ivPromoRecommendationBackground.loadImage(imageUrl) {
+                    setCacheStrategy(MediaCacheStrategy.ALL)
+                    listener(
+                        onSuccess = { bitmap, _ ->
+                            bitmap?.let {
+                                val resource = it.toDrawable(binding.ivPromoRecommendationBackground.resources)
                                 val containerWidth = binding.ivPromoRecommendationBackground
                                     .measuredWidth.toFloat()
                                 val containerHeight = binding.ivPromoRecommendationBackground
@@ -224,10 +204,12 @@ internal class PromoRecommendationDelegateAdapter(
                                         postScale(wScale, hScale)
                                     }
                             }
-                            return false
+                        },
+                        onError = {
+                            setImageBackgroundDefault(imageUrl)
                         }
-                    })
-                    .into(binding.ivPromoRecommendationBackground)
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
                 setImageBackgroundDefault(imageUrl)

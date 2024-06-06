@@ -1,15 +1,20 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.TrackConfirmCart
+import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.util.spacelessParam
 import com.tokopedia.analytics.byteio.util.underscoredParam
+import com.tokopedia.kotlin.extensions.view.orZero
 import org.json.JSONObject
 
 /**
@@ -33,7 +38,6 @@ data class AppLogRecommendationProductModel(
     val rate: Float,
     val originalPrice: Float,
     val salesPrice: Float,
-    val enterMethod: String?,
     val authorId: String,
     val groupId: String,
     val cardName: String,
@@ -61,7 +65,6 @@ data class AppLogRecommendationProductModel(
         itemOrder = itemOrder,
         entranceForm = entranceForm,
         sourcePageType = SourcePageType.PRODUCT_CARD,
-        enterMethod = enterMethod,
         originalPrice = originalPrice,
         salesPrice = salesPrice,
         rate = rate,
@@ -109,6 +112,74 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.REQUEST_ID, requestId)
     }
 
+    fun toConfirmCartJson(product: TrackConfirmCart) = JSONObject().apply {
+        addPage()
+        addEnterFrom()
+        put(
+            AppLogParam.ENTRANCE_INFO,
+            generateEntranceInfoJson(sourceModule).toString()
+        )
+
+        put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
+
+        put(AppLogParam.PRODUCT_ID, product.productId)
+        put("product_category", product.productCategory)
+        put("product_type", product.productType.type)
+        put("original_price_value", product.originalPrice)
+        put("sale_price_value", product.salePrice)
+        put("button_type", "able_to_cart")
+        put("sku_id", product.skuId)
+        put("currency", "IDR")
+        put("add_sku_num", product.addSkuNum)
+        put("buy_type", 1) // ATC will use code 1, otherwise Buy Now use 0
+    }
+
+    fun toConfirmCartResultJson(product: TrackConfirmCartResult) = JSONObject().apply {
+        addPage()
+        addEnterFrom()
+        put(
+            AppLogParam.ENTRANCE_INFO,
+            generateEntranceInfoJson(sourceModule).toString()
+        )
+
+        put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
+
+        put(AppLogParam.PRODUCT_ID, product.productId)
+        put("product_category", product.productCategory)
+        put("product_type", product.productType.type)
+        put("original_price_value", product.originalPrice)
+        put("sale_price_value", product.salePrice)
+        put("button_type", "able_to_cart")
+        put("sku_id", product.skuId)
+        put("currency", "IDR")
+        put("add_sku_num", product.addSkuNum)
+        put("buy_type", 1) // ATC will use code 1, otherwise Buy Now use 0
+        put("cart_item_id", product.cartItemId)
+        put("is_success", product.isSuccess?.intValue.orZero())
+        put("fail_reason", product.failReason)
+    }
+
+    private fun generateEntranceInfoJson(sourceModule: String): JSONObject {
+        return JSONObject().also {
+            it.put(AppLogParam.SOURCE_MODULE, sourceModule)
+            it.put(AppLogParam.ENTRANCE_FORM, entranceForm)
+            it.put(AppLogParam.IS_AD, AppLogAnalytics.getLastData(AppLogParam.IS_AD))
+            it.put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
+            it.put(AppLogParam.REQUEST_ID, requestId)
+            it.put(AppLogParam.TRACK_ID, trackId)
+            it.addEnterMethod()
+            it.addEnterFromInfo()
+        }
+    }
+
     companion object {
         fun create(
             productId: String = "",
@@ -128,7 +199,6 @@ data class AppLogRecommendationProductModel(
             rate: Float = 0f,
             originalPrice: Float = 0f,
             salesPrice: Float = 0f,
-            enterMethod: String? = null,
             authorId: String = "",
             groupId: String = "",
             cardName: String = CardName.REC_GOODS_CARD,
@@ -154,7 +224,6 @@ data class AppLogRecommendationProductModel(
                 rate = rate,
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
-                enterMethod = enterMethod,
                 authorId = authorId.zeroAsEmpty(),
                 groupId = groupId.zeroAsEmpty(),
                 cardName = getCardName(cardName, isAd).spacelessParam(),

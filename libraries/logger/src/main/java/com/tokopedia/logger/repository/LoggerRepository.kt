@@ -5,14 +5,12 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
-import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudSlardarApmDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
-import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.newrelic.NewRelicBodyApi
 import com.tokopedia.logger.model.newrelic.NewRelicBodySdk
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
@@ -37,7 +35,6 @@ class LoggerRepository(
     private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
     private val loggerCloudNewRelicSdkImpl: LoggerCloudNewRelicSdkImpl,
     private val loggerCloudNewRelicApiImpl: LoggerCloudNewRelicApiImpl,
-    private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
     private val loggerCloudSlardarApmDataSource: LoggerCloudSlardarApmDataSource,
     private val scalyrConfigs: List<ScalyrConfig>,
     private val abTestSharedPreference: SharedPreferences?,
@@ -121,7 +118,6 @@ class LoggerRepository(
                 val scalyrMessageList = mappedList.scalyrMessageList
                 val newRelicMessageSdkList = mappedList.newRelicMessageSdkList
                 val newRelicMessageApiList = mappedList.newRelicMessageApiMap
-                val embraceMessageList = mappedList.embraceMessageList
 
                 if (scalyrMessageList.isNotEmpty()) {
                     val jobScalyr = async {
@@ -145,11 +141,6 @@ class LoggerRepository(
                         sendNewRelicApiLogToServer(newRelicMessageApiList, logs)
                     }
                     jobList.add(jobNewRelicApi)
-                }
-
-                if (embraceMessageList.isNotEmpty()) {
-                    val jobEmbrace = async { sendEmbraceLogToServer(logs, embraceMessageList) }
-                    jobList.add(jobEmbrace)
                 }
 
                 val rollenceMap = getRollenceMap()
@@ -209,7 +200,6 @@ class LoggerRepository(
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         val messageNewRelicSdkList = mutableListOf<NewRelicBodySdk>()
         val messageNewRelicApiMap = mutableMapOf<String, NewRelicBodyApi>()
-        val messageEmbraceList = mutableListOf<EmbraceBody>()
 
         // make the timestamp equals to timestamp when hit the api
         // convert the milli to nano, based on scalyr requirement.
@@ -242,11 +232,8 @@ class LoggerRepository(
 
             setMessageNewRelicList(tagMapsValue, message, messageNewRelicSdkList, messageNewRelicApiMap, log)
 
-            LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
-                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMap(message)))
-            }
         }
-        return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicSdkList, messageNewRelicApiMap, messageEmbraceList)
+        return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicSdkList, messageNewRelicApiMap)
     }
 
     // P1#GP = key_new_relic_android, table_sf,
@@ -315,16 +302,6 @@ class LoggerRepository(
             msgJobList.add(job)
         }
         return msgJobList.toList().awaitAll().any { it }
-    }
-
-    private suspend fun sendEmbraceLogToServer(
-        logs: List<Logger>,
-        embraceBodyList: List<EmbraceBody>
-    ): Boolean {
-        if (logs.isEmpty()) {
-            return false
-        }
-        return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
     }
 
     fun truncate(str: String): String {

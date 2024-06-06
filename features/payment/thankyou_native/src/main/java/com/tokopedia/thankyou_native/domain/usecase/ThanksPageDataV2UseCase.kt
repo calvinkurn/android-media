@@ -217,6 +217,22 @@ class ThanksPageDataV2UseCase @Inject constructor(
                     cta_text
                     cta_link
                 }
+                cta_data_thanks_page {
+                    primary {
+                        type
+                        text
+                        url
+                        applink
+                        hide_button
+                    }
+                    secondary {
+                        type
+                        text
+                        url
+                        applink
+                        hide_button
+                    }
+                }
               }
             }
         """

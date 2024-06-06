@@ -47,8 +47,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

@@ -1,0 +1,18 @@
+def isBitsRepo() {
+    println("get property resRepo: ${getProperty('resRepo')}")
+    return getProperty('resRepo') == 'bits'
+}
+
+if (isBitsRepo()) {
+    ext.appProjectName = 'customerapp'
+    ext.appAid = 573733
+    //ext.hookDebug=true
+    apply from: '../../gradle/build-collect.gradle'
+
+    gradle.startParameter.getTaskNames().each {
+        taskName ->
+            if(taskName.contains("package") || taskName.contains("bundle") || taskName.contains("build")){
+                ext.Scan = true
+            }
+    }
+}

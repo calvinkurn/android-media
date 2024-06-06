@@ -1,17 +1,13 @@
 package com.tokopedia.flight.cancellation.presentation.adapter.viewholder
 
-import android.graphics.Bitmap
 import android.view.View
-import android.widget.ImageView
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAttachmentAdapterTypeFactory
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationAttachmentModel
 import com.tokopedia.flight.databinding.ItemFlightCancellationAttachmentBinding
-import java.io.File
+import com.tokopedia.media.loader.getBitmapImageUrl
 
 /**
  * @author by furqan on 20/07/2020
@@ -27,11 +23,14 @@ class FlightCancellationAttachmentViewHolder(val binding: ItemFlightCancellation
             tvPassengerName.text = element.passengerName
 
             if (element.filepath != null && element.filepath.isNotEmpty()) {
-                Glide.with(itemView.context)
-                        .asBitmap()
-                        .load(File((element.filepath)))
-                        .centerCrop()
-                        .into(getRoundedImageViewTarget(ivAttachment))
+                element.filepath.getBitmapImageUrl(itemView.context, {
+                    centerCrop()
+                }) {
+                    val imageView = ivAttachment
+                    val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, it)
+                    circularBitmapDrawable.cornerRadius = ROUNDED_RADIUS
+                    imageView.setImageDrawable(circularBitmapDrawable)
+                }
 
                 ivAttachment.setOnClickListener {
                     listener.viewImage(element.filepath)
@@ -66,15 +65,6 @@ class FlightCancellationAttachmentViewHolder(val binding: ItemFlightCancellation
             renderFileName(element)
         }
     }
-
-    private fun getRoundedImageViewTarget(imageView: ImageView): BitmapImageViewTarget =
-            object : BitmapImageViewTarget(imageView) {
-                override fun setResource(resource: Bitmap?) {
-                    val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
-                    circularBitmapDrawable.cornerRadius = ROUNDED_RADIUS
-                    imageView.setImageDrawable(circularBitmapDrawable)
-                }
-            }
 
     private fun resizeAttachmentTo60() {
         with(binding) {

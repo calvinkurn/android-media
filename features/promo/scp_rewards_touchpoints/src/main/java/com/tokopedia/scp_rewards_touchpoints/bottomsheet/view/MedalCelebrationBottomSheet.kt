@@ -17,14 +17,12 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
@@ -32,6 +30,8 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.scp_rewards_common.constants.EASE_IN
 import com.tokopedia.scp_rewards_common.utils.ViewUtil.fadeView
 import com.tokopedia.scp_rewards_common.utils.ViewUtil.rotate
@@ -468,21 +468,14 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun loadImageFromUrl(url: String, success: (drawable: Drawable) -> Unit, error: (() -> Unit)? = null) {
         context?.let {
-            Glide.with(it)
-                .load(url)
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onResourceReady(
-                        resource: Drawable,
-                        transition: Transition<in Drawable>?
-                    ) {
-                        success.invoke(resource)
-                    }
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        super.onLoadFailed(errorDrawable)
-                        error?.invoke()
-                    }
-                })
+            url.getBitmapImageUrl(it, {}, MediaBitmapEmptyTarget(
+                onReady = { bitmap ->
+                    success.invoke(bitmap.toDrawable(it.resources))
+                },
+                onFailed = {
+                    error?.invoke()
+                }
+            ))
         }
     }
 

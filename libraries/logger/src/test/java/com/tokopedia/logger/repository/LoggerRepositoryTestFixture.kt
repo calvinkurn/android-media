@@ -3,7 +3,6 @@ package com.tokopedia.logger.repository
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
-import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudSlardarApmDataSourceImpl
@@ -26,9 +25,6 @@ abstract class LoggerRepositoryTestFixture {
 
     @RelaxedMockK
     lateinit var loggerCloudNewRelicApiImpl: LoggerCloudNewRelicApiImpl
-
-    @RelaxedMockK
-    lateinit var loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl
 
     @RelaxedMockK
     lateinit var loggerCloudSlardarApmDataSourceImpl: LoggerCloudSlardarApmDataSourceImpl
@@ -54,7 +50,7 @@ abstract class LoggerRepositoryTestFixture {
         loggerRepository = LoggerRepository(
             Gson(),
             loggerDao, loggerCloudDataSource, loggerCloudNewRelicSdkImpl, loggerCloudNewRelicApiImpl,
-            loggerCloudEmbraceImpl, loggerCloudSlardarApmDataSourceImpl,
+            loggerCloudSlardarApmDataSourceImpl,
             scalyrConfigs, sharedPreferences, encrypt, decrypt, decryptNrKey
         )
     }
