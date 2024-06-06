@@ -101,7 +101,7 @@ class MerchantVoucherGridViewHolder(
             val itemBottom = itemView.bottom
             val rvBottom = parentRecyclerView.bottom
             // x0 is estimated threshold. So, before it reaches to bottom, we want to do loadMore
-            val itemIsGettingScrolledToBottom = (itemBottom - rvBottom) >= 30
+            val itemIsGettingScrolledToBottom = (itemBottom - rvBottom) <= 30
             viewModel?.loadMore(itemIsGettingScrolledToBottom ||
                 !parentRecyclerView.canScrollVertically(SCROLL_UP_DIRECTION))
         }
