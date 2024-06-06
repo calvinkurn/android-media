@@ -47,8 +47,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -101,3 +99,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'
+apply from: '../../sonar_config.gradle'

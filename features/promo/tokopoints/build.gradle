@@ -27,7 +27,6 @@ android {
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
@@ -63,7 +62,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.miscDependencies.lottie
 

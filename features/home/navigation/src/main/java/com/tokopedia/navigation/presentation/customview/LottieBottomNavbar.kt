@@ -25,9 +25,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
@@ -453,8 +455,12 @@ class LottieBottomNavbar : LinearLayout {
                 }
 
                 override fun onAnimationStart(p0: Animator) {
-                    icon.visibility = View.VISIBLE
-                    iconPlaceholder.visibility = View.INVISIBLE
+                    if (!icon.isVisible) {
+                        icon.visibility = View.VISIBLE
+                    }
+                    if (!iconPlaceholder.isInvisible) {
+                        iconPlaceholder.visibility = View.INVISIBLE
+                    }
                 }
             })
 
@@ -531,7 +537,7 @@ class LottieBottomNavbar : LinearLayout {
                             {
                                 rippleAnimator.addListener(
                                     onEnd = {
-                                        // if user up before enter animation finished,
+                                        // if user up before enter  animation finished,
                                         // do exit animation after enter animation finished
                                         if (currentRippleScale == SCALE_MAX_IMAGE) {
                                             scalingRipple(

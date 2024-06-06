@@ -3,18 +3,13 @@ package com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 
 fun ImageView.loadImage(
     url: String?,
@@ -28,21 +23,17 @@ fun ImageView.loadImage(
         onError?.invoke(IllegalStateException("Passed Activity is Destroyed"))
         return
     }
-    Glide.with(this)
-        .load(url)
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                onError?.invoke(e)
-                return false
-            }
-
-            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+    this.loadImage(url) {
+        setCacheStrategy(MediaCacheStrategy.ALL)
+        listener(
+            onSuccess = { _, _ ->
                 onSuccess?.invoke()
-                return false
+            },
+            onError = {
+                onError?.invoke(it)
             }
-        })
-        .into(this)
+        )
+    }
 }
 
 @SuppressLint("DeprecatedMethod")

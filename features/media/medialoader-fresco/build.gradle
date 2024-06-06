@@ -1,0 +1,90 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'org.jetbrains.dokka'
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    namespace 'com.tokopedia.media.loaderfresco'
+    testNamespace 'com.tokopedia.media.loaderfresco.test'
+}
+
+dependencies {
+
+    implementation rootProject.ext.bytedanceFrescoDependencies.fresco
+    implementation rootProject.ext.bytedanceFrescoDependencies.statistic
+    implementation rootProject.ext.bytedanceFrescoDependencies.okhttp3
+
+    implementation rootProject.ext.networkDependencies.retrofit
+
+    implementation rootProject.ext.slardarDependencies.commonMonitor
+    implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
+
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+    implementation rootProject.ext.firebase.crashlytics
+
+    testImplementation rootProject.ext.testDependencies.robolectric
+    testImplementation rootProject.ext.testDependencies.mockk
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+}
+
+project.ext {
+    artifactId = 'medialoaderfresco'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.1"
+    artifactName = "medialoaderfresco-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

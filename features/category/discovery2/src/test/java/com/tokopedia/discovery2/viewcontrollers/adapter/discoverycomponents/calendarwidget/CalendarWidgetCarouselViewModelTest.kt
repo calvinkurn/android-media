@@ -109,7 +109,8 @@ class CalendarWidgetCarouselViewModelTest {
                 dataArray.getMaxHeightForCarouselView(
                     context = context,
                     coroutineDispatcher = rule1.dispatchers.default,
-                    Constant.Calendar.DYNAMIC
+                    Constant.Calendar.DYNAMIC,
+                    tempProperties.calendarType
                 )
             }
         } answers {

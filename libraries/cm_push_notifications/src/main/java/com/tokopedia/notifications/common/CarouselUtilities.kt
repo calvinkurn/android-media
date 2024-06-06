@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory
 import android.text.TextUtils
 import androidx.annotation.Nullable
 import com.bumptech.glide.Glide
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.notifications.model.Carousel
 import com.tokopedia.notifications.model.ProductInfo
 import kotlinx.coroutines.Dispatchers
@@ -66,9 +68,10 @@ object CarouselUtilities {
 
     private fun getBitmap(context: Context, url: String?): Bitmap? {
         return try {
-            Glide.with(context).asBitmap().load(url)
-                    .into(MAX_WIDTH, MAX_HEIGHT)
-                    .get(GLIDE_TIME_OUT, TimeUnit.SECONDS)
+            val timeOutMillis = GLIDE_TIME_OUT * 1000
+            url?.getBitmapFromUrl(context, timeOutMillis) {
+                overrideSize(Resize(MAX_WIDTH, MAX_HEIGHT))
+            }
         } catch (e: InterruptedException) {
             return null
         } catch (e: ExecutionException) {

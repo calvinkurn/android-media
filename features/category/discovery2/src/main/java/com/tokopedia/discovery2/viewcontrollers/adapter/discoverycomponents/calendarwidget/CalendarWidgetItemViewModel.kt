@@ -48,38 +48,41 @@ class CalendarWidgetItemViewModel(
 
     fun subscribeUserForPushNotification(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = subScribeToUseCase?.subscribeToPush(campaignId.toLongOrZero())
+            val pushSubscriptionResponse =
+                subScribeToUseCase?.subscribeToPush(campaignId.toLongOrZero())
             if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value =
                     Pair(true, application.getString(R.string.discovery_calendar_push_subscribe))
             }
         }, onError = {
-                it.printStackTrace()
-                showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
-            })
+            it.printStackTrace()
+            showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
+        })
     }
 
     fun unSubscribeUserForPushNotification(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = subScribeToUseCase?.unSubscribeToPush(campaignId.toLongOrZero())
+            val pushSubscriptionResponse =
+                subScribeToUseCase?.unSubscribeToPush(campaignId.toLongOrZero())
             if (pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse?.notifierSetReminder?.isSuccess == 2) {
                 pushBannerStatus.value =
                     Pair(false, application.getString(R.string.discovery_calendar_push_unsubscribe))
             }
         }, onError = {
-                it.printStackTrace()
-                showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
-            })
+            it.printStackTrace()
+            showErrorToast.value = application.getString(R.string.discovery_calendar_push_error)
+        })
     }
 
     fun checkUserPushStatus(campaignId: String) {
         launchCatchError(block = {
-            val pushSubscriptionResponse = checkPushStatusUseCase?.checkPushStatus(campaignId.toLongOrZero())
+            val pushSubscriptionResponse =
+                checkPushStatusUseCase?.checkPushStatus(campaignId.toLongOrZero())
             pushBannerSubscription.value =
                 pushSubscriptionResponse?.notifierCheckReminder?.status == 1
         }, onError = {
-                it.printStackTrace()
-            })
+            it.printStackTrace()
+        })
     }
 
     override fun loggedInCallback() {
@@ -88,4 +91,22 @@ class CalendarWidgetItemViewModel(
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
+
+    fun getCtaText(defaultString: String): String {
+        val ctaFromBE = components.data?.firstOrNull()?.ctaText
+        return if (ctaFromBE.isNullOrEmpty()) {
+            defaultString
+        } else {
+            ctaFromBE
+        }
+    }
+
+    fun getNotifiedCtaText(defaultString: String): String {
+        val ctaFromBE = components.data?.firstOrNull()?.notifiedCtaText
+        return if (ctaFromBE.isNullOrEmpty()) {
+            defaultString
+        } else {
+            ctaFromBE
+        }
+    }
 }

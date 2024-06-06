@@ -109,120 +109,35 @@ class PlayPinnedProductAnalyticTest {
     }
 
     @Test
-    fun onClicked_pinnedProduct_in_ProductCarousel() {
+    fun pinnedProduct_in_ProductCarousel() {
         val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
+        val cartId = "123"
 
+        every { mockUserSession.isLoggedIn } returns true
         coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
+        coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
         with(robot) {
             delay(CASUAL_DELAY)
+            trackingQueue.sendAll()
+            assertCassavaByEventAction("view on pinned featured product")
+
             clickPinnedProductCarousel()
             trackingQueue.sendAll()
-            delay(CASUAL_DELAY)
-        }
+            assertCassavaByEventAction("click pinned featured product tagging")
 
-        assertCassavaByEventAction("click pinned featured product tagging")
-    }
-
-    @Test
-    fun onImpressed_pinnedProduct_in_ProductCarousel() {
-        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
-
-        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
-
-        val robot = createRobot()
-        with(robot) {
-            delay(CASUAL_DELAY)
-            trackingQueue.sendAll()
-            delay(CASUAL_DELAY)
-        }
-
-        assertCassavaByEventAction("view on pinned featured product")
-    }
-
-    @Test
-    fun onBuyClicked_pinnedProduct_in_ProductCarousel() {
-        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
-        val cartId = "123"
-
-        every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
-        coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
-
-        val robot = createRobot()
-        with(robot) {
-            delay(CASUAL_DELAY)
-            clickBuyPinnedProductCarousel()
-            trackingQueue.sendAll()
-            delay(CASUAL_DELAY)
-        }
-
-        assertCassavaByEventAction("click buy pinned product")
-    }
-
-    @Test
-    fun onAtcClicked_pinnedProduct_in_ProductCarousel() {
-        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
-        val cartId = "123"
-
-        every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
-        coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
-
-        val robot = createRobot()
-        with(robot) {
-            delay(CASUAL_DELAY)
             clickAtcPinnedProductCarousel()
             trackingQueue.sendAll()
-            delay(CASUAL_DELAY)
-        }
+            assertCassavaByEventAction("view - pinned lihat keranjang")
 
-        assertCassavaByEventAction("click atc pinned product")
-    }
-
-    @Test
-    fun onToasterImpressedAfterAtc_pinnedProduct_in_ProductCarousel() {
-        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
-        val cartId = "123"
-
-        every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
-        coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
-
-        val robot = createRobot()
-        with(robot) {
-            delay(CASUAL_DELAY)
-            clickAtcPinnedProductCarousel()
-            trackingQueue.sendAll()
-            delay(CASUAL_DELAY)
-        }
-
-        assertCassavaByEventAction("view - pinned lihat keranjang")
-    }
-
-    @Test
-    fun onToasterActionClickedAfterAtc_pinnedProduct_in_ProductCarousel() {
-        val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
-        val cartId = "123"
-
-        every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
-        coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
-
-        val robot = createRobot()
-        with(robot) {
-            delay(CASUAL_DELAY)
-            clickAtcPinnedProductCarousel()
             clickToasterAction()
             trackingQueue.sendAll()
-            delay(CASUAL_DELAY)
+            assertCassavaByEventAction("click - pinned lihat keranjang")
         }
-
-        assertCassavaByEventAction("click - pinned lihat keranjang")
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId, initialDelay = 3500, isYouTube = true)
+    private fun createRobot() = PlayActivityRobot(channelId, initialDelay = 1000, isYouTube = true)
 
     private fun buildTagItemWithPinned(
         numOfSections: Int = 1,

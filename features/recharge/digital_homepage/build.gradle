@@ -42,7 +42,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.gson
 
     implementation rootProject.ext.miscDependencies.liveData
@@ -61,6 +60,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.medialoaderFresco)
     implementation rootProject.ext.unifyDependencies.global_error
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

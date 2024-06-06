@@ -20,6 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"
+        android:clipToPadding="false"
+        app:reimagine="true"
         app:useDefaultItemDecorator="false" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -1,16 +1,12 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
@@ -18,6 +14,7 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -99,12 +96,8 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
     }
 
     private fun setRibbonBackground(backgroundUrl: String) {
-        Glide.with(context).load(backgroundUrl).into(object : CustomTarget<Drawable?>() {
-            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
-
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
-                postImageLayout.background = resource
-            }
-        })
+        backgroundUrl.getBitmapImageUrl(context) {
+            postImageLayout.background = it.toDrawable(resources)
+        }
     }
 }

@@ -16,6 +16,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
+import com.tokopedia.media.loader.loadResource
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
@@ -31,7 +36,7 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-const val IMAGE_DOWNLOAD_TIME_OUT_SECOND = 10L
+const val IMAGE_DOWNLOAD_TIME_OUT_SECOND = 10_000L
 
 interface BaseNotificationContract {
     fun defaultIcon(): Bitmap
@@ -232,11 +237,9 @@ abstract class BaseNotification internal constructor(
         if (url.isNullOrBlank())
             return null
         return try {
-            Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .submit(imageWidth, imageHeight)
-                .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
+            url.getBitmapFromUrl(context, timeout = IMAGE_DOWNLOAD_TIME_OUT_SECOND) {
+                overrideSize(Resize(imageWidth, imageHeight))
+            }
         } catch (e: Exception) {
             null
         }
@@ -244,11 +247,9 @@ abstract class BaseNotification internal constructor(
 
     override fun getBitmap(url: String?): Bitmap {
         return try {
-            Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .into(imageWidth, imageHeight)
-                .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
+            url?.getBitmapFromUrl(context, timeout = IMAGE_DOWNLOAD_TIME_OUT_SECOND) {
+                overrideSize(Resize(imageWidth, imageHeight))
+            } ?: throw NullPointerException()
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -261,17 +262,14 @@ abstract class BaseNotification internal constructor(
     }
 
     override fun loadResourceAsBitmap(resId: Int, result: (Bitmap) -> Unit) {
-        Glide.with(context)
-            .asBitmap()
-            .load(resId)
-            .placeholder(resId)
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    result(resource)
-                }
-            })
+        resId.loadResource(context, {
+            setCacheStrategy(MediaCacheStrategy.DATA)
+            setPlaceHolder(resId)
+        }, MediaBitmapEmptyTarget(
+            onReady = {
+                result(it)
+            }
+        ))
     }
 
     internal fun createMainPendingIntent(

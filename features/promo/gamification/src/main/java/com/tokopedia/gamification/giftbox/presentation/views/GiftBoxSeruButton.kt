@@ -11,6 +11,9 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.Constants
+import com.tokopedia.media.loader.getBitmapFromUrl
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 
@@ -51,35 +54,9 @@ class GiftBoxSeruButton @JvmOverloads constructor(
     }
 
    private fun setIcon() {
-        Glide.with(context)
-            .asDrawable()
-            .load(playImageSource)
-            .into(object : CustomTarget<Drawable>(){
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    imageBell.setImageDrawable(resource)
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-            })
+       imageBell.loadImage(playImageSource)
     }
     fun setIcon(url: String?) {
-        Glide.with(context)
-            .asDrawable()
-            .load(url)
-            .into(object : CustomTarget<Drawable>(){
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    imageBell.setImageDrawable(resource)
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-            })
+        imageBell.loadImage(url)
     }
 }

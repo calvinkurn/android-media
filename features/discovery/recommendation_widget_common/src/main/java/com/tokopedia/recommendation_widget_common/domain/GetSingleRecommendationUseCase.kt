@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
@@ -43,22 +44,23 @@ constructor(
             .map {
                 val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
                 entity.productRecommendationWidget.data.also { data ->
-                    requestParams.parameters[GetRecommendationUseCase.PAGE_NAME]?.toString()?.let { pageName ->
-                        byteIoUseCase.updateSessionId(pageName, data.appLog.sessionId)
+                    // if the request does not have pageName, use productId as identifier
+                    // example use case: similar recommendation landing page
+                    val requestIdentifier = requestParams.parameters[PRODUCT_IDS].toString().ifEmpty {
+                        requestParams.parameters[PRODUCT_IDS].toString()
                     }
+                    byteIoUseCase.updateMap(
+                        requestIdentifier,
+                        sessionId = data.appLog.sessionId,
+                        totalData = data.recommendation.size
+                    )
                 }
             }
     }
 
-    fun getRecomParams(
-        pageNumber: Int,
-        productIds: List<String>,
-        queryParam: String = "",
-        hasNewProductCardEnabled: Boolean = false,
-    ): RequestParams {
+    fun getRecomParams(pageNumber: Int, productIds: List<String>, queryParam: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
-        val reimagineCardParam = getProductCardReimagineVersion(hasNewProductCardEnabled)
         val newQueryParam = ChooseAddressUtils
             .getLocalizingAddressData(context)
             .toQueryParam(queryParam)
@@ -75,20 +77,12 @@ constructor(
         params.putString(PRODUCT_IDS, productIdsString)
         params.putString(QUERY_PARAM, newQueryParam)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
-        params.putInt(PARAM_CARD_REIMAGINE, reimagineCardParam)
+        params.putInt(PARAM_CARD_REIMAGINE, CARD_REIMAGINE_VERSION)
         params.putString(REFRESH_TYPE, byteIoParam.refreshType.value.toString())
         params.putString(CURRENT_SESSION_ID, byteIoParam.bytedanceSessionId)
         params.putString(ENTER_FROM, AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)?.toString().orEmpty())
         params.putString(SOURCE_PAGE_TYPE, AppLogAnalytics.getLastData(AppLogParam.SOURCE_PAGE_TYPE)?.toString().orEmpty())
         return params
-    }
-
-    private fun getProductCardReimagineVersion(hasNewProductCardEnabled: Boolean): Int {
-        return if (ProductCardExperiment.isReimagine() && hasNewProductCardEnabled) {
-            CARD_REIMAGINE_VERSION
-        } else {
-            CARD_REVERT_VERSION
-        }
     }
 
     companion object {

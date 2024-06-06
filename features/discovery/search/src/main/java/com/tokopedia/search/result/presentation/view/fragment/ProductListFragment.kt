@@ -29,6 +29,8 @@ import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
+import com.tokopedia.analytics.byteio.IAdsLog
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
@@ -193,7 +195,8 @@ class ProductListFragment :
     ClassNameProvider,
     ScreenNameProvider,
     BackToTopView,
-    AppLogInterface by ProductPageNameDelegate() {
+    AppLogInterface by ProductPageNameDelegate(),
+    IAdsLog {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -1422,6 +1425,10 @@ class ProductListFragment :
         recyclerViewUpdater.backToTop()
     }
 
+    override fun immediateMoveToTop() {
+        recyclerViewUpdater.immediateMoveToTop()
+    }
+
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
     }
@@ -1561,6 +1568,10 @@ class ProductListFragment :
 
     override fun enableProductViewTypeOnBoarding() {
         onBoardingListenerDelegate.enableProductViewTypeCoachmark()
+    }
+
+    override fun getAdsPageName(): String {
+        return GOODS_SEARCH
     }
 
     //endregion
@@ -1713,6 +1724,9 @@ class ProductListFragment :
         AppLogAnalytics.removePageData(ECOM_FILTER_TYPE)
     }
 
+    /**
+     * Enter method that should have new_sug_session id sent in ByteIo Tracker
+     */
     private fun enterMethodShouldHaveSug(enterMethod: String)
         = AppLogSearch.sugEnterMethod.contains(enterMethod)
 

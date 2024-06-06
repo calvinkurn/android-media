@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.FILTER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
@@ -13,7 +14,7 @@ import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
 // Uoh = Unify Order History
-class UohListActivity : BaseSimpleActivity(), AppLogInterface {
+class UohListActivity : BaseSimpleActivity(), AppLogInterface, IAdsLog {
 
     override fun getLayoutRes() = R.layout.activity_uoh
 
@@ -42,6 +43,8 @@ class UohListActivity : BaseSimpleActivity(), AppLogInterface {
     }
 
     override fun getPageName(): String = PageName.UOH
+
+    override fun getAdsPageName(): String = PageName.UOH
 
     override fun isEnterFromWhitelisted(): Boolean = true
 }

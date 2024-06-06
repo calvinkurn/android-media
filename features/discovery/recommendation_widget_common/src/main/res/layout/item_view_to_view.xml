@@ -8,4 +8,4 @@
     android:focusable="true"
     app:reimagine="true"
     app:reimagine_template="list"
-    app:useCompatPadding="true"/>
+    app:useCompatPadding="true" />

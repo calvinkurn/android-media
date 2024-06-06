@@ -1,7 +1,6 @@
 package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,10 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.data.Resize;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
@@ -110,28 +108,30 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
         public void bind(String imagePath, int position) {
             File file = new File(imagePath);
-            boolean loadFitCenter = false;
+            boolean loadFitCenter;
             if (file.exists()) {
                 loadFitCenter = ImageProcessingUtil.shouldLoadFitCenter(file);
-            }
-            RequestBuilder<Bitmap> requestBuilder = Glide.with(context)
-                    .asBitmap()
-                    .load(imagePath)
-                    .override(thumbnailSize, thumbnailSize);
-            if (loadFitCenter) {
-                requestBuilder = requestBuilder.fitCenter();
             } else {
-                requestBuilder = requestBuilder.centerCrop();
+                loadFitCenter = false;
             }
-            requestBuilder.into(new BitmapImageViewTarget(imageView) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
-                            circularBitmapDrawable.setCornerRadius(roundedSize);
-                            imageView.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
+
+            JvmMediaLoader.getBitmapImageUrl(context, imagePath, properties -> {
+                if (loadFitCenter) {
+                    properties.fitCenter();
+                } else {
+                    properties.centerCrop();
+                }
+                properties.overrideSize(new Resize(thumbnailSize, thumbnailSize));
+                return null;
+            },(bitmap, mediaDataSource, isFirstResource) -> { // onSuccess
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), bitmap);
+                circularBitmapDrawable.setCornerRadius(roundedSize);
+                imageView.setImageDrawable(circularBitmapDrawable);
+                return null;
+            }, (exception) -> { // onError
+                return null;
+            });
             if (position == 0 && usePrimaryString) {
                 tvCounterPrimary.setText(R.string.label_primary);
                 tvCounterPrimary.setVisibility(View.VISIBLE);

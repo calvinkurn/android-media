@@ -11,7 +11,6 @@ import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
-import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.grid.ProductGridType
@@ -33,6 +32,7 @@ interface ProductListSectionContract {
         fun showNetworkError(throwable: Throwable?)
         val queryKey: String
         fun backToTop()
+        fun immediateMoveToTop()
         fun addLoading()
         fun removeLoading()
         fun setAutocompleteApplink(autocompleteApplink: String?)

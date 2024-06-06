@@ -253,6 +253,7 @@
 -keep class com.tokopedia.dynamicfeatures.DFInstallerFragment
 -keep class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
 -keep class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
+-keep class com.tokopedia.homenav.view.fragment.HomeNavFragment
 
 # feed_shop
 -keepnames class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
@@ -271,8 +272,14 @@
 -keep class com.datavisor.vangogh.** { *; }
 -keep class com.datavisorobfus.** { *; }
 
-# Embrace
--keep class io.embrace.android.** { *; }
+-dontwarn okhttp3.internal.**
+-dontwarn org.conscrypt.**
+-dontwarn org.openjsse.**
+
+-keep class okhttp3.internal.** { *; }
+-keep class org.conscrypt.** { *; }
+-keep class org.openjsse.** { *; }
+
 -dontwarn com.jsoniter.extra.JacksonCompatibility*
 -dontwarn com.jsoniter.output.DynamicCodegen
 -dontwarn com.jsoniter.DynamicCodegen

@@ -234,8 +234,7 @@ class HomeAdapterFactory(
     private val homeThematicUtil: HomeThematicUtil,
     private val origamiListenerDelegate: OrigamiListenerDelegate,
     private val mission4SquareWidgetListener: Mission4SquareWidgetListener,
-    private val multiTwoSquareWidgetListener: TwoSquareWidgetListenerCallback,
-    private val remoteConfig: RemoteConfig
+    private val multiTwoSquareWidgetListener: TwoSquareWidgetListenerCallback
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -549,7 +548,7 @@ class HomeAdapterFactory(
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
-            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, remoteConfig, listener, cardInteraction = true)
+            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)

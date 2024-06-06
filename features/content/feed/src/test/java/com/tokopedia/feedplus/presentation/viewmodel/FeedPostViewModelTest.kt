@@ -6,9 +6,9 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.model.TrackVisitChannelResponse
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.report_content.model.UserReportSubmissionResponse
@@ -17,9 +17,9 @@ import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
-import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.feed.common.comment.model.CountComment
 import com.tokopedia.feed.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feed.component.product.FeedProductPaging
@@ -100,9 +100,11 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -110,6 +112,7 @@ import org.junit.Test
 /**
  * Created By : Muhammad Furqan on 22/05/23
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class FeedPostViewModelTest {
 
     @get:Rule
@@ -136,8 +139,8 @@ class FeedPostViewModelTest {
     private val mvcSummaryUseCase: MVCSummaryUseCase = mockk()
     private val topAdsAddressHelper: TopAdsAddressHelper = mockk()
     private val getCountCommentsUseCase: GetCountCommentsUseCase = mockk()
-    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase = mockk()
-    private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
+    private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase =
+        mockk(relaxed = true)
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
     private val postReportUseCase: PostUserReportUseCase = mockk()
     private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase = mockk()
@@ -146,9 +149,12 @@ class FeedPostViewModelTest {
     private val uiEventManager = UiEventManager<FeedPostEvent>()
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase = mockk()
     private val feedGetChannelStatusUseCase: FeedGetChannelStatusUseCase = mockk()
+    private val getCartCountUseCase: UpdateCartCounterUseCase = mockk()
     private val tooltipManager: FeedTooltipManager = mockk()
 
     private lateinit var viewModel: FeedPostViewModel
+
+    private val playChannelId get() = (getDummyFeedModel().items[1] as FeedCardVideoContentModel).playChannelId
 
     @Before
     fun setUp() {
@@ -170,7 +176,6 @@ class FeedPostViewModelTest {
             topAdsAddressHelper = topAdsAddressHelper,
             getCountCommentsUseCase = getCountCommentsUseCase,
             affiliateCookieHelper = affiliateCookieHelper,
-            trackVisitChannelUseCase = trackVisitChannelUseCase,
             trackReportTrackViewerUseCase = trackReportViewerUseCase,
             submitReportUseCase = submitReportUseCase,
             getReportUseCase = getReportListUseCase,
@@ -179,6 +184,7 @@ class FeedPostViewModelTest {
             uiEventManager = uiEventManager,
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             feedGetChannelStatusUseCase = feedGetChannelStatusUseCase,
+            getCartCountUseCase = getCartCountUseCase,
             dispatchers = testDispatcher,
             tooltipManager = tooltipManager,
         )
@@ -455,7 +461,7 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun onAtc_whenFailed() {
+    fun onAtc_whenFailed() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -483,7 +489,9 @@ class FeedPostViewModelTest {
             ),
             ContentTaggedProductUiModel.Stock.Available
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns AddToCartDataModel(
@@ -502,10 +510,11 @@ class FeedPostViewModelTest {
         assert(viewModel.observeAddProductToCart.value is Fail)
         assert((viewModel.observeAddProductToCart.value as Fail).throwable is ResponseErrorException)
         assert((viewModel.observeAddProductToCart.value as Fail).throwable.message == "Error Message")
+        viewModel.cartCount.value.assertEqualTo(0)
     }
 
     @Test
-    fun onAtc_whenSuccess() {
+    fun onAtc_whenSuccess() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -548,7 +557,9 @@ class FeedPostViewModelTest {
             product = dummyData,
             source = FeedProductActionModel.Source.BottomSheet
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns dummyAtcResult
@@ -560,6 +571,7 @@ class FeedPostViewModelTest {
         // then
         assert(viewModel.observeAddProductToCart.value is Success)
         assert((viewModel.observeAddProductToCart.value as Success).data == dummySuccess)
+        viewModel.cartCount.value.assertEqualTo(expectedCartCount)
     }
 
     @Test
@@ -607,7 +619,7 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun onBuyProduct_whenFailed() {
+    fun onBuyProduct_whenFailed() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -635,7 +647,9 @@ class FeedPostViewModelTest {
             ),
             ContentTaggedProductUiModel.Stock.Available
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
@@ -654,10 +668,11 @@ class FeedPostViewModelTest {
         assert(viewModel.observeBuyProduct.value is Fail)
         assert((viewModel.observeBuyProduct.value as Fail).throwable is ResponseErrorException)
         assert((viewModel.observeBuyProduct.value as Fail).throwable.message == "Error Message")
+        viewModel.cartCount.value.assertEqualTo(0)
     }
 
     @Test
-    fun onBuyProduct_whenSuccess() {
+    fun onBuyProduct_whenSuccess() = runTest {
         // given
         val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
@@ -700,7 +715,9 @@ class FeedPostViewModelTest {
             product = dummyData,
             source = FeedProductActionModel.Source.BottomSheet
         )
+        val expectedCartCount = 17
 
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
         coEvery { userSession.userId } returns "1"
         coEvery { atcUseCase.setParams(any()) } coAnswers {}
         coEvery { atcUseCase.executeOnBackground() } returns dummyAtcResult
@@ -712,6 +729,7 @@ class FeedPostViewModelTest {
         // then
         assert(viewModel.observeBuyProduct.value is Success)
         assert((viewModel.observeBuyProduct.value as Success).data == dummySuccess)
+        viewModel.cartCount.value.assertEqualTo(expectedCartCount)
     }
 
     @Test
@@ -1212,22 +1230,35 @@ class FeedPostViewModelTest {
     }
 
     @Test
-    fun onTrackChannelPerformance() {
-        coEvery { trackReportViewerUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
+    fun onTrackChannelProduct() {
+        runTest(testDispatcher.coroutineDispatcher) {
+            coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
+            // when
+            viewModel.trackPerformance(
+                playChannelId,
+                listOf("2", "4"),
+                BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges
+            )
 
-        // when
-        viewModel.trackChannelPerformance(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+            coVerify { trackReportViewerUseCase.executeOnBackground() }
+        }
+
     }
 
     @Test
-    fun onTrackVisiChannel() {
-        coEvery { trackVisitChannelUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { trackVisitChannelUseCase.executeOnBackground() } returns TrackVisitChannelResponse.Response(
-            TrackVisitChannelResponse()
-        )
+    fun onTrackVisitChannel() {
+        runTest(testDispatcher.coroutineDispatcher) {
+            coEvery { trackReportViewerUseCase.executeOnBackground() } returns true
 
-        viewModel.trackVisitChannel(getDummyFeedModel().items[1] as FeedCardVideoContentModel)
+            viewModel.trackPerformance(
+                playChannelId,
+                emptyList(),
+                BroadcasterReportTrackViewerUseCase.Companion.Event.Visit
+            )
+
+            coVerify { trackReportViewerUseCase.executeOnBackground() }
+        }
+
     }
 
     @Test
@@ -1305,7 +1336,8 @@ class FeedPostViewModelTest {
             viewModel.fetchFeedProduct(
                 activityId,
                 emptyList(),
-                ContentTaggedProductUiModel.SourceType.Organic
+                ContentTaggedProductUiModel.SourceType.Organic,
+                "video"
             )
         }
         assert(result.state == expected.state)
@@ -1336,7 +1368,8 @@ class FeedPostViewModelTest {
             viewModel.fetchFeedProduct(
                 activityId,
                 productList,
-                ContentTaggedProductUiModel.SourceType.Organic
+                ContentTaggedProductUiModel.SourceType.Organic,
+                "video"
             )
         }
 
@@ -1362,7 +1395,8 @@ class FeedPostViewModelTest {
             viewModel.fetchFeedProduct(
                 activityId,
                 emptyList(),
-                ContentTaggedProductUiModel.SourceType.Organic
+                ContentTaggedProductUiModel.SourceType.Organic,
+                "video"
             )
         }
 
@@ -1389,7 +1423,8 @@ class FeedPostViewModelTest {
             viewModel.fetchFeedProduct(
                 activityId,
                 emptyList(),
-                ContentTaggedProductUiModel.SourceType.Organic
+                ContentTaggedProductUiModel.SourceType.Organic,
+                "video"
             )
         }
 
@@ -1448,7 +1483,8 @@ class FeedPostViewModelTest {
             viewModel.fetchFeedProduct(
                 activityId,
                 expected,
-                ContentTaggedProductUiModel.SourceType.Organic
+                ContentTaggedProductUiModel.SourceType.Organic,
+                "video"
             )
         }
 
@@ -2293,6 +2329,37 @@ class FeedPostViewModelTest {
 
             coVerify(exactly = if (it == 4) 1 else 0) { tooltipManager.showTooltipEvent() }
         }
+    }
+
+    /** Cart Count */
+    @Test
+    fun cartCount_successGetCartCount() = runTest {
+        val expectedCartCount = 17
+
+        coEvery { getCartCountUseCase(Unit) } returns expectedCartCount
+
+        viewModel.fetchCartCount()
+
+        viewModel.cartCount.value.assertEqualTo(expectedCartCount)
+    }
+
+    @Test
+    fun cartCount_errorGetCartCount() = runTest {
+        val expectedException = Exception("Network Issue")
+
+        coEvery { getCartCountUseCase(Unit) } throws expectedException
+
+        viewModel.fetchCartCount()
+
+        viewModel.cartCount.value.assertEqualTo(0)
+    }
+
+    private fun runTest(block: () -> Unit) = runTest(testDispatcher.coroutineDispatcher) {
+        backgroundScope.launch {
+            viewModel.cartCount.collect { }
+        }
+
+        block()
     }
 
     private fun provideDefaultFeedPostMockData() {

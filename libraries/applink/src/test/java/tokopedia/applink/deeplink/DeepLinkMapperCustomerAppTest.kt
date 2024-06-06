@@ -8,11 +8,11 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.applink.model.Always
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
@@ -33,8 +33,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 164
-        const val SIZE_PATH = 281
+        const val SIZE_HOST = 165
+        const val SIZE_PATH = 282
     }
 
     override fun setup() {
@@ -82,7 +82,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check home appLink then should return tokopedia internal home navigation in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?tab_type=home"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME, expectedDeepLink)
     }
 
@@ -227,7 +227,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check home feed appLink then should return tokopedia internal home navigation tab home in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?tab_type=feed"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_FEED, expectedDeepLink)
     }
 
@@ -260,7 +260,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check feed appLink then should return tokopedia internal home navigation tab feed content in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=1"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?tab_type=feed"
         assertEqualsDeepLinkMapper(ApplinkConst.FEED, expectedDeepLink)
     }
 
@@ -1807,7 +1807,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check content detail appLink then should return tokopedia internal content detail in customerapp`() {
         val expectedDeepLink =
-            "${ApplinkConsInternalHome.HOME_NAVIGATION}?TAB_POSITION=1&ARGS_FEED_SOURCE_ID=123"
+            "${ApplinkConsInternalHome.HOME_NAVIGATION}?tab_type=feed&ARGS_FEED_SOURCE_ID=123"
         val appLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, "123")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -2196,7 +2196,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check notification setting appLink then should return device notification setting in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.DEVICE_NOTIFICATION_SETTINGS, "")
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.DEVICE_NOTIFICATION_SETTINGS,
+            ApplinkConstInternalMarketplace.DEVICE_NOTIFICATION_SETTING
+        )
     }
 
     @Test
@@ -3105,9 +3108,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check appLink for update tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
         }
         assertEqualsDeepLinkMapper("tokopedia://feed", expectedDeepLink)
         assertEqualsDeepLinkMapper("tokopedia://content", expectedDeepLink)
@@ -3116,9 +3119,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check appLink for explore tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=explore")
         }
@@ -3135,9 +3138,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check appLink for video tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=video")
         }
@@ -3154,9 +3157,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check appLink for foryou tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=foryou")
             append("&tab=foryou") // automatically added
@@ -3168,9 +3171,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check appLink for following tab in feed should be equal to the actual`() {
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME}=following")
         }
@@ -3190,9 +3193,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val source = "detail-play"
 
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME}=$source")
             append("&")
@@ -3209,9 +3212,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val source = "detail-play"
 
         val expectedDeepLink = buildString {
-            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
             append("?")
-            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_FEED}")
             append("&")
             append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME}=$source")
             append("&")
@@ -3276,5 +3279,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check feed search result appLink then should return tokopedia internal feed search result`() {
         val expectedDeepLink = ApplinkConstInternalContent.INTERNAL_FEED_SEARCH_RESULT
         assertEqualsDeepLinkMapper("tokopedia://feed/search-result", expectedDeepLink)
+    }
+
+    @Test
+    fun `check appLink for me page`() {
+        val expectedDeepLink = buildString {
+            append(ApplinkConsInternalHome.HOME_NAVIGATION)
+            append("?")
+            append("${DeeplinkMapperMainNavigation.EXTRA_TAB_TYPE}=${DeeplinkMapperMainNavigation.TAB_TYPE_ME_PAGE}")
+        }
+
+        assertEqualsDeepLinkMapper("tokopedia://me-page", expectedDeepLink)
     }
 }

@@ -30,6 +30,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.Inspiration
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.FragmentFeedCategoryInspirationBinding
+import com.tokopedia.feedplus.domain.mapper.toAuthorWidgetModel
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import kotlinx.coroutines.flow.collectLatest
@@ -120,6 +121,11 @@ internal class CategoryInspirationFragment @Inject constructor(
             viewHolder: InspirationCardViewHolder.Item,
             model: FeedBrowseItemListModel.InspirationCard.Item
         ) {
+            tracker.clickAuthorName(
+                item = model.item.partner.toAuthorWidgetModel(model.item.channelId),
+                slotInfo = model.slotInfo,
+                widgetPositionInList = model.index,
+            )
             router.route(context, model.item.partner.appLink)
         }
     }
@@ -190,6 +196,8 @@ internal class CategoryInspirationFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tracker.openScreenBrowseFeedPage()
 
         setupView()
         observe()

@@ -3,7 +3,6 @@ package com.tokopedia.recommendation_widget_common.domain.request
 import android.text.TextUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogParam
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 
 data class GetRecommendationRequestParam(
@@ -20,15 +19,15 @@ data class GetRecommendationRequestParam(
     var userId: Int = 0,
     val shopIds: List<String> = listOf(),
     val criteriaThematicIDs: List<String> = listOf(),
+    @Deprecated("Unused variable, always forcibly uses V5 card.")
     var hasNewProductCardEnabled: Boolean = false,
     val refreshType: RefreshType = RefreshType.UNKNOWN,
     val bytedanceSessionId: String = "",
-    val totalData: Int = 0,
 ) {
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
 
-        requestMap[PRODUCT_CARD_VERSION] = getProductCardReimagineVersion()
+        requestMap[PRODUCT_CARD_VERSION] = CARD_REIMAGINE_VERSION
         requestMap[PAGE_NUMBER] = pageNumber
         requestMap[QUERY_PARAM] = queryParam
         requestMap[PARAM_TOKONOW] = isTokonow
@@ -58,15 +57,6 @@ data class GetRecommendationRequestParam(
         return requestMap
     }
 
-    private fun getProductCardReimagineVersion(): Int {
-        val shouldReimagineEnabled = ProductCardExperiment.isReimagine()
-        return if (shouldReimagineEnabled && hasNewProductCardEnabled) {
-            CARD_REIMAGINE_VERSION
-        } else {
-            CARD_REVERT_VERSION
-        }
-    }
-
     companion object {
         private const val PAGE_NUMBER = "pageNumber"
         private const val PAGE_NAME = "pageName"
@@ -85,9 +75,7 @@ data class GetRecommendationRequestParam(
         private const val CURRENT_SESSION_ID = "currentSessionID"
         private const val ENTER_FROM = "enterFrom"
         private const val SOURCE_PAGE_TYPE = "sourcePageType"
-
         private const val CARD_REIMAGINE_VERSION = 5
-        private const val CARD_REVERT_VERSION = 0
 
         const val X_SOURCE_DEFAULT_VALUE = "recom_widget"
     }

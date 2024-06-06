@@ -200,11 +200,14 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
         model.tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(
-                provider.currentShopId,
-                currentTab.componentList,
-                model.widgetStyle,
-                model.header.isOverrideTheme,
-                model.header.colorSchema
+                shopId = provider.currentShopId,
+                widgets = currentTab.componentList,
+                widgetStyle = model.widgetStyle,
+                overrideTheme = model.header.isOverrideTheme,
+                colorScheme = model.header.colorSchema,
+                backgroundColor = provider.getBackgroundColor(),
+                patternColorType = provider.getPatternColorType(),
+                isFestivity = model.isFestivity
             )
             fragment.setOnMainBannerClick { mainBanner -> listener.onBannerProductGroupMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }

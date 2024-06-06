@@ -208,6 +208,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 }
               }
               partnerLabel
+              shopCredibility {
+                  stats {
+                    icon
+                    value
+                  }
+              }
             }
             nearestWarehouse {
               product_id
@@ -240,6 +246,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                   cart_type
                   onboarding_message
                   show_recommendation
+                  showAnimation
                 }
                 unavailable_buttons
                 hide_floating_button

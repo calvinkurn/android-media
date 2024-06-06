@@ -57,11 +57,6 @@ class ProductChooserAnalyticTest {
         )
     )
 
-    @get:Rule
-    var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
-
-    private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_analytic.json"
-
     init {
         coEvery { mockRepo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
             dataList = mockSelectedProducts,
@@ -77,126 +72,37 @@ class ProductChooserAnalyticTest {
     }
 
     @Test
-    fun testAnalytic_closeBottomSheet() {
-        val robot = createRobot()
+    fun testAnalytic_productChooserSGC() {
+        createRobot()
+            .selectProduct(0)
+            .assertEventAction("click - product card")
 
-        robot.close()
+            .clickSortChips()
+            .assertEventAction("click - product sort")
 
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - close button on product bottom sheet")
-        )
-    }
+            .selectSort(0)
+            .saveSort()
+            .assertEventAction("click - sort type")
 
-    @Test
-    fun testAnalytic_closeBottomSheet_confirm() {
-        val robot = createRobot()
+            .clickEtalaseCampaignChips()
+            .assertEventAction("click - campaign & etalase filter")
 
-        with(robot) {
-            selectProduct()
-            close()
-            confirmClose()
-        }
+            .searchKeyword("abc")
+            .performDelay()
+            .assertEventAction("click - search bar")
 
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - confirm close on add product page")
-        )
-    }
-
-    @Test
-    fun testAnalytic_closeBottomSheet_cancel() {
-        val robot = createRobot()
-
-        with(robot) {
-            selectProduct()
-            close()
-            cancelClose()
-        }
-
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - cancel close on add product page")
-        )
-    }
-
-    @Test
-    fun testAnalytic_saveProduct() {
-        val robot = createRobot()
-
-        robot.selectProduct(0)
             .saveProducts()
+            .assertEventAction("click - save product card")
 
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - save product card")
-        )
-    }
+            .selectProduct(0)
+            .close()
+            .assertEventAction("click - close button on product bottom sheet")
 
-    @Test
-    fun testAnalytic_selectProduct() {
-        val robot = createRobot()
+            .cancelClose()
+            .assertEventAction("click - cancel close on add product page")
 
-        robot.selectProduct()
-
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - product card")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickSortChips() {
-        val robot = createRobot()
-
-        robot.clickSortChips()
-
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - product sort")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickEtalaseCampaignChips() {
-        val robot = createRobot()
-
-        robot.clickEtalaseCampaignChips()
-
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - campaign & etalase filter")
-        )
-    }
-
-    @Test
-    fun testAnalytic_searchKeyword() {
-        val robot = createRobot()
-
-        with(robot) {
-            searchKeyword("abc")
-            delay()
-        }
-
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - search bar")
-        )
-    }
-
-    @Test
-    fun testAnalytic_selectSort() {
-        val robot = createRobot()
-
-        with(robot) {
-            clickSortChips()
-            selectSort(0)
-            saveSort()
-        }
-
-        assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - sort type")
-        )
+            .close()
+            .confirmClose()
+            .assertEventAction("click - confirm close on add product page")
     }
 }

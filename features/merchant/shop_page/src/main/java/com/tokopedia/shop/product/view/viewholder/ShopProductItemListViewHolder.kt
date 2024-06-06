@@ -16,8 +16,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.fragment.ShopProductTabInterface
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
-import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopProductItemListViewHolder(
     itemView: View,
@@ -44,7 +44,7 @@ class ShopProductItemListViewHolder(
         if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
             stockBarLabelColor = ShopUtil.getColorHexString(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                unifyprinciplesR.color.Unify_RN600
             )
         }
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
@@ -54,7 +54,8 @@ class ShopProductItemListViewHolder(
             isForceLightMode = productTabInterface?.isOverrideTheme().orFalse(),
             patternType = productTabInterface?.getPatternColorType().orEmpty(),
             backgroundColor = productTabInterface?.getBackgroundColor().orEmpty(),
-            isDeviceOnDarkModeTheme = productCardView?.context?.isDarkMode().orFalse()
+            makeProductCardTransparent = true,
+            atcVariantButtonText = productCardView?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
@@ -91,6 +92,11 @@ class ShopProductItemListViewHolder(
             }
         })
 
+        productCardView?.setGenericCtaButtonOnClickListener {
+            shopProductClickedListener?.onProductAtcVariantClick(
+                shopProductUiModel
+            )
+        }
         productCardView?.setAddVariantClickListener {
             shopProductClickedListener?.onProductAtcVariantClick(
                 shopProductUiModel
@@ -104,5 +110,4 @@ class ShopProductItemListViewHolder(
             )
         }
     }
-    
 }

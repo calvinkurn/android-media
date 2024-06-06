@@ -70,6 +70,7 @@ internal enum class DevopsFeature {
     USE_SCP,
     ENABLE_NEW_TYPO_GUIDE,
     ENABLE_BANNER,
+    ENABLE_PERCENT_VIEW,
     FORCE_DARKMODE,
     ROUTEMANAGER_ROUTE,
     VIEW_APPLINK_LIST,
@@ -102,5 +103,6 @@ internal enum class DevopsFeature {
     VIEW_TOPCHAT_WEBSOCKET_LOG,
     ENABLE_FPI_MONITORING,
     USER_ID,
-    SHOP_ID
+    SHOP_ID,
+    OK_HTTP_TIMEOUT_HANDLER
 }

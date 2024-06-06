@@ -71,12 +71,11 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             val params = singleRecommendationUseCase.getRecomParams(
                 pageNumber = page,
                 productIds = listOf(productId),
-                queryParam = queryParam,
-                hasNewProductCardEnabled = true
+                queryParam = queryParam
             )
 
             val recommendationWidget = singleRecommendationUseCase.createObservable(params).toBlocking().first()
-            val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
+            val recommendationItems = recommendationWidget.toRecommendationWidget(getTotalData()).recommendationItemList
             if(recommendationItems.isEmpty() && page == 1){
                 _filterSortChip.postValue(Response.error(Exception()))
                 _recommendationItem.postValue(Response.error(Exception()))
@@ -155,7 +154,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 )
                 _filterSortChip.postValue(Response.success(filterData))
                 if (recommendationWidget.recommendation.isNotEmpty()) {
-                    val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
+                    val recommendationItems = recommendationWidget.toRecommendationWidget(getTotalData()).recommendationItemList
                     val dimension61 = filterString + if(sortString?.isNotEmpty() == true)"&" else "" + sortString
                     _recommendationItem.postValue(
                         Response.success(
@@ -250,7 +249,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 _filterSortChip.postValue(Response.success(recomChip))
 
                 if (recommendationWidget.recommendation.isNotEmpty()) {
-                    val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
+                    val recommendationItems = recommendationWidget.toRecommendationWidget(getTotalData()).recommendationItemList
                     _recommendationItem.postValue(
                         Response.success(
                             Pair(
@@ -336,6 +335,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
             }
         }
+    }
+
+    private fun getTotalData(): Int {
+        return recommendationItem.value?.data?.first?.size.orZero()
     }
 
     companion object{

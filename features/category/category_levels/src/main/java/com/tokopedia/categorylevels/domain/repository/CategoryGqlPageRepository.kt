@@ -42,7 +42,11 @@ class CategoryGqlPageRepository(private val departmentName: String,
         componentMap["featured-product"] = ComponentNames.CLPFeaturedProducts.componentName
     }
 
-    override suspend fun getDiscoveryPageData(pageIdentifier: String, extraParams: Map<String,Any>?): DiscoveryResponse {
+    override suspend fun getDiscoveryPageData(
+        pageIdentifier: String,
+        extraParams: Map<String,Any>?,
+        additionalQueryParamsString: String
+    ): DiscoveryResponse {
         val data = getGQLData(GQL_CATEGORY_GET_DETAIL_MODULAR, CategoryGetDetailModularData::class.java, createRequestParameterCategory(pageIdentifier)).categoryGetDetailModular
         return data.basicInfo.let { basicInfo ->
             withContext(Dispatchers.Default) {

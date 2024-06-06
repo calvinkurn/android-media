@@ -15,6 +15,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
@@ -66,6 +67,7 @@ class PlayShortsTestModule(
     private val mockAccountManager: PlayShortsAccountManager,
     private val mockRouter: Router,
     private val mockIdleManager: PlayShortsIdleManager,
+    private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref,
 ) {
 
     @Provides
@@ -109,6 +111,9 @@ class PlayShortsTestModule(
 
     @Provides
     fun provideIdleManager(): PlayShortsIdleManager = mockIdleManager
+
+    @Provides
+    fun provideCoachMarkSharedPref(): ContentCoachMarkSharedPref = mockCoachMarkSharedPref
 
     @Provides
     @PlayShortsScope

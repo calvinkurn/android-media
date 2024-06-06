@@ -26,7 +26,7 @@
             android:id="@+id/aiv_background"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:scaleType="center"
+            android:scaleType="fitXY"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,9 +51,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:textColor="@color/Unify_NN600"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_start"
             app:layout_constraintHorizontal_bias="0.675"
             app:layout_constraintStart_toEndOf="@+id/aiv_background"
             app:layout_constraintTop_toTopOf="parent"
@@ -76,6 +76,17 @@
             app:typographyWeight="bold"
             tools:text="Kupon Cashback 10rb" />
 
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_start"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:text="@string/tokopedianow_start_text"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

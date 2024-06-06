@@ -3,13 +3,18 @@ package com.tokopedia.home_recom.view.viewholder
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -31,58 +36,89 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
 
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
-        seeMore.visibility = if(element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
+        seeMore.visibility = if (element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
         seeMore.setOnClickListener {
             RouteManager.route(itemView.context, element.appLinkSeeMore)
         }
         setupRecyclerView(element)
     }
 
-    private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
+    private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel) {
         val products = dataModel.products
         recyclerView.bindCarouselProductCardViewGrid(
-                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                        listener.onProductClick(
-                                productRecommendation.productItem,
-                                productRecommendation.productItem.type,
-                                productRecommendation.parentPosition,
-                                carouselProductCardPosition)
-                        if (productRecommendation.productItem.isTopAds) {
-                            TopAdsUrlHitter(itemView.context).hitClickUrl(
-                                    className,
-                                    productRecommendation.productItem.clickUrl,
-                                    productRecommendation.productItem.productId.toString(),
-                                    productRecommendation.productItem.name,
-                                    productRecommendation.productItem.imageUrl
-                            )
-                        }
+            carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val productRecommendation = products.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    listener.onProductClick(
+                        productRecommendation.productItem,
+                        productRecommendation.productItem.type,
+                        productRecommendation.parentPosition,
+                        carouselProductCardPosition)
+                    if (productRecommendation.productItem.isTopAds) {
+                        TopAdsUrlHitter(itemView.context).hitClickUrl(
+                            className,
+                            productRecommendation.productItem.clickUrl,
+                            productRecommendation.productItem.productId.toString(),
+                            productRecommendation.productItem.name,
+                            productRecommendation.productItem.imageUrl
+                        )
                     }
-                },
-                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                        return products.getOrNull(carouselProductCardPosition)?.productItem
-                    }
-
-                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                        if(productRecommendation.productItem.isTopAds){
-                            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                                    className,
-                                    productRecommendation.productItem.trackerImageUrl,
-                                    productRecommendation.productItem.productId.toString(),
-                                    productRecommendation.productItem.name,
-                                    productRecommendation.productItem.imageUrl
-                            )
-                        }
-                        listener.onProductImpression(productRecommendation.productItem)
-                    }
-                },
-                productCardModelList = products.map {
-                    it.productItem.toProductCardModel()
                 }
 
+                override fun onAreaClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
+                    val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
+                    val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(productCardModel: ProductCardModel, bindingAdapterPosition: Int) {
+                    val productRecommendation = products.getOrNull(bindingAdapterPosition)?.productItem ?: return
+                    productRecommendation.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                }
+            },
+
+            carouselProductCardOnItemViewListener = object : CarouselProductCardListener.OnViewListener {
+                override fun onViewAttachedToWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val productRecommendation = products.getOrNull(carouselProductCardPosition)?.productItem
+                        ?: return
+                    productRecommendation.sendShowAdsByteIo(itemView.context)
+                }
+
+                override fun onViewDetachedFromWindow(productCardModel: ProductCardModel, carouselProductCardPosition: Int, visiblePercentage: Int) {
+                    val productRecommendation = products.getOrNull(carouselProductCardPosition)?.productItem
+                        ?: return
+                    productRecommendation.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+                }
+            },
+
+            carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                    return products.getOrNull(carouselProductCardPosition)?.productItem
+                }
+
+                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val productRecommendation = products.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    if (productRecommendation.productItem.isTopAds) {
+                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                            className,
+                            productRecommendation.productItem.trackerImageUrl,
+                            productRecommendation.productItem.productId.toString(),
+                            productRecommendation.productItem.name,
+                            productRecommendation.productItem.imageUrl
+                        )
+                    }
+                    listener.onProductImpression(productRecommendation.productItem)
+                }
+            },
+            productCardModelList = products.map {
+                it.productItem.toProductCardModel()
+            }
         )
     }
 }

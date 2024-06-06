@@ -14,7 +14,8 @@ enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     SHOP("shop", 3),
     DISCOVERY("discovery", 4),
     ORDER_DETAIL("pdp", 6),
-    GOPAYLATER_REFERRAL("gopaylater referral", 7);
+    GOPAYLATER_REFERRAL("gopaylater referral", 7),
+    THANK_YOU_PRODUCT("pdp", 8);
 
     companion object {
 

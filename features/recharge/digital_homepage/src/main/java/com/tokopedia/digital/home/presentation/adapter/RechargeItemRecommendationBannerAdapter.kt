@@ -8,7 +8,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class RechargeItemRecommendationBannerAdapter(
     val items: List<RechargeHomepageSections.Item>,
@@ -36,7 +36,7 @@ class RechargeItemRecommendationBannerAdapter(
         fun bind(element: RechargeHomepageSections.Item) {
             with(binding.ivRechargeRecommendationBanner) {
                 if (element.mediaUrl.isNotEmpty()) {
-                    loadImage(element.mediaUrl)
+                    loadImageFresco(element.mediaUrl)
                     show()
                 } else {
                     setImageResource(PLACEHOLDER_RES_UNIFY)

@@ -53,7 +53,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
 
     //Image Dependecies
-    implementation rootProject.ext.networkDependencies.glide
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     //abstraction
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

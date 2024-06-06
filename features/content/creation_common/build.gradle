@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
@@ -85,8 +86,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
-    implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
@@ -115,6 +114,10 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.features.contentTest)
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

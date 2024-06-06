@@ -12,15 +12,12 @@ import android.view.View
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.applink.RouteManager
@@ -48,6 +45,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.Toaster
@@ -59,6 +57,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by shruti on 30/08/21.
@@ -137,7 +137,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle = activity?.getString(com.tokopedia.content.common.R.string.feed_content_text_lanjut)
+        val menuTitle = activity?.getString(contentcommonR.string.feed_content_text_lanjut)
         if (!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
                 GlobalScope.launchCatchError(Dispatchers.IO, block = {
@@ -218,7 +218,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         } else {
             Toaster.build(
                 requireView(),
-                getString(com.tokopedia.content.common.R.string.feed_content_more_than_5_product_tag),
+                getString(contentcommonR.string.feed_content_more_than_5_product_tag),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             ).show()
@@ -484,7 +484,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         if (createPostModel.completeImageList[currentImagePos].products.size == 0 && !isDeletedFromBubble) {
             Toaster.build(
                 requireView(),
-                getString(com.tokopedia.content.common.R.string.feed_content_delete_toaster_text),
+                getString(contentcommonR.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
             ).show()
@@ -494,7 +494,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun updateTotalProductTaggedText() {
         val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
         tvImagePosition.text = String.format(
-            requireContext().getString(com.tokopedia.content.common.R.string.feed_content_position_text),
+            requireContext().getString(contentcommonR.string.feed_content_position_text),
             pos
         )
     }
@@ -599,14 +599,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun disableProductIcon() {
-        val color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN300) }
+        val color = context?.let { ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN300) }
         color?.let {
             icProductTag.setColorFilter(it)
             tvContentTagProduct.setTextColor(it)
         }
     }
     private fun enableProductIcon() {
-        val color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN900) }
+        val color = context?.let { ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN900) }
         color?.let {
             icProductTag.setColorFilter(it)
             tvContentTagProduct.setTextColor(it)
@@ -701,13 +701,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun setMediaWidthAndHeight() {
         val mediaModel = createPostModel.completeImageList[0]
         try {
-            var mBmp = Glide.with(requireActivity())
-                .asBitmap()
-                .load(mediaModel.path)
-                .submit()
-                .get()
-            createPostModel.mediaWidth = mBmp.width.toPx()
-            createPostModel.mediaHeight = mBmp.height.toPx()
+            mediaModel.path.getBitmapFromUrl(requireActivity())?.let {
+                createPostModel.mediaWidth = it.width.toPx()
+                createPostModel.mediaHeight = it.height.toPx()
+            }
         } catch (e: Exception) {
             Timber.e(e)
         }

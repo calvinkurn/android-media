@@ -96,6 +96,8 @@ object AceSearchProductV5Query {
                       productViewURL
                       productWishlistURL
                       tag
+                      creativeID
+                      logExtra
                     }
                     meta {
                       warehouseID
@@ -192,6 +194,8 @@ object AceSearchProductV5Query {
                   productViewURL
                   productWishlistURL
                   tag
+                  creativeID
+                  logExtra
                 }
                 meta {
                   parentID

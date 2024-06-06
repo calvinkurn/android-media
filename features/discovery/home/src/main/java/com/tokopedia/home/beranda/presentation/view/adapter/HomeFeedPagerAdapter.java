@@ -12,13 +12,8 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
-import com.tokopedia.home.beranda.presentation.view.fragment.BaseRecommendationFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment;
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController;
 import com.tokopedia.home.util.HomeRefreshType;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +22,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
     private final RecyclerView.RecycledViewPool parentPool;
     private final HomeCategoryListener homeCategoryListener;
-    private final SparseArrayCompat<BaseRecommendationFragment> registeredFragments = new SparseArrayCompat<>();
+    private final SparseArrayCompat<HomeGlobalRecommendationFragment> registeredFragments = new SparseArrayCompat<>();
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
     private final List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
@@ -40,7 +35,6 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
                                 FragmentManager fragmentManager,
                                 List<RecommendationTabDataModel> recommendationTabDataModelList,
                                 RecyclerView.RecycledViewPool parentPool,
-                                RemoteConfig remoteConfig,
                                 HomeRefreshType refreshType) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
@@ -88,7 +82,7 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
-    public BaseRecommendationFragment getRegisteredFragment(int position) {
+    public HomeGlobalRecommendationFragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
     }
 

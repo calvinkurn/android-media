@@ -17,7 +17,6 @@ import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind
-import com.tokopedia.applink.find.DeepLinkMapperFind.navigateToAppNotifSettings
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -51,6 +50,7 @@ import com.tokopedia.applink.model.StartsWith
 import com.tokopedia.applink.model.or
 import com.tokopedia.applink.notifsetting.DeeplinkMapperNotifSetting
 import com.tokopedia.applink.notifsetting.NotifSettingType
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -255,7 +255,9 @@ object DeeplinkMainApp {
             }
         ),
         "device-notification-settings" to mutableListOf(
-            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) }
+            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ ->
+                ApplinkConstInternalMarketplace.DEVICE_NOTIFICATION_SETTING
+            }
         ),
         "digital" to mutableListOf(
             DLP.startsWith("order") { context: Context, deeplink: String ->
@@ -492,6 +494,11 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("onboarding") { _: String ->
                 ApplinkConstInternalMarketplace.ONBOARDING
+            }
+        ),
+        "me-page" to mutableListOf(
+            DLP.matchPattern("") { deepLink: String ->
+                DeeplinkMapperMainNavigation.getRegisteredNavigation(deepLink)
             }
         ),
         "medali" to mutableListOf(

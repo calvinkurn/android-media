@@ -14,14 +14,13 @@ object RollenceKey {
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
-    const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
-    const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
-    const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
     const val HOME_MEGATAB = "megatab_ff"
     const val HOME_MISSION_SIZE_KEY = "mission_px"
     const val HOME_MISSION_SIZE_CONTROL = "control_var"
     const val HOME_MISSION_SIZE_VARIANT = "exp_var"
     const val HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom"
+    const val HOME_COMBINE_INBOX_NOTIF_KEY = "Declutter_TopNav"
+    const val HOME_COMBINE_INBOX_NOTIF = "combine_inboxnotif"
     // end of home rollence section
 
     // TBD
@@ -37,8 +36,6 @@ object RollenceKey {
     const val ICON_JUMPER_DEFAULT = "control_variant"
     const val ICON_JUMPER_EXP = "VariantA"
     const val ICON_JUMPER = "IconJumper"
-    const val ICON_JUMPER_SRE_KEY = "SREbottomnav"
-    const val ICON_JUMPER_SRE_VALUE = "GetIcon"
 
     // Auto Complete
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
@@ -68,9 +65,6 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
 
-    // For You Rollence
-    const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
-
     // Explore Category Experiment
     const val EXPLORE_CATEGORY_DEFAULT = "control_variant"
     const val EXPLORE_CATEGORY_EXP = "GetJelajah"
@@ -92,6 +86,9 @@ object RollenceKey {
 
     // BCA Rollence
     const val BCA_ROLLENCE = "android_flazzrollout"
+
+    // Fresco Image
+    const val FRESCO_IMAGE = "android_fresco"
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
@@ -127,9 +124,6 @@ object RollenceKey {
     const val REVERSE_PRODUCT_CARD_V4 = "v4_productcard"
 
     const val ANDROID_INTERNAL_TEST = "android_internal"
-
-    const val PDP_ATC_ANIMATION_VARIANT = "variant_animation"
-    const val PDP_ATC_ANIMATION_KEY = "pdp_animation_atc"
 
     // Travel
     const val FLIGHT_INSURANCE_AUTO_TICK = "Flight_Ins_Att"
