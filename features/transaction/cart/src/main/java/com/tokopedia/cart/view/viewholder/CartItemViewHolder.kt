@@ -1408,7 +1408,7 @@ class CartItemViewHolder(
                             CartDeleteButtonSource.QuantityEditorImeAction
                         )
                     } else {
-                        validateQty(newQty, data)
+                        validateXmlQty(newQty, data)
                         lastQty = newQty
                         actionListener?.onCartItemQuantityChanged(data, getQuantity())
                         handleRefreshType(data, viewHolderListener)
@@ -1441,7 +1441,7 @@ class CartItemViewHolder(
                 }
             }
             onValueChanged = { qty ->
-                validateQty(qty, data)
+                validateXmlQty(qty, data)
                 if (qty != 0) {
                     lastQty = qty
                     actionListener?.onCartItemQuantityChanged(data, getQuantity())
@@ -1483,7 +1483,7 @@ class CartItemViewHolder(
                 data.maxOrder
             )
             data.isAlreadyShowMaximumQuantityPurchasedError = true
-            binding.oldQtyEditorProduct.setQuantity(data.maxOrder)
+            binding.qtyEditorProduct.qtyValue.value = data.maxOrder
             binding.labelQuantityError.show()
         } else if (newQty > data.minOrder && newQty < data.maxOrder) {
             data.isAlreadyShowMaximumQuantityPurchasedError = false
@@ -1492,6 +1492,76 @@ class CartItemViewHolder(
     }
 
     private fun validateMinimumQty(newQty: Int, data: CartItemHolderData) {
+        val qtyEditorCart = binding.qtyEditorProduct
+        if (newQty > data.minOrder) {
+            data.isAlreadyShowMinimumQuantityPurchasedError = false
+        }
+        if (newQty < data.maxOrder) {
+            data.isAlreadyShowMaximumQuantityPurchasedError = false
+        }
+        if (lastQty > data.minOrder && newQty == data.minOrder && data.minOrder > 1) {
+            binding.labelQuantityError.show()
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                data.minOrder
+            )
+            if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
+                qtyEditorCart.qtyValue.value = data.minOrder
+                data.isAlreadyShowMinimumQuantityPurchasedError = true
+                return
+            } else {
+                data.isAlreadyShowMinimumQuantityPurchasedError = false
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
+            }
+            return
+        }
+        if (newQty < data.minOrder) {
+            if (data.minOrder <= 1) {
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
+                return
+            }
+            binding.labelQuantityError.show()
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                data.minOrder
+            )
+            if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
+                qtyEditorCart.qtyValue.value = data.minOrder
+                data.isAlreadyShowMinimumQuantityPurchasedError = true
+                return
+            } else {
+                data.isAlreadyShowMinimumQuantityPurchasedError = false
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
+            }
+            return
+        }
+        return
+    }
+
+    private fun validateXmlQty(newQty: Int, data: CartItemHolderData) {
+        validateXmlMaximumQty(newQty, data)
+        validateXmlMinimumQty(newQty, data)
+    }
+
+    private fun validateXmlMaximumQty(newQty: Int, data: CartItemHolderData) {
+        if (newQty > data.maxOrder) {
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_max_quantity_error),
+                data.maxOrder
+            )
+            data.isAlreadyShowMaximumQuantityPurchasedError = true
+            binding.oldQtyEditorProduct.setQuantity(data.maxOrder)
+            binding.labelQuantityError.show()
+        } else if (newQty > data.minOrder && newQty < data.maxOrder) {
+            data.isAlreadyShowMaximumQuantityPurchasedError = false
+            binding.labelQuantityError.gone()
+        }
+    }
+
+    private fun validateXmlMinimumQty(newQty: Int, data: CartItemHolderData) {
         val qtyEditorCart = binding.oldQtyEditorProduct
         if (newQty > data.minOrder) {
             data.isAlreadyShowMinimumQuantityPurchasedError = false
