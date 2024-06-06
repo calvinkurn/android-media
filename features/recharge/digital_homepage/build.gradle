@@ -42,7 +42,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.gson
 
     implementation rootProject.ext.miscDependencies.liveData

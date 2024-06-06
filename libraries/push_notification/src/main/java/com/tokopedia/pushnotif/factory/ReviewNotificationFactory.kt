@@ -1,21 +1,19 @@
 package com.tokopedia.pushnotif.factory
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.pushnotif.ApplinkNotificationHelper
 import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.R
@@ -24,6 +22,7 @@ import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
 import com.tokopedia.pushnotif.services.ReviewNotificationBroadcastReceiver
 import com.tokopedia.pushnotif.util.PendingIntentUtil
 import java.util.concurrent.TimeUnit
+import com.tokopedia.resources.common.R as resourcescommonR
 
 class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(context) {
 
@@ -195,23 +194,18 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun loadImageBitmap(imgUrl: String, reviewPosition: Int) {
         Handler(Looper.getMainLooper()).post {
-            Glide.with(context.applicationContext)
-                    .asBitmap()
-                    .load(imgUrl)
-                    .error(com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onLoadCleared(placeholder: Drawable?) { }
-
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            notificationBuilder
-                                    .setCustomContentView(setupSimpleRemoteWithHandler(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc, resource))
-                                    .setCustomBigContentView(setupBigRemoteWithHandler(resource))
-                            updateStars(context, reviewPosition)
-                            notificationManager.notify(resultReviewModel.notificationId, notificationBuilder.build())
-                        }
-                    })
+            imgUrl.getBitmapImageUrl(context, properties = {
+                setErrorDrawable(resourcescommonR.drawable.ic_big_notif_customerapp)
+            }) { bitmap ->
+                notificationBuilder
+                    .setCustomContentView(setupSimpleRemoteWithHandler(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc, bitmap))
+                    .setCustomBigContentView(setupBigRemoteWithHandler(bitmap))
+                updateStars(context, reviewPosition)
+                notificationManager.notify(resultReviewModel.notificationId, notificationBuilder.build())
+            }
         }
     }
 

@@ -3,12 +3,9 @@ package com.tokopedia.epharmacy.component.viewholder
 import android.util.Base64
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
-import com.tokopedia.epharmacy.utils.EPharmacyPrescriptionStatus
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -40,9 +37,7 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
             cardView.setOnClickListener {
                 actionListener?.onCameraClick()
             }
-            Glide.with(itemView.context)
-                .load(MethodChecker.getDrawable(itemView.context,R.drawable.epharmacy_rectangle))
-                .into(image)
+            image.loadImage(R.drawable.epharmacy_rectangle)
             cameraIcon.show()
             reloadIcon.hide()
             overlay.hide()
@@ -69,10 +64,7 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
                 val base64StringImage = splitBase64?.get(1)
                 try {
                     val imgByteArray: ByteArray = Base64.decode(base64StringImage, Base64.DEFAULT)
-                    Glide.with(viewItem.context)
-                        .asBitmap()
-                        .load(imgByteArray)
-                        .into(image)
+                    image.loadImage(imgByteArray)
                 }catch (e :Exception){
                     EPharmacyUtils.logException(e)
                 }

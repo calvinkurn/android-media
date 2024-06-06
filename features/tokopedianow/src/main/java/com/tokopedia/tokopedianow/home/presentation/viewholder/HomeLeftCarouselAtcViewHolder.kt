@@ -12,6 +12,7 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.productcard.compact.productcardcarousel.helper.ProductCardCompactCarouselLinearLayoutManager
@@ -135,10 +136,9 @@ class HomeLeftCarouselAtcViewHolder(
         element: HomeLeftCarouselAtcUiModel
     ) {
         parallaxImageView.apply {
-            com.bumptech.glide.Glide.with(itemView.context)
-                .load(element.imageBanner)
-                .fitCenter()
-                .into(this)
+            this.loadImage(element.imageBanner) {
+                fitCenter()
+            }
         }
 
         parallaxBackground.setGradientBackground(

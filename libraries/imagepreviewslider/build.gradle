@@ -33,7 +33,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.networkDependencies.glide
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore

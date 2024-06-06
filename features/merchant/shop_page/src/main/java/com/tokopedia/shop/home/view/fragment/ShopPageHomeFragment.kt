@@ -10,7 +10,6 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -30,9 +29,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -74,6 +70,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
@@ -896,20 +893,13 @@ open class ShopPageHomeFragment :
 
     private fun loadBackgroundPatternImage() {
         context?.let {
-            Glide.with(this)
-                .asBitmap()
-                .load(homeTabBackgroundPatternImage)
-                .into(object : CustomTarget<Bitmap?>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap?>?
-                    ) {
-                        val sizeMultiplier = getBgPatternSizeMultiplier()
-                        val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
-                        setBgPatternImage(resizeBgPattern)
-                    }
-                })
+            homeTabBackgroundPatternImage.getBitmapImageUrl(it, {
+
+            }) { resource ->
+                val sizeMultiplier = getBgPatternSizeMultiplier()
+                val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
+                setBgPatternImage(resizeBgPattern)
+            }
         }
     }
 

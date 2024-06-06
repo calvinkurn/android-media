@@ -6,6 +6,7 @@ import android.widget.RemoteViews
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.AppWidgetTarget
+import com.tokopedia.media.loader.loadImage
 import timber.log.Timber
 
 /**
@@ -26,19 +27,12 @@ object Utils {
     }
 
     fun loadImageIntoAppWidget(context: Context, remoteViews: RemoteViews, imgViewId: Int, imgUrl: String, widgetId: Int) {
-        val awt = AppWidgetTarget(context, imgViewId, remoteViews, widgetId)
-        Glide.with(context)
-                .asBitmap()
-                .load(imgUrl)
-                .into(awt)
+        AppWidgetTarget(context, imgViewId, remoteViews, widgetId).loadImage(context, imgUrl) {}
     }
 
     fun loadImageIntoAppWidget(context: Context, remoteViews: RemoteViews, imgViewId: Int, resId: Int, widgetId: Int, radius: Int) {
-        val awt = AppWidgetTarget(context, imgViewId, remoteViews, widgetId)
-        Glide.with(context)
-                .asBitmap()
-                .load(resId)
-                .transform(RoundedCorners(radius))
-                .into(awt)
+        AppWidgetTarget(context, imgViewId, remoteViews, widgetId).loadImage(context, resId) {
+            transform(RoundedCorners(radius))
+        }
     }
 }

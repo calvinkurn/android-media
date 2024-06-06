@@ -19,6 +19,7 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
@@ -31,7 +32,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

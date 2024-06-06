@@ -15,7 +15,6 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.CameraView
@@ -36,6 +35,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -119,12 +119,11 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
         }
         val loadFitCenter = min != 0 && max / min > 2
         capturedImageView?.let {
-            if (loadFitCenter)
-                Glide.with(context).load(cameraImageResult.compressedByteArray?.toByteArray())
-                    .fitCenter()
-                    .into(it)
-            else Glide.with(context).load(cameraImageResult.compressedByteArray?.toByteArray())
-                .into(it)
+            cameraImageResult.compressedByteArray?.toByteArray()?.let { byteArraySource ->
+                it.loadImage(byteArraySource) {
+                    if (loadFitCenter) fitCenter()
+                }
+            }
         }
     }
 

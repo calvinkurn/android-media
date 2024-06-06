@@ -62,7 +62,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.miscDependencies.lottie
 
