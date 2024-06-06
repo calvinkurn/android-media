@@ -97,7 +97,7 @@ object InitBtmSdk {
                     override fun registerUpdateCallback(callback: OnSettingUpdateCallback) {
                     }
                 }
-                defaultA = "a87943"
+                defaultA = Tokopedia.code
                 deviceId = AppLog.getDid()
                 enableDebugCrash = false
                 enableBtmPageAnnotation = false
