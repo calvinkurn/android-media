@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
+import com.bytedance.apm.trace.mapping.ApmPageLoadMappingTool.put
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -155,6 +156,34 @@ object AppLogAnalytics {
         }
     }
 
+    /**
+     * Use this method to generate entrance info from non-PDP page e.g. Shop, GSLP, etc
+     * Before using this, setGlobalParamsOnClick should be called first
+     * */
+    fun generateEntranceInfoCurrent(): JSONObject {
+        return JSONObject().apply {
+            addEnterFromInfo()
+            put(ENTRANCE_FORM, getCurrentData(ENTRANCE_FORM))
+            put(SOURCE_PAGE_TYPE, getCurrentData(SOURCE_PAGE_TYPE))
+            put(TRACK_ID, getCurrentData(TRACK_ID))
+            put(IS_AD, getCurrentData(IS_AD))
+            put(REQUEST_ID, getCurrentData(REQUEST_ID))
+            put(SOURCE_MODULE, getCurrentData(SOURCE_MODULE))
+            put(ENTER_METHOD, getCurrentData(ENTER_METHOD))
+            put(ENTER_METHOD, getCurrentData(ENTER_METHOD))
+            put(PARENT_PRODUCT_ID, getCurrentData(PARENT_PRODUCT_ID))
+            put(PARENT_TRACK_ID, getCurrentData(PARENT_TRACK_ID))
+            put(PARENT_REQUEST_ID, getCurrentData(PARENT_REQUEST_ID))
+            put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
+            put(SEARCH_ID, getLastData(SEARCH_ID))
+            put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
+            put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+            put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
+            put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
+            addSourceContentId()
+        }
+    }
+
     internal fun JSONObject.addEntranceInfo() {
         put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
     }
@@ -165,7 +194,7 @@ object AppLogAnalytics {
 
     private fun generateEntranceInfoCartJson(): JSONObject {
         return JSONObject().also {
-            it.put(ENTER_FROM_INFO, getEnterFromBeforeCart())
+            put(ENTER_FROM_INFO, getEnterFromBeforeCart())
             it.put(ENTRANCE_FORM, PageName.CART)
             it.put(SOURCE_PAGE_TYPE, PageName.CART)
         }
