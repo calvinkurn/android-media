@@ -20,6 +20,7 @@ import timber.log.Timber
 
 object InitBtmSdk {
     private const val TAG = "InitBtmSDK"
+    private const val SPLASH_SCREEN = "com.tokopedia.tkpd.ConsumerSplashScreen"
 
     fun init(context: Context) {
         val isBtmDisabled = !BtmLibraFeatureFlag.isBtmEnabled()
@@ -30,7 +31,7 @@ object InitBtmSdk {
             BtmSDKBuilder().apply {
                 app = context.applicationContext as Application
                 appIds = arrayOf(AppLog.getAppId())
-                debug = GlobalConfig.DEBUG
+                debug = GlobalConfig.isAllowDebuggingTools()
                 versionName = GlobalConfig.VERSION_NAME
                 updateVersionCode = GlobalConfig.VERSION_CODE.toString()
                 appLogDepend = object : IAppLogDepend {
@@ -104,9 +105,7 @@ object InitBtmSdk {
                 appId = Integer.getInteger(AppLog.getAppId()) ?: 0
             }
         )
-        BtmSDK.getDepend().addUnknownWhiteClass(
-            "com.tokopedia.tkpd.ConsumerSplashScreen"
-        )
+        BtmSDK.getDepend().addUnknownWhiteClass(SPLASH_SCREEN)
         AppLog.addEventObserver(appLogEventListener)
     }
 
