@@ -1,10 +1,15 @@
 package com.tokopedia.product.detail.postatc.view.component.recommendation
 
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.product.detail.databinding.ItemGlobalRecommendationBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcCallback
 import com.tokopedia.product.detail.postatc.base.PostAtcViewHolder
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
@@ -55,6 +60,26 @@ class GlobalRecommendationViewHolder(
                 override fun onProductClick(position: Int, item: RecommendationItem): Boolean {
                     callback.dismiss()
                     return false
+                }
+
+                override fun onAreaClicked(position: Int, item: RecommendationItem) {
+                    item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(position: Int, item: RecommendationItem) {
+                    item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                }
+
+                override fun onSellerInfoClicked(position: Int, item: RecommendationItem) {
+                    item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
+                }
+
+                override fun onViewAttachedToWindow(position: Int, item: RecommendationItem) {
+                    item.sendShowAdsByteIo(itemView.context)
+                }
+
+                override fun onViewDetachedFromWindow(position: Int, item: RecommendationItem, visiblePercentage: Int) {
+                    item.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
                 }
             }
         )

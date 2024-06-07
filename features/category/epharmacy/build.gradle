@@ -58,7 +58,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.total_amount
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

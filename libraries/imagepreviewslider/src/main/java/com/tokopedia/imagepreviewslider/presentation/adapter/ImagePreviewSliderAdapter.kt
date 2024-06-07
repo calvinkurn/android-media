@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 
 /**
  * @author by resakemal on 03/05/19
@@ -32,14 +32,12 @@ class ImagePreviewSliderAdapter(val images: MutableList<String>,
         }
 
         try {
-            Glide.with(holder.itemView.context)
-                    .load(images[position])
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.drawable.ic_loading_image)
-                    .error(R.drawable.ic_loading_image)
-                    .centerCrop()
-                    .into(holder.bannerImage)
+            holder.bannerImage.loadImage(images[position]) {
+                setCacheStrategy(MediaCacheStrategy.ALL)
+                setPlaceHolder(R.drawable.ic_loading_image)
+                setErrorDrawable(R.drawable.ic_loading_image)
+                centerCrop()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

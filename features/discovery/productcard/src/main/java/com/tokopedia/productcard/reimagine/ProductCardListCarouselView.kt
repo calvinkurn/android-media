@@ -2,13 +2,14 @@ package com.tokopedia.productcard.reimagine
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.experiments.ReimagineListCarouselViewStrategy
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 
-class ProductCardListCarouselView: ConstraintLayout {
+class ProductCardListCarouselView: ProductConstraintLayout {
     private val strategy = ReimagineListCarouselViewStrategy(this)
 
     val additionalMarginStart: Int
@@ -46,6 +47,10 @@ class ProductCardListCarouselView: ConstraintLayout {
 
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
+        strategy.setOnClickListener(l)
+    }
+
+    fun setOnClickListener(l: ProductCardClickListener) {
         strategy.setOnClickListener(l)
     }
 

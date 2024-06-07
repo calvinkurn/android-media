@@ -28,10 +28,11 @@ object WishlistCollectionUtils {
 
     fun mapCollection(
         data: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData,
-        recomm: WishlistRecommendationDataModel = WishlistRecommendationDataModel()
+        recomm: WishlistRecommendationDataModel = WishlistRecommendationDataModel(),
+        tickerHasBeenClosed: Boolean
     ): List<WishlistCollectionTypeLayoutData> {
         val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
-        if ((data.ticker.title.isNotEmpty() && data.ticker.description.isNotEmpty()) || isAffiliateTickerEnabled()) {
+        if ((data.ticker.title.isNotEmpty() && data.ticker.description.isNotEmpty()) && !tickerHasBeenClosed || isAffiliateTickerEnabled()) {
             val tickerObject = WishlistCollectionTypeLayoutData(
                 TYPE_COLLECTION_TICKER,
                 data.ticker,

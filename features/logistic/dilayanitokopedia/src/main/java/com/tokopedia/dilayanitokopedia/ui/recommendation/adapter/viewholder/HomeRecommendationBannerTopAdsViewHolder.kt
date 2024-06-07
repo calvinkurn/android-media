@@ -1,13 +1,7 @@
 package com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.viewholder
 
-import android.graphics.drawable.Drawable
 import android.view.View
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.databinding.ItemDtHomeBannerTopadsLayoutBinding
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.HomeRecommendationListener
@@ -16,6 +10,8 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -70,42 +66,26 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
             )
             binding?.homeRecomTopadsLoaderImage?.show()
             binding?.homeRecomTopadsImageView?.let {
-                Glide.with(itemView.context)
-                    .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageUrl)
-                    .transform(RoundedCorners(roundedCorners))
-                    .override(
-                        itemView.context.resources.displayMetrics.widthPixels,
-                        getHeight(
-                            recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageWidth,
-                            recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageHeight
-                        )
-                    )
-                    .fitCenter()
-                    .addListener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            it.hide()
-                            binding?.homeRecomTopadsLoaderImage?.hide()
-                            return false
-                        }
+                val overrideHeight = getHeight(
+                    recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageWidth,
+                    recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageHeight
+                )
 
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                it.loadImage(recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageUrl) {
+                    transform(RoundedCorners(roundedCorners))
+                    overrideSize(Resize(itemView.context.resources.displayMetrics.widthPixels, overrideHeight))
+                    fitCenter()
+                    listener(
+                        onSuccess = { bitmap, mediaDataSource ->
                             it.show()
                             binding?.homeRecomTopadsLoaderImage?.hide()
-                            return false
+                        },
+                        onError = { _ ->
+                            it.hide()
+                            binding?.homeRecomTopadsLoaderImage?.hide()
                         }
-                    })
-                    .into(it)
+                    )
+                }
             }
         }
     }

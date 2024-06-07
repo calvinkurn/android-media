@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
@@ -210,9 +211,12 @@ class RecommendationListCarouselViewHolder(itemView: View,
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
+        private var channelGrid: ChannelGrid? = null
+
         override fun bind(recommendation: HomeRecommendationListCarousel) {
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
+                channelGrid = recommendation.grid
                 if (!isCacheData) {
                     itemView.addOnImpressionListener(recommendation) {
                         listCarouselListener?.onRecommendationCarouselGridImpression(
@@ -234,15 +238,17 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 recommendationCard.setAddToCartOnClickListener {
                     recommendation.listener?.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
                 }
-                itemView.setOnClickListener {
-                    listCarouselListener?.onRecommendationProductClick(
+                recommendationCard.setOnClickListener(object: ProductCardClickListener {
+                    override fun onClick(v: View) {
+                        listCarouselListener?.onRecommendationProductClick(
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
                             recommendation.recommendationApplink,
                             recommendation.parentPosition
-                    )
-                }
+                        )
+                    }
+                })
             }
         }
     }

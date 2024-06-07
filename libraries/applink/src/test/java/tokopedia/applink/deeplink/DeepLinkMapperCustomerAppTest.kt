@@ -8,7 +8,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
@@ -2197,7 +2196,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check notification setting appLink then should return device notification setting in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.DEVICE_NOTIFICATION_SETTINGS, "")
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.DEVICE_NOTIFICATION_SETTINGS,
+            ApplinkConstInternalMarketplace.DEVICE_NOTIFICATION_SETTING
+        )
     }
 
     @Test
@@ -2425,26 +2427,49 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check marketplace buyer order extension appLink then should return tokopedia internal marketplace buyer order extension in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-extension"
-        assertEqualsDeepLinkMapper(ApplinkConst.BUYER_ORDER_EXTENSION, expectedDeepLink)
+    fun `check marketplace buyer order extension appLink with old parameters then should return tokopedia internal marketplace buyer order extension in customerapp with old and new parameters`() {
+        val orderId = "1234567890"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-extension?${DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID}=$orderId&$PARAM_ORDER_ID=$orderId"
+        assertEqualsDeepLinkMapper("${ApplinkConst.BUYER_ORDER_EXTENSION}?$PARAM_ORDER_ID=$orderId", expectedDeepLink)
     }
 
     @Test
-    fun `check marketplace buyer partial order fulfillment appLink then should return tokopedia internal marketplace buyer partial order fulfillment in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-partial-order-fulfillment"
-        assertEqualsDeepLinkMapper(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT, expectedDeepLink)
+    fun `check marketplace buyer order extension appLink with new parameters then should return tokopedia internal marketplace buyer order extension in customerapp with new parameters`() {
+        val orderId = "1234567890"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-extension?${DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID}=$orderId"
+        assertEqualsDeepLinkMapper("${ApplinkConst.BUYER_ORDER_EXTENSION}?${DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID}=$orderId", expectedDeepLink)
     }
 
     @Test
-    fun `check seller partial order fulfillment appLink then should return tokopedia internal seller partial order fulfillment in customerapp`() {
+    fun `check marketplace buyer partial order fulfillment appLink with param order_id then should return tokopedia internal marketplace buyer partial order fulfillment in customerapp`() {
+        val orderId = "1234567890"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-partial-order-fulfillment?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId&$PARAM_ORDER_ID=$orderId"
+        assertEqualsDeepLinkMapper("${ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT}?$PARAM_ORDER_ID=$orderId", expectedDeepLink)
+    }
+
+    @Test
+    fun `check marketplace buyer partial order fulfillment appLink with param orderId then should return tokopedia internal marketplace buyer partial order fulfillment in customerapp`() {
+        val orderId = "1234567890"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-partial-order-fulfillment?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId"
+        assertEqualsDeepLinkMapper("${ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT}?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId", expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller partial order fulfillment appLink with old parameters then should return tokopedia internal seller partial order fulfillment in customerapp`() {
         val orderId = "123456789"
         val pofStatus = "1"
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?$PARAM_ORDER_ID=$orderId&$PARAM_POF_STATUS=$pofStatus&$KEY_REDIRECT_TO_SELLER_APP=true"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS}=$pofStatus&$KEY_REDIRECT_TO_SELLER_APP=true&$PARAM_ORDER_ID=$orderId&$PARAM_POF_STATUS=$pofStatus"
         assertEqualsDeepLinkMapper("${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?$PARAM_ORDER_ID=$orderId&$PARAM_POF_STATUS=$pofStatus&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller partial order fulfillment appLink with new parameters then should return tokopedia internal seller partial order fulfillment in customerapp`() {
+        val orderId = "123456789"
+        val pofStatus = "1"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS}=$pofStatus&$KEY_REDIRECT_TO_SELLER_APP=true"
+        assertEqualsDeepLinkMapper("${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS}=$pofStatus&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
     }
 
     @Test
@@ -2464,9 +2489,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check seller order extenson request appLink then should return tokopedia internal seller order extension request in customerapp`() {
         val orderId = "987654321"
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/${DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true"
-        assertEqualsDeepLinkMapper("${ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST}?${DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
+        val expectedDeepLink = "${ApplinkConstInternalOrder.INTERNAL_SELLER}/${DeeplinkMapperOrder.Soe.Seller.PATH}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true"
+        assertEqualsDeepLinkMapper("${ApplinkConst.Som.SELLER_ORDER_EXTENSION_REQUEST}?${DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID}=$orderId&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
     }
 
     @Test

@@ -68,7 +68,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOperational.HOST_CONTA
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.HOST_CUSTOMERAPP_INBOX_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.HOST_TICKET
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOST_SELLER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.HOST_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.HOST_SELLERAPP
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood.HOST_FOOD
@@ -441,9 +440,9 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/finished", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/cancellationrequest", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/order", SELLER_ORDER),
-        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/$PATH_SELLER_PARTIAL_ORDER_FULFILLMENT", SELLER_ORDER),
+        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.Pof.Seller.PATH}", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH}", SELLER_ORDER),
-        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH}", SELLER_ORDER),
+        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.Soe.Seller.PATH}", SELLER_ORDER),
 
         // editshipping
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-settings-shipping"),
@@ -663,7 +662,11 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/search-history"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/sharing-wishlist"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar"),
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar/add-email")
+        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar/add-email"),
+
+        // changephonenumber
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/change-phone-number"),
+
     )
 
     private fun getDfCampaignList() = mutableListOf(

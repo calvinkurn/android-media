@@ -35,7 +35,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.CouponGratificationParams.CAMPAIGN_SLUG
@@ -59,6 +58,7 @@ import com.tokopedia.promotionstarget.presentation.loadImageWithNoPlaceholder
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
+import com.tokopedia.promotionstarget.presentation.ui.bottomsheet.PromotionCloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.DISMISS
 import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.EMPTY
 import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.REDIRECT
@@ -349,7 +349,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun prepareBottomSheet(activityContext: Context, couponUiType: TargetPromotionsCouponType): Pair<View, BottomSheetDialog> {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
+        val bottomSheet = PromotionCloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
         val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
@@ -377,7 +377,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         tvSubTitleRight = root.findViewById(R.id.tvSubTitleRight)
 
         try {
-            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(com.tokopedia.design.R.id.close_button_rounded)
+            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(R.id.close_button_rounded)
             imageClose.setImageResource(R.drawable.t_promo_close)
         } catch (th: Throwable) {
         }

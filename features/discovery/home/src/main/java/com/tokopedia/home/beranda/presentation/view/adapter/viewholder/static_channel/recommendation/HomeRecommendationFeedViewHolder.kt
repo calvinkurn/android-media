@@ -29,7 +29,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 
 class HomeRecommendationFeedViewHolder(
     view: View,
-    private val remoteConfig: RemoteConfig,
     private val listener: HomeCategoryListener,
     private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(view), HomeTabFeedListener {
@@ -78,7 +77,6 @@ class HomeRecommendationFeedViewHolder(
             listener.childsFragmentManager,
             recommendationTabDataModelList,
             listener.parentPool,
-            remoteConfig,
             listener.getHomeRefreshType()
         )
 

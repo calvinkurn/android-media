@@ -5,7 +5,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselProductCardDataModel
@@ -64,18 +66,41 @@ class RecomCarouselProductCardViewHolder (view: View,
                 }
                 element.listener?.onProductCardImpressed(position = adapterPosition,data = data, recomItem = element.recomItem)
             }
-            setOnClickListener {
-                if(element.recomItem.isTopAds){
-                    TopAdsUrlHitter(context).hitClickUrl(
+            setVisibilityPercentListener(element.recomItem.isTopAds, object : ProductConstraintLayout.OnVisibilityPercentChanged {
+                override fun onShow() {
+                    element.listener?.onViewAttachedToWindow(element.recomItem, bindingAdapterPosition)
+                }
+
+                override fun onShowOver(maxPercentage: Int) {
+                    element.listener?.onViewDetachedFromWindow(element.recomItem, bindingAdapterPosition, maxPercentage)
+                }
+            })
+            setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    if(element.recomItem.isTopAds){
+                        TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             element.recomItem.clickUrl,
                             element.recomItem.productId.toString(),
                             element.recomItem.name,
                             element.recomItem.imageUrl,
                             element.componentName)
+                    }
+                    element.listener?.onProductCardClicked(position = adapterPosition,data = data, recomItem = element.recomItem, applink = element.recomItem.appUrl)
                 }
-                element.listener?.onProductCardClicked(position = adapterPosition,data = data, recomItem = element.recomItem, applink = element.recomItem.appUrl)
-            }
+
+                override fun onAreaClicked(v: View) {
+                    element.listener?.onAreaClicked(bindingAdapterPosition = bindingAdapterPosition, recomItem = element.recomItem)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    element.listener?.onProductImageClicked(bindingAdapterPosition = bindingAdapterPosition, recomItem = element.recomItem)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    element.listener?.onSellerInfoClicked(bindingAdapterPosition = bindingAdapterPosition, recomItem = element.recomItem)
+                }
+            })
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
                     element.recomItem.onCardQuantityChanged(quantity)

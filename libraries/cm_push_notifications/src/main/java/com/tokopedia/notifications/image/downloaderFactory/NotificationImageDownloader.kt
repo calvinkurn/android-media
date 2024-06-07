@@ -3,13 +3,13 @@ package com.tokopedia.notifications.image.downloaderFactory
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.*
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.notifications.model.BaseNotificationModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 const val PARENT_DIR = "CM_RESOURCE"
 const val PNG_QUALITY = 95
@@ -36,15 +36,13 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
             properties: ImageSizeAndTimeout
     ): Bitmap? {
         try {
-            val bitmap =  Glide.with(context)
-                    .asBitmap()
-                    .load(url).apply {
-                        if (rounded != 0) {
-                            transform(RoundedCorners(rounded))
-                        }
-                    }.override(properties.width, properties.height)
-                    .submit(properties.width, properties.height)
-                    .get(properties.seconds, TimeUnit.SECONDS)
+            val timeOutMillis = properties.seconds * 1000
+            val bitmap = url.getBitmapFromUrl(context, timeOutMillis) {
+                if (rounded != 0) {
+                    transform(RoundedCorners(rounded))
+                }
+                overrideSize(Resize(properties.width, properties.height))
+            }
             if(properties.is2x1Required){
                 return resizeImageTO2X1Ration(bitmap)
             }

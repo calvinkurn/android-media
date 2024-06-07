@@ -31,13 +31,12 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -47,6 +46,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KProperty1
+import com.tokopedia.media.loader.clear
 
 /**
  * Created by jegul on 03/08/20
@@ -513,26 +513,22 @@ suspend fun getBitmapFromUrl(
     context: Context,
     url: String
 ): Bitmap = suspendCancellableCoroutine { cont ->
-    val target = object : CustomTarget<Bitmap>() {
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-            if (cont.isActive) cont.resume(resource)
-        }
-
-        override fun onLoadCleared(placeholder: Drawable?) {
-            if (!cont.isActive || cont.isCompleted) return
+    val target = MediaBitmapEmptyTarget<Bitmap>(
+        onReady = {
+            if (cont.isActive) cont.resume(it)
+        },
+        onCleared = {
+            if (!cont.isActive || cont.isCompleted) return@MediaBitmapEmptyTarget
             cont.resumeWithException(
                 IllegalStateException("Failed to load image from url: $url")
             )
         }
-    }
+    )
 
-    Glide.with(context)
-        .asBitmap()
-        .load(url)
-        .into(target)
+    url.getBitmapImageUrl(context, properties = {}, target = target)
 
     cont.invokeOnCancellation {
-        Glide.with(context).clear(target)
+        target.clear(context)
     }
 }
 

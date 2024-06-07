@@ -117,6 +117,7 @@
     <string name="path_product_ar">/productar/.*\\/</string>
 
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
+    <string name="path_device_notification_setting" translatable="false">/device-notification-setting</string>
     <string name="path_user_attach_invoice" translatable="false">/user-attach-invoice</string>
     <string name="path_user_attach_voucher" translatable="false">/user-attach-voucher</string>
     <string name="path_user_attach_product" translatable="false">/user-attach-product</string>

@@ -21,10 +21,8 @@ import androidx.test.rule.GrantPermissionRule
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.GlobalHomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.component.disableCoachMark
@@ -42,6 +40,8 @@ import com.tokopedia.home_component.visitable.HasChannelModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.test.application.annotations.TopAdsTest
@@ -49,7 +49,10 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerViewWithIdle
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
@@ -343,7 +346,7 @@ class HomeTopAdsVerificationTest {
         val itemList = recomFeedRecyclerView?.getRecomItemList().orEmpty()
 
         return itemList.count {
-            it is HomeRecommendationItemDataModel && it.recommendationProductItem.isTopAds
+            it is RecommendationCardModel && it.recommendationProductItem.isTopAds
         }
     }
 
@@ -373,11 +376,11 @@ class HomeTopAdsVerificationTest {
         return homeAdapter.currentList
     }
 
-    private fun RecyclerView.getRecomItemList(): List<Visitable<HomeRecommendationTypeFactoryImpl>> {
-        val homeRecomAdapter = this.adapter as? HomeRecommendationAdapter
+    private fun RecyclerView.getRecomItemList(): List<ForYouRecommendationVisitable> {
+        val homeRecomAdapter = this.adapter as? GlobalHomeRecommendationAdapter
 
         if (homeRecomAdapter == null) {
-            val detailMessage = "Adapter is not ${HomeRecommendationAdapter::class.java.simpleName}"
+            val detailMessage = "Adapter is not ${GlobalHomeRecommendationAdapter::class.java.simpleName}"
             throw AssertionError(detailMessage)
         }
 

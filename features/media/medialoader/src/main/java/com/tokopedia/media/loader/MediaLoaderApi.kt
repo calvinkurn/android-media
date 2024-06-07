@@ -17,6 +17,8 @@ import com.tokopedia.media.loader.utils.delayInto
 import com.tokopedia.media.loader.utils.isValidUrl
 import com.tokopedia.media.loader.utils.loadLookup
 import com.tokopedia.media.loader.utils.mediaLoad
+import com.tokopedia.media.loader.utils.timeout
+import com.tokopedia.media.loader.utils.transition
 
 internal object MediaLoaderApi {
 
@@ -29,14 +31,14 @@ internal object MediaLoaderApi {
 
         // handling empty url
         if (properties.data is String && source.toString().isEmpty()) {
-            imageView.setImageDrawable(getDrawable(context, properties.error))
+            imageView.setImageDrawable(properties.getErrorDrawable(context))
             properties.loaderListener?.onFailed(getErrorException(IMAGE_SOURCE_EMPTY_STRING))
             return
         }
 
         // if the data source is null, the image will be render the error drawable
         if (properties.data == null) {
-            imageView.setImageDrawable(getDrawable(context, properties.error))
+            imageView.setImageDrawable(properties.getErrorDrawable(context))
             properties.loaderListener?.onFailed(getErrorException(IMAGE_SOURCE_NULL))
             return
         }
@@ -56,6 +58,8 @@ internal object MediaLoaderApi {
             .commonOptions(properties)
             .dynamicPlaceHolder(context, properties)
             .thumbnail(setThumbnailUrl(context, properties))
+            .transition(properties)
+            .timeout(properties)
             .listener(
                 MediaListenerBuilder<Bitmap>(
                     context,

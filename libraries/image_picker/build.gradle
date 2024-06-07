@@ -51,7 +51,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation projectOrAar(rootProject.ext.libraries.track)
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.networkDependencies.glide
     implementation (rootProject.ext.tkpdLibDependencies.ucrop){
         exclude group: 'com.android.support'
     }

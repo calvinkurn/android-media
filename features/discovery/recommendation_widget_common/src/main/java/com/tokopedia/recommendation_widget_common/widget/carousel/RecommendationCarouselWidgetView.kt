@@ -83,6 +83,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private var itemView: View
     private val itemContext: Context
     private var basicListener: RecomCarouselWidgetBasicListener? = null
+    private var adsItemClickListener: RecomCarouselWidgetBasicListener.OnAdsItemClickListener? = null
+    private var adsViewListener: RecomCarouselWidgetBasicListener.OnAdsViewListener? = null
+
     private var tokonowListener: RecommendationCarouselTokonowListener? = null
     private var tokonowPageNameListener: RecommendationCarouselTokonowPageNameListener? = null
     private var basicChipListener: RecomCarouselChipListener? = null
@@ -130,6 +133,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         carouselData: RecommendationCarouselData = RecommendationCarouselData(),
         adapterPosition: Int = 0,
         basicListener: RecomCarouselWidgetBasicListener?,
+        adsItemClickListener: RecomCarouselWidgetBasicListener.OnAdsItemClickListener?,
+        adsViewListener: RecomCarouselWidgetBasicListener.OnAdsViewListener?,
         tokonowListener: RecommendationCarouselTokonowListener?,
         chipListener: RecomCarouselChipListener? = null,
         scrollToPosition: Int = RecyclerView.NO_POSITION,
@@ -140,6 +145,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 scrollToPosition = scrollToPosition
             )
             this.basicListener = basicListener
+            this.adsItemClickListener = adsItemClickListener
+            this.adsViewListener = adsViewListener
             this.tokonowListener = tokonowListener
             this.basicChipListener = chipListener
             if (carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
@@ -165,6 +172,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     fun bind(
         adapterPosition: Int = 0,
         basicListener: RecomCarouselWidgetBasicListener?,
+        adsItemClickListener: RecomCarouselWidgetBasicListener.OnAdsItemClickListener?,
+        adsViewListener: RecomCarouselWidgetBasicListener.OnAdsViewListener?,
         tokonowPageNameListener: RecommendationCarouselTokonowPageNameListener?,
         scrollToPosition: Int = RecyclerView.NO_POSITION,
         pageName: String,
@@ -189,6 +198,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 miniCartSource = miniCartSource
             )
             this.basicListener = basicListener
+            this.adsItemClickListener = adsItemClickListener
+            this.adsViewListener = adsViewListener
             this.tokonowPageNameListener = tokonowPageNameListener
             bindTemporaryHeader(tempHeaderName)
             bindWidgetWithPageName(
@@ -261,6 +272,26 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 adapterPosition = widgetMetadata.adapterPosition
             )
         }
+    }
+
+    override fun onAreaClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        adsItemClickListener?.onAreaClicked(recomItem, bindingAdapterPosition)
+    }
+
+    override fun onProductImageClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        adsItemClickListener?.onProductImageClicked(recomItem, bindingAdapterPosition)
+    }
+
+    override fun onSellerInfoClicked(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        adsItemClickListener?.onSellerInfoClicked(recomItem, bindingAdapterPosition)
+    }
+
+    override fun onViewAttachedToWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int) {
+        adsViewListener?.onViewAttachedToWindow(recomItem, bindingAdapterPosition)
+    }
+
+    override fun onViewDetachedFromWindow(recomItem: RecommendationItem, bindingAdapterPosition: Int, visiblePercentage: Int) {
+        adsViewListener?.onViewDetachedFromWindow(recomItem, bindingAdapterPosition, visiblePercentage)
     }
 
     override fun onRecomProductCardAddToCartNonVariant(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {

@@ -29,6 +29,7 @@ buildscript {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
@@ -53,7 +54,6 @@ dependencies {
 
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     ksp rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

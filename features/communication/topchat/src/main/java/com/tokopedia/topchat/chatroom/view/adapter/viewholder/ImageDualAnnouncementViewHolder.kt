@@ -3,8 +3,8 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
-import com.bumptech.glide.Glide
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -49,13 +49,8 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
 
     override fun onViewRecycled() {
         super.onViewRecycled()
-        if (top != null) {
-            Glide.with(itemView.context).clear(top)
-        }
-
-        if (bottom != null) {
-            Glide.with(itemView.context).clear(bottom)
-        }
+        top?.clearImage()
+        bottom?.clearImage()
     }
 
     companion object {

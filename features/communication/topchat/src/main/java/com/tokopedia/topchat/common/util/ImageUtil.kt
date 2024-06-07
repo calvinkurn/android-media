@@ -6,8 +6,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.media.loader.loadAsGif
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
@@ -18,11 +18,9 @@ object ImageUtil {
         "https://images.tokopedia.net/img/android/user/typing_motion_darkmode.gif"
 
     fun loadGif(imageUnify: ImageUnify, gifUrl: String) {
-        Glide.with(imageUnify.context)
-            .asGif()
-            .load(gifUrl)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .into(imageUnify)
+        imageUnify.loadAsGif(gifUrl) {
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+        }
     }
 
     fun setTypingAnimation(imageUnify: ImageUnify) {
