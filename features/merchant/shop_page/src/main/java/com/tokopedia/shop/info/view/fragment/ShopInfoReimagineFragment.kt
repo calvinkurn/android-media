@@ -144,12 +144,21 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         observeUiEffect()
     }
 
+    override fun onPause() {
+        super.onPause()
+        binding?.shopReviewView?.stopAutoScroll()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding?.shopReviewView?.startAutoScroll()
+    }
+
     private fun setupView() {
         setupReportShopHyperlink()
         setupClickListener()
         setupHeader()
     }
-
     private fun setupHeader() {
         binding?.headerUnify?.setNavigationOnClickListener { activity?.finish() }
     }

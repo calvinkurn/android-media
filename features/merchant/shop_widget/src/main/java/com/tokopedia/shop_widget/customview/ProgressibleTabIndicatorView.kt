@@ -1,6 +1,5 @@
 package com.tokopedia.shop_widget.customview
 
-import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +8,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -28,11 +28,9 @@ class ProgressibleTabIndicatorView @JvmOverloads constructor(
     init {
         orientation = HORIZONTAL
     }
-
-    private var expandProgressBarWidthAnimatorSet: AnimatorSet? = null
-    private var progressAnimatorSet: AnimatorSet? = null
-    private var progressIndicatorValueAnimator: ValueAnimator? = null
-    private var expandProgressBarWidthAnimator: ValueAnimator? = null
+    private var widthAnimator: ValueAnimator? = null
+    private var progressAnimator: ValueAnimator? = null
+    private var tabIndicatorCount = 0
 
     companion object {
         private const val UNSELECTED_TAB_INDICATOR_HEIGHT = 5
@@ -40,8 +38,8 @@ class ProgressibleTabIndicatorView @JvmOverloads constructor(
 
         private const val DOT_INDICATOR_MARGIN_START = 3
 
-        private const val SELECTED_TAB_INDICATOR_EXPAND_ANIMATION_DURATION_MILLIS: Long = 600
-        private const val SELECTED_TAB_INDICATOR_PROGRESS_ANIMATION_DURATION_MILLIS: Long = 6000
+        private const val ANIMATE_PROGRESSBAR_WIDTH_DURATION_MILLIS: Long = 600
+        private const val ANIMATE_PROGRESSBAR_PROGRESS_DURATION_MILLIS: Long = 6000
 
         private const val SELECTED_TAB_INDICATOR_HEIGHT = 5
         private const val SELECTED_TAB_INDICATOR_MIN_WIDTH = 6
@@ -51,25 +49,23 @@ class ProgressibleTabIndicatorView @JvmOverloads constructor(
         private const val SELECTED_TAB_INDICATOR_MAX_PROGRESS = 100
     }
 
-    fun showTabIndicatorWithLifecycle(
+    fun initWithLifecycle(
         tabIndicatorCount: Int,
-        selectedPosition: Int,
-        lifecycle: Lifecycle,
-        onProgressFinish: () -> Unit
+        lifecycle: Lifecycle
     ) {
+        this.tabIndicatorCount = tabIndicatorCount
         lifecycle.addObserver(this)
 
         try {
-            showTabIndicator(tabIndicatorCount, selectedPosition, onProgressFinish)
+            showTabIndicator(tabIndicatorCount = tabIndicatorCount, selectedPosition = Int.ZERO)
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
-    fun showTabIndicator(
+    private fun showTabIndicator(
         tabIndicatorCount: Int,
-        selectedPosition: Int,
-        onProgressFinish: () -> Unit
+        selectedPosition: Int
     ) {
         // Remove existing views before recreate new tab indicators
         removeAllViews()
@@ -83,57 +79,53 @@ class ProgressibleTabIndicatorView @JvmOverloads constructor(
                 addView(createUnselectedDot())
             }
         }
-
-        expandSelectedTabIndicatorWidth(onProgressFinish = onProgressFinish)
     }
 
-    private fun expandSelectedTabIndicatorWidth(onProgressFinish: () -> Unit) {
-        val progressBar = getSelectedTabIndicator()
-        if (progressBar == null) return
+    fun setIndicatorActive(selectedIndex: Int) {
+        val progressBar = createProgressBar()
 
-        expandProgressBarWidthAnimatorSet = AnimatorSet()
+        removeViewAt(selectedIndex)
+        addView(progressBar, selectedIndex)
+        progressBar.animated()
 
-        expandProgressBarWidthAnimator =
-            ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_WIDTH, SELECTED_TAB_INDICATOR_MAX_WIDTH)
-                .setDuration(SELECTED_TAB_INDICATOR_EXPAND_ANIMATION_DURATION_MILLIS)
-
-        expandProgressBarWidthAnimator?.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-
-            progressBar.layoutParams?.width = value.toPx()
-            progressBar.requestLayout()
-
-            if (value == SELECTED_TAB_INDICATOR_MAX_WIDTH) {
-                animateSelectedTabIndicatorProgress(progressBar, onProgressFinish)
-            }
-        }
-
-        expandProgressBarWidthAnimatorSet?.interpolator = UnifyMotion.EASE_IN_OUT
-        expandProgressBarWidthAnimatorSet?.play(expandProgressBarWidthAnimator)
-        expandProgressBarWidthAnimatorSet?.start()
+        setIndicatorInactive(selectedIndex, tabIndicatorCount)
     }
 
-    private fun animateSelectedTabIndicatorProgress(
-        progressBar: ProgressBar,
-        onProgressFinish: () -> Unit
-    ) {
-        progressIndicatorValueAnimator = ValueAnimator
-            .ofInt(SELECTED_TAB_INDICATOR_MIN_PROGRESS, SELECTED_TAB_INDICATOR_MAX_PROGRESS)
-            .setDuration(SELECTED_TAB_INDICATOR_PROGRESS_ANIMATION_DURATION_MILLIS)
-
-        progressAnimatorSet = AnimatorSet()
-
-        progressIndicatorValueAnimator?.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-            progressBar.progress = value
-            if (value == SELECTED_TAB_INDICATOR_MAX_PROGRESS) {
-                onProgressFinish()
+    private fun setIndicatorInactive(selectedIndex: Int, tabIndicatorCount: Int) {
+        for (currentIndex in 0 until tabIndicatorCount) {
+            if (currentIndex != selectedIndex) {
+                removeViewAt(currentIndex)
+                addView(createUnselectedDot(), currentIndex)
             }
         }
+    }
 
-        progressAnimatorSet?.interpolator = LinearInterpolator()
-        progressAnimatorSet?.play(progressIndicatorValueAnimator)
-        progressAnimatorSet?.start()
+    private fun ProgressBar.animated() {
+        widthAnimator?.cancel()
+        progressAnimator?.cancel()
+
+        widthAnimator = ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_WIDTH, SELECTED_TAB_INDICATOR_MAX_WIDTH)
+        widthAnimator?.duration = ANIMATE_PROGRESSBAR_WIDTH_DURATION_MILLIS
+        widthAnimator?.interpolator = UnifyMotion.EASE_IN_OUT
+        widthAnimator?.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+
+            val updatedLayoutParams = layoutParams
+            layoutParams?.width = value.toPx()
+            layoutParams = updatedLayoutParams
+        }
+
+        widthAnimator?.addListener(onEnd = {
+            progressAnimator = ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_PROGRESS, SELECTED_TAB_INDICATOR_MAX_PROGRESS)
+            progressAnimator?.duration = ANIMATE_PROGRESSBAR_PROGRESS_DURATION_MILLIS
+            progressAnimator?.interpolator = LinearInterpolator()
+            progressAnimator?.addUpdateListener { animation ->
+                progress = animation.animatedValue as Int
+            }
+            progressAnimator?.start()
+        })
+
+        widthAnimator?.start()
     }
 
     @SuppressLint("UnifyComponentUsage")
@@ -203,31 +195,20 @@ class ProgressibleTabIndicatorView @JvmOverloads constructor(
     }
 
     private fun resumeAnimation() {
-        expandProgressBarWidthAnimatorSet?.resume()
-        progressAnimatorSet?.resume()
+        widthAnimator?.resume()
+        progressAnimator?.resume()
     }
 
     private fun pauseAnimation() {
-        expandProgressBarWidthAnimatorSet?.pause()
-        progressAnimatorSet?.pause()
+        widthAnimator?.pause()
+        progressAnimator?.pause()
     }
 
     private fun cancelAnimation() {
-        expandProgressBarWidthAnimatorSet?.cancel()
-        progressAnimatorSet?.cancel()
+        widthAnimator?.cancel()
+        progressAnimator?.cancel()
 
-        expandProgressBarWidthAnimatorSet = null
-        progressAnimatorSet = null
-    }
-
-    private fun getSelectedTabIndicator(): ProgressBar? {
-        for (i in Int.ZERO..childCount) {
-            val indicator = getChildAt(i)
-            if (indicator is ProgressBar) {
-                return indicator
-            }
-        }
-
-        return null
+        widthAnimator = null
+        progressAnimator = null
     }
 }
