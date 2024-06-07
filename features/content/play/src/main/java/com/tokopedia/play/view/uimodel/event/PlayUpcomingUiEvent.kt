@@ -10,9 +10,16 @@ sealed class PlayUpcomingUiEvent {
     /**
      * General
      */
-    data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null) : PlayUpcomingUiEvent()
+    data class OpenPageEvent(
+        val applink: String,
+        val params: List<String> = emptyList(),
+        val requestCode: Int? = null
+    ) : PlayUpcomingUiEvent()
+
     data class ShowInfoEvent(val message: UiString) : PlayUpcomingUiEvent()
-    data class ShowInfoWithActionEvent(val message: UiString, val action: () -> Unit) : PlayUpcomingUiEvent()
+    data class ShowInfoWithActionEvent(val message: UiString, val action: () -> Unit) :
+        PlayUpcomingUiEvent()
+
     data class ShowError(val error: Throwable) : PlayUpcomingUiEvent()
 
     /**
@@ -24,8 +31,21 @@ sealed class PlayUpcomingUiEvent {
     /**
      * Share Experience
      */
-    data class OpenSharingOptionEvent(val title: String, val coverUrl: String, val userId: String, val channelId: String) : PlayUpcomingUiEvent()
-    data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String) : PlayUpcomingUiEvent()
+    data class OpenSharingOptionEvent(
+        val title: String,
+        val coverUrl: String,
+        val userId: String,
+        val channelId: String,
+        val partnerId: String,
+        val channelType: String
+    ) : PlayUpcomingUiEvent()
+
+    data class OpenSelectedSharingOptionEvent(
+        val linkerShareResult: LinkerShareResult?,
+        val shareModel: ShareModel,
+        val shareString: String
+    ) : PlayUpcomingUiEvent()
+
     object CloseShareExperienceBottomSheet : PlayUpcomingUiEvent()
     object ErrorGenerateShareLink : PlayUpcomingUiEvent()
 

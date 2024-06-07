@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class ShareExGetBranchLinkUseCaseImpl @Inject constructor(
@@ -57,18 +56,12 @@ class ShareExGetBranchLinkUseCaseImpl @Inject constructor(
         branchUniversalObject: BranchUniversalObject,
         linkProperties: LinkProperties
     ) {
-        try {
-            branchUniversalObject.generateShortUrl(
-                context,
-                linkProperties,
-                branchRepository.getBranchListener(scope)
-            )
-            forceTimeout(scope)
-        } catch (e: Throwable) {
-            Timber.d(e)
-            scope.send(ShareExResult.Error(e))
-            scope.close()
-        }
+        branchUniversalObject.generateShortUrl(
+            context,
+            linkProperties,
+            branchRepository.getBranchListener(scope)
+        )
+        forceTimeout(scope)
     }
 
     private suspend fun forceTimeout(
