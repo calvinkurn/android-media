@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -138,8 +137,6 @@ import com.tokopedia.wishlist.detail.view.adapter.BottomSheetThreeDotsMenuWishli
 import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistCleanerAdapter
 import com.tokopedia.wishlist.detail.view.adapter.BottomSheetWishlistFilterAdapter
 import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
-import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationItemViewHolder
-import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationTitleViewHolder
 import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetCleanerWishlist
 import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetFilterWishlist
 import com.tokopedia.wishlist.detail.view.bottomsheet.BottomSheetThreeDotsMenuWishlist
@@ -245,7 +242,6 @@ class WishlistCollectionDetailFragment :
         activity?.let { WishlistLayoutPreference(it) }
     }
 
-    private var hasTrackEnterPage: Boolean = false
     private var hasApplogScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
@@ -611,7 +607,6 @@ class WishlistCollectionDetailFragment :
                                 if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                     onFailedGetWishlistV2(ResponseErrorException())
                                 } else {
-                                    trackEnterPage()
                                     showRvWishlist()
                                     isFetchRecommendation = true
                                     hideTotalLabel()
@@ -1562,12 +1557,6 @@ class WishlistCollectionDetailFragment :
     private fun loadRecommendationList() {
         currRecommendationListPage += 1
         wishlistCollectionDetailViewModel.loadRecommendation(currRecommendationListPage)
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
     }
 
     private fun initTrackingQueue() {

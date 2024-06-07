@@ -39,13 +39,14 @@ open class GetSingleRecommendationUseCase @Inject constructor(
         graphqlUseCase.setRequestParams(parameter)
         graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQuery())
 
-        return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.toRecommendationWidget()
+        return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.toRecommendationWidget(byteIoUseCase.getTotalData(inputParameter.pageName))
             .also {
                 // if the request does not have pageName, use productId as identifier
                 val requestIdentifier = inputParameter.pageName.ifEmpty { inputParameter.productIds.joinToString(",") }
-                byteIoUseCase.updateSessionId(
+                byteIoUseCase.updateMap(
                     requestIdentifier,
-                    it.appLog.sessionId
+                    sessionId = it.appLog.sessionId,
+                    totalData = it.recommendationItemList.size
                 )
             }
     }

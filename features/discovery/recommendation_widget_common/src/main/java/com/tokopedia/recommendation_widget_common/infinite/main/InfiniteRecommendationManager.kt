@@ -18,8 +18,7 @@ class InfiniteRecommendationManager(
     private val context: Context,
     val listener: InfiniteRecommendationListener? = null,
     private val headingType: Int = 0,
-    private val additionalAppLogParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
-    private val enableSeparator: Boolean = false
+    private val additionalAppLogParam: AppLogAdditionalParam = AppLogAdditionalParam.None
 ) : InfiniteRecommendationCallback {
 
     val adapter: InfiniteRecommendationAdapter by getAdapter()
@@ -30,7 +29,7 @@ class InfiniteRecommendationManager(
             field = value.copy(
                 hasNewProductCardEnabled = true
             )
-            viewModel?.init(additionalAppLogParam, enableSeparator)
+            viewModel?.init(additionalAppLogParam)
         }
 
     init {

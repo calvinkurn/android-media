@@ -17,8 +17,12 @@ data class InstantHeaderUiModel(
     val note: List<String>,
     val shouldHidePrimaryButton: Boolean,
     val primaryButtonText: String,
+    val primaryButtonApplink: String,
+    val primaryButtonType: String,
     val shouldHideSecondaryButton: Boolean,
     val secondaryButtonText: String,
+    val secondaryButtonApplink: String,
+    val secondaryButtonType: String,
     val promoFlags: String,
     val totalDeduction: Float
 ) : Visitable<BottomContentFactory>, WidgetTag(TAG) {
@@ -38,9 +42,6 @@ data class InstantHeaderUiModel(
                 format(context?.getString(R.string.thank_total_pay_rp).orEmpty(), CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.amount, false))
             else thanksPageData.customDataMessage?.customSubtitleV2
 
-            val primaryButtonText = if (thanksPageData.customDataMessage?.titleHomeButton.isNullOrEmpty()) context?.getString(R.string.thank_shop_again) else thanksPageData.customDataMessage?.titleHomeButton
-            val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_transaction_list) else thanksPageData.customDataMessage?.titleOrderButton
-
             val note = Gson().fromJson(thanksPageData.customDataMessage?.customNotes, Array<String>::class.java)
 
             return InstantHeaderUiModel(
@@ -48,10 +49,14 @@ data class InstantHeaderUiModel(
                 title.orEmpty(),
                 description.orEmpty(),
                 note.orEmpty().toList(),
-                thanksPageData.configFlagData?.shouldHideHomeButton == true,
-                primaryButtonText.orEmpty(),
-                false,
-                secondaryButtonText.orEmpty(),
+                thanksPageData.ctaDataThanksPage.primary.hideButton,
+                thanksPageData.ctaDataThanksPage.primary.text,
+                thanksPageData.ctaDataThanksPage.primary.applink,
+                thanksPageData.ctaDataThanksPage.primary.type,
+                thanksPageData.ctaDataThanksPage.secondary.hideButton,
+                thanksPageData.ctaDataThanksPage.secondary.text,
+                thanksPageData.ctaDataThanksPage.secondary.applink,
+                thanksPageData.ctaDataThanksPage.secondary.type,
                 thanksPageData.customDataOther?.promoFlags.orEmpty(),
                 getTotalDeduction(thanksPageData)
             )

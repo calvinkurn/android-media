@@ -28,6 +28,7 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -46,7 +47,6 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
-import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
@@ -104,7 +104,8 @@ class FeedBaseFragment :
     TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
     FragmentListener,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -319,6 +320,10 @@ class FeedBaseFragment :
     override fun getScreenName(): String = "Feed Fragment"
 
     override fun getPageName(): String {
+        return PageName.FEED
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.FEED
     }
 
@@ -673,13 +678,7 @@ class FeedBaseFragment :
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                         launch {
-                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
-                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                            binding.containerFeedTopNav.uploadView.hide()
-                                        }
-
-                                        if (uploadResult.data.uploadType == CreationUploadType.Post) {
-                                            feedMainViewModel.deletePostCache()
+                                            creationUploader.removeFailedContentFromQueue(uploadResult.data)
                                         }
                                     }
                                 })

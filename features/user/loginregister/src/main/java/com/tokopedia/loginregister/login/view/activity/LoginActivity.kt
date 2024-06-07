@@ -18,6 +18,7 @@ import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
+import com.tokopedia.sessioncommon.util.LoginSdkUtils.removeLoginSdkFlow
 import com.tokopedia.telemetry.ITelemetryActivity
 
 /**
@@ -49,6 +50,7 @@ open class LoginActivity :
         super.onCreate(savedInstanceState)
         setWhiteStatusBarIfSellerApp()
         removeBackButtonIfSellerApp()
+        removeLoginSdkFlow()
     }
 
     private fun setWhiteStatusBarIfSellerApp() {
@@ -78,7 +80,7 @@ open class LoginActivity :
         }
     }
 
-    private fun getBundleFromData(): Bundle {
+    fun getBundleFromData(): Bundle {
         val bundle = Bundle()
         intent?.data?.let {
             var method = it.getQueryParameter(PARAM_LOGIN_METHOD).orEmpty()

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -89,7 +90,8 @@ class ThankYouPageActivity :
     BaseSimpleActivity(),
     HasComponent<ThankYouPageComponent>,
     ThankYouPageDataLoadCallback,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     @Inject
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
@@ -198,10 +200,18 @@ class ThankYouPageActivity :
         }
         idlingResource?.decrement()
         findViewById<FrameLayout>(getParentViewResourceID()).animate().alpha(0f).setDuration(UnifyMotion.T5).withEndAction {
+            onLoaderFullyInvisible()
+        }.start()
+    }
+
+    private fun onLoaderFullyInvisible() {
+        try {
             supportFragmentManager.findFragmentById(getParentViewResourceID())?.let {
                 supportFragmentManager.beginTransaction().remove(it).commit()
             }
-        }.start()
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
     }
 
     fun cancelGratifDialog() {
@@ -524,6 +534,10 @@ class ThankYouPageActivity :
     }
 
     override fun getPageName(): String {
+        return PageName.ORDER_SUBMIT
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.ORDER_SUBMIT
     }
 }

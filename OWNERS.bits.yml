@@ -29,7 +29,7 @@ code_review_rule:
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/category/explore_category.*
+    - pattern: /features/category/explore_category/.*
       reviewers:
         - zulfikar.rahman
         - isfhani.ghiath
@@ -162,35 +162,35 @@ code_review_rule:
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/discovery/discovery_common.*
+    - pattern: /features/discovery/discovery_common/.*
       reviewers:
         - zulfikar.rahman
         - isfhani.ghiath
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/discovery/recommendation_widget_common.*
+    - pattern: /features/discovery/recommendation_widget_common/.*
       reviewers:
         - zulfikar.rahman
         - isfhani.ghiath
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/discovery/carousel_productcard.*
+    - pattern: /features/discovery/carousel_productcard/.*
       reviewers:
         - zulfikar.rahman
         - isfhani.ghiath
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/discovery/productcard_options.*
+    - pattern: /features/discovery/productcard_options/.*
       reviewers:
         - zulfikar.rahman
         - isfhani.ghiath
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/discovery/home_page_banner.*
+    - pattern: /features/discovery/home_page_banner/.*
       reviewers:
         - zulfikar.rahman
         - isfhani.ghiath
@@ -211,33 +211,12 @@ code_review_rule:
         - frenzel.surya
         - winston.pangestu
       required_approvals: 1
-    - pattern: /features/user/fcm_common/.*
+    - pattern: /libraries/libra/.*
       reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
-      required_approvals: 1
-    - pattern: /libraries/cm_push_notifications/.*
-      reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
-      required_approvals: 1
-    - pattern: /features/user/notif-troubleshooter/.*
-      reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
-      required_approvals: 1
-    - pattern: /features/user/settingnotif/.*
-      reviewers:
-        - yehezkiel
-        - ilham.i
-        - yovi.putra
-        - yusuf.hendrawan
+        - zulfikar.rahman
+        - isfhani.ghiath
+        - frenzel.surya
+        - winston.pangestu
       required_approvals: 1
     - pattern: /features/watch/.*
       reviewers:
@@ -259,7 +238,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/common/app_common.*
+    - pattern: /features/common/app_common/.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -279,7 +258,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/common/developer_options.*
+    - pattern: /features/common/developer_options/.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -299,7 +278,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/common/developer_options_noop.*
+    - pattern: /features/common/developer_options_noop/.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -319,7 +298,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/common/nps.*
+    - pattern: /features/common/nps/.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -339,7 +318,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/common/resources_common.*
+    - pattern: /features/common/resources_common/.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -359,7 +338,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/common/qr_scanner.*
+    - pattern: /features/common/qr_scanner/.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -379,7 +358,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/common/feedback_form.*
+    - pattern: /features/common/feedback_form/.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -603,7 +582,7 @@ code_review_rule:
         - yovi.putra
         - yusuf.hendrawan
       required_approvals: 1
-    - pattern: /features/ordermanagement/buyer_order_detail.*
+    - pattern: /features/ordermanagement/buyer_order_detail/.*
       reviewers:
         - yehezkiel
         - ilham.i
@@ -698,6 +677,34 @@ code_review_rule:
         - yovi.putra
         - yusuf.hendrawan
       required_approvals: 1
+    - pattern: /features/user/fcm_common/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
+    - pattern: /libraries/cm_push_notifications/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
+    - pattern: /features/user/notif-troubleshooter/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
+    - pattern: /features/user/settingnotif/.*
+      reviewers:
+        - yehezkiel
+        - ilham.i
+        - yovi.putra
+        - yusuf.hendrawan
+      required_approvals: 1
     - pattern: /features/merchant/shop_common/.*
       reviewers:
         - yogie.putra
@@ -782,56 +789,56 @@ code_review_rule:
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/merchant/seller_shop_flash_sale.*
+    - pattern: /features/merchant/seller_shop_flash_sale/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/promo/mvc_widget.*
+    - pattern: /features/promo/mvc_widget/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/merchant/seller_tokopedia_flash_sale.*
+    - pattern: /features/merchant/seller_tokopedia_flash_sale/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/merchant/seller_mvc_creation.*
+    - pattern: /features/merchant/seller_mvc_creation/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/merchant/seller_shop_nib.*
+    - pattern: /features/merchant/seller_shop_nib/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/promo/merchant_voucher.*
+    - pattern: /features/promo/merchant_voucher/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/merchant/buy_more_get_more.*
+    - pattern: /features/merchant/buy_more_get_more/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
         - fajar.azhar
         - yuda.putra
       required_approvals: 1
-    - pattern: /features/merchant/bmsm_widget.*
+    - pattern: /features/merchant/bmsm_widget/.*
       reviewers:
         - yogie.putra
         - calvyn.julian
@@ -862,91 +869,91 @@ code_review_rule:
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/age_restriction.*
+    - pattern: /features/category/age_restriction/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/catalog.*
+    - pattern: /features/category/catalog/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/catalog_common.*
+    - pattern: /features/category/catalog_common/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/catalog_library.*
+    - pattern: /features/category/catalog_library/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/category_levels.*
+    - pattern: /features/category/category_levels/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/moneyin.*
+    - pattern: /features/category/moneyin/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/tradein.*
+    - pattern: /features/category/tradein/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/common_tradein.*
+    - pattern: /features/category/common_tradein/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/common_category.*
+    - pattern: /features/category/common_category/.*
       reviewers:
         - devara.akmal
         - edwin.nurwansyah
         - faisal.ramdani
       required_approvals: 1
-    - pattern: /features/category/discovery2.*
+    - pattern: /features/category/discovery2/.*
       reviewers:
         - hendry.setiadi
         - andri.fashbir
         - singgih.harseno
       required_approvals: 1
-    - pattern: /features/category/discovery_component.*
+    - pattern: /features/category/discovery_component/.*
       reviewers:
         - hendry.setiadi
         - andri.fashbir
         - singgih.harseno
       required_approvals: 1
-    - pattern: /features/im/cm_home_widget.*
+    - pattern: /features/im/cm_home_widget/.*
       reviewers:
         - hendry.setiadi
         - andri.fashbir
         - singgih.harseno
       required_approvals: 1
-    - pattern: /features/im/referral.*
+    - pattern: /features/im/referral/.*
       reviewers:
         - hendry.setiadi
         - andri.fashbir
         - singgih.harseno
       required_approvals: 1
-    - pattern: /features/im/install_referral.*
+    - pattern: /features/im/install_referral/.*
       reviewers:
         - hendry.setiadi
         - andri.fashbir
         - singgih.harseno
       required_approvals: 1
-    - pattern: /features/im/common_promo.*
+    - pattern: /features/im/common_promo/.*
       reviewers:
         - hendry.setiadi
         - andri.fashbir
@@ -1343,121 +1350,121 @@ code_review_rule:
         - asti.anzaria
         - fachrizal.mursalin
       required_approvals: 1
-    - pattern: /features/recharge/common_digital.*
+    - pattern: /features/recharge/common_digital/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/common_electronic_money.*
+    - pattern: /features/recharge/common_electronic_money/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/common_topup_bills.*
+    - pattern: /features/recharge/common_topup_bills/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/digital_brizzi.*
+    - pattern: /features/recharge/digital_brizzi/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/digital_emoney.*
+    - pattern: /features/recharge/digital_emoney/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/digital_checkout.*
+    - pattern: /features/recharge/digital_checkout/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/digital_homepage.*
+    - pattern: /features/recharge/digital_homepage/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/digital_recommendation.*
+    - pattern: /features/recharge/digital_recommendation/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/digital_topup_bills.*
+    - pattern: /features/recharge/digital_topup_bills/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/recharge_component.*
+    - pattern: /features/recharge/recharge_component/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/recharge_credit_card.*
+    - pattern: /features/recharge/recharge_credit_card/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/recharge_general.*
+    - pattern: /features/recharge/recharge_general/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/rechargeocr.*
+    - pattern: /features/recharge/rechargeocr/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/voucher_game.*
+    - pattern: /features/recharge/voucher_game/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/recharge_pdp_emoney.*
+    - pattern: /features/recharge/recharge_pdp_emoney/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/recharge/digital_product_detail.*
+    - pattern: /features/recharge/digital_product_detail/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/entertainment/deals.*
+    - pattern: /features/entertainment/deals/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/entertainment/event.*
+    - pattern: /features/entertainment/event/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/entertainment/common_entertainment.*
+    - pattern: /features/entertainment/common_entertainment/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/travel/common_travel.*
+    - pattern: /features/travel/common_travel/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
@@ -1475,19 +1482,19 @@ code_review_rule:
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/travel/travel_country_code.*
+    - pattern: /features/travel/travel_country_code/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/travel/travel_homepage.*
+    - pattern: /features/travel/travel_homepage/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /features/travel/travel_passenger.*
+    - pattern: /features/travel/travel_passenger/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
@@ -1499,7 +1506,7 @@ code_review_rule:
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /dynamic-features/travel.*
+    - pattern: /dynamic-features/travel/.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
@@ -1805,7 +1812,7 @@ code_review_rule:
         - fakhira.devina
         - bobby.ingkirama
       required_approvals: 1
-    - pattern: /features/category/epharmacy.*
+    - pattern: /features/category/epharmacy/.*
       reviewers:
         - angga.prasetiyo
         - hansen.wijaya
@@ -1815,7 +1822,7 @@ code_review_rule:
         - fakhira.devina
         - bobby.ingkirama
       required_approvals: 1
-    - pattern: /features/category/common_epharmacy.*
+    - pattern: /features/category/common_epharmacy/.*
       reviewers:
         - angga.prasetiyo
         - hansen.wijaya
@@ -1961,21 +1968,21 @@ code_review_rule:
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/user/changephonenumber.*
+    - pattern: /features/user/changephonenumber/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/user/onboarding.*
+    - pattern: /features/user/onboarding/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/user/updateinactivephone.*
+    - pattern: /features/user/updateinactivephone/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
@@ -2178,56 +2185,56 @@ code_review_rule:
         - said.faisal
         - kelvin.saputra
       required_approvals: 1
-    - pattern: /features/operational/contact_us.*
+    - pattern: /features/operational/contact_us/.*
       reviewers:
         - irfan.muhlishin
         - reza.hidayat
         - said.faisal
         - kelvin.saputra
       required_approvals: 1
-    - pattern: /features/operational/csat_rating.*
+    - pattern: /features/operational/csat_rating/.*
       reviewers:
         - irfan.muhlishin
         - reza.hidayat
         - said.faisal
         - kelvin.saputra
       required_approvals: 1
-    - pattern: /features/fintech/common_wallet.*
+    - pattern: /features/fintech/common_wallet/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/fintech_home_widget.*
+    - pattern: /features/fintech/fintech_home_widget/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/layanan_finansial.*
+    - pattern: /features/fintech/layanan_finansial/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/paylater.*
+    - pattern: /features/fintech/paylater/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/pdp_fintech_widget.*
+    - pattern: /features/fintech/pdp_fintech_widget/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/saldo_details.*
+    - pattern: /features/fintech/saldo_details/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/home_credit.*
+    - pattern: /features/fintech/home_credit/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/insurance.*
+    - pattern: /features/fintech/insurance/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
@@ -2252,136 +2259,136 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/promo/scp_rewards.*
+    - pattern: /features/promo/scp_rewards/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/scp_rewards_common.*
+    - pattern: /features/promo/scp_rewards_common/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/scp_rewards_widgets.*
+    - pattern: /features/promo/scp_rewards_widgets/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/scp_rewards_touchpoints.*
+    - pattern: /features/promo/scp_rewards_touchpoints/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/gamification.*
+    - pattern: /features/promo/gamification/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/promo_gamification_common.*
+    - pattern: /features/promo/promo_gamification_common/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/tokopoints.*
+    - pattern: /features/promo/tokopoints/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/tokopoints_notification.*
+    - pattern: /features/promo/tokopoints_notification/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/loyalty.*
+    - pattern: /features/promo/loyalty/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/loyalty_common.*
+    - pattern: /features/promo/loyalty_common/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/promotions_target.*
+    - pattern: /features/promo/promotions_target/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/promo_ui_common.*
+    - pattern: /features/promo/promo_ui_common/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/quest_widget.*
+    - pattern: /features/promo/quest_widget/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/tokomember.*
+    - pattern: /features/promo/tokomember/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/tokomember_seller_dashboard.*
+    - pattern: /features/promo/tokomember_seller_dashboard/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/tokomember_common_widget.*
+    - pattern: /features/promo/tokomember_common_widget/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/promo/tokomember.*
+    - pattern: /features/promo/tokomember/.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /features/payment/common_payment.*
+    - pattern: /features/payment/common_payment/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/fintech/wallet.*
+    - pattern: /features/fintech/wallet/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya
       required_approvals: 1
-    - pattern: /features/payment/thankyou_native.*
+    - pattern: /features/payment/thankyou_native/.*
       reviewers:
         - normansyah.putra
         - steven.wijaya

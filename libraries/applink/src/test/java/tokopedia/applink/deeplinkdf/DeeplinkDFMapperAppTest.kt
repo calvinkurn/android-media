@@ -46,6 +46,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TRAVEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_SETTINGS
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
@@ -301,6 +302,7 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA("tokopedia://goto-kyc?projectId=7", DF_USER_SETTINGS)
         assertEqualDeepLinkMA("tokopedia://kyc?projectId=7", DF_USER_SETTINGS)
         assertEqualDeepLinkMA(PRIVACY_CENTER, DF_USER_SETTINGS)
+        assertEqualDeepLinkMA(CHANGE_PHONE_NUMBER, DF_USER_SETTINGS)
 
         assertEqualDeepLinkMA(SALDO, DF_USER_SETTINGS)
         assertEqualDeepLinkMA(SETTING_BANK, DF_USER_SETTINGS)

@@ -2,6 +2,9 @@ package com.tokopedia.discovery2.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
@@ -18,6 +21,8 @@ import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder.Companion.CURRENT_TAB_NAME
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
@@ -158,7 +163,7 @@ data class DataItem(
     @SerializedName("alternate_background_url_mobile")
     val alternateBackgroundUrlMobile: String? = "",
 
-    @SerializedName("box_color", alternate = ["background_color", "header_color"])
+    @SerializedName("box_color", alternate = ["background_color"])
     val boxColor: String? = "",
 
     @SerializedName(
@@ -632,6 +637,39 @@ data class DataItem(
     @SerializedName("anchor_product_id")
     val anchorProductId: String? = "",
 
+    /**
+     * calendar improvement START
+     * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/1717436428/Calendar
+     */
+
+    @SerializedName("header_color")
+    val headerColor: String? = "",
+
+    @SerializedName("text_header_color")
+    val textHeaderColor: String? = "",
+
+    @SerializedName("text_content_color")
+    val textContentColor: String? = "",
+
+    @SerializedName("calendar_image_url")
+    val calendarImageUrl: String? = "",
+
+    @SerializedName("cta_text")
+    val ctaText: String? = "",
+
+    @SerializedName("notified_cta_text")
+    val notifiedCtaText: String? = "",
+
+    /**
+     * calendar improvement END
+     */
+
+    @SerializedName("topads_creative_id")
+    val topAdsCreativeId: String? = "",
+
+    @SerializedName("topads_log_extra")
+    val topAdsLogExtra: String? = "",
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
@@ -676,6 +714,8 @@ data class DataItem(
     var itemPosition: Int = 0,
 
     var topLevelTab: TopLevelTab = UnknownTab
+
+
 ) {
 
     var gtmItemName: String = ""
@@ -728,6 +768,39 @@ data class DataItem(
             }
         } ?: productId.orEmpty()
     }
+
+    fun asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+        return AdsLogRealtimeClickModel(refer,
+            topAdsCreativeId.toLongOrZero(),
+            topAdsLogExtra.orEmpty(),
+            AdsLogRealtimeClickModel.AdExtraData(
+                productId = productId.orEmpty(),
+                productName = getRealProductName(),
+            ))
+    }
+
+    fun asAdsLogShowOverModel(visiblePercentage: Int): AdsLogShowOverModel {
+        return AdsLogShowOverModel(
+            topAdsCreativeId.toLongOrZero(),
+            topAdsLogExtra.orEmpty(),
+            AdsLogShowOverModel.AdExtraData(
+                productId = productId.orEmpty(),
+                productName = getRealProductName(),
+                sizePercent = visiblePercentage.toString())
+        )
+    }
+
+    fun asAdsLogShowModel(): AdsLogShowModel {
+        return AdsLogShowModel(
+            topAdsCreativeId.toLongOrZero(),
+            topAdsLogExtra.orEmpty(),
+            AdsLogShowModel.AdExtraData(
+                productId = productId.orEmpty(),
+                productName = getRealProductName(),
+            ))
+    }
+
+    private fun getRealProductName() = if (productName?.isNotBlank().orFalse()) productName.orEmpty() else name.orEmpty()
 
     private fun findLabelGroup(position: String): LabelsGroup? {
         return labelsGroupList?.find { it.position == position }

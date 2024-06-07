@@ -25,7 +25,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.notifications.inApp.external.IExternalInAppCallback
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.LiveDataResult
@@ -41,6 +40,7 @@ import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
 import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
+import com.tokopedia.promotionstarget.presentation.ui.bottomsheet.PromotionCloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.CmGratificationViewModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -113,7 +113,7 @@ class CmGratificationDialog {
     }
 
     private fun prepareBottomSheet(activityContext: Context, onShowListener: DialogInterface.OnShowListener): Pair<View, BottomSheetDialog> {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
+        val bottomSheet = PromotionCloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
         val view = LayoutInflater.from(activityContext).inflate(getLayout(), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.setOnShowListener(onShowListener)
@@ -138,7 +138,7 @@ class CmGratificationDialog {
         progressBar = root.findViewById(R.id.targetProgressBar)
 
         try {
-            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(com.tokopedia.design.R.id.close_button_rounded)
+            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(R.id.close_button_rounded)
             imageClose.setImageResource(R.drawable.t_promo_close)
 
             val couponStatus = couponDetailResponse.coupon?.couponStatus ?: 0
@@ -149,7 +149,7 @@ class CmGratificationDialog {
                 else -> ""
             }
 
-            val tvDialogTitle = (root.parent.parent as ConstraintLayout).findViewById<TextView>(com.tokopedia.design.R.id.title_closeable_rounded)
+            val tvDialogTitle = (root.parent.parent as ConstraintLayout).findViewById<TextView>(R.id.title_closeable_rounded)
             if (tvDialogTitle.parent is RelativeLayout && !dialogTitleText.isNullOrEmpty()) {
                 val rlParent = tvDialogTitle.parent as RelativeLayout
                 val typographyTitle = Typography(tvTitle.context)

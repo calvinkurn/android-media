@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.test.cassava.containsEvent
 import com.tokopedia.content.test.cassava.containsEventAction
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
@@ -44,7 +45,7 @@ class PlayArchivedAnalyticTest {
 
     private val socket: PlayWebSocket = mockk(relaxed = true)
 
-    private fun createRobot() = PlayActivityRobot(channelId, 3000, isErrorPage = true, isYouTube = true)
+    private fun createRobot() = PlayActivityRobot(channelId, 1000, isErrorPage = true, isYouTube = true)
 
     init {
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
@@ -71,7 +72,7 @@ class PlayArchivedAnalyticTest {
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
-                .playTestModule(PlayTestModule(targetContext))
+                .playTestModule(PlayTestModule(targetContext, router = mockk(relaxed = true)))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
                 .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
@@ -79,27 +80,17 @@ class PlayArchivedAnalyticTest {
     }
 
     @Test
-    fun impressArchived() {
+    fun play_archivedPage() {
         val robot = createRobot()
+
         robot.isErrorViewAvailable()
-
         assertCassavaByEvent("openScreen")
-    }
 
-    @Test
-    fun exitArchived() {
-        val robot = createRobot()
-        robot.clickExitError()
-
-        assertCassavaByEventAction("click - exit archive page")
-    }
-
-    @Test
-    fun sendToPlayChannel() {
-        val robot = createRobot()
         robot.clickGlobalErrorCta()
-
         assertCassavaByEventAction("click - to tokopedia play")
+
+        robot.clickExitError()
+        assertCassavaByEventAction("click - exit archive page")
     }
 
     private fun assertCassavaByEventAction(eventAction: String) {

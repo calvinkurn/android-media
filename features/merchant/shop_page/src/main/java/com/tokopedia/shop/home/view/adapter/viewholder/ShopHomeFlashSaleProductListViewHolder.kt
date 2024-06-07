@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardListView
@@ -13,6 +14,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeFlashSaleProductListViewHolder(
     itemView: View,
@@ -20,7 +22,7 @@ class ShopHomeFlashSaleProductListViewHolder(
     private val parentPosition: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
-    companion object{
+    companion object {
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
     }
 
@@ -50,8 +52,11 @@ class ShopHomeFlashSaleProductListViewHolder(
         if (stockBarLabel.equals(RED_STOCK_BAR_LABEL_MATCH_VALUE, ignoreCase = true)) {
             stockBarLabelColor = ShopUtil.getColorHexString(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                unifyprinciplesR.color.Unify_RN600
             )
+        }
+        val shopBadges = uiModel.shopBadgeList.map {
+            ProductCardModel.ShopBadge(imageUrl = it.imageUrl, title = it.title)
         }
         val productCardModel = ShopPageHomeMapper.mapToProductCardCampaignModel(
             isHasAddToCartButton = false,
@@ -59,10 +64,17 @@ class ShopHomeFlashSaleProductListViewHolder(
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
             statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
-            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
+            isOverrideTheme = listener.isOverrideTheme(),
+            patternColorType = listener.getPatternColorType(),
+            backgroundColor = listener.getBackgroundColor(),
+            isFestivity = fsUiModel?.isFestivity.orFalse(),
+            atcVariantButtonText = productCardList?.context?.getString(R.string.shop_atc).orEmpty()
         ).copy(
-            stockBarLabelColor = stockBarLabelColor
+            stockBarLabelColor = stockBarLabelColor,
+            isInBackground = true,
+            shopBadgeList = shopBadges
         )
+
         productCardList?.setProductModel(productCardModel)
         setupAddToCartListener(listener)
         setProductImpressionListener(productCardModel, listener)

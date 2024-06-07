@@ -22,13 +22,13 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.home_component.util.ImageLoaderStateListener
-import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.toPx
 
 class SectionViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -61,7 +61,8 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         lifecycleOwner?.let {
             viewModel?.hideSection?.observe(it) { shouldHideSection ->
                 if (shouldHideSection) {
-                    viewModel?.getSectionID()?.let { it1 -> (fragment as DiscoveryFragment).handleHideSection(it1) }
+                    viewModel?.getSectionID()
+                        ?.let { it1 -> (fragment as DiscoveryFragment).handleHideSection(it1) }
                 }
             }
             viewModel?.getSyncPageLiveData()?.observe(it) { shouldSync ->
@@ -127,35 +128,74 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
     private fun renderFestiveForeground(imageUrl: String) {
         festiveForeground.show()
 
-        festiveForeground.loadImageWithoutPlaceholder(
-            imageUrl,
-            listener = object : ImageLoaderStateListener {
-                override fun successLoad(view: ImageView) {
-                    festiveForeground.minimumHeight = 0
-                }
+        // the delay is needed so the children can layout first, and get its height,
+        // before we render the background in wrap content
+        val itemViewLocal = itemView
+        imageUrl.getBitmapImageUrl(itemViewLocal.context, properties = {
+            listener(onSuccess = { bitmap, _ ->
+                itemViewLocal.postDelayed({
+                    val ff: ImageView =
+                        itemViewLocal.findViewById(R.id.festiveForeground)
+                    ff.setImageBitmap(bitmap)
+                    addHeightForeground(ff)
+                    ff.minimumHeight = 0
+                }, 300)
 
-                override fun failedLoad(view: ImageView) {
-                    view.hide()
-                }
-            }
-        )
+                // add set Bitmap, with more delay, to cater if there is change in itemview
+                itemViewLocal.postDelayed({
+                    val ff: ImageView =
+                        itemViewLocal.findViewById(R.id.festiveForeground)
+                    ff.setImageBitmap(bitmap)
+                    addHeightForeground(ff)
+                    ff.minimumHeight = 0
+                }, 800)
+            },
+                onError = {
+                    val ff: ImageView =
+                        itemViewLocal.findViewById(R.id.festiveForeground)
+                    ff.hide()
+                })
+        })
     }
 
     private fun renderFestiveBackground(imageUrl: String) {
         festiveBackground.show()
 
-        festiveBackground.loadImageWithoutPlaceholder(
-            imageUrl,
-            listener = object : ImageLoaderStateListener {
-                override fun successLoad(view: ImageView) {
-                    festiveBackground.minimumHeight = 0
-                }
+        // the delay is needed so the children can layout first, and get its height,
+        // before we render the background in wrap content
+        val itemViewLocal = itemView
+        imageUrl.getBitmapImageUrl(itemViewLocal.context, properties = {
+            listener(onSuccess = { bitmap, _ ->
+                itemViewLocal.postDelayed({
+                    val fb: AppCompatImageView =
+                        itemViewLocal.findViewById(R.id.festiveBackground)
+                    fb.setImageBitmap(bitmap)
+                    addHeightBgOnce(fb)
+                    fb.minimumHeight = 0
+                }, 300)
+                // add set Bitmap, with more delay, to cater if there is change in itemview
+                itemViewLocal.postDelayed({
+                    val fb: AppCompatImageView =
+                        itemViewLocal.findViewById(R.id.festiveBackground)
+                    fb.setImageBitmap(bitmap)
+                    addHeightBgOnce(fb)
+                    fb.minimumHeight = 0
+                }, 800)
+            },
+                onError = {
+                    val fb: AppCompatImageView =
+                        itemViewLocal.findViewById(R.id.festiveBackground)
+                    fb.hide()
+                })
+        })
+    }
 
-                override fun failedLoad(view: ImageView) {
-                    view.hide()
-                }
-            }
-        )
+    private fun addHeightBgOnce(view: View) {
+        view.layoutParams.height = festiveContainer.height + 8.toPx()
+    }
+
+    private fun addHeightForeground(view: View) {
+        view.layoutParams.height = festiveContainer.height + 8.toPx()
     }
 
     private fun Context?.getMinHeight(): Int? {
@@ -217,10 +257,12 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                             val isFound = notifyShopHeroComponent(viewModel, payload)
                             if (isFound) return@loop
                         }
+
                         ComponentsList.FlashSaleTokoTab -> {
                             notifyFSTTargetedComponent()
                             return@loop
                         }
+
                         else -> return@loop
                     }
                 }

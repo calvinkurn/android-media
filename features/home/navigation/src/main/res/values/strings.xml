@@ -58,6 +58,11 @@
     <string name="navigation_home_label_longpress_bayar">Tagihan</string>
     <string name="navigation_home_label_longpress_jual">Jual</string>
 
+    <string name="navigation_home_label_shortcut_search">Cari</string>
+    <string name="navigation_home_label_shortcut_wishlist">Wishlist</string>
+    <string name="navigation_home_label_shortcut_pay">Tagihan</string>
+    <string name="navigation_home_label_shortcut_sell">Jual</string>
+
     <string name="filter">Filter</string>
     <string name="wishlist_check_cart">LIHAT</string>
 
@@ -70,6 +75,9 @@
 
     <string name="pref_receive_shake_nav" translatable="false">notification_shake_shake</string>
 
-    <string name="feed_icon_coachmark_title">Cari inspirasi lebih seru di Feed yang baru ✨</string>
-    <string name="feed_icon_coachmark_content">Nonton video &amp; lihat postingan kini tampilannya makin cantik dengan fitur lebih keren juga!</string>
+    <string name="me_page_icon_coach_mark_title">Akunmu pindah ke bawah 👇</string>
+    <string name="me_page_icon_coach_mark_content">Wishlist dan informasi lain terkait akunmu bisa dicek lewat sini, ya!</string>
+
+    <string name="home_inbox_coach_mark_title">Notifikasi kini ada di Inbox, ya~</string>
+    <string name="home_inbox_coach_mark_description">Sekarang jadi lebih mudah dan bisa sekalian akses Chat, lho!</string>
 </resources>

@@ -267,13 +267,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsOnBoarding)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
 
-    implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.accountlinking)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.fcm_common)
-    implementation projectOrAar(rootProject.ext.features.profileCompletion)
+    implementation projectOrAar(rootProject.ext.features.accountprofile)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
 
     implementation projectOrAar(rootProject.ext.features.attachinvoice)

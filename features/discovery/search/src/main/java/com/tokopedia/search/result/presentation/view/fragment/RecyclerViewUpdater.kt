@@ -164,6 +164,10 @@ class RecyclerViewUpdater @Inject constructor(
         recyclerView?.smoothScrollToPosition(0)
     }
 
+    override fun immediateMoveToTop() {
+        recyclerView?.scrollToPosition(0)
+    }
+
     override fun scrollToPosition(position: Int) {
         recyclerView?.scrollToPosition(position)
     }

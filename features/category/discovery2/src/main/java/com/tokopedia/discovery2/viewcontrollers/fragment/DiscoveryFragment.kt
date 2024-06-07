@@ -41,6 +41,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.IAdsLog
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -94,6 +96,7 @@ import com.tokopedia.discovery2.di.DiscoveryComponent
 import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ADDITIONAL_QUERY_PARAMS
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -109,6 +112,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOULD_SHOW_GLOBAL_NAV
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
@@ -175,6 +179,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.SearchRollenceController
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -227,7 +232,8 @@ open class DiscoveryFragment :
     ScreenShotListener,
     PermissionListener,
     MiniCartWidgetListener,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var bmGmDataParam: BmGmDataParam? = null
     private var recyclerViewPaddingResetNeeded: Boolean = false
@@ -352,6 +358,11 @@ open class DiscoveryFragment :
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        SearchRollenceController.fetchInboxNotifTopNavValue()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -421,30 +432,48 @@ open class DiscoveryFragment :
         )
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-            navToolbar.setIcon(
-                IconBuilder(IconBuilderFlag(NavSource.SOS))
-                    .addIcon(
-                        IconList.ID_MESSAGE,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
-                        disableDefaultGtmTracker = false
-                    )
-                    .addIcon(
-                        IconList.ID_NOTIFICATION,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
-                        disableDefaultGtmTracker = false
-                    )
-                    .addIcon(
-                        iconId = IconList.ID_CART,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
-                        disableDefaultGtmTracker = true
-                    )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+            navToolbar.setIcon(getIconBuilder())
+            configureSearchStyle()
+        }
+    }
+
+    private fun getIconBuilder(): IconBuilder {
+        return IconBuilder(IconBuilderFlag(NavSource.SOS)).apply {
+            addIcon(
+                IconList.ID_MESSAGE,
+                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
+                disableDefaultGtmTracker = false
+            )
+            if (!SearchRollenceController.shouldCombineInboxNotif()) {
+                addIcon(
+                    IconList.ID_NOTIFICATION,
+                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
+                    disableDefaultGtmTracker = false
+                )
+            }
+            addIcon(
+                iconId = IconList.ID_CART,
+                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                disableDefaultGtmTracker = true
+            )
+        }.also {
+            if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+            it.addIcon(
+                iconId = IconList.ID_NAV_GLOBAL,
+                onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                disableDefaultGtmTracker = true
             )
         }
+    }
+
+    private fun configureSearchStyle() {
+        val enableSearchRedesign = SearchRollenceController.shouldCombineInboxNotif()
+        val searchStyle = if (enableSearchRedesign) {
+            NavToolbar.Companion.SearchStyle.SEARCH_REDESIGN
+        } else {
+            NavToolbar.Companion.SearchStyle.SEARCH_DEFAULT
+        }
+        navToolbar.setSearchStyle(searchStyle, showSearchBtn = false)
     }
 
     @SuppressLint("RestrictedApi")
@@ -693,7 +722,8 @@ open class DiscoveryFragment :
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
-        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "").orEmpty()
+        discoveryViewModel.additionalQueryParamsString = arguments?.getString(ADDITIONAL_QUERY_PARAMS, "").orEmpty()
         pageEndPoint = discoveryViewModel.pageIdentifier
         checkForSamePageOpened()
         discoveryViewModel.initiateAppLogPageState()
@@ -1358,11 +1388,14 @@ open class DiscoveryFragment :
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                         disableDefaultGtmTracker = true
                     )
-                    .addIcon(
-                        iconId = IconList.ID_NAV_GLOBAL,
-                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                        disableDefaultGtmTracker = true
-                    )
+                    .also {
+                        if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                        it.addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
+                    }
             )
             navToolbar.updateNotification()
         } else {
@@ -1378,11 +1411,14 @@ open class DiscoveryFragment :
                     onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
                     disableDefaultGtmTracker = true
                 )
-                .addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
+                .also {
+                    if (arguments?.getBoolean(SHOULD_SHOW_GLOBAL_NAV, true) == false) return@also
+                    it.addIcon(
+                        iconId = IconList.ID_NAV_GLOBAL,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                        disableDefaultGtmTracker = true
+                    )
+                }
         )
         navToolbar.updateNotification()
     }
@@ -1627,7 +1663,8 @@ open class DiscoveryFragment :
             discoveryViewModel.getQueryParameterMapFromBundle(
                 arguments
             ),
-            userAddressData
+            userAddressData,
+
         )
     }
 
@@ -2721,6 +2758,10 @@ open class DiscoveryFragment :
 
     override fun getPageName(): String {
         return pageInfoHolder?.label?.trackingPagename.orEmpty()
+    }
+
+    override fun getAdsPageName(): String {
+        return PageName.DISCOVERY
     }
 
     fun setCurrentTabPosition(tabPosition: Int) {

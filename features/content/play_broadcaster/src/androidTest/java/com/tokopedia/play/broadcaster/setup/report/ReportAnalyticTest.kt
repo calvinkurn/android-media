@@ -18,11 +18,15 @@ import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.PlayBroadcastInjector
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
+import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveSummaryLivestreamResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.fake.FakeBroadcastManager
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
@@ -87,7 +91,9 @@ class ReportAnalyticTest {
     private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
     private val mockValueWrapper: PlayBroadcastValueWrapper = mockk(relaxed = true)
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
+    private val mockGetInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true)
     private val mockGetSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true)
+    private val mockGetRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true)
 
     private val playBroadcastTestModule = PlayBroadcastTestModule(
         activityContext = context,
@@ -101,7 +107,9 @@ class ReportAnalyticTest {
         mockGetAddedTagUseCase = mockGetAddedTagUseCase,
         mockValueWrapper = mockValueWrapper,
         mockGetLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+        mockGetInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
         mockGetSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+        mockGetRecommendedChannelTagsUseCase = mockGetRecommendedChannelTagsUseCase,
         mockBroadcasterErrorLogger = mockk(relaxed = true),
     )
 
@@ -143,7 +151,9 @@ class ReportAnalyticTest {
 
         /** Mock Live Summary Page */
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns buildLiveReportSummary()
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns GetInteractiveSummaryLivestreamResponse()
         coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns GetSellerLeaderboardSlotResponse()
+        coEvery { mockGetRecommendedChannelTagsUseCase.executeOnBackground() } returns GetRecommendedChannelTagsResponse()
     }
 
     private fun init() {
