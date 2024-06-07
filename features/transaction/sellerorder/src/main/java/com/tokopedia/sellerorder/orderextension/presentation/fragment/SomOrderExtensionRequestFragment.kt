@@ -10,7 +10,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.order.DeeplinkMapperOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Soe.Seller.INTENT_RESULT_MESSAGE
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Soe.Seller.INTENT_RESULT_SUCCESS
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
@@ -74,7 +77,9 @@ class SomOrderExtensionRequestFragment : BaseDaggerFragment(),
     }
 
     override fun getSomOrderExtensionOrderId(): String {
-        return activity?.intent?.getStringExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_PARAM_ORDER_ID) ?: Int.ZERO.toString()
+        return activity?.intent?.getStringExtra(INTENT_PARAM_ORDER_ID)
+            ?: activity?.intent?.getStringExtra(PARAM_ORDER_ID)
+            ?: Int.ZERO.toString()
     }
 
     override fun getSomOrderExtensionViewModel(): SomOrderExtensionViewModel {
@@ -83,8 +88,8 @@ class SomOrderExtensionRequestFragment : BaseDaggerFragment(),
 
     override fun onSuccessRequestOrderExtension(message: String) {
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_SUCCESS, true)
-            putExtra(DeeplinkMapperOrder.SellerOrderExtensionRequest.INTENT_RESULT_MESSAGE, message)
+            putExtra(INTENT_RESULT_SUCCESS, true)
+            putExtra(INTENT_RESULT_MESSAGE, message)
         })
         somBottomSheetOrderExtensionRequest?.dismiss()
     }

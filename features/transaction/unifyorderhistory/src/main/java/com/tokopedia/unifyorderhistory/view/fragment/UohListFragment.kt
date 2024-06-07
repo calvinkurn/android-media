@@ -56,6 +56,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -2845,9 +2846,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {
-        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
+        val params = mapOf<String, Any>(DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,
+            DeeplinkMapperOrder.Soe.Buyer.INTERNAL_APP_LINK,
             params
         )
         val intent = RouteManager.getIntentNoFallback(context, appLink)?.apply {
@@ -2880,9 +2881,9 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun goToPartialOrderFulfillment(order: UohListOrder.UohOrders.Order, index: Int) {
-        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
+        val params = mapOf<String, Any>(DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT,
+            DeeplinkMapperOrder.Pof.Buyer.INTERNAL_APP_LINK,
             params
         )
         val intent = RouteManager.getIntentNoFallback(context, appLink) ?: return

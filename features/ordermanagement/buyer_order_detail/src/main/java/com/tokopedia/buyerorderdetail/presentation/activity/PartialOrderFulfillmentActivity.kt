@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.order.DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.fragment.PartialOrderFulfillmentFragment
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.config.util.TokoChatConnection
 
 class PartialOrderFulfillmentActivity :
@@ -27,8 +29,10 @@ class PartialOrderFulfillmentActivity :
 
     override fun getNewFragment(): Fragment? {
         val intentExtras = intent.extras?.apply {
-            val orderId = intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
-            putString(ApplinkConstInternalOrder.PARAM_ORDER_ID, orderId)
+            val orderId = intent?.data?.getQueryParameter(INTENT_PARAM_ORDER_ID)
+                ?: intent?.data?.getQueryParameter(PARAM_ORDER_ID)
+                ?: Int.ZERO.toString()
+            putString(INTENT_PARAM_ORDER_ID, orderId)
         } ?: Bundle()
         return PartialOrderFulfillmentFragment.newInstance(intentExtras)
     }
