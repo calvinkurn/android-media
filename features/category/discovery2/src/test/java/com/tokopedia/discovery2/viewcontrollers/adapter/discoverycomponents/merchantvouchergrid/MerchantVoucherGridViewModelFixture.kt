@@ -94,7 +94,10 @@ open class MerchantVoucherGridViewModelFixture {
         hasLoaded: Boolean
     ) {
         coEvery {
-            useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = componentPageEndPoint)
+            useCase.loadFirstPageComponents(
+                componentId = componentId,
+                pageEndPoint = componentPageEndPoint
+            )
         } returns hasLoaded
     }
 
@@ -102,7 +105,10 @@ open class MerchantVoucherGridViewModelFixture {
         throwable: Throwable
     ) {
         coEvery {
-            useCase.loadFirstPageComponents(componentId = componentId, pageEndPoint = componentPageEndPoint)
+            useCase.loadFirstPageComponents(
+                componentId = componentId,
+                pageEndPoint = componentPageEndPoint
+            )
         } throws throwable
     }
 
@@ -110,7 +116,10 @@ open class MerchantVoucherGridViewModelFixture {
         hasLoaded: Boolean
     ) {
         coEvery {
-            useCase.getCarouselPaginatedData(componentId = componentId, pageEndPoint = componentPageEndPoint)
+            useCase.getCarouselPaginatedData(
+                componentId = componentId,
+                pageEndPoint = componentPageEndPoint
+            )
         } returns hasLoaded
     }
 
@@ -118,7 +127,10 @@ open class MerchantVoucherGridViewModelFixture {
         throwable: Throwable
     ) {
         coEvery {
-            useCase.getCarouselPaginatedData(componentId = componentId, pageEndPoint = componentPageEndPoint)
+            useCase.getCarouselPaginatedData(
+                componentId = componentId,
+                pageEndPoint = componentPageEndPoint
+            )
         } throws throwable
     }
 
@@ -132,7 +144,8 @@ open class MerchantVoucherGridViewModelFixture {
 
     protected fun stubComponent(
         componentAdditionalInfo: ComponentAdditionalInfo?,
-        componentItems: List<ComponentsItem>?
+        componentItems: List<ComponentsItem>?,
+        hasNextPage: Boolean = false
     ) {
         every {
             component.id
@@ -149,6 +162,12 @@ open class MerchantVoucherGridViewModelFixture {
         every {
             component.getComponentsItem()
         } returns componentItems
+
+        every {
+            component.nextPageKey
+        } returns if (hasNextPage) "p" else {
+            null
+        }
     }
 
     protected fun LiveData<Result<ArrayList<ComponentsItem>>>.verifySuccessEquals(
@@ -170,7 +189,7 @@ open class MerchantVoucherGridViewModelFixture {
             .verifyEquals(expectedResult)
     }
 
-    protected fun <T : Any>LiveData<Result<T>>.verifyFailEquals(
+    protected fun <T : Any> LiveData<Result<T>>.verifyFailEquals(
         message: String
     ) {
         val actualResult = (value as? Fail)?.throwable?.message
