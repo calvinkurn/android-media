@@ -46,7 +46,6 @@ import com.tokopedia.developer_options.presentation.model.SharedPreferencesEdito
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
-import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
 import com.tokopedia.developer_options.presentation.model.TopAdsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggingUiModel
@@ -101,7 +100,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ViewAnalyticsLogUiModel): Int
     fun type(uiModel: ViewIrisLogUiModel): Int
     fun type(uiModel: LeakCanaryUiModel): Int
-    fun type(uiModel: StrictModeLeakPublisherUiModel): Int
     fun type(uiModel: RemoteConfigEditorUiModel): Int
     fun type(uiModel: RouteManagerUiModel): Int
     fun type(uiModel: LoggingToServerUiModel): Int

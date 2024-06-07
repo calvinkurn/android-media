@@ -2,10 +2,12 @@ package com.tokopedia.logger
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudSlardarApmDataSourceImpl
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.InternalLoggerInterface
@@ -17,6 +19,7 @@ import com.tokopedia.logger.utils.LoggerUtils.getLogSession
 import com.tokopedia.logger.utils.LoggerUtils.getPartDeviceId
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logger.utils.globalScopeLaunch
+import timber.log.Timber
 
 /**
  * Class to wrap the mechanism to send the logging message to server.
@@ -100,13 +103,16 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
             val loggerCloudNewRelicSdkDataSource = LoggerCloudNewRelicSdkDataSource()
             val loggerCloudNewRelicApiDataSource = LoggerCloudNewRelicApiDataSource()
+            val loggerCloudSlardarApmDataSource = LoggerCloudSlardarApmDataSourceImpl()
             val loggerRepoNew = LoggerRepository(
                 Gson(),
                 logsDao,
                 loggerCloudScalyrDataSource,
                 loggerCloudNewRelicSdkDataSource,
                 loggerCloudNewRelicApiDataSource,
+                loggerCloudSlardarApmDataSource,
                 getScalyrConfigList(context),
+                getABTestSharedPreferences(context),
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,
                 loggerProxy.decryptNrKey,
@@ -134,9 +140,24 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
         return ScalyrConfig(loggerProxy.scalyrToken, session, serverHost, parser)
     }
 
+    /**
+     * Need to manually get rollence value from cache
+     * Circular dependency when implementing remote config module
+     */
+    private fun getABTestSharedPreferences(context: Context): SharedPreferences? {
+        return try {
+            return context.getSharedPreferences(
+                SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            null
+        }
+    }
+
     companion object {
 
         const val PRIORITY_LENGTH = 2
+        private const val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
 
         var queryLimits: List<Int> = mutableListOf(5, 5)
 

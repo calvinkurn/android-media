@@ -29,12 +29,16 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.bytedance.android.btm.api.model.BtmModel
+import com.bytedance.android.btm.api.model.PageFinder
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
@@ -492,6 +496,7 @@ open class HomeRevampFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.HomePage)
         fragmentCreatedForFirstTime = true
         context?.run {
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
@@ -2338,7 +2343,11 @@ open class HomeRevampFragment :
 
     private fun openApplink(applink: String, trackingAttribution: String) {
         if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(activity, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
+            val btmModel = BtmModel().apply {
+                this.btm = Tokopedia.HomePage.str
+                this.pageFinder = PageFinder.via(this@HomeRevampFragment)
+            }
+            RouteManager.routeWithBtmModel(activity, btmModel, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
         }
     }
 

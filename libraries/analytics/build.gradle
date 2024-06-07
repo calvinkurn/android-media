@@ -79,6 +79,11 @@ dependencies {
     implementation rootProject.ext.ttnetDependencies.boringSsl
     implementation rootProject.ext.ttnetDependencies.cppShared
 
+    // btmsdk
+    api rootProject.ext.btmDependencies.btmApi
+    implementation rootProject.ext.btmDependencies.lazyData
+    implementation rootProject.ext.btmDependencies.btmImpl
+
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.mockk

@@ -24,18 +24,17 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
 
     implementation rootProject.ext.debugToolsDependencies.tooLargeTool
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     if(rootProject.ext.debugToolsEnabled) {
-        debugImplementation (rootProject.ext.debugToolsDependencies.leakPublisher){
-            exclude group:'com.google.firebase'
-        }
+        debugImplementation rootProject.ext.debugToolsDependencies.leakCanary
     }
+
 }
 
 project.ext {

@@ -693,12 +693,15 @@ class PlayUpcomingTest {
     fun `when user click share action, it should emit event to open universal sharing bottom sheet`() {
         /** Prepare */
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+        every { mockUserSession.isLoggedIn } returns true
 
         val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
             title = channelInfo.title,
             coverUrl = channelInfo.coverUrl,
             userId = "",
-            channelId = channelId
+            channelId = channelId,
+            partnerId = "123",
+            channelType = "live"
         )
 
         val robot = createPlayUpcomingViewModelRobot(
@@ -722,12 +725,15 @@ class PlayUpcomingTest {
     fun `when user wants to open sharing experience & custom sharing is allowed, it should emit event to open universal sharing bottom sheet`() {
         /** Prepare */
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+        every { mockUserSession.isLoggedIn } returns true
 
         val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
             title = channelInfo.title,
             coverUrl = channelInfo.coverUrl,
             userId = "",
-            channelId = channelId
+            channelId = channelId,
+            partnerId = "123",
+            channelType = "live"
         )
 
         val robot = createPlayUpcomingViewModelRobot(
@@ -792,12 +798,15 @@ class PlayUpcomingTest {
     fun `when user take screenshot & custom share is allowed, it should emit event to open bottom sheet`() {
         /** Prepare */
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+        every { mockUserSession.isLoggedIn } returns true
 
         val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
             title = channelInfo.title,
             coverUrl = channelInfo.coverUrl,
             userId = "",
-            channelId = channelId
+            channelId = channelId,
+            partnerId = "123",
+            channelType = "live"
         )
 
         val robot = createPlayUpcomingViewModelRobot(

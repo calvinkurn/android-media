@@ -430,7 +430,9 @@ class PlayUpcomingViewModel @Inject constructor(
                         title = _channelDetail.value.channelInfo.title,
                         coverUrl = _channelDetail.value.channelInfo.coverUrl,
                         userId = userSession.userId,
-                        channelId = mChannelId
+                        channelId = mChannelId,
+                        partnerId = partnerId.toString(),
+                        channelType = channelType.value
                     )
                 )
             } else if (!isScreenshot) {

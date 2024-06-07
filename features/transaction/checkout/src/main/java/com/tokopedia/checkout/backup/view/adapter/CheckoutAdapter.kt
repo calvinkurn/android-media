@@ -35,8 +35,8 @@ import com.tokopedia.checkout.databinding.ItemCheckoutCostBackupBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCrossSellBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutEpharmacyBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutOrderBackupBinding
-import com.tokopedia.checkout.databinding.ItemCheckoutProductBenefitBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBackupBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutProductBenefitBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutPromoBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutTickerErrorBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutUpsellBinding
@@ -63,7 +63,6 @@ class CheckoutAdapter(
             is CheckoutCostModel -> CheckoutCostViewHolder.VIEW_TYPE
             is CheckoutCrossSellGroupModel -> CheckoutCrossSellViewHolder.VIEW_TYPE
             is CheckoutButtonPaymentModel -> CheckoutButtonPaymentViewHolder.VIEW_TYPE
-            else -> -1
         }
     }
 

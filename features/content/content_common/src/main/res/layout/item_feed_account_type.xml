@@ -14,17 +14,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_badge"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/unify_space_8"
-        app:unify_image_corner_radius="0"
-        app:layout_constraintStart_toEndOf="@id/iv_avatar"
-        app:layout_constraintTop_toTopOf="@id/iv_avatar"
-        app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
-        />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_account_name"
         android:layout_width="wrap_content"
@@ -37,7 +26,7 @@
         tools:text="Jonathan Darwin"
         app:layout_constraintTop_toTopOf="@id/iv_avatar"
         app:layout_constraintBottom_toBottomOf="@id/iv_avatar"
-        app:layout_constraintStart_toEndOf="@id/iv_badge"
+        app:layout_constraintStart_toEndOf="@id/iv_avatar"
         />
 
     <com.tokopedia.iconunify.IconUnify

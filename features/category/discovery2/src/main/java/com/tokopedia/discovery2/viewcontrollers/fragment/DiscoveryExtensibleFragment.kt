@@ -1,8 +1,11 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
+import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
@@ -33,7 +36,6 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface, IAdsLo
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     override fun provideAnalytics(): BaseDiscoveryAnalytics {
         return DiscoveryAnalytics(
             discoveryViewModel.pageType,
@@ -91,5 +93,10 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface, IAdsLo
 
     override fun isEnterFromWhitelisted(): Boolean {
         return true
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.OfficialStore)
     }
 }

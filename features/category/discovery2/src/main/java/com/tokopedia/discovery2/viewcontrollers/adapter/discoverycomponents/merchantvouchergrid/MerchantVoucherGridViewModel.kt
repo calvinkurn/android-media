@@ -36,7 +36,7 @@ class MerchantVoucherGridViewModel(
 
     private val _couponList: MutableLiveData<Result<ArrayList<ComponentsItem>>> = MutableLiveData()
     private val _seeMore: MutableLiveData<Result<Redirection>> = MutableLiveData()
-    private val _noMorePages: MutableLiveData<Unit> = MutableLiveData()
+    private val _noMorePages: MutableLiveData<Boolean> = MutableLiveData()
 
     private val layout: ArrayList<ComponentsItem> = arrayListOf()
     private var isLoading = true
@@ -45,7 +45,7 @@ class MerchantVoucherGridViewModel(
         get() = _couponList
     val seeMore: LiveData<Result<Redirection>>
         get() = _seeMore
-    val noMorePages: LiveData<Unit>
+    val noMorePages: LiveData<Boolean>
         get() = _noMorePages
 
     @JvmField
@@ -59,19 +59,20 @@ class MerchantVoucherGridViewModel(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main.immediate + SupervisorJob()
 
-    private fun hasNextPage(): Boolean = Utils.nextPageAvailable(component, VOUCHER_PER_PAGE)
+    private fun hasNextPage(): Boolean = component.nextPageKey?.isNotEmpty() == true
 
     private fun setVoucherList(
         redirection: Redirection?,
-        onEventAfterVoucherListSet: () -> Unit
+        onEventAfterVoucherListSet: (Boolean) -> Unit
     ) {
         val components = component.getComponentsItem()
         if (!components.isNullOrEmpty()) {
             if (hasNextPage() && !redirection.isAvailable()) {
                 layout.addVoucherList(components)
                 layout.addShimmer()
+                onEventAfterVoucherListSet.invoke(false)
             } else {
-                onEventAfterVoucherListSet.invoke()
+                onEventAfterVoucherListSet.invoke(true)
                 layout.addVoucherList(components)
             }
             _couponList.value = Success(ArrayList(layout))
@@ -83,7 +84,8 @@ class MerchantVoucherGridViewModel(
     private fun Redirection?.isAvailable(): Boolean =
         !this?.ctaText.isNullOrBlank() && !this?.applink.isNullOrBlank()
 
-    private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = component.getComponentAdditionalInfo()
+    private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? =
+        component.getComponentAdditionalInfo()
 
     fun loadFirstPageCoupon() {
         _couponList.value = Success(ArrayList(layout))
@@ -99,10 +101,10 @@ class MerchantVoucherGridViewModel(
                 setVoucherList(
                     redirection = redirection,
                     onEventAfterVoucherListSet = {
-                        setLoadMoreButton(redirection)
-                        _noMorePages.value = Unit
+                        _noMorePages.value = it
                     }
                 )
+                setLoadMoreButton(redirection)
 
                 isLoading = false
             },
@@ -135,14 +137,18 @@ class MerchantVoucherGridViewModel(
 
         launchCatchError(
             block = {
-                if (useCase?.getCarouselPaginatedData(componentId = component.id, pageEndPoint = component.pageEndPoint) == true) {
-                    setVoucherList(
-                        redirection = getComponentAdditionalInfo()?.redirection,
-                        onEventAfterVoucherListSet = {
-                            _noMorePages.value = Unit
-                        }
-                    )
-                }
+                useCase?.getCarouselPaginatedData(
+                    componentId = component.id,
+                    pageEndPoint = component.pageEndPoint
+                )
+                // we ignore use case return value, because we always want to set voucher,
+                // and dismiss the shimmer if it is getting end of page
+                setVoucherList(
+                    redirection = getComponentAdditionalInfo()?.redirection,
+                    onEventAfterVoucherListSet = {
+                        _noMorePages.value = it
+                    }
+                )
                 isLoading = false
             },
             onError = {

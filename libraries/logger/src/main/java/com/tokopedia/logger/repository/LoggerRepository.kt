@@ -1,11 +1,13 @@
 package com.tokopedia.logger.repository
 
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkImpl
+import com.tokopedia.logger.datasource.cloud.LoggerCloudSlardarApmDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
@@ -33,7 +35,9 @@ class LoggerRepository(
     private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
     private val loggerCloudNewRelicSdkImpl: LoggerCloudNewRelicSdkImpl,
     private val loggerCloudNewRelicApiImpl: LoggerCloudNewRelicApiImpl,
+    private val loggerCloudSlardarApmDataSource: LoggerCloudSlardarApmDataSource,
     private val scalyrConfigs: List<ScalyrConfig>,
+    private val abTestSharedPreference: SharedPreferences?,
     private val encrypt: ((String) -> (String))? = null,
     val decrypt: ((String) -> (String))? = null,
     private val decryptNrKey: ((String) -> (String))? = null,
@@ -139,12 +143,26 @@ class LoggerRepository(
                     jobList.add(jobNewRelicApi)
                 }
 
+                val rollenceMap = getRollenceMap()
+                if (rollenceMap[SLARDAR_LOG_ROLLENCE_KEY] == SLARDAR_LOG_ROLLENCE_KEY) {
+                    val jobApmSlardar = async {
+                        sendSlardarApmLogToServer(newRelicMessageSdkList, newRelicMessageApiList)
+                    }
+                    jobList.add(jobApmSlardar)
+                }
+
                 val isSuccess = jobList.toList().awaitAll().any { it }
                 if (isSuccess) {
                     deleteEntries(logs)
                 }
             }
         }
+    }
+
+    private fun getRollenceMap(): Map<String, String> {
+        val result = mutableMapOf<String, String>()
+        result[SLARDAR_LOG_ROLLENCE_KEY] = abTestSharedPreference?.getString(SLARDAR_LOG_ROLLENCE_KEY, "") ?: ""
+        return result
     }
 
     private suspend fun sendScalyrLogToServer(
@@ -157,6 +175,25 @@ class LoggerRepository(
         }
 
         return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
+    }
+
+    private suspend fun sendSlardarApmLogToServer(
+        newRelicSdkList: List<NewRelicBodySdk>,
+        newRelicApiMap: Map<String, NewRelicBodyApi>
+    ): Boolean {
+        val resultSdkList = if (newRelicSdkList.isNotEmpty()) {
+            loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicSdkList)
+        } else {
+            true
+        }
+
+        val resultApiList = if (newRelicApiMap.isNotEmpty()) {
+            loggerCloudSlardarApmDataSource.sendApmLogToServer(newRelicApiMap)
+        } else {
+            true
+        }
+
+        return resultSdkList && resultApiList
     }
 
     private fun mapLogs(logs: List<Logger>): LoggerCloudModelWrapper {
@@ -290,4 +327,8 @@ class LoggerRepository(
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
+
+    companion object {
+        private const val SLARDAR_LOG_ROLLENCE_KEY = "android_slardar_log"
+    }
 }

@@ -98,9 +98,12 @@ class MerchantVoucherGridViewHolder(
 
     private fun handlePagination() {
         getParentFragment()?.onMerchantVoucherScrolledCallback = { parentRecyclerView ->
-            val isAtTheBottomOfThePage =
-                !parentRecyclerView.canScrollVertically(SCROLL_UP_DIRECTION)
-            viewModel?.loadMore(isAtTheBottomOfThePage)
+            val itemBottom = itemView.bottom
+            val rvBottom = parentRecyclerView.bottom
+            // x0 is estimated threshold. So, before it reaches to bottom, we want to do loadMore
+            val itemIsGettingScrolledToBottom = (itemBottom - rvBottom) <= 30
+            viewModel?.loadMore(itemIsGettingScrolledToBottom ||
+                !parentRecyclerView.canScrollVertically(SCROLL_UP_DIRECTION))
         }
     }
 
@@ -121,7 +124,11 @@ class MerchantVoucherGridViewHolder(
         lifecycleOwner: LifecycleOwner
     ) {
         noMorePages.observe(lifecycleOwner) {
-            getParentFragment()?.onMerchantVoucherScrolledCallback = null
+            if (it) {
+                getParentFragment()?.onMerchantVoucherScrolledCallback = null
+            } else {
+                handlePagination()
+            }
         }
     }
 

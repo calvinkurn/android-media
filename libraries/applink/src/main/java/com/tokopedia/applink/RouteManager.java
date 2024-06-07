@@ -24,6 +24,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.bytedance.android.btm.api.BtmSDK;
+import com.bytedance.android.btm.api.consts.BtmConst;
+import com.bytedance.android.btm.api.model.BtmModel;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
@@ -277,11 +280,25 @@ public class RouteManager {
      *
      * @return true if successfully routing to activity
      */
+    public static boolean routeWithBtmModel(Context context, BtmModel btmModel, String applinkPattern, String... parameter) {
+        return routeWithBtmModel(context, btmModel, new Bundle(), applinkPattern, parameter);
+    }
+
+    /**
+     * route to the activity corresponds to the given applink.
+     * Will do nothing if applink is not supported.
+     *
+     * @return true if successfully routing to activity
+     */
     public static boolean route(Context context, String applinkPattern, String... parameter) {
         return route(context, new Bundle(), applinkPattern, parameter);
     }
 
     public static boolean route(Context context, Bundle queryParamBundle, String applinkPattern, String... parameter) {
+        return routeWithBtmModel(context,null, queryParamBundle, applinkPattern, parameter);
+    }
+
+    public static boolean routeWithBtmModel(Context context, BtmModel btmModel, Bundle queryParamBundle, String applinkPattern, String... parameter) {
         if (context == null) {
             return false;
         }
@@ -290,6 +307,8 @@ public class RouteManager {
         if (uriString.isEmpty()) {
             return false;
         }
+        // inject sourceBtmToken in deeplink
+        uriString = appendSourceBtmToken(uriString, btmModel);
 
         showAndCopyApplink(context, uriString);
 
@@ -411,14 +430,20 @@ public class RouteManager {
         return bundle;
     }
 
+    public static Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
+        return getIntentWithBtmModel(context, null, deeplinkPattern, parameter);
+    }
+
     /**
      * return the intent for the given deeplink
      * If no activity found will return to home
      * <p>
      * See getIntentNoFallback if want to return null when no activity is found.
      */
-    public static Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
+    public static Intent getIntentWithBtmModel(Context context,BtmModel btmModel, String deeplinkPattern, String... parameter) {
         String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
+        // inject sourceBtmToken in deeplink
+        deeplink = appendSourceBtmToken(deeplink, btmModel);
         Intent intent = getIntentNoFallback(context, RouteManagerKt.trimDoubleSchemeDeeplink(deeplink));
         // set fallback for implicit intent
 
@@ -456,6 +481,11 @@ public class RouteManager {
         return getIntentNoFallback(context, ApplinkConstInternalGlobal.DEEPLINK_NOT_FOUND);
     }
 
+    public static @Nullable
+    Intent getIntentNoFallback(Context context, String deeplinkPattern, String... parameter) {
+        return getIntentNoFallbackWithBtmModel(context, null, deeplinkPattern, parameter);
+    }
+
     /**
      * return the intent for the deeplink
      * If no activity found will return null
@@ -463,12 +493,13 @@ public class RouteManager {
      * See getIntent
      */
     public static @Nullable
-    Intent getIntentNoFallback(Context context, String deeplinkPattern, String... parameter) {
+    Intent getIntentNoFallbackWithBtmModel(Context context, BtmModel btmModel, String deeplinkPattern, String... parameter) {
         if (context == null) {
             return null;
         }
         String deeplink = RouteManagerKt.trimDoubleSchemeDeeplink(UriUtil.buildUri(deeplinkPattern, parameter));
-
+        // inject sourceBtmToken in deeplink
+        deeplink = appendSourceBtmToken(deeplink, btmModel);
         showAndCopyApplink(context, deeplink);
 
         ApplinkLogger.getInstance(context).startTrace(deeplink);
@@ -553,8 +584,12 @@ public class RouteManager {
         return buildInternalExplicitIntent(context, mappedDeeplink) != null;
     }
 
-    public static void routeNoFallbackCheck(Context context, String applink, String url) {
-        Intent intent = getIntentNoFallback(context, applink);
+    public static void routeNoFallbackCheck(Context context, String applink, String url){
+        routeNoFallbackCheck(context,null,applink,url);
+    }
+
+    public static void routeNoFallbackCheck(Context context,BtmModel btmModel, String applink, String url) {
+        Intent intent = getIntentNoFallbackWithBtmModel(context, btmModel, applink);
         if (applink != null && intent != null) {
             context.startActivity(intent);
         } else {
@@ -565,6 +600,25 @@ public class RouteManager {
     public static Intent getSplashScreenIntent(Context context) {
         PackageManager pm = context.getPackageManager();
         return pm.getLaunchIntentForPackage(context.getPackageName());
+    }
+
+    /**
+     * append btmSourceToken into deeplink
+     */
+    private static Uri appendSourceBtmToken(@Nullable Uri uri,@Nullable BtmModel model){
+        if(uri == null || model == null) return uri;
+        Uri.Builder builder =  uri.buildUpon();
+        String btmSourceToken = BtmSDK.INSTANCE.createJumpSourceBtmToken(model);
+        if(btmSourceToken == null || btmSourceToken.isEmpty()) return uri;
+        builder.appendQueryParameter(BtmConst.KEY_SOURCE_BTM_TOKEN, btmSourceToken);
+        return builder.build();
+    }
+
+    private static String appendSourceBtmToken(@Nullable String link, @Nullable BtmModel model) {
+        boolean isBtmDisabled = !RouteManagerFeatureFlag.isBtmEnabled();
+        if (link == null || link.isEmpty() || isBtmDisabled) return link;
+        Uri uri = appendSourceBtmToken(Uri.parse(link), model);
+        return uri.toString();
     }
 
 }

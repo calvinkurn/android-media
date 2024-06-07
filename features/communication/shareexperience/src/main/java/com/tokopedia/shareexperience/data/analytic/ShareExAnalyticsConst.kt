@@ -48,6 +48,7 @@ object ShareExAnalyticsConst {
         const val GOPAYLATER_REFERRAL = "gopaylater referral"
         const val ORDER_DETAIL = "order detail history"
         const val THANK_YOU_PAGE = "share - thank you page"
+        const val GROUP_CHAT_ROOM = "groupchat room"
     }
 
     object Tracker {
@@ -84,5 +85,11 @@ object ShareExAnalyticsConst {
         const val ID_45900 = "45900"
         const val ID_45901 = "45901"
         const val ID_50879 = "50879"
+
+        // PLAY
+        const val ID_10455 = "10455"
+        const val ID_10456 = "10456"
+        const val ID_10457 = "10457"
+        const val ID_10458 = "10458"
     }
 }
