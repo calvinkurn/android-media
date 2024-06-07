@@ -55,7 +55,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.dbDependencies.sqliteFramework
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 

@@ -301,6 +301,7 @@ class CartViewModel @Inject constructor(
         const val RECENT_VIEW_XSOURCE = "recentview"
         const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
         const val PAGE_NAME_RECOMMENDATION = "cart"
+        const val PAGE_NAME_RECOMMENDATION_EMPTY = "empty_cart"
         const val RECOMMENDATION_XSOURCE = "recom_widget"
         const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
         const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
@@ -1150,11 +1151,15 @@ class CartViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
+                val isAvailableGroupEmpty = cartModel.cartListData?.availableSection?.availableGroupGroups?.isEmpty() == true
+                val isUnavailableGroupEmpty = cartModel.cartListData?.unavailableSections?.isEmpty() == true
+                val isCartEmpty = isAvailableGroupEmpty && isUnavailableGroupEmpty
+                val pageNameRecommendation = if (isCartEmpty) PAGE_NAME_RECOMMENDATION_EMPTY else PAGE_NAME_RECOMMENDATION
                 val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
                         xSource = RECOMMENDATION_XSOURCE,
-                        pageName = PAGE_NAME_RECOMMENDATION,
+                        pageName = pageNameRecommendation,
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true

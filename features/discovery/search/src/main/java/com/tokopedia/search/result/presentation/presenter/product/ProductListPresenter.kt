@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -719,6 +720,8 @@ class ProductListPresenter @Inject constructor(
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
         if (productDataView.productList.isEmpty()) {
+            AppLogTopAds.isSearchPageNonEmptyState = false
+
             postProcessingFilter.checkPostProcessingFilter(
                 productDataView.isPostProcessing,
                 searchParameter,
@@ -728,6 +731,8 @@ class ProductListPresenter @Inject constructor(
                 getViewToHandleEmptyProductList(searchProductModel, productDataView)
             }
         } else {
+            AppLogTopAds.isSearchPageNonEmptyState = true
+
             postProcessingFilter.resetCount()
 
             runCustomMetric(
@@ -1015,7 +1020,7 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.setProductList(visitableList)
-        view.backToTop()
+        view.immediateMoveToTop()
         if (hasNextPage()) {
             view.addLoading()
         }

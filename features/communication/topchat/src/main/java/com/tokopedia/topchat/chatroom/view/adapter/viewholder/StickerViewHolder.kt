@@ -7,12 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.custom.StickerImageView
@@ -22,7 +18,7 @@ import com.tokopedia.topchat.common.util.ViewUtil
 class StickerViewHolder(
         itemView: View,
         private val listener: Listener?
-) : RecyclerView.ViewHolder(itemView), RequestListener<Drawable> {
+) : RecyclerView.ViewHolder(itemView) {
 
     private var stickerImage: StickerImageView? = itemView.findViewById(R.id.iv_sticker)
     private var loader: AnimatedVectorDrawableCompat? = null
@@ -57,13 +53,19 @@ class StickerViewHolder(
 
     private fun bindStickerImage(sticker: Sticker) {
         stickerImage?.let {
-            Glide.with(itemView.context)
-                    .load(sticker.imageUrl)
-                    .listener(this)
-                    .dontAnimate()
-                    .placeholder(loader)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .into(it)
+            it.loadImage(sticker.imageUrl) {
+                listener(
+                    onSuccess = { bitmap, _ ->
+                        stickerImage?.setImageBitmap(bitmap)
+                        stickerImage?.clipCircle = false
+                    }
+                )
+                loader?.let { loaderDrawable ->
+                    setPlaceHolder(loaderDrawable)
+                }
+                setCacheStrategy(MediaCacheStrategy.DATA)
+                isAnimate(false)
+            }
         }
     }
 
@@ -79,15 +81,5 @@ class StickerViewHolder(
             val view = LayoutInflater.from(parent.context).inflate(LAYOUT, parent, false)
             return StickerViewHolder(view, listener)
         }
-    }
-
-    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-        return true
-    }
-
-    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-        stickerImage?.setImageDrawable(resource)
-        stickerImage?.clipCircle = false
-        return true
     }
 }

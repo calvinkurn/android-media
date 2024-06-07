@@ -3,9 +3,6 @@ package com.tokopedia.universal_sharing.view.bottomsheet.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseShopTitleItemBinding
 import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseShopTitleUiModel
@@ -19,16 +16,6 @@ class UniversalSharingPostPurchaseShopTitleViewHolder(
 
     override fun bind(element: UniversalSharingPostPurchaseShopTitleUiModel) {
         bindTitle(element)
-        bindIcon(element)
-    }
-
-    private fun bindIcon(element: UniversalSharingPostPurchaseShopTitleUiModel) {
-        if (element.iconUrl.isBlank()) {
-            binding?.universalSharingIconShop?.hide()
-        } else {
-            binding?.universalSharingIconShop?.loadImage(element.iconUrl)
-            binding?.universalSharingIconShop?.show()
-        }
     }
 
     private fun bindTitle(element: UniversalSharingPostPurchaseShopTitleUiModel) {

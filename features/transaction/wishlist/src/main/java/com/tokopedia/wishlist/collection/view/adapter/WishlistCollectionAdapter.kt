@@ -39,9 +39,7 @@ import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter
 class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<WishlistCollectionTypeLayoutData>()
-    private var isTickerCloseClicked = false
     private var allCollectionView: View? = null
-    private var firstCollectionItemView: View? = null
     private var carouselItems = arrayListOf<Any>()
 
     companion object {
@@ -169,10 +167,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     (holder as WishlistCollectionLoaderItemViewHolder).bind()
                 }
                 TYPE_COLLECTION_TICKER -> {
-                    (holder as WishlistCollectionTickerItemViewHolder).bind(
-                        element,
-                        isTickerCloseClicked
-                    )
+                    (holder as WishlistCollectionTickerItemViewHolder).bind(element)
                 }
                 TYPE_COLLECTION_ITEM -> {
                     (holder as WishlistCollectionItemViewHolder).bind(element, position)
@@ -243,9 +238,12 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setTickerHasClosed(hasClosed: Boolean) {
-        isTickerCloseClicked = hasClosed
-        notifyDataSetChanged()
+    fun removeTicker() {
+        val position = listTypeData.indexOfFirst { it.typeLayout == TYPE_COLLECTION_TICKER }
+        if (position != -1) {
+            listTypeData.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     fun showLoader() {

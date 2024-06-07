@@ -12,8 +12,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.gojek.conversations.database.chats.ConversationsMessage
@@ -40,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -398,12 +397,12 @@ open class TokoChatFragment @Inject constructor(
 
     private fun renderBackground(url: String) {
         baseBinding?.tokochatIvBgChat?.let {
-            Glide.with(it.context)
-                .load(url)
-                .centerInside()
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .into(it)
+            it.loadImage(url) {
+                setPlaceHolder(-1)
+                centerInside()
+                isAnimate(false)
+                setCacheStrategy(MediaCacheStrategy.DATA)
+            }
         }
     }
 

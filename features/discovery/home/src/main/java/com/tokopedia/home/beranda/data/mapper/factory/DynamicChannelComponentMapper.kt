@@ -169,6 +169,7 @@ object DynamicChannelComponentMapper {
             channelGrids = channel.grids.mapIndexed { index, it ->
                 ChannelGrid(
                     id = it.id,
+                    parentProductId = it.parentProductID,
                     warehouseId = it.warehouseId,
                     minOrder = it.minOrder,
                     price = it.price,
@@ -213,7 +214,9 @@ object DynamicChannelComponentMapper {
                             imageUrl = badge.imageUrl
                         )
                     },
-                    position = index
+                    position = index,
+                    logExtra = it.logExtra,
+                    creativeID = it.creativeID
                 )
             }
         )
@@ -277,6 +280,7 @@ object DynamicChannelComponentMapper {
 
         return ChannelGrid(
             id = id,
+            parentProductId = parentProductID,
             warehouseId = warehouseId,
             minOrder = minOrder,
             price = price,
@@ -330,7 +334,9 @@ object DynamicChannelComponentMapper {
             badges = shopBadges,
             expiredTime = expiredTime,
             categoryBreadcrumbs = categoryBreadcrumbs,
-            position = index
+            position = index,
+            creativeID = creativeID,
+            logExtra = logExtra
         )
     }
 
@@ -400,6 +406,7 @@ object DynamicChannelComponentMapper {
 
     fun RecommendationItem.mapToChannelGrid(index: Int) = ChannelGrid(
         id = productId.toString(),
+        parentProductId = parentID.toString(),
         warehouseId = warehouseId.toString(),
         minOrder = minOrder,
         price = price,
@@ -441,7 +448,9 @@ object DynamicChannelComponentMapper {
             )
         },
         categoryBreadcrumbs = categoryBreadcrumbs,
-        position = index
+        position = index,
+        creativeID = recommendationAdsLog.creativeID,
+        logExtra = recommendationAdsLog.logExtra
     )
 
     private fun Array<com.tokopedia.home.beranda.domain.model.LabelGroup>.getLabelGroupFulfillment(): LabelGroup? {

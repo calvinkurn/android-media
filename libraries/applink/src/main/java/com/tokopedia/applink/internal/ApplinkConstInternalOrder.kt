@@ -72,18 +72,17 @@ object ApplinkConstInternalOrder {
 
     const val HOST_ORDER = "order"
 
+    const val HOST_MARKETPLACE = "marketplace"
+
     const val HOST_ORDERLIST = "orderlist"
 
     const val PATH_BUYER_ORDER_DETAIL = "buyer-order-detail"
 
-    const val PATH_BUYER_ORDER_EXTENSION = "buyer-order-extension"
-
-    const val PATH_BUYER_PARTIAL_ORDER_FULFILLMENT = "buyer-partial-order-fulfillment"
-    const val PATH_SELLER_PARTIAL_ORDER_FULFILLMENT = "seller-partial-order-fulfillment"
-
     const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
     const val INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
+
+    const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_MARKETPLACE"
 
     const val INTERNAL_BUYER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER"
 
@@ -188,11 +187,6 @@ object ApplinkConstInternalOrder {
     const val BELANJA_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_BELANJA/$HOST_ORDER"
 
     const val MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_DETAIL"
-
-    const val MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_EXTENSION"
-
-    const val MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_PARTIAL_ORDER_FULFILLMENT"
-    const val MARKETPLACE_INTERNAL_PARTIAL_ORDER_FULFILLMENT = "$INTERNAL_SELLER/$PATH_SELLER_PARTIAL_ORDER_FULFILLMENT"
 
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 

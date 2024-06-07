@@ -60,13 +60,14 @@ import com.tokopedia.autocompletecomponent.unify.AutoCompleteFragment
 import com.tokopedia.autocompletecomponent.unify.AutoCompleteFragment.Companion.AUTO_COMPLETE_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.unify.AutoCompleteListener
 import com.tokopedia.autocompletecomponent.unify.AutoCompleteStateModule
+import com.tokopedia.autocompletecomponent.util.EXCLUDED_NAV_SOURCE
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
+import com.tokopedia.autocompletecomponent.util.SearchRollenceController
 import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
-import com.tokopedia.autocompletecomponent.util.enterMethodMap
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
-import com.tokopedia.autocompletecomponent.util.EXCLUDED_NAV_SOURCE
+import com.tokopedia.autocompletecomponent.util.enterMethodMap
 import com.tokopedia.autocompletecomponent.util.getSearchQuery
 import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
 import com.tokopedia.autocompletecomponent.util.getWithDefault
@@ -83,7 +84,6 @@ import com.tokopedia.discovery.common.microinteraction.SEARCH_BAR_MICRO_INTERACT
 import com.tokopedia.discovery.common.microinteraction.SearchBarMicroInteractionAttributes
 import com.tokopedia.discovery.common.microinteraction.autocomplete.autoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.discovery.common.reimagine.SearchRolloutUniverse
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.iris.IrisAnalytics
@@ -161,6 +161,7 @@ open class BaseAutoCompleteActivity :
             supportFragmentManager.fragmentFactory = it
         }
         super.onCreate(savedInstanceState)
+        SearchRollenceController.fetchRollenceData()
         setContentView(R.layout.activity_auto_complete)
 
         init(savedInstanceState)
@@ -476,7 +477,7 @@ open class BaseAutoCompleteActivity :
         autoCompleteMicroInteraction?.run {
             searchBarView?.setupMicroInteraction(this)
             setSearchBarMicroInteractionAttributes(searchBarMicroInteractionAttributes)
-            animateSearchBar()
+            animateSearchBar(SearchRollenceController.isSearchBtnEnabled())
         }
     }
 
@@ -523,8 +524,10 @@ open class BaseAutoCompleteActivity :
     }
 
     private fun sendTrackingByteIOTrendingWords(searchParameter: Map<String, String>) {
-        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) // Enter with placeholder
+        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) {
+            // Enter with placeholder
             AppLogSearch.eventTrendingWordsClick()
+        }
     }
 
     private fun getTrackingQueryOrHint(searchParameter: Map<String, String>): String {
@@ -549,11 +552,14 @@ open class BaseAutoCompleteActivity :
         return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(modifiedParameter)}"
     }
 
-    private fun enterMethod(searchParameter: Map<String, String>) =
-        // Enter with placeholder
-        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) DEFAULT_SEARCH_KEYWORD
-        // Enter with keyword input
-        else NORMAL_SEARCH
+    private fun enterMethod(searchParameter: Map<String, String>): String {
+        return when {
+            // Enter with placeholder
+            searchParameter[SearchApiConst.Q].isNullOrEmpty() -> DEFAULT_SEARCH_KEYWORD
+            // Enter with keyword input
+            else -> NORMAL_SEARCH
+        }
+    }
 
     private fun sendTrackingSubmitQuery(
         searchParameter: Map<String, String>,

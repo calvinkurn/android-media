@@ -41,36 +41,36 @@ class BottomNavigationValidatorTest {
 
     @Test
     fun `test model with home nav`() {
-        val homeNavAtFirstPosition = listOf(mockBottomNavBarHome) + List(5) { buildRandomBottomNavBar() }
+        val homeNavAtFirstPosition = listOf(mockBottomNavBarHome) + buildRandomBottomNavBars(5)
 
         Assert.assertTrue(runCatching { validator.validate(homeNavAtFirstPosition) }.isSuccess)
 
-        val homeNavAtLastPosition = List(5) { buildRandomBottomNavBar() } + listOf(mockBottomNavBarHome)
+        val homeNavAtLastPosition = buildRandomBottomNavBars(5) + listOf(mockBottomNavBarHome)
 
         Assert.assertTrue(runCatching { validator.validate(homeNavAtLastPosition) }.isSuccess)
     }
 
     @Test
     fun `test model without home nav`() {
-        val navBar = List(5) { buildRandomBottomNavBar() }
+        val navBar = buildRandomBottomNavBars(5)
 
         Assert.assertFalse(runCatching { validator.validate(navBar) }.isSuccess)
     }
 
     @Test
     fun `test model with and without image`() {
-        val withImage = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(withImage = true))
+        val withImage = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(idFrom = mockBottomNavBarHome.id, withImage = true))
 
         Assert.assertTrue(runCatching { validator.validate(withImage) }.isSuccess)
 
-        val withoutImage = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(withImage = false))
+        val withoutImage = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(idFrom = mockBottomNavBarHome.id, withImage = false))
 
         Assert.assertFalse(runCatching { validator.validate(withoutImage) }.isSuccess)
     }
 
     @Test
     fun `test model with duplicated id`() {
-        val randomNavBar = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar())
+        val randomNavBar = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(idFrom = mockBottomNavBarHome.id))
 
         Assert.assertTrue(runCatching { validator.validate(randomNavBar) }.isSuccess)
 
@@ -81,20 +81,37 @@ class BottomNavigationValidatorTest {
 
     @Test
     fun `test model with and without jumper`() {
-        val withJumper = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(withJumper = true))
+        val withJumper = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(idFrom = mockBottomNavBarHome.id, withJumper = true))
 
         Assert.assertTrue(runCatching { validator.validate(withJumper) }.isSuccess)
 
-        val withoutJumper = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(withJumper = false))
+        val withoutJumper = listOf(mockBottomNavBarHome) + listOf(buildRandomBottomNavBar(idFrom = mockBottomNavBarHome.id, withJumper = false))
 
         Assert.assertTrue(runCatching { validator.validate(withoutJumper) }.isSuccess)
     }
 
+    private fun buildRandomBottomNavBars(
+        count: Int,
+        idFrom: Int = 1,
+        withImage: Boolean = true,
+        withJumper: Boolean = false
+    ): List<BottomNavBarUiModel> {
+        val bottomNavBars = mutableListOf<BottomNavBarUiModel>()
+        while (bottomNavBars.size < count) {
+            val model = buildRandomBottomNavBar(idFrom, withImage, withJumper)
+            if (bottomNavBars.any { it.id == model.id }) continue
+            bottomNavBars.add(model)
+        }
+
+        return bottomNavBars
+    }
+
     private fun buildRandomBottomNavBar(
+        idFrom: Int = 1,
         withImage: Boolean = true,
         withJumper: Boolean = false
     ): BottomNavBarUiModel {
-        val id = Random.nextInt(1, 100)
+        val id = Random.nextInt(idFrom, Integer.MAX_VALUE)
         return BottomNavBarUiModel(
             id = id,
             title = "Random NavBar $id",

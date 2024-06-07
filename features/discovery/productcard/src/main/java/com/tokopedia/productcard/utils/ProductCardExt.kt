@@ -23,12 +23,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -37,7 +33,6 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageTopRightCrop
-import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType
@@ -202,18 +197,16 @@ internal fun ImageView.loadImageRounded(
 ){
     val transformation = RoundedCornersTransformation(roundingRadius, cornerType)
 
-    val multiTransform = if (color == null){
-        MultiTransformation(CenterCrop(), transformation)
-    } else {
+    val multiTransform = mutableListOf(CenterCrop(), transformation)
+
+    if (color != null){
         val layerTransformation = LayerOverlayTransformation(color, roundingRadius.toFloat())
-        MultiTransformation(CenterCrop(), transformation, layerTransformation)
+        multiTransform.add(layerTransformation)
     }
 
-    Glide.with(context)
-        .load(url)
-        .transform(multiTransform)
-        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-        .into(this)
+    this.loadImage(url) {
+        transforms(multiTransform)
+    }
 }
 
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {

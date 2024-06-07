@@ -8,10 +8,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.chat_common.data.SendableUiModel.Companion.PAYLOAD_EVENT_READ
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateLeftBg
@@ -127,12 +127,13 @@ class StickerMessageViewHolder(
 
     private fun bindStickerImage(sticker: StickerProfile) {
         stickerImage?.let {
-            Glide.with(itemView.context)
-                .load(sticker.imageUrl)
-                .dontAnimate()
-                .placeholder(loader)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .into(it)
+            it.loadImage(sticker.imageUrl) {
+                isAnimate(false)
+                loader?.let { animateLoader ->
+                    setPlaceHolder(animateLoader)
+                }
+                setCacheStrategy(MediaCacheStrategy.DATA)
+            }
         }
     }
 

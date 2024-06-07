@@ -38,23 +38,30 @@ class ContainerMultiTwoSquareViewHolder(
 
     override fun bind(element: MultiTwoSquareWidgetUiModel?) {
         if (element == null) return
-
-        if (element.backgroundGradientColor.isNotEmpty()) {
-            binding?.root?.run {
-                setGradientBackground(element.backgroundGradientColor)
-            }
-        }
-
         val visitableList = MultiTwoSquareWidgetUiModel.visitableList(element)
+
         if (shouldWidgetContainValidGrids(visitableList)) {
+            setGradientBackgroundColor(element.backgroundGradientColor)
+
             mAdapter?.submitList(visitableList) {
                 setFixedSubShortenWidget()
             }
+        } else {
+            binding?.lstComponent?.gone()
+            itemView.gone()
         }
     }
 
     override fun bind(element: MultiTwoSquareWidgetUiModel?, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun setGradientBackgroundColor(bgColors: ArrayList<String>) {
+        if (bgColors.isNotEmpty()) {
+            binding?.root?.run {
+                setGradientBackground(bgColors)
+            }
+        }
     }
 
     private fun setFixedSubShortenWidget() {

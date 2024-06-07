@@ -6,8 +6,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.di.HomeAccountUserComponents
@@ -18,7 +19,7 @@ import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
  * Created by Yoris Prayogo on 10/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener, AppLogInterface {
+open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener, AppLogInterface, IAdsLog {
 
     private var homeAccountUserComponents: HomeAccountUserComponents? = null
 
@@ -59,6 +60,10 @@ open class HomeAccountUserActivity : BaseSimpleActivity(), HasComponent<HomeAcco
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
         }
+    }
+
+    override fun getAdsPageName(): String {
+        return PageName.ACCOUNT
     }
 
     companion object {

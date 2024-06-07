@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardCartExtension
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.renderProductCardContent
@@ -53,8 +55,8 @@ import kotlin.LazyThreadSafetyMode.NONE
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ListViewStrategy(
-    private val productCardView: ViewGroup,
-): ProductCardStrategy {
+    private val productCardView: ViewGroup
+) : ProductCardStrategy {
 
     private val context: Context?
         get() = productCardView.context
@@ -65,7 +67,7 @@ internal class ListViewStrategy(
         productCardView.findViewById(viewStubId, viewId)
 
     private val cartExtension = ProductCardCartExtension(productCardView)
-    private val video: VideoPlayerController by lazy{
+    private val video: VideoPlayerController by lazy {
         VideoPlayerController(productCardView, R.id.videoProduct, R.id.productCardImage)
     }
     private val cardViewProductCard: CardUnify2? by lazy(NONE) {
@@ -208,6 +210,30 @@ internal class ListViewStrategy(
     private val textViewFulfillment: Typography? by lazy(NONE) {
         findViewById(R.id.textViewFulfillment)
     }
+    private val labelPrice: Label? by lazy(NONE) {
+        findViewById(R.id.labelPrice)
+    }
+
+    private val productCardImageSalesRatingFloat: IconUnify? by lazy(NONE) {
+        findViewById(R.id.productCardImageSalesRatingFloat)
+    }
+
+    private val salesRatingFloat: Typography? by lazy(NONE) {
+        findViewById(R.id.salesRatingFloat)
+    }
+
+    private val textViewSales: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewSales)
+    }
+
+    private val labelPriceReposition: Label? by lazy(NONE) {
+        findViewById(R.id.labelPriceReposition)
+    }
+
+    private val textViewShopLocation: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewShopLocation)
+    }
+
     private var forceWidthPx: Int = 0
 
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
@@ -314,7 +340,7 @@ internal class ListViewStrategy(
 
         productCardView.renderProductCardContent(
             productCardModel = productCardModel,
-            isWideContent = true,
+            isWideContent = true
         )
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
@@ -385,6 +411,20 @@ internal class ListViewStrategy(
     override fun setOnClickListener(l: View.OnClickListener?) {
         cardViewProductCard?.setOnClickListener(l)
     }
+    override fun setOnClickListener(l: ProductCardClickListener) {
+        cardViewProductCard?.setOnClickListener {
+            l.onAreaClicked(it)
+            l.onClick(it)
+        }
+        setProductImageOnClickListener {
+            l.onProductImageClicked(it)
+            l.onClick(it)
+        }
+        setShopTypeLocationOnClickListener {
+            l.onSellerInfoClicked(it)
+            l.onClick(it)
+        }
+    }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
         cardViewProductCard?.setOnLongClickListener(l)
@@ -415,6 +455,15 @@ internal class ListViewStrategy(
 
     override fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+    override fun setProductImageOnClickListener(l: (View) -> Unit) {
+        imageProduct?.setOnClickListener(l)
+    }
+
+    override fun setShopTypeLocationOnClickListener(l: (View) -> Unit) {
+        imageShopBadge?.setOnClickListener(l)
+        textViewShopLocation?.setOnClickListener(l)
     }
 
     override fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {

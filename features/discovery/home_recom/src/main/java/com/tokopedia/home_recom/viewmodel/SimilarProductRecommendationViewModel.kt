@@ -71,8 +71,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             val params = singleRecommendationUseCase.getRecomParams(
                 pageNumber = page,
                 productIds = listOf(productId),
-                queryParam = queryParam,
-                hasNewProductCardEnabled = true
+                queryParam = queryParam
             )
 
             val recommendationWidget = singleRecommendationUseCase.createObservable(params).toBlocking().first()

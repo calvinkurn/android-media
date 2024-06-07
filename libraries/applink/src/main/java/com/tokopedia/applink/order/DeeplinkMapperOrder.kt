@@ -14,6 +14,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import java.net.URLDecoder
 
 /**
@@ -252,18 +253,6 @@ object DeeplinkMapperOrder {
         return ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE
     }
 
-    fun getRegisteredNavigationSellerPartialOrderFulfillment(uri: Uri): String {
-        val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
-        val orderId = uri.getQueryParameter(PARAM_ORDER_ID).toZeroStringIfNull()
-        val pofStatus = uri.getQueryParameter(PARAM_POF_STATUS).toZeroStringIfNull()
-        val params = mapOf<String, Any>(
-            PARAM_ORDER_ID to orderId,
-            PARAM_POF_STATUS to pofStatus,
-            RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
-        )
-        return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_PARTIAL_ORDER_FULFILLMENT, params)
-    }
-
     object BuyerRequestCancelRespond {
 
         const val INTENT_RESULT_SUCCESS = "success"
@@ -279,7 +268,7 @@ object DeeplinkMapperOrder {
 
         const val PATH = "buyer-request-cancel-respond"
 
-        private const val INTERNAL_APP_LINK = "tokopedia-android-internal://seller/$PATH"
+        private const val INTERNAL_APP_LINK = "${ApplinkConstInternalOrder.INTERNAL_SELLER}/$PATH"
 
         fun getRegisteredNavigation(uri: Uri): String {
             val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
@@ -297,24 +286,69 @@ object DeeplinkMapperOrder {
         }
     }
 
-    object SellerOrderExtensionRequest {
-
-        const val INTENT_RESULT_SUCCESS = "success"
-        const val INTENT_RESULT_MESSAGE = "message"
-
+    object Soe {
         const val INTENT_PARAM_ORDER_ID = "orderId"
 
-        const val PATH = "seller-order-extension-request"
+        object Seller {
+            const val INTENT_RESULT_SUCCESS = "success"
+            const val INTENT_RESULT_MESSAGE = "message"
 
-        private const val INTERNAL_APP_LINK = "tokopedia-android-internal://seller/${PATH}"
+            const val PATH = "seller-order-extension-request"
+            const val INTERNAL_APP_LINK = "${ApplinkConstInternalOrder.INTERNAL_SELLER}/${PATH}"
 
-        fun getRegisteredNavigation(uri: Uri): String {
-            val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
-            val params = mapOf<String, Any>(
-                INTENT_PARAM_ORDER_ID to uri.getQueryParameter(INTENT_PARAM_ORDER_ID).toZeroStringIfNull(),
-                RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
-            )
-            return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
+            fun getRegisteredNavigation(uri: Uri): String {
+                val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+                val params = mapOf<String, Any>(
+                    INTENT_PARAM_ORDER_ID to uri.getQueryParameter(INTENT_PARAM_ORDER_ID).toZeroStringIfNull(),
+                    RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
+                )
+                return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
+            }
+        }
+
+        object Buyer {
+            const val PATH = "buyer-order-extension"
+            const val INTERNAL_APP_LINK = "${ApplinkConstInternalOrder.INTERNAL_MARKETPLACE}/${PATH}"
+
+            fun getRegisteredNavigation(uri: Uri): String {
+                val orderId = uri.getQueryParameter(INTENT_PARAM_ORDER_ID) ?: uri.getQueryParameter(PARAM_ORDER_ID)
+                val params = mapOf<String, Any>(
+                    INTENT_PARAM_ORDER_ID to orderId.toZeroStringIfNull()
+                )
+                return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
+            }
+        }
+    }
+
+    object Pof {
+        const val INTENT_PARAM_ORDER_ID = "orderId"
+        const val INTENT_PARAM_POF_STATUS = "pofStatus"
+
+        object Seller {
+            const val PATH = "seller-partial-order-fulfillment"
+            const val INTERNAL_APP_LINK = "${ApplinkConstInternalOrder.INTERNAL_SELLER}/${PATH}"
+            fun getRegisteredNavigation(uri: Uri): String {
+                val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+                val orderId = uri.getQueryParameter(PARAM_ORDER_ID) ?: uri.getQueryParameter(INTENT_PARAM_ORDER_ID)
+                val pofStatus = uri.getQueryParameter(PARAM_POF_STATUS) ?: uri.getQueryParameter(INTENT_PARAM_POF_STATUS)
+                val params = mapOf<String, Any>(
+                    INTENT_PARAM_ORDER_ID to orderId.toZeroStringIfNullOrBlank(),
+                    INTENT_PARAM_POF_STATUS to pofStatus.toZeroStringIfNullOrBlank(),
+                    RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
+                )
+                return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
+            }
+        }
+
+
+        object Buyer {
+            const val PATH = "buyer-partial-order-fulfillment"
+            const val INTERNAL_APP_LINK = "${ApplinkConstInternalOrder.INTERNAL_MARKETPLACE}/${PATH}"
+            fun getRegisteredNavigation(uri: Uri): String {
+                val orderId = uri.getQueryParameter(PARAM_ORDER_ID) ?: uri.getQueryParameter(INTENT_PARAM_ORDER_ID)
+                val params = mapOf<String, Any>(INTENT_PARAM_ORDER_ID to orderId.toZeroStringIfNullOrBlank())
+                return UriUtil.buildUriAppendParams(INTERNAL_APP_LINK, params)
+            }
         }
     }
 }

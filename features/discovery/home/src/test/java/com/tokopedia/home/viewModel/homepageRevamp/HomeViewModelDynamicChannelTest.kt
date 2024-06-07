@@ -412,7 +412,6 @@ class HomeViewModelDynamicChannelTest {
 
     @Test
     fun `given flag isAtfError is true when collecting HomeDynamicChannelModel then show error general`() {
-        every { homeRemoteConfigController.isUsingNewAtf() } returns true
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
                 listOf(HomeHeaderDataModel()),

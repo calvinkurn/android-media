@@ -61,7 +61,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger

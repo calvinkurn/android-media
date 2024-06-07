@@ -23,6 +23,7 @@ android {
 
 dependencies {
 
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.miscDependencies.coreKtx
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -41,7 +42,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
 
     //Image Dependecies
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lottie
 
 }

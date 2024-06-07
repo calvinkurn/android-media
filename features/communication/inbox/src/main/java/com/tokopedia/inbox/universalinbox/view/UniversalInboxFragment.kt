@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -132,7 +131,6 @@ class UniversalInboxFragment @Inject constructor(
     // Tracker
     private var trackingQueue: TrackingQueue? = null
     private var shouldImpressTracker = true
-    private var hasTrackEnterPage = false
     private var hasApplogScrollListener = false
 
     override fun onCreateView(
@@ -349,19 +347,12 @@ class UniversalInboxFragment @Inject constructor(
             // Update view only when not loading (not waiting for network)
             // Or product recommendation is empty (refresh / re-shuffle)
             if (!it.isLoading && it.productRecommendation.isNotEmpty()) {
-                trackEnterPage()
                 addProductRecommendation(
                     title = it.title,
                     newList = it.productRecommendation
                 )
             }
         }
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
     }
 
     private fun toggleLoadingProductRecommendation(isLoading: Boolean) {

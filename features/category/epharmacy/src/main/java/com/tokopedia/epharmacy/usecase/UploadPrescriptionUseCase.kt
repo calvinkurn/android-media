@@ -3,7 +3,6 @@ package com.tokopedia.epharmacy.usecase
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
@@ -46,10 +45,8 @@ class UploadPrescriptionUseCase @Inject constructor(
             prescriptionImageBitmap = if(compress){
                 options = BitmapFactory.Options()
                 options.inSampleSize = 2 + compressCounter
-                logBreadCrumb("$EPharmacyModuleName,Options={2 + ${compressCounter}},Path=${localFilePath}")
                 BitmapFactory.decodeFile(localFilePath, options)
             }else {
-                logBreadCrumb("$EPharmacyModuleName,Normal,Path=${localFilePath}")
                 BitmapFactory.decodeFile(localFilePath)
             }
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
@@ -63,19 +60,15 @@ class UploadPrescriptionUseCase @Inject constructor(
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             finalEncodedString = "${IMAGE_DATA_PREFIX}${encodedString}"
-            logBreadCrumb("$EPharmacyModuleName,Return Main String = ${finalEncodedString.length}}")
             finalEncodedString
         }catch (e : Exception){
             prescriptionImageBitmap?.recycle()
-            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}")
             when(e){
                 is NullPointerException -> {
                     if((!compress) || (compress && (compressCounter < MAX_COMPRESSIONS))){
                         finalEncodedString = if (compress && localFilePath.isNotBlank()){
-                            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}compressCounter=${compressCounter},path=${localFilePath}")
                             getBase64OfPrescriptionImage(localFilePath, true,compressCounter + 1)
                         }else {
-                            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}compressCounter=${compressCounter},path=${localFilePath}")
                             getBase64OfPrescriptionImage(localFilePath, true,compressCounter +  1)
                         }
                     }
@@ -85,7 +78,6 @@ class UploadPrescriptionUseCase @Inject constructor(
                     EPharmacyUtils.logException(e)
                 }
             }
-            logBreadCrumb("$EPharmacyModuleName,Return Catch String = ${finalEncodedString.length}}")
             finalEncodedString
         }
     }
@@ -99,12 +91,6 @@ class UploadPrescriptionUseCase @Inject constructor(
             ENDPOINT_URL_STAGING
         else
             ENDPOINT_URL_LIVE
-    }
-
-    private fun logBreadCrumb(message : String){
-        try {
-            EmbraceMonitoring.logBreadcrumb(message)
-        }catch (e:Exception){ }
     }
 
     companion object {

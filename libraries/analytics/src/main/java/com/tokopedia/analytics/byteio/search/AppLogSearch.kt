@@ -188,14 +188,18 @@ object AppLogSearch {
         const val FILTER_QUICK = "filter_quick"
         const val CORRECT_WORD = "correct_word"
         const val SEARCH_RESULT = "search_result"
+        const val SEARCH_BAR_OUTER = "search_bar_outer"
+        const val SEARCH_BAR_BUTTON = "search_bar_button"
+        const val DEFAULT_SEARCH_KEYWORD_OUTER = "default_search_keyword_outer"
     }
 
     fun eventShowSearch() {
         AppLogAnalytics.send(
-            SHOW_SEARCH, JSONObject(
+            SHOW_SEARCH,
+            JSONObject(
                 mapOf(
                     SEARCH_ENTRANCE to PageName.HOME,
-                    ENTER_FROM to PageName.HOME,
+                    ENTER_FROM to PageName.HOME
                 )
             )
         )
@@ -207,7 +211,7 @@ object AppLogSearch {
         val groupId: String,
         val imprId: String,
         val wordsSource: String,
-        val searchEntrance: String,
+        val searchEntrance: String
     ) {
 
         fun toMap() = mapOf(
@@ -217,7 +221,7 @@ object AppLogSearch {
             SEARCH_POSITION to HOMEPAGE,
             SEARCH_ENTRANCE to searchEntrance,
             GROUP_ID to groupId,
-            IMPR_ID to imprId,
+            IMPR_ID to imprId
         )
     }
 
@@ -231,6 +235,10 @@ object AppLogSearch {
         if (trendingWordsMap !is Map<*, *>) return
 
         AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWordsMap))
+    }
+
+    fun eventTrendingWordsClick(trendingWords: TrendingWords) {
+        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWords.toMap()))
     }
 
     fun saveTrendingWordsClickData(trendingWords: TrendingWords) {
@@ -258,28 +266,30 @@ object AppLogSearch {
         val blankPageEnterMethod: String? = null,
         val ecomSortChosen: String? = null,
         val ecomFilterChosen: Map<String, Any>? = null,
-        val ecomFilterType: String? = null,
+        val ecomFilterType: String? = null
     ) {
-        fun json() = JSONObject(buildMap {
-            put(IMPR_ID, imprId)
-            put(ENTER_FROM, enterFrom)
-            put(SEARCH_TYPE, searchType)
-            put(ENTER_METHOD, enterMethod)
-            put(SEARCH_KEYWORD, searchKeyword)
+        fun json() = JSONObject(
+            buildMap {
+                put(IMPR_ID, imprId)
+                put(ENTER_FROM, enterFrom)
+                put(SEARCH_TYPE, searchType)
+                put(ENTER_METHOD, enterMethod)
+                put(SEARCH_KEYWORD, searchKeyword)
 
-            durationMs?.let { put(DURATION, it) }
-            isSuccess?.let { put(IS_SUCCESS, it.intValue) }
-            preSearchId?.let { put(PRE_SEARCH_ID, it) }
-            ecSearchSessionId?.let { put(EC_SEARCH_SESSION_ID, it) }
-            sugType?.let { put(SUG_TYPE, it) }
-            newSugSessionId?.let { put(NEW_SUG_SESSION_ID, it) }
-            preClickId?.let { put(PRE_CLICK_ID, it) }
-            blankPageEnterFrom?.let { put(BLANKPAGE_ENTER_FROM, it) }
-            blankPageEnterMethod?.let { put(BLANKPAGE_ENTER_METHOD, it) }
-            ecomSortChosen?.let { put(ECOM_SORT_CHOSEN, it) }
-            ecomFilterChosen?.let { put(ECOM_FILTER_CHOSEN, it) }
-            ecomFilterType?.let { put(ECOM_FILTER_TYPE, it) }
-        })
+                durationMs?.let { put(DURATION, it) }
+                isSuccess?.let { put(IS_SUCCESS, it.intValue) }
+                preSearchId?.let { put(PRE_SEARCH_ID, it) }
+                ecSearchSessionId?.let { put(EC_SEARCH_SESSION_ID, it) }
+                sugType?.let { put(SUG_TYPE, it) }
+                newSugSessionId?.let { put(NEW_SUG_SESSION_ID, it) }
+                preClickId?.let { put(PRE_CLICK_ID, it) }
+                blankPageEnterFrom?.let { put(BLANKPAGE_ENTER_FROM, it) }
+                blankPageEnterMethod?.let { put(BLANKPAGE_ENTER_METHOD, it) }
+                ecomSortChosen?.let { put(ECOM_SORT_CHOSEN, it) }
+                ecomFilterChosen?.let { put(ECOM_FILTER_CHOSEN, it) }
+                ecomFilterType?.let { put(ECOM_FILTER_TYPE, it) }
+            }
+        )
     }
 
     fun eventSearch(search: Search) {
@@ -289,7 +299,7 @@ object AppLogSearch {
     fun eventEnterSearchBlankPage(
         enterFrom: String,
         enterMethod: String,
-        searchEntrance: String,
+        searchEntrance: String
     ) {
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
@@ -297,7 +307,7 @@ object AppLogSearch {
                 mapOf(
                     ENTER_FROM to enterFrom,
                     ENTER_METHOD to enterMethod,
-                    SEARCH_ENTRANCE to searchEntrance,
+                    SEARCH_ENTRANCE to searchEntrance
                 )
             )
         )
@@ -310,7 +320,7 @@ object AppLogSearch {
         val enterMethod: String,
         val wordsSource: String,
         val wordsNum: Int,
-        val searchEntrance: String,
+        val searchEntrance: String
     ) {
         fun json() = JSONObject(
             mapOf(
@@ -321,7 +331,7 @@ object AppLogSearch {
                 RAW_QUERY to rawQuery,
                 ENTER_METHOD to enterMethod,
                 WORDS_SOURCE to wordsSource,
-                WORDS_NUM to wordsNum,
+                WORDS_NUM to wordsNum
             )
         )
     }
@@ -340,7 +350,7 @@ object AppLogSearch {
         val wordsContent: String,
         val wordsPosition: Int,
         val wordSource: String = SUG,
-        val searchEntrance: String,
+        val searchEntrance: String
     ) {
         fun json() = JSONObject(
             mapOf(
@@ -388,7 +398,7 @@ object AppLogSearch {
         val isAd: Boolean,
         val isFirstPage: Boolean,
         val shopId: String?,
-        val aladdinButtonType: String?,
+        val aladdinButtonType: String?
     ) {
         val trackId: String
             get() = "${searchId}_${(itemRank ?: rank)}"
@@ -418,8 +428,11 @@ object AppLogSearch {
     fun enterFrom(): String {
         val actualEnterFrom = AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM)?.toString() ?: ""
 
-        return if (whitelistedEnterFrom.contains(actualEnterFrom)) actualEnterFrom
-        else ""
+        return if (whitelistedEnterFrom.contains(actualEnterFrom)) {
+            actualEnterFrom
+        } else {
+            ""
+        }
     }
 
     fun eventSearchResultShow(searchResult: SearchResult) {
@@ -430,9 +443,9 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH_RESULT_CLICK, searchResult.json())
 
         with(searchResult) {
-            AppLogAnalytics.setGlobalParams(
+            AppLogAnalytics.setGlobalParamOnClick(
                 trackId = trackId,
-                requestId = imprId,
+                requestId = imprId
             )
 
             AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultId)
@@ -443,7 +456,7 @@ object AppLogSearch {
     data class Performance(
         val startToNowMilis: Long,
         val enterMethod: String
-    ){
+    ) {
         fun json() = JSONObject(
             buildMap {
                 put(START_TO_NOW, startToNowMilis)
@@ -454,7 +467,7 @@ object AppLogSearch {
         }
     }
 
-    fun eventPerformanceTracking(performance: Performance){
+    fun eventPerformanceTracking(performance: Performance) {
         AppLogAnalytics.send(RD_TIKTOKEC_MEANINGFUL_RENDERED, performance.json())
     }
 
@@ -466,19 +479,21 @@ object AppLogSearch {
         val ecomFilterName: String,
         val ecomFilterPosition: String,
         val buttonTypeClick: String,
-        val searchEntrance: String,
+        val searchEntrance: String
     ) {
 
-        fun json() = JSONObject(buildMap {
-            put(SEARCH_ENTRANCE, searchEntrance)
-            put(SEARCH_ID, searchID)
-            put(SEARCH_TYPE, searchType)
-            put(SEARCH_KEYWORD, keyword)
-            ecomSortName?.let { put(ECOM_SORT_NAME, it) }
-            put(ECOM_FILTER_NAME, ecomFilterName)
-            put(ECOM_FILTER_POSITION, ecomFilterPosition)
-            put(BUTTON_TYPE_CLICK, buttonTypeClick)
-        })
+        fun json() = JSONObject(
+            buildMap {
+                put(SEARCH_ENTRANCE, searchEntrance)
+                put(SEARCH_ID, searchID)
+                put(SEARCH_TYPE, searchType)
+                put(SEARCH_KEYWORD, keyword)
+                ecomSortName?.let { put(ECOM_SORT_NAME, it) }
+                put(ECOM_FILTER_NAME, ecomFilterName)
+                put(ECOM_FILTER_POSITION, ecomFilterPosition)
+                put(BUTTON_TYPE_CLICK, buttonTypeClick)
+            }
+        )
     }
 
     fun eventChooseSearchFilter(chooseSearchFilter: ChooseSearchFilter) {
@@ -502,7 +517,7 @@ object AppLogSearch {
         val rank: Int,
         val shopID: String?,
         val searchEntrance: String,
-        val sourcePageType: String,
+        val sourcePageType: String
     ) {
         val trackId: String
             get() = "${searchID}_${(rank)}"
@@ -510,25 +525,27 @@ object AppLogSearch {
         val isAdInt: Int
             get() = isAd.intValue
 
-        fun json() = JSONObject(buildMap {
-            put(ENTRANCE_FORM, entranceForm.str)
-            put(SOURCE_PAGE_TYPE, sourcePageType)
-            put(IS_AD, isAdInt)
-            put(PRODUCT_ID, productID)
-            put(AppLogParam.TRACK_ID, trackId)
-            put(AppLogParam.REQUEST_ID, requestID)
-            put(SEARCH_ID, searchID)
-            put(SEARCH_RESULT_ID, searchResultID)
-            put(SEARCH_ENTRANCE, searchEntrance)
-            put(ENTER_FROM, GOODS_SEARCH)
-            listItemId?.let { put(LIST_ITEM_ID, it) }
-            itemRank?.let { put(ITEM_RANK, it) }
-            listResultType?.let { put(LIST_RESULT_TYPE, it) }
-            put(SEARCH_KEYWORD, searchKeyword)
-            put(TOKEN_TYPE, tokenType)
-            put(RANK, rank)
-            shopID?.let { put(SHOP_ID, it) }
-        }).apply {
+        fun json() = JSONObject(
+            buildMap {
+                put(ENTRANCE_FORM, entranceForm.str)
+                put(SOURCE_PAGE_TYPE, sourcePageType)
+                put(IS_AD, isAdInt)
+                put(PRODUCT_ID, productID)
+                put(AppLogParam.TRACK_ID, trackId)
+                put(AppLogParam.REQUEST_ID, requestID)
+                put(SEARCH_ID, searchID)
+                put(SEARCH_RESULT_ID, searchResultID)
+                put(SEARCH_ENTRANCE, searchEntrance)
+                put(ENTER_FROM, GOODS_SEARCH)
+                listItemId?.let { put(LIST_ITEM_ID, it) }
+                itemRank?.let { put(ITEM_RANK, it) }
+                listResultType?.let { put(LIST_RESULT_TYPE, it) }
+                put(SEARCH_KEYWORD, searchKeyword)
+                put(TOKEN_TYPE, tokenType)
+                put(RANK, rank)
+                shopID?.let { put(SHOP_ID, it) }
+            }
+        ).apply {
             addPage()
         }
     }
@@ -541,14 +558,14 @@ object AppLogSearch {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, product.json())
 
         with(product) {
-            AppLogAnalytics.setGlobalParams(
+            AppLogAnalytics.setGlobalParamOnClick(
                 entranceForm = entranceForm.str,
                 enterMethod = null,
                 sourceModule = null,
                 isAd = isAdInt,
                 trackId = trackId,
                 sourcePageType = sourcePageType,
-                requestId = requestID,
+                requestId = requestID
             )
 
             AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultID)

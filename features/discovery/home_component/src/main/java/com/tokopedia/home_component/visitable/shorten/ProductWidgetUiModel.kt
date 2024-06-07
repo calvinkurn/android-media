@@ -16,8 +16,6 @@ data class ProductWidgetUiModel(
     val data: List<ItemProductWidgetUiModel>
 ) : ShortenVisitable {
 
-    val impression = ImpressHolder()
-
     override fun type(typeFactory: ShortenViewFactory) = typeFactory.type(this)
     override fun visitableId() = channelModel.id.toIntOrNull() ?: this.hashCode()
     override fun equalsWith(o: Any?) = o == this
