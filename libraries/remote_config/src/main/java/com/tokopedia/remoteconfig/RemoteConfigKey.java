@@ -354,4 +354,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_TOP_ADS_SDK_V2 = "android_top_ads_sdk_v2";
 
     public static final String ANDROID_MAINAPP_PROFILE_FOLLOW_LIST_COMPOSE_ENABLE = "android_main_app_enable_compose_profile_follow_list";
+
+    public static final String ANDROID_ENABLE_BTM = "android_enable_btm";
 }

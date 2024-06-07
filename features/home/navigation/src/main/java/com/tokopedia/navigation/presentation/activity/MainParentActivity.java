@@ -41,6 +41,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bytedance.android.btm.api.BtmSDK;
+import com.bytedance.android.btm.api.model.PageShowParams;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -671,6 +673,13 @@ public class MainParentActivity extends BaseActivity implements
         configureNavigationBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
+        sendFragmentChangeEventToBtmSDK(fragment);
+    }
+
+    private void sendFragmentChangeEventToBtmSDK(Fragment fragment){
+        PageShowParams params = new PageShowParams();
+        params.setReuse(true);
+        BtmSDK.INSTANCE.onPageShow(fragment, true, params);
     }
 
     // MIGRATED

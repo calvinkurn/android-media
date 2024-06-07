@@ -37,6 +37,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogFirstTrackId
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -889,6 +891,7 @@ open class ProductDetailFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Pdp)
         if (savedInstanceState != null) {
             doActivityResult =
                 savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)

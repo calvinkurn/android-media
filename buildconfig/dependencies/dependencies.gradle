@@ -555,6 +555,14 @@ ext {
         bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
     ]
 
+    btmVersion = "2.0.4.i18n-rc.0-toko"
+
+    btmDependencies = [
+            btmApi      : "com.bytedance.android.btm:btm-api:$btmVersion",
+            btmImpl     : "com.bytedance.android.btm:btm-impl:$btmVersion",
+            lazyData    : "com.ss.android.ugc.aweme:lazydata:0.0.1-alpha.32"
+    ]
+
     msSdkDependencies = [
             msSdk : "com.bytedance.mobsec.metasec:ov:5.0.0-alpha.124@aar",
             sdkMonitor : "com.bytedance.frameworks.core:sdk_monitor:2.0.42-rc.5-tt@aar",

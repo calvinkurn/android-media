@@ -47,6 +47,7 @@ import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.btm.InitBtmSdk;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
@@ -242,6 +243,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
         initializeAppPerformanceTrace();
         initFresco();
+        initBTMSDK();
     }
 
     private void initFresco() {
@@ -362,6 +364,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 }
             };
             Weaver.Companion.executeWeaveCoRoutineNow(initNrWeave);
+        }
+    }
+
+    private void initBTMSDK(){
+        // must make sure byteIO init
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
+            InitBtmSdk.INSTANCE.init(this);
         }
     }
 

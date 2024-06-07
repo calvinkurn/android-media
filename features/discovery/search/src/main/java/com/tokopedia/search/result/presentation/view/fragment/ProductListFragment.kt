@@ -21,9 +21,10 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
-import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
@@ -46,7 +47,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_FINDALIKE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_QUICK
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.REFRESH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -325,15 +325,15 @@ class ProductListFragment :
         }
     }
 
-    private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
-    private lateinit var networkMonitor : DefaultNetworkMonitor
+    private lateinit var videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator
+    private lateinit var networkMonitor: DefaultNetworkMonitor
 
     override fun getFragment(): Fragment = this
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.ProductSearchResult)
         loadDataFromArguments()
         initProductCardLifecycleObserver()
         initNetworkMonitor()
@@ -671,7 +671,7 @@ class ProductListFragment :
 
         presenter?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        if(isVisibleToUser) AppLogSearch.updateSearchPageData(this)
+        if (isVisibleToUser) AppLogSearch.updateSearchPageData(this)
     }
 
     override fun trackScreenAuthenticated() {
@@ -690,7 +690,7 @@ class ProductListFragment :
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
-        //add parameter for byteio performance tracker
+        // add parameter for byteio performance tracker
         recyclerViewUpdater.enterMethod = enterMethod
         recyclerViewUpdater.isLocalSearch = presenter?.getIsLocalSearch() == true
         recyclerViewUpdater.setItems(list)
@@ -795,7 +795,7 @@ class ProductListFragment :
                         startSimilarSearch(
                             it,
                             productCardOptionsModel.productId,
-                            productCardOptionsModel.keyword,
+                            productCardOptionsModel.keyword
                         )
 
                         val threeDotsProductItem = presenter?.threeDotsProductItem ?: return
@@ -829,8 +829,8 @@ class ProductListFragment :
 
     override fun onProductImpressedByteIO(item: ProductItemDataView?) {
         item ?: return
-        if(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO, true)){
-            if(isValidProductToTrackByteIO(item)) return
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_FIX_SEARCH_PRODUCT_IMPRESSION_BYTEIO, true)) {
+            if (isValidProductToTrackByteIO(item)) return
         }
         AppLogSearch.eventSearchResultShow(item.asByteIOSearchResult(null))
         AppLogSearch.eventProductShow(item.asByteIOProduct())
@@ -1233,16 +1233,18 @@ class ProductListFragment :
     }
 
     private fun trackChooseSearchFilter(filterValue: String, position: Int) {
-        AppLogSearch.eventChooseSearchFilter(AppLogSearch.ChooseSearchFilter(
-            searchID = SearchId.value,
-            searchType = GOODS_SEARCH,
-            keyword = queryKey,
-            ecomSortName = "",
-            ecomFilterName = filterValue,
-            ecomFilterPosition = position.toString(),
-            buttonTypeClick = FILTER_QUICK,
-            searchEntrance = searchEntrance,
-        ))
+        AppLogSearch.eventChooseSearchFilter(
+            AppLogSearch.ChooseSearchFilter(
+                searchID = SearchId.value,
+                searchType = GOODS_SEARCH,
+                keyword = queryKey,
+                ecomSortName = "",
+                ecomFilterName = filterValue,
+                ecomFilterPosition = position.toString(),
+                buttonTypeClick = FILTER_QUICK,
+                searchEntrance = searchEntrance
+            )
+        )
     }
 
     override fun initFilterController(quickFilterList: List<Filter>) {
@@ -1307,7 +1309,7 @@ class ProductListFragment :
             onQuickFilterSelected(
                 filter = filter,
                 option = firstOption,
-                position =  position,
+                position = position,
                 pageSource = Dimension90Utils.getDimension90(searchParameter)
             )
         }
@@ -1592,7 +1594,7 @@ class ProductListFragment :
 
     //region dropdown quick filter
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter, position: Int) {
-        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.OptionCallback {
+        val filterDetailCallback = object : FilterGeneralDetailBottomSheet.OptionCallback {
             override fun onApplyButtonClicked(optionList: List<IOption>?) {
                 val options = optionList?.filterIsInstance<Option>()
                 presenter?.onApplyDropdownQuickFilter(options)
@@ -1601,7 +1603,7 @@ class ProductListFragment :
                 }
                 val filterValue = selectedOptions?.joinToString(
                     separator = ",",
-                    transform = Option::key,
+                    transform = Option::key
                 ).orEmpty()
                 trackChooseSearchFilter(filterValue, position)
             }
@@ -1688,13 +1690,17 @@ class ProductListFragment :
         val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
             it.startPageDuration + it.networkRequestDuration
         }
-        val newSugSessionId = if(enterMethodShouldHaveSug(enterMethod))
+        val newSugSessionId = if (enterMethodShouldHaveSug(enterMethod)) {
             AppLogAnalytics.getLastData(NEW_SUG_SESSION_ID)?.toString()
-        else null
+        } else {
+            null
+        }
 
-        val sugType = if(enterMethodShouldHaveSug(enterMethod))
+        val sugType = if (enterMethodShouldHaveSug(enterMethod)) {
             AppLogAnalytics.getLastData(SUG_TYPE)?.toString()
-        else null
+        } else {
+            null
+        }
 
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
@@ -1717,7 +1723,7 @@ class ProductListFragment :
                 preClickId = AppLogAnalytics.getLastData(PRE_CLICK_ID)?.toString(),
 
                 blankPageEnterFrom = AppLogAnalytics.getLastData(BLANKPAGE_ENTER_FROM)?.toString(),
-                blankPageEnterMethod = AppLogAnalytics.getLastData(BLANKPAGE_ENTER_METHOD)?.toString(),
+                blankPageEnterMethod = AppLogAnalytics.getLastData(BLANKPAGE_ENTER_METHOD)?.toString()
             )
         )
 
