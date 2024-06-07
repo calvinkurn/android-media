@@ -52,6 +52,7 @@ import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -207,7 +208,7 @@ class CheckoutPaymentProcessor @Inject constructor(
         val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
         return PaymentRequest(
             payment = PaymentData(
-                gatewayCode = paymentData?.gatewayCode.orEmpty(),
+                gatewayCode = paymentData?.gatewayCode.ifNullOrBlank { payment.originalData.gatewayCode },
                 profileCode = paymentData?.profileCode.orEmpty(),
                 paymentAmount = cost.totalPrice
             ),
@@ -248,13 +249,13 @@ class CheckoutPaymentProcessor @Inject constructor(
                                             } else {
                                                 (item as CheckoutProductBenefitModel).cartStringOrder
                                             }
-                                        }.values.mapNotNull orders@ { order ->
+                                        }.values.mapNotNull orders@{ order ->
                                             val singleItem = order.firstOrNullInstanceOf(CheckoutProductModel::class.java) ?: return@orders null
                                             CartShopOrderData(
                                                 shopId = singleItem.shopId,
                                                 warehouseId = singleItem.warehouseId.toLongOrZero(),
                                                 shopTier = singleItem.shopTier.toLong(),
-                                                products = order.mapNotNull products@ { product ->
+                                                products = order.mapNotNull products@{ product ->
                                                     if (product is CheckoutProductModel) {
                                                         if (!product.isError) {
                                                             CartProductData(
@@ -415,7 +416,9 @@ class CheckoutPaymentProcessor @Inject constructor(
             data = data,
             widget = payment.widget.copy(
                 state = if (data == null || data.paymentWidgetData.isEmpty()) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal
-            )
+            ),
+            tenorList = null,
+            installmentData = null
         )
     }
 

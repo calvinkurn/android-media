@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -23,6 +24,7 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Compan
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_CHECKOUT_OPEN_PROMO
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_NOTES
 import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_PAYMENT
+import com.tokopedia.checkout.revamp.view.processor.CheckoutCartProcessor.Companion.UPDATE_CART_SOURCE_QUANTITY
 import com.tokopedia.checkout.revamp.view.processor.CheckoutDataHelper
 import com.tokopedia.checkout.revamp.view.processor.CheckoutLogisticProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
@@ -122,6 +124,8 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -205,6 +209,9 @@ class CheckoutViewModel @Inject constructor(
     var usePromoEntryPointNewInterface: Boolean = false
 
     private var cartType: String = ""
+    private var terms: String = ""
+
+    private var debounceQtyJob: Job? = null
 
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
@@ -215,7 +222,8 @@ class CheckoutViewModel @Inject constructor(
         skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHigher: Boolean,
         gatewayCode: String = "",
-        tenor: Int = 0
+        tenor: Int = 0,
+        modifiedCheckoutItems: ((List<CheckoutItem>) -> List<CheckoutItem>)? = null
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         viewModelScope.launch(dispatchers.io) {
@@ -278,7 +286,8 @@ class CheckoutViewModel @Inject constructor(
                         val items = dataConverter.getCheckoutItems(
                             saf.cartShipmentAddressFormData,
                             address.recipientAddressModel.locationDataModel != null,
-                            userSessionInterface.name
+                            userSessionInterface.name,
+                            saf.cartShipmentAddressFormData.cartType == OCC
                         )
 
                         var uploadPrescriptionUiModel = UploadPrescriptionUiModel()
@@ -324,7 +333,8 @@ class CheckoutViewModel @Inject constructor(
                             metadata = saf.cartShipmentAddressFormData.paymentWidget.metadata,
                             enable = saf.cartShipmentAddressFormData.paymentWidget.enable,
                             defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage,
-                            originalData = OriginalCheckoutPaymentData(
+                            originalData =
+                            OriginalCheckoutPaymentData(
                                 gatewayCode = gatewayCode.ifBlank { saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode },
                                 tenureType = if (gatewayCode.isNotBlank()) tenor else saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
                                 optionId = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.optionId,
@@ -333,6 +343,7 @@ class CheckoutViewModel @Inject constructor(
                         )
 
                         cartType = saf.cartShipmentAddressFormData.cartType
+                        terms = saf.cartShipmentAddressFormData.terms
                         val cost = CheckoutCostModel(useNewWording = payment.enable)
 
                         val paymentLevelAddOnsMap = mutableMapOf<Long, CheckoutCrossSellItem>()
@@ -391,7 +402,8 @@ class CheckoutViewModel @Inject constructor(
 
                         val buttonPayment = CheckoutButtonPaymentModel(
                             "",
-                            useDirectPayment = payment.enable
+                            useDirectPayment = payment.enable,
+                            terms = saf.cartShipmentAddressFormData.terms
                         )
 
                         val itemsWithLoadingState = items.map {
@@ -407,20 +419,26 @@ class CheckoutViewModel @Inject constructor(
                             }
                         }
 
+                        var finalItems = listOf(
+                            tickerError,
+                            ticker,
+                            address,
+                            upsell
+                        ) + itemsWithLoadingState + listOf(
+                            epharmacy,
+                            promo,
+                            payment,
+                            cost,
+                            crossSellGroup,
+                            buttonPayment
+                        )
+
+                        if (modifiedCheckoutItems != null) {
+                            finalItems = modifiedCheckoutItems(finalItems)
+                        }
+
                         withContext(dispatchers.main) {
-                            listData.value = listOf(
-                                tickerError,
-                                ticker,
-                                address,
-                                upsell
-                            ) + itemsWithLoadingState + listOf(
-                                epharmacy,
-                                promo,
-                                payment,
-                                cost,
-                                crossSellGroup,
-                                buttonPayment
-                            )
+                            listData.value = finalItems
                             pageState.value = saf
                             calculateTotal()
                         }
@@ -935,12 +953,12 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
-    internal fun calculateTotal() {
+    internal fun calculateTotal(skipPaymentMandatoryHit: Boolean = false) {
         viewModelScope.launch(dispatchers.immediate) {
             calculateTotalWithoutPayment()
             val shouldGetPayment = shouldGetPayment(listData.value)
             if (shouldGetPayment) {
-                getCheckoutPaymentData()
+                getCheckoutPaymentData(skipPaymentMandatoryHit)
             } else {
                 getCheckoutPlatformFee()
             }
@@ -1467,6 +1485,29 @@ class CheckoutViewModel @Inject constructor(
                         isTradeInByDropOff,
                         boPromoCode
                     )
+
+                    val checkoutItems = listData.value.toMutableList()
+                    val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+                    val shipment = checkoutOrderModel.shipment
+                    val newShipment = shipment.copy(
+                        isLoading = false,
+                        courierItemData = CourierItemData(),
+                        insurance = generateCheckoutOrderInsuranceFromCourier(
+                            CourierItemData(),
+                            checkoutOrderModel
+                        ),
+                        isHasShownCourierError = false
+                    )
+                    val newOrder = checkoutOrderModel.copy(shipment = newShipment)
+                    cartProcessor.processSaveShipmentState(
+                        newOrder,
+                        listData.value.address()!!.recipientAddressModel,
+                        listData.value
+                    )
+
+                    ratesError.message?.let {
+                        pageState.value = CheckoutPageState.MessageErrorException(it)
+                    }
                 } else if (ratesError is AkamaiErrorException) {
                     ratesError.message?.let {
                         pageState.value = CheckoutPageState.AkamaiRatesError(it)
@@ -1667,7 +1708,7 @@ class CheckoutViewModel @Inject constructor(
         return ArrayList(promoProcessor.bboPromoCodes)
     }
 
-    private suspend fun validatePromo(skipEE: Boolean = false) {
+    private suspend fun validatePromo(skipEE: Boolean = false, skipPaymentMandatoryHit: Boolean = false) {
         val checkoutItems = listData.value.toMutableList()
         var newItems = promoProcessor.validateUse(
             promoProcessor.generateValidateUsePromoRequest(
@@ -1686,7 +1727,7 @@ class CheckoutViewModel @Inject constructor(
         newItems = getEntryPointInfo(newItems, checkoutItems)
         newItems = checkCrossSellImpressionState(newItems)
         listData.value = newItems
-        calculateTotal()
+        calculateTotal(skipPaymentMandatoryHit)
         if (!skipEE) {
             sendEEStep3()
         }
@@ -2077,6 +2118,7 @@ class CheckoutViewModel @Inject constructor(
     // endregion
 
     fun checkout(
+        isPopupConfirmed: Boolean? = false,
         fingerprintPublicKey: String?,
         triggerEpharmacyTracker: (Boolean) -> Unit,
         onSuccessCheckout: (CheckoutResult) -> Unit
@@ -2332,7 +2374,8 @@ class CheckoutViewModel @Inject constructor(
                             validateUsePromoRevampUiModel,
                             fingerprintPublicKey,
                             onSuccessCheckout,
-                            true
+                            true,
+                            isPopupConfirmed
                         )
                     } else {
                         commonToaster.emit(
@@ -2349,7 +2392,8 @@ class CheckoutViewModel @Inject constructor(
                         validateUsePromoRevampUiModel,
                         fingerprintPublicKey,
                         onSuccessCheckout,
-                        false
+                        false,
+                        isPopupConfirmed
                     )
                 }
             } else {
@@ -2369,7 +2413,8 @@ class CheckoutViewModel @Inject constructor(
         validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
         fingerprintPublicKey: String?,
         onSuccessCheckout: (CheckoutResult) -> Unit,
-        hasClearPromoBeforeCheckout: Boolean
+        hasClearPromoBeforeCheckout: Boolean,
+        isPopupConfirmed: Boolean? = false
     ) {
         cartProcessor.processSaveShipmentState(listData.value, recipientAddressModel)
         if (isPaymentEnable()) {
@@ -2402,7 +2447,8 @@ class CheckoutViewModel @Inject constructor(
             checkoutLeasingId,
             fingerprintPublicKey,
             hasClearPromoBeforeCheckout,
-            cartType
+            cartType,
+            isPopupConfirmed
         )
         if (checkoutResult.success) {
             sendEEStep4(
@@ -3166,16 +3212,47 @@ class CheckoutViewModel @Inject constructor(
         return checkoutProcessor.checkProtectionAddOnOptIn(getOrderProducts(cartStringGroup))
     }
 
-    fun setProductNote(note: String, position: Int) {
+    fun setProductNote(
+        note: String,
+        position: Int
+    ) {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+
+            val updateCartResult = cartProcessor.updateCart(
+                cartProcessor.generateUpdateCartRequest(listData.value),
+                UPDATE_CART_SOURCE_NOTES,
+                cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment())
+            )
+
+            val checkoutItems = listData.value.toMutableList()
+            val product = checkoutItems[position] as CheckoutProductModel
+            if (!updateCartResult.isSuccess) {
+                pageState.value = CheckoutPageState.Normal
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        updateCartResult.toasterMessage,
+                        updateCartResult.throwable,
+                        source = "update_notes"
+                    )
+                )
+                return@launch
+            } else {
+                pageState.value = CheckoutPageState.Normal
+                var showLottie = true
+                if (note.isBlank()) showLottie = false
+                checkoutItems[position] = product.copy(noteToSeller = note, shouldShowLottieNotes = showLottie)
+                listData.value = checkoutItems
+            }
+        }
+    }
+
+    fun hideNoteLottie(position: Int) {
         val checkoutItems = listData.value.toMutableList()
         val product = checkoutItems[position] as CheckoutProductModel
-        checkoutItems[position] = product.copy(noteToSeller = note)
+        checkoutItems[position] = product.copy(shouldShowLottieNotes = false)
         listData.value = checkoutItems
-
-        viewModelScope.launch(dispatchers.immediate) {
-            // fire & forget
-            cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), UPDATE_CART_SOURCE_NOTES, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
-        }
     }
 
     private fun shouldGetPayment(items: List<CheckoutItem>): Boolean {
@@ -3197,7 +3274,7 @@ class CheckoutViewModel @Inject constructor(
         return hasValidOrder && isPaymentWidgetEnable
     }
 
-    private suspend fun getCheckoutPaymentData() {
+    private suspend fun getCheckoutPaymentData(skipPaymentMandatoryHit: Boolean = false) {
         val checkoutItems = listData.value.toMutableList()
         var payment = checkoutItems.payment() ?: return
 
@@ -3294,7 +3371,7 @@ class CheckoutViewModel @Inject constructor(
         }
 
         val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
-        if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
+        if (!skipPaymentMandatoryHit && paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
             payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.tenorList == null) {
@@ -3302,7 +3379,7 @@ class CheckoutViewModel @Inject constructor(
             }
         }
 
-        if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
+        if (!skipPaymentMandatoryHit && paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
             payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost, shipmentPlatformFeeData)
 
             if (payment.installmentData == null) {
@@ -3415,12 +3492,37 @@ class CheckoutViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.immediate) {
             pageState.value = CheckoutPageState.Loading
             val currPayment = listData.value.payment()!!.data!!.paymentWidgetData.first()
+            var currPaymentMetadata = currPayment.metadata
+            try {
+                val metadata = JsonParser().parse(currPaymentMetadata)
+                val jsonObject = metadata.asJsonObject
+                val expressCheckoutParams =
+                    jsonObject.getAsJsonObject(UpdateCartPaymentRequest.EXPRESS_CHECKOUT_PARAM)
+                jsonObject.addProperty(
+                    UpdateCartPaymentRequest.GATEWAY_CODE,
+                    selectedInstallment.gatewayCode
+                )
+                expressCheckoutParams.addProperty(
+                    UpdateCartPaymentRequest.INSTALLMENT_TERM,
+                    selectedInstallment.tenure.toString()
+                )
+                currPaymentMetadata = metadata.toString()
+            } catch (e: RuntimeException) {
+                Timber.d(e)
+                pageState.value = CheckoutPageState.Normal
+                toasterProcessor.commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR
+                    )
+                )
+                return@launch
+            }
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
                 UPDATE_CART_SOURCE_PAYMENT,
                 UpdateCartPaymentRequest(
-                    gatewayCode = currPayment.gatewayCode,
-                    metadata = currPayment.metadata,
+                    gatewayCode = selectedInstallment.gatewayCode,
+                    metadata = currPaymentMetadata,
                     tenureType = selectedInstallment.tenure
                 )
             )
@@ -3444,7 +3546,8 @@ class CheckoutViewModel @Inject constructor(
                 installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
                     selectedTenure = selectedInstallment.tenure
                 ),
-                gatewayCode = selectedInstallment.gatewayCode
+                gatewayCode = selectedInstallment.gatewayCode,
+                metadata = currPaymentMetadata
             )
             paymentWidgetData[0] = newPaymentData
             checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
@@ -3455,7 +3558,7 @@ class CheckoutViewModel @Inject constructor(
                 tenorList = installmentList
             )
             listData.value = checkoutItems
-            validatePromo(skipEE = true)
+            validatePromo(skipEE = true, skipPaymentMandatoryHit = true)
             pageState.value = CheckoutPageState.Normal
         }
     }
@@ -3507,7 +3610,7 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             listData.value = checkoutItems
-            validatePromo(skipEE = true)
+            validatePromo(skipEE = true, skipPaymentMandatoryHit = true)
         }
     }
 
@@ -3558,6 +3661,93 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun updateQuantityProduct(cartId: Long, newValue: Int) {
+        val checkoutItems = listData.value.toMutableList()
+        val itemIndex =
+            checkoutItems.indexOfFirst { it is CheckoutProductModel && it.cartId == cartId }
+        if (itemIndex > 0) {
+            val product = checkoutItems[itemIndex] as CheckoutProductModel
+            var showMaxQtyError = false
+            var showMinQtyError = false
+            val newQty: Int
+            val maxQty = if (product.switchInvenage == 0) {
+                product.maxOrder
+            } else {
+                if (product.invenageValue < product.maxOrder) {
+                    product.invenageValue
+                } else {
+                    product.maxOrder
+                }
+            }
+
+            if (newValue > maxQty) {
+                showMaxQtyError = true
+                newQty = maxQty
+            } else if (newValue < product.minOrder) {
+                showMinQtyError = true
+                newQty = product.minOrder
+            } else {
+                newQty = newValue
+            }
+            checkoutItems[itemIndex] = product.copy(
+                shouldShowMaxQtyError = showMaxQtyError,
+                shouldShowMinQtyError = showMinQtyError,
+                quantity = newQty,
+                prevQuantity = product.prevQuantity
+            )
+            listData.value = checkoutItems
+            viewModelScope.launch(dispatchers.io) {
+                doUpdateCartAndReload(checkoutItems, cartId)
+            }
+        }
+    }
+
+    private suspend fun doUpdateCartAndReload(
+        checkoutItems: MutableList<CheckoutItem>,
+        cartId: Long
+    ) {
+        debounceQtyJob?.cancel()
+        debounceQtyJob = viewModelScope.launch(dispatchers.immediate) {
+            delay(500L)
+            if (isActive) {
+                pageState.value = CheckoutPageState.Loading
+                val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(checkoutItems), UPDATE_CART_SOURCE_QUANTITY, cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
+                if (!updateCartResult.isSuccess) {
+                    toasterProcessor.commonToaster.emit(
+                        CheckoutPageToaster(
+                            Toaster.TYPE_ERROR,
+                            updateCartResult.toasterMessage,
+                            updateCartResult.throwable,
+                            source = "update_quantity"
+                        )
+                    )
+
+                    pageState.value = CheckoutPageState.Normal
+                    val checkoutItemList = listData.value.toMutableList()
+                    val itemIndex =
+                        checkoutItemList.indexOfFirst { it is CheckoutProductModel && it.cartId == cartId }
+                    if (itemIndex > 0) {
+                        val product = checkoutItemList[itemIndex] as CheckoutProductModel
+
+                        val newProduct = product.copy(
+                            quantity = product.prevQuantity
+                        )
+                        checkoutItemList[itemIndex] = newProduct
+                        listData.value = checkoutItemList
+                    }
+                } else {
+                    loadSAF(
+                        isReloadData = true,
+                        skipUpdateOnboardingState = true,
+                        isReloadAfterPriceChangeHigher = false
+                    ) {
+                        cartProcessor.generateModifiedCheckoutItems(it, listData.value)
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
 
@@ -3579,6 +3769,7 @@ class CheckoutViewModel @Inject constructor(
 
         const val CART_TYPE_OCC = "buy now"
         const val CART_TYPE_ATC = "add to cart"
+        const val OCC = "occ"
     }
 }
 

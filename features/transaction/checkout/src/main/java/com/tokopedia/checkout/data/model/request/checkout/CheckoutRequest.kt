@@ -38,7 +38,9 @@ data class CheckoutRequest(
     @SerializedName("payment")
     val payment: Payment = Payment(),
     @SerializedName("tracker")
-    val tracker: String
+    val tracker: String,
+    @SerializedName("consent")
+    val consent: Int = 0 // 0 = old apps (skip checking), 1 = new apps from SAF, 2 = new apps from pop-up
 )
 
 data class Payment(

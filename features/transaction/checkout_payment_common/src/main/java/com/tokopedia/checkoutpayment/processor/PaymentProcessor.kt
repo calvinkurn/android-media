@@ -181,8 +181,9 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.ServerError -> {
                 latestWidget.copy(
-                    state = CheckoutPaymentWidgetState.Error,
-                    errorMessage = currentData.errorDetails.message
+                    description = currentData.errorDetails.message,
+                    isDescriptionRed = true,
+                    actionButtonText = ""
                 )
             }
 
@@ -218,11 +219,11 @@ class PaymentProcessor @Inject constructor(
 
             PaymentValidationReport.WalletAmountError -> {
 //                if (currentData.mandatoryHit.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS)) {
-                    latestWidget.copy(
-                        description = currentData.walletData.topUp.errorMessage,
-                        isDescriptionRed = true,
-                        actionButtonText = currentData.walletData.topUp.buttonTitle
-                    )
+                latestWidget.copy(
+                    description = currentData.walletData.topUp.errorMessage,
+                    isDescriptionRed = true,
+                    actionButtonText = currentData.walletData.topUp.buttonTitle
+                )
 //                } else {
                 // for future phases (ocs)
 //                    latestWidget.copy(

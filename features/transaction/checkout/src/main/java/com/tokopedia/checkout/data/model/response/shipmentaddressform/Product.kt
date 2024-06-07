@@ -89,5 +89,13 @@ data class Product(
     @SerializedName("ethical_drug")
     val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse(),
     @SerializedName("add_ons_product")
-    val addOnsProduct: AddOnsProduct = AddOnsProduct()
+    val addOnsProduct: AddOnsProduct = AddOnsProduct(),
+    @SerializedName("product_min_order")
+    val productMinOrder: Int = 0,
+    @SerializedName("product_max_order")
+    val productMaxOrder: Int = 0,
+    @SerializedName("product_invenage_value")
+    val productInvenageValue: Int = 0,
+    @SerializedName("product_switch_invenage")
+    val productSwitchInvenage: Int = 0
 )

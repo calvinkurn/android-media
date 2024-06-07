@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.bytedance.mobsec.metasec.ov.MSManagerUtils
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -109,8 +111,11 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -172,6 +177,8 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Avail
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheet
+import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -186,6 +193,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -257,7 +265,7 @@ class CheckoutFragment :
 
     private var loader: LoaderDialog? = null
 
-    private var toasterErrorAkamai: Snackbar? = null
+    private var toasterError: Snackbar? = null
 
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
@@ -562,7 +570,6 @@ class CheckoutFragment :
                 }
 
                 is CheckoutPageState.Success -> {
-
                     val appID = MSSDK_APPID
                     val mgr = MSManagerUtils.get(appID)
                     mgr?.let {
@@ -612,7 +619,11 @@ class CheckoutFragment :
                 }
 
                 is CheckoutPageState.AkamaiRatesError -> {
-                    showToastErrorAkamai(it.message)
+                    showToastError(it.message)
+                }
+
+                is CheckoutPageState.MessageErrorException -> {
+                    showToastError(it.message)
                 }
 
                 is CheckoutPageState.ShipmentActionPopUpConfirmation -> {
@@ -708,12 +719,12 @@ class CheckoutFragment :
         }
     }
 
-    fun showToastErrorAkamai(message: String) {
+    fun showToastError(message: String) {
         view?.let { v ->
-            if (toasterErrorAkamai == null) {
+            if (toasterError == null) {
                 val actionText =
                     v.context.getString(purchase_platformcommonR.string.checkout_flow_toaster_action_ok)
-                toasterErrorAkamai = Toaster.build(
+                toasterError = Toaster.build(
                     v,
                     message,
                     Toaster.LENGTH_LONG,
@@ -721,8 +732,8 @@ class CheckoutFragment :
                     actionText
                 )
             }
-            if (toasterErrorAkamai?.isShownOrQueued == false) {
-                toasterErrorAkamai?.show()
+            if (toasterError?.isShownOrQueued == false) {
+                toasterError?.show()
             }
         }
     }
@@ -1399,8 +1410,56 @@ class CheckoutFragment :
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(productId)
     }
 
-    override fun onEditProductNote(note: String, position: Int) {
-        viewModel.setProductNote(note, position)
+    override fun onNoteClicked(product: CheckoutProductModel, bindingAdapterPosition: Int) {
+        checkoutAnalyticsCourierSelection.sendClickNoteIconEvent(viewModel.getCartTypeString())
+        val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
+            CartNoteBottomSheetData(
+                productName = product.name,
+                productImage = product.imageUrl,
+                variant = product.variant,
+                note = product.noteToSeller
+            )
+        )
+        cartNoteBottomSheet.setListener {
+            checkoutAnalyticsCourierSelection.sendClickSimpanOnNotesEvent(viewModel.getCartTypeString())
+            viewModel.setProductNote(it, bindingAdapterPosition)
+        }
+        if (cartNoteBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+        cartNoteBottomSheet.show(childFragmentManager, CartNoteBottomSheet.TAG)
+    }
+
+    override fun onShowLottieNotes(
+        buttonChangeNote: ImageUnify,
+        buttonChangeNoteLottie: LottieAnimationView,
+        bindingAdapterPosition: Int
+    ) {
+        buttonChangeNote.gone()
+        buttonChangeNoteLottie.show()
+        if (!buttonChangeNoteLottie.isAnimating) {
+            buttonChangeNoteLottie.playAnimation()
+            buttonChangeNoteLottie.addAnimatorListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {
+                    // no-op
+                    buttonChangeNote.gone()
+                }
+
+                override fun onAnimationEnd(p0: Animator) {
+                    buttonChangeNoteLottie.gone()
+                    buttonChangeNote.visible()
+                    viewModel.hideNoteLottie(bindingAdapterPosition)
+                }
+
+                override fun onAnimationCancel(p0: Animator) {
+                    buttonChangeNoteLottie.gone()
+                    buttonChangeNote.visible()
+                    viewModel.hideNoteLottie(bindingAdapterPosition)
+                }
+
+                override fun onAnimationRepeat(p0: Animator) {
+                    // no-op
+                }
+            })
+        }
     }
 
     private fun onUpdateResultAddOnProductLevelBottomSheet(data: Intent?) {
@@ -2266,6 +2325,10 @@ class CheckoutFragment :
     }
 
     override fun onProcessToPayment() {
+        processingToPayment()
+    }
+
+    private fun processingToPayment(isPopupConfirmed: Boolean = false) {
         if (!viewModel.isLoading()) {
             var publicKey: String? = null
             if (CheckoutFingerprintUtil.getEnableFingerprintPayment(activity)) {
@@ -2276,7 +2339,7 @@ class CheckoutFragment :
                     publicKey = FingerprintUtil.getPublicKey(fpk)
                 }
             }
-            viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {
+            viewModel.checkout(isPopupConfirmed, publicKey, { onTriggerEpharmacyTracker(it) }) {
                 onSuccessCheckout(it)
             }
             sendProcessToPaymentAnalytic()
@@ -2297,6 +2360,34 @@ class CheckoutFragment :
     }
 
     private fun onSuccessCheckout(checkoutResult: CheckoutResult) {
+        if (checkoutResult.checkoutData?.consent?.show == true) {
+            checkoutAnalyticsCourierSelection.sendViewConsentPopUpEvent(viewModel.getCartTypeString())
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+                setImageDrawable(R.drawable.checkout_popup_confirmation)
+                setPrimaryCTAText(getString(R.string.checkout_popup_primary_btn))
+                setSecondaryCTAText(getString(R.string.checkout_popup_secondary_btn))
+                setTitle(checkoutResult.checkoutData.consent.title)
+                setDescription(checkoutResult.checkoutData.consent.text)
+                setOverlayClose(false)
+
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    checkoutAnalyticsCourierSelection.sendClickBayarConsentPopUpEvent(viewModel.getCartTypeString())
+                    processingToPayment(true)
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    checkoutAnalyticsCourierSelection.sendClickCekLagiConsentPopUpEvent(viewModel.getCartTypeString())
+                }
+                setCanceledOnTouchOutside(false)
+                setCancelable(false)
+            }.show()
+        } else {
+            continueToPaymentPage(checkoutResult)
+        }
+    }
+
+    private fun continueToPaymentPage(checkoutResult: CheckoutResult) {
         activity?.let { _ ->
             val paymentPassData = PaymentPassData()
             paymentPassData.redirectUrl = checkoutResult.checkoutData!!.redirectUrl
@@ -3001,6 +3092,27 @@ class CheckoutFragment :
 
     override fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee) {
         PaymentFeeInfoBottomSheet().show(this, paymentFee)
+    }
+
+    override fun onCheckoutItemQuantityChanged(product: CheckoutProductModel, value: Int) {
+        viewModel.updateQuantityProduct(product.cartId, value)
+    }
+
+    override fun clearAllFocus() {
+        val view = activity?.currentFocus
+        view?.clearFocus()
+    }
+
+    override fun onQtyMinusButtonClicked() {
+        checkoutAnalyticsCourierSelection.sendClickQtyEditorButtonMinusEvent(viewModel.getCartTypeString())
+    }
+
+    override fun onQtyPlusButtonClicked() {
+        checkoutAnalyticsCourierSelection.sendClickQtyEditorButtonPlusEvent(viewModel.getCartTypeString())
+    }
+
+    override fun onClickInputQty() {
+        checkoutAnalyticsCourierSelection.sendClickQtyInputText(viewModel.getCartTypeString())
     }
 
     companion object {
