@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.every
 import org.junit.Test
 
 class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelFixture() {
@@ -125,10 +126,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
 
         stubComponent(
             componentAdditionalInfo = null,
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = false
         )
 
@@ -146,7 +144,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.seeMore
             .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
@@ -178,10 +176,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = null
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = false
         )
 
@@ -199,7 +194,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.seeMore
             .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
@@ -235,11 +230,8 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
-            hasNextPage = false
+            componentItems = componentItems,
+            false
         )
 
         stubLoadFirstPage(
@@ -256,7 +248,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.seeMore
             .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
@@ -291,11 +283,8 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
-            hasNextPage = false
+            componentItems = componentItems,
+            false
         )
 
         stubLoadFirstPage(
@@ -312,7 +301,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.seeMore
             .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
@@ -348,11 +337,8 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
-            hasNextPage = true
+            componentItems = componentItems,
+            true
         )
 
         stubLoadFirstPage(
@@ -369,7 +355,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.seeMore
             .verifySuccessEquals(Success(redirection))
         viewModel.couponList
@@ -404,10 +390,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = false
         )
 
@@ -425,7 +408,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.seeMore
             .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
@@ -457,10 +440,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = null
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = true
         )
 
@@ -510,10 +490,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = true
         )
 
@@ -563,10 +540,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = true
         )
 
