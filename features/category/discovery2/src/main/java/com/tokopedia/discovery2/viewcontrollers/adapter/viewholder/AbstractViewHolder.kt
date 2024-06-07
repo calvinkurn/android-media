@@ -32,11 +32,7 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
             if (prevViewModel != null) {
                 if (prevViewModel != discoveryBaseViewModel) {
                     var needToRemoveObserver = false
-                    if (prevViewModel is MasterProductCardItemViewModel) {
-                        if (prevViewModel.detachedBindingAdapterPosition != -1) {
-                            needToRemoveObserver = true
-                        }
-                    } else {
+                    if (prevViewModel.detachedBindingAdapterPosition != -1) {
                         needToRemoveObserver = true
                     }
                     if (needToRemoveObserver) {
@@ -75,8 +71,6 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
     open fun onViewDetachedToWindow() {
         val dbvm = discoveryBaseViewModel
-        if (dbvm is MasterProductCardItemViewModel) {
-            dbvm.detachedBindingAdapterPosition = bindingAdapterPosition
-        }
+        dbvm?.detachedBindingAdapterPosition = bindingAdapterPosition
     }
 }

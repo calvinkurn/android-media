@@ -57,8 +57,6 @@ class MasterProductCardItemViewModel(
     private val showNotifyToast: SingleLiveEvent<Pair<Boolean, String?>> = SingleLiveEvent()
     private val scrollToSimilarProductComponentID: SingleLiveEvent<String> = SingleLiveEvent()
     private var lastQuantity: Int = 0
-    // hacky way to store binding adapter position in onDetachedView
-    var detachedBindingAdapterPosition = 0
 
     @JvmField
     @Inject

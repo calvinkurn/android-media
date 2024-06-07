@@ -11,6 +11,9 @@ abstract class DiscoveryBaseViewModel(val components: ComponentsItem) : Lifecycl
     // this is just to alias to components
     val component: ComponentsItem = components
 
+    // hacky way to store binding adapter position in onDetachedView
+    var detachedBindingAdapterPosition = 0
+
     open fun initDaggerInject() {}
     val syncData: MutableLiveData<Boolean> = MutableLiveData()
     fun getSyncPageLiveData(): LiveData<Boolean> {
