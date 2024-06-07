@@ -464,7 +464,7 @@ object ConstantTransactionAnalytics {
 
         // checkout - notes & quantity editor
         const val CHECKOUT_CLICK_NOTE_ICON = "click note icon"
-        const val CHECKOUT_CLICK_SIMPAN_ON_NOTE_ICON = "click simpan on note"
+        const val CHECKOUT_CLICK_SIMPAN_ON_NOTE_ICON = "click simpan on notes"
         const val CHECKOUT_CLICK_QTY_EDITOR_BUTTON_PLUS = "click button +"
         const val CHECKOUT_CLICK_QTY_EDITOR_BUTTON_MINUS = "click button -"
         const val CHECKOUT_CLICK_QTY_EDITOR_INPUT_TEXT = "click input quantity"
@@ -674,7 +674,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_SIMPAN_VARIANT_BOTTOM_SHEET = "50685"
 
         // checkout - notes & quantity editor
-        const val CLICK_NOTES_ICON = "50676"
+        const val CLICK_NOTES_ICON = "51039"
         const val CLICK_SIMPAN_NOTES = "51040"
         const val CLICK_QTY_EDITOR_BUTTON_PLUS = "51041"
         const val CLICK_QTY_EDITOR_BUTTON_MINUS = "51042"

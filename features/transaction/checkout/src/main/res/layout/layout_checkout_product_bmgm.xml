@@ -149,6 +149,13 @@
         app:lottie_autoPlay="false"
         app:lottie_rawRes="@raw/anim_checkout_note_dark" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_checkout_qty_editor_bmgm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="qty_editor_product_bmgm, label_quantity_error_bmgm, button_change_note_bmgm" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_add_ons_section_title_bmgm"
         android:layout_width="wrap_content"
@@ -158,7 +165,7 @@
         android:text="Tambahan"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toEndOf="@id/v_product_separator_bmgm"
-        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_info_bmgm"
+        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_qty_editor_bmgm"
         app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
