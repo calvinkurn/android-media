@@ -3,14 +3,10 @@ package com.tokopedia.cart.view.viewholder
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
-import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
@@ -21,7 +17,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
@@ -50,7 +45,6 @@ import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
@@ -66,17 +60,14 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.unifycomponents.QuantityEditorUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.Locale
+import java.util.*
 import com.tokopedia.nest.components.R as nestcomponentsR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -655,6 +646,31 @@ class CartItemViewHolder(
             clone(binding.containerProductInformation)
             val margin = MARGIN_12.dpToPx(itemView.resources.displayMetrics)
             val marginTop = WISHLIST_ANIMATED_MARGIN_TOP.dpToPx(itemView.resources.displayMetrics)
+            connect(
+                R.id.label_quantity_error,
+                ConstraintSet.TOP,
+                getQuantityEditorLayoutId(),
+                ConstraintSet.BOTTOM,
+                QTY_EDITOR_LABEL_MARGIN.dpToPx(itemView.resources.displayMetrics)
+            )
+            connect(
+                R.id.label_quantity_error,
+                ConstraintSet.END,
+                getQuantityEditorLayoutId(),
+                ConstraintSet.END
+            )
+            connect(
+                R.id.bmgm_helper_view_2,
+                ConstraintSet.TOP,
+                getQuantityEditorLayoutId(),
+                ConstraintSet.BOTTOM
+            )
+            connect(
+                R.id.bmgm_helper_view_2,
+                ConstraintSet.END,
+                getQuantityEditorLayoutId(),
+                ConstraintSet.END
+            )
             if (data.isBundlingItem) {
                 connect(
                     R.id.button_change_note,
@@ -2007,6 +2023,7 @@ class CartItemViewHolder(
         private const val MARGIN_VERTICAL_SEPARATOR = 8
 
         private const val DEFAULT_DIVIDER_HEIGHT = 2
+        private const val QTY_EDITOR_LABEL_MARGIN = 2
         private const val WISHLIST_ANIMATED_MARGIN_TOP = 13
         private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
