@@ -43,7 +43,10 @@ data class FeedXHeaderBrowse(
 
 data class FeedXHeaderDetail(
     @SerializedName("title")
-    val title: String = ""
+    val title: String = "",
+
+    @SerializedName("searchBar")
+    val searchBar: FeedXHeaderSearchbar = FeedXHeaderSearchbar(),
 )
 
 data class FeedXHeaderSearchbar(

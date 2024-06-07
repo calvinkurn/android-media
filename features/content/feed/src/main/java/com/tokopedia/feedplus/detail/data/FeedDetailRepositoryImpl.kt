@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.detail.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
+import com.tokopedia.feedplus.browse.data.model.HeaderDetailModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class FeedDetailRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : FeedDetailRepository {
 
-    override suspend fun getTitle(source: String): String {
+    override suspend fun getHeader(source: String): HeaderDetailModel {
         return withContext(dispatchers.io) {
             try {
                 feedXHeaderUseCase.setRequestParams(
@@ -29,9 +30,9 @@ class FeedDetailRepositoryImpl @Inject constructor(
                     )
                 )
                 val response = feedXHeaderUseCase.executeOnBackground()
-                response.feedXHeaderData.data.detail.title
+                HeaderDetailModel.create(response.feedXHeaderData.data.detail)
             } catch (_: Throwable) {
-                ""
+                HeaderDetailModel.DEFAULT
             }
         }
     }
