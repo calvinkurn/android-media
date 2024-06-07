@@ -2,7 +2,6 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
 import com.tokopedia.applink.centralizedpromo.DeeplinkMapperCentralizedPromo.getRegisteredNavigationCentralizedPromo
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
@@ -262,7 +261,7 @@ object DeeplinkMapper {
         if (applinkSlashPrice.isNotBlank()) return applinkSlashPrice
 
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {
-            return DeeplinkMapperAccount.getLoginByQr(uri)
+            return DeeplinkMapperUser.getLoginByQr(uri)
         }
 
         if (uri.path == TOKOPEDIANOW_SEARCH_PATH) {

@@ -219,7 +219,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
                 setOnClickListener {
                     sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
                     startActivityForResult(
-                        RouteManager.getIntent(activity, ApplinkConst.REGISTER),
+                        RouteManager.getIntent(activity, ApplinkConst.User.REGISTER),
                         AFFILIATE_REGISTER_REQUEST_CODE
                     )
                 }
