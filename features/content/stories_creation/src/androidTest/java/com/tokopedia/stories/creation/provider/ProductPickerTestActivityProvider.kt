@@ -19,7 +19,6 @@ object ProductPickerTestActivityProvider {
         type = ContentCommonUserType.TYPE_SHOP,
         name = "Shop",
         iconUrl = "icon.url.shop",
-        badge = "icon.badge",
         hasUsername = true,
         hasAcceptTnc = true,
         enable = true
