@@ -54,9 +54,12 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.EnterMethod;
+import com.tokopedia.analytics.byteio.IAdsLog;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation;
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -151,7 +154,8 @@ public class MainParentActivity extends BaseActivity implements
         ITelemetryActivity,
         InAppCallback,
         HomeCoachmarkListener,
-        HomeBottomNavListener {
+        HomeBottomNavListener,
+        IAdsLog {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -261,7 +265,6 @@ public class MainParentActivity extends BaseActivity implements
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
-    private String embracePageName = "";
 
     private LottieBottomNavbar bottomNavigation;
 
@@ -1382,7 +1385,6 @@ public class MainParentActivity extends BaseActivity implements
         if (index != currentSelectedFragmentPosition) {
             currentFragment.setUserVisibleHint(false);
         }
-        this.currentSelectedFragmentPosition = position;
         String pageName = "";
         String pageTitle = "";
         if (menu.size() > index) {
@@ -1441,10 +1443,13 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
-        this.embracePageName = pageTitle;
-        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        updateAppLogPageData(position, false);
-        sendEnterPage(position);
+        AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, getAdsPageName());
+
+        if (index != currentSelectedFragmentPosition) {
+            updateAppLogPageData(position, false);
+            sendEnterPage(position);
+        }
+        this.currentSelectedFragmentPosition = position;
         return true;
     }
 
@@ -1467,13 +1472,13 @@ public class MainParentActivity extends BaseActivity implements
     private void updateAppLogPageData(int position, boolean isFirstTimeInit) {
         Fragment fragment = fragmentList.get(position);
         if (!isFirstTimeUser() && fragment instanceof AppLogInterface applogInterface) {
+            handleAppLogEnterMethod(applogInterface, isFirstTimeInit);
             Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
             if (currentPageName == null
                     || !applogInterface.getPageName().equals(currentPageName.toString())) {
                 AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
                 AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
             }
-            handleAppLogEnterMethod(applogInterface, isFirstTimeInit);
         }
     }
 
@@ -1515,7 +1520,7 @@ public class MainParentActivity extends BaseActivity implements
     //MIGRATED
     @Override
     public String currentVisibleFragment() {
-        return embracePageName;
+        return "";
     }
 
     // MIGRATED
@@ -1635,5 +1640,14 @@ public class MainParentActivity extends BaseActivity implements
         if (isSameValue)
             return;
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
+    }
+
+    @NonNull
+    @Override
+    public String getAdsPageName() {
+        if (currentFragment instanceof IAdsLog) {
+            return ((IAdsLog) currentFragment).getAdsPageName();
+        }
+        return "";
     }
 }

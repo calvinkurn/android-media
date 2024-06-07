@@ -59,6 +59,10 @@ fun ImageView?.clearImage() {
     }
 }
 
+@Deprecated(
+    "Please use MediaBitmapEmptyTarget.clear instead of view extension function",
+    replaceWith = ReplaceWith("MediaBitmapEmptyTarget.clear()")
+)
 fun ImageView?.clearCustomTarget(target: MediaBitmapEmptyTarget<Bitmap>?) {
     if (this != null && context.isValid() && target != null) {
         GlideApp.with(this.context).clear(target)

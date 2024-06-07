@@ -154,7 +154,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.createpostCommon)
 
 
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp

@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
@@ -104,7 +105,8 @@ class WishlistCollectionFragment :
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener,
     ActionListenerBottomSheetMenu,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
     private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
@@ -129,9 +131,6 @@ class WishlistCollectionFragment :
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
     }
-    private val wishlistCollectionPref: WishlistCollectionPrefs? by lazy {
-        activity?.let { WishlistCollectionPrefs(it) }
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -151,12 +150,15 @@ class WishlistCollectionFragment :
 
     private var isAffiliateRegistered: Boolean = false
 
-    private var hasTrackEnterPage: Boolean = false
     private var hasApplogScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
 
     override fun getPageName(): String {
+        return PageName.WISHLIST
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.WISHLIST
     }
 
@@ -213,7 +215,7 @@ class WishlistCollectionFragment :
 
     private fun checkLogin() {
         if (userSession.isLoggedIn) {
-            getWishlistCollections()
+            loadPage()
         } else {
             startActivityForResult(
                 RouteManager.getIntent(context, ApplinkConst.LOGIN),
@@ -361,12 +363,6 @@ class WishlistCollectionFragment :
         collectionViewModel.loadRecommendation(page)
     }
 
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
-        hasTrackEnterPage = true
-    }
-
     private fun setToolbarTitle(title: String) {
         binding?.run {
             wishlistCollectionNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
@@ -384,11 +380,15 @@ class WishlistCollectionFragment :
     }
 
     private fun doRefresh() {
-        getWishlistCollections()
+        loadPage()
+    }
+
+    private fun loadPage() {
+        rvScrollListener?.resetState()
+        collectionViewModel.loadPage()
     }
 
     private fun getWishlistCollections() {
-        rvScrollListener?.resetState()
         collectionViewModel.getWishlistCollections()
     }
 
@@ -398,10 +398,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
-                        trackEnterPage()
                         showRvWishlistCollection()
-                        wishlistCollectionPref?.getHasClosed()
-                            ?.let { collectionAdapter.setTickerHasClosed(it) }
 
                         // check empty state
                         if (result.data.data.isEmptyState) {
@@ -617,7 +614,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK && result.data.data.success) {
-                        getWishlistCollections()
+                        loadPage()
                         showToasterActionOke(result.data.data.message, Toaster.TYPE_NORMAL)
                     } else {
                         val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
@@ -712,7 +709,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     if (result.data.data.success && result.data.status == OK) {
                         collectionViewModel.getWishlistCollectionSharingData(_collectionIdShared.toLongOrZero())
-                        getWishlistCollections()
+                        loadPage()
                     } else if (result.data.errorMessage.isNotEmpty()) {
                         showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
                     } else {
@@ -744,8 +741,8 @@ class WishlistCollectionFragment :
     }
 
     override fun onCloseTicker() {
-        wishlistCollectionPref?.setHasClosed(true)
-        collectionAdapter.setTickerHasClosed(true)
+        collectionViewModel.closeTicker(true)
+        collectionAdapter.removeTicker()
         WishlistCollectionAnalytics.sendClickXOnIntroductionSectionEvent()
     }
 
@@ -1096,7 +1093,7 @@ class WishlistCollectionFragment :
 
     override fun onSuccessUpdateCollectionName(message: String) {
         showToasterActionOke(message, Toaster.TYPE_NORMAL)
-        getWishlistCollections()
+        loadPage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

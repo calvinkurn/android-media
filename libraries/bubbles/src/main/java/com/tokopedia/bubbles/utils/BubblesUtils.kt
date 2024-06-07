@@ -3,25 +3,19 @@ package com.tokopedia.bubbles.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import java.util.concurrent.TimeUnit
+import com.tokopedia.media.loader.getBitmapFromUrl
+import com.tokopedia.bubbles.R as bubblesR
 
 object BubblesUtils {
 
-    private const val BITMAP_TIMEOUT: Long = 10
+    private const val BITMAP_TIMEOUT: Long = 10_000
 
     fun getBitmap(context: Context,
                   url: String,
                   imageWidth: Int,
                   imageHeight: Int): Bitmap? {
         return try {
-            Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .submit(imageWidth, imageHeight)
-                .get(getBitmapTimeout(), TimeUnit.SECONDS)
+            url.getBitmapFromUrl(context, timeout = getBitmapTimeout())
         } catch (e: Exception) {
             getBitmapWhenError(context, imageWidth, imageHeight)
         }
@@ -37,7 +31,7 @@ object BubblesUtils {
 
     private fun getAlternateBitmap(context: Context): Bitmap? {
         return try {
-            BitmapFactory.decodeResource(context.resources, com.tokopedia.bubbles.R.drawable.default_toped_20_user)
+            BitmapFactory.decodeResource(context.resources, bubblesR.drawable.default_toped_20_user)
         } catch (ex: Exception) {
             null
         }

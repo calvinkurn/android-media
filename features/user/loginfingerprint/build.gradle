@@ -28,6 +28,7 @@ android {
 dependencies {
 
     //Features
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
@@ -36,7 +37,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation rootProject.ext.networkDependencies.glide
 
     //Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles

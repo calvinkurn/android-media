@@ -8,7 +8,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
@@ -87,14 +86,14 @@ object DeeplinkSellerApp {
             DLP.goToLink { ApplinkConstInternalSellerapp.REVIEW_REMINDER }
         ),
         "seller" to mutableListOf(
-            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
-                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+            DLP.startsWith(DeeplinkMapperOrder.Pof.Seller.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.Pof.Seller.getRegisteredNavigation(uri)
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
             },
-            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
-                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
+            DLP.startsWith(DeeplinkMapperOrder.Soe.Seller.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.Soe.Seller.getRegisteredNavigation(uri)
             }
         ),
         "seller-mvc" to mutableListOf(

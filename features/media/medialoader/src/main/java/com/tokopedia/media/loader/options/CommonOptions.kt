@@ -31,7 +31,9 @@ internal class CommonOptions constructor(
     }
 
     private fun setErrorDrawable() {
-        if (properties.error.isMoreThanZero()) {
+        if (properties.drawableError != null) {
+            options.error(properties.drawableError)
+        } else if (properties.error.isMoreThanZero()) {
             options.error(properties.error)
         }
     }

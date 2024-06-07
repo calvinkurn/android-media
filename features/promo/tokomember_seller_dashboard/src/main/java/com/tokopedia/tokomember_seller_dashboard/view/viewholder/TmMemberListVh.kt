@@ -11,6 +11,8 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.model.UserCardMemberModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -52,20 +54,16 @@ class TmMemberListVh(itemView : View,private val context:Context) : RecyclerView
 
     private fun loadImage(url:String?){
         initLoader()
-        Glide.with(context)
-            .load(if(url.isNullOrEmpty()) AVATAR_URL else url)
-            .placeholder(loader)
-            .into(object : CustomTarget<Drawable>(){
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    image.setImageDrawable(resource)
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    loader?.stop()
-                }
-            })
+        (if(url.isNullOrEmpty()) AVATAR_URL else url).getBitmapImageUrl(context, {
+            loader?.let { setPlaceHolder(it) }
+        }, MediaBitmapEmptyTarget(
+            onReady = {
+                image.setImageBitmap(it)
+            },
+            onCleared = {
+                loader?.stop()
+            }
+        ))
     }
 
     companion object{

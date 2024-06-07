@@ -24,6 +24,7 @@
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="login">Masuk</string>
     <string name="register">Daftar</string>
+    <string name="register_sdk_title">Daftar ke Tokopedia</string>
 
     <!-- Change Phone Number strings -->
 
@@ -89,6 +90,15 @@
     <string name="error_max_35_character">Maksimal 35 karakter</string>
     <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
     <string name="or_login_with_space">atau masuk dengan</string>
+    <string name="button_login_google">Masuk dengan Google</string>
+
+
+    <string name="login_sdk_terms_privacy_txt">Syarat &amp; Ketentuan serta Kebijakan Privasi %s</string>
+    <string name="login_sdk_privacy_txt">Kebijakan Privasi</string>
+    <string name="login_sdk_header_text">Izinkan %s untuk mengakses data dari akun berikut</string>
+    <string name="login_sdk_consent_text">Dengan klik Izinkan, kamu setuju pembagian data untuk %s</string>
+    <string name="login_sdk_toolbar_login_title">Masuk ke Tokopedia</string>
+    <string name="login_sdk_or_text">atau</string>
 
     <string name="must_insert_email_or_phone">Nomor Ponsel atau Email harus diisi</string>
     <string name="change_2">Ubah</string>
@@ -241,5 +251,30 @@
 
     <string name="official_store_on_progress_text">Pendaftaran Official Store kamu lagi diproses dalam 14 hari kerja. Cek statusnya lewat desktop.</string>
     <string name="shop_creation_card_unselected_text">Pilih salah satu jenis toko dulu, ya.</string>
+    <string name="login_sdk_header_txt">Izin akses data dari akun Tokopedia berikut</string>
+    <string name="login_sdk_data_info_header_txt">Data yang akan diakses:</string>
+    <string name="login_sdk_btn_consent">Izinkan</string>
+
+    <!--ADD CHANGE NAME-->
+    <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
+    <string name="title_name_full">Nama Lengkap</string>
+    <string name="title_add_name_empty"> </string>
+    <string name="title_change_name">Ubah Nama Lengkap</string>
+    <string name="title_complete_name">Nama Lengkap</string>
+    <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
+    <string name="button_name_finish">Selesai</string>
+    <string name="button_name_continue">Ubah Nama Lengkap</string>
+    <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
+    <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
+    <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
+    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
+    <string name="name_confirmation_yes">Ya, benar</string>
+    <string name="name_confirmation_no">Tidak</string>
+    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \nSyarat dan Ketentuan serta Pemberitahuan Privasi.</string>
+
+    <string name="text_term_and_privacy_1">Dengan mendaftar, saya menyetujui</string>
+    <string name="text_term_and_privacy_2">serta</string>
+    <string name="text_term_condition">Syarat dan Ketentuan</string>
+    <string name="text_privacy_policy">Pemberitahuan Privasi</string>
 
 </resources>

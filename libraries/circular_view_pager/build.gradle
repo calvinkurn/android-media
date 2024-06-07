@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
 
@@ -36,7 +37,6 @@ dependencies {
             exclude group: it
         }
     }
-    implementation rootProject.ext.networkDependencies.glide
 }
 
 

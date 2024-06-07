@@ -80,6 +80,19 @@
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />
 
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_login_google"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/button_login_google"
+                android:textAllCaps="false"
+                android:visibility="visible"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
+
             <com.tokopedia.loginregister.common.view.LoginTextView
                 android:id="@+id/register"
                 android:layout_width="match_parent"

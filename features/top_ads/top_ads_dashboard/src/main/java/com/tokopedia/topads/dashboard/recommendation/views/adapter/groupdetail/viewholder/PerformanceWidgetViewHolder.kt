@@ -5,14 +5,11 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.ColorRes
-import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.media.loader.loadImageBackground
 import com.tokopedia.topads.common.view.getFragmentManager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.databinding.TopAdsPerformanceWidgetInfoBottomsheetLayoutBinding
@@ -90,18 +87,7 @@ class PerformanceWidgetViewHolder(itemView: View) :
     }
 
     private fun setWidgetBackground() {
-        Glide.with(itemView.context)
-            .load(PERFORMANCE_WIDGET_BG)
-            .into(object : CustomTarget<Drawable?>() {
-                override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
-
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable?>?
-                ) {
-                    performanceWidgetContainer.background = resource
-                }
-            })
+        performanceWidgetContainer.loadImageBackground(PERFORMANCE_WIDGET_BG)
     }
 
     private fun setColorConditions(@ColorRes color1: Int, @ColorRes color2: Int, @ColorRes color3: Int){

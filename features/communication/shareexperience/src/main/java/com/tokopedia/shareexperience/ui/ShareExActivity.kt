@@ -130,11 +130,12 @@ class ShareExActivity : BaseSimpleActivity(), DismissListener {
         finish()
     }
 
-    override fun onFailGenerateAffiliateLink() {
+    override fun onFailGenerateAffiliateLink(fallbackShortLink: String) {
         val intentResult = Intent()
         intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_FAIL_GENERATE_AFFILIATE_LINK, getString(R.string.shareex_fail_generate_affiliate_link))
         intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_MESSAGE_SUCCESS_COPY_LINK, getString(R.string.shareex_success_copy_link))
         intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_TOASTER_CTA_COPY_LINK, getString(R.string.shareex_action_copy_link))
+        intentResult.putExtra(ApplinkConstInternalShare.ActivityResult.PARAM_FALLBACK_SHORT_LINK, fallbackShortLink)
         setResult(ApplinkConstInternalShare.ActivityResult.RESULT_CODE_FAIL_GENERATE_AFFILIATE_LINK, intentResult)
         finish()
     }
@@ -143,5 +144,5 @@ class ShareExActivity : BaseSimpleActivity(), DismissListener {
 interface DismissListener {
     fun onDismiss()
     fun onSuccessCopyLink()
-    fun onFailGenerateAffiliateLink()
+    fun onFailGenerateAffiliateLink(fallbackShortLink: String)
 }

@@ -196,6 +196,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.medialoaderFresco)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
     implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
     implementation projectOrAar(rootProject.ext.libraries.oms)
@@ -285,8 +286,6 @@ dependencies {
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     //new relic sdk
     implementation rootProject.ext.miscDependencies.newRelic
@@ -418,4 +417,7 @@ dependencies {
     implementation rootProject.ext.ttnetDependencies.boringSsl
     implementation rootProject.ext.ttnetDependencies.cppShared
 
+    //Fresco Bytedance
+    implementation rootProject.ext.bytedanceFrescoDependencies.fresco
+    implementation rootProject.ext.bytedanceFrescoDependencies.statistic
 }

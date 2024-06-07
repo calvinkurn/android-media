@@ -131,7 +131,7 @@
       "event": "select_content",
       "eventAction": "click - creator name",
       "eventCategory": "feed browse page",
-      "eventLabel": ".* - .* - .* - \\d+",
+      "eventLabel": ".* - .* - .* - .*",
       "trackerId": "45754",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",

@@ -7,12 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
+import com.tokopedia.media.loader.loadImage
 
 class FeaturedBrandAdapter(
         private val context: Context,
@@ -76,12 +75,10 @@ class FeaturedBrandAdapter(
         }
 
         private fun loadImageToImageView(imageUrl: String, brandImageView: ImageView) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .dontAnimate()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(brandImageView)
+            brandImageView.loadImage(imageUrl) {
+                isAnimate(false)
+                useCache(false)
+            }
         }
     }
 }

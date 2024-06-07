@@ -11,6 +11,13 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
     private const val TWO_SQUARE_TYPE = "dynamic channel 2 square"
     private const val ITEM_TYPE = "product"
 
+    /**
+     * There's intermittent issue in GTM, although the data already sent with max 2 items,
+     * buy somehow the data shows more than 2 items in the GTM analytics log, hence we have to
+     * set such limitation for temporary solution.
+     */
+    private const val LIMIT_PRODUCT_TO_TRACK = 2
+
     fun productView(data: ProductWidgetUiModel, userId: String, position: Int): Map<String, Any> {
         val model = data.channelModel
         val atLeastGetFirstProductData = data.data.firstOrNull() ?: return mapOf()
@@ -21,19 +28,21 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventLabel = generateEventLabel(model.id, model.channelHeader.name),
                 eventAction = "impression on $ITEM_TYPE $TWO_SQUARE_TYPE",
-                list = generateParentItemList(
-                    position = position,
-                    topAds = IsTopAds(atLeastGetFirstProductData.tracker.isTopAds),
-                    carousel = IsCarousel(atLeastGetFirstProductData.tracker.isCarousel),
-                    tracker = atLeastGetFirstProductData.tracker,
-                    headerName = model.channelHeader.name
-                ),
-                products = model.channelGrids.mapIndexed { index, channelGrid ->
-                    val trackerJson = data.data[index].tracker
+                list = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - %s - %s - %s - %s - %s - %s"
+                    .format(
+                        IsTopAds(atLeastGetFirstProductData.tracker.isTopAds),
+                        IsCarousel(atLeastGetFirstProductData.tracker.isCarousel),
+                        atLeastGetFirstProductData.tracker.recommendationType,
+                        atLeastGetFirstProductData.tracker.recomPageName,
+                        atLeastGetFirstProductData.tracker.buType,
+                        model.channelHeader.name
+                    ),
+                products = data.data.mapIndexed { index, item ->
+                    val channelGrid = data.channelModel.channelGrids[index]
 
                     Product(
-                        name = trackerJson.productName,
-                        id = trackerJson.productId,
+                        name = item.tracker.productName,
+                        id = item.tracker.productId,
                         productPrice = convertRupiahToInt(channelGrid.price).toString(),
                         brand = Value.NONE_OTHER,
                         category = Value.NONE_OTHER,
@@ -50,7 +59,7 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
                         recommendationType = channelGrid.recommendationType,
                         pageName = model.pageName
                     )
-                }
+                }.take(LIMIT_PRODUCT_TO_TRACK)
             )
             .appendChannelId(model.id)
             .appendUserId(userId)
@@ -74,13 +83,15 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventLabel = generateEventLabel(model.id, model.channelHeader.name),
                 eventAction = "click on $ITEM_TYPE $TWO_SQUARE_TYPE",
-                list = generateParentItemList(
-                    position = position,
-                    topAds = IsTopAds(attribute.isTopAds),
-                    carousel = IsCarousel(attribute.isCarousel),
-                    tracker = attribute,
-                    headerName = model.channelHeader.name
-                ),
+                list = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - %s - %s - %s - %s - %s - %s"
+                    .format(
+                        IsTopAds(attribute.isTopAds),
+                        IsCarousel(attribute.isCarousel),
+                        attribute.recommendationType,
+                        attribute.recomPageName,
+                        attribute.buType,
+                        model.channelHeader.name
+                    ),
                 products = listOf(
                     Product(
                         id = attribute.productId,
@@ -115,22 +126,6 @@ object Kd2ProductSquareTracker : BaseTrackerConst() {
     private fun generateEventLabel(channelId: String, headerName: String): String {
         return "%s - %s".format(channelId, headerName)
     }
-
-    private fun generateParentItemList(
-        position: Int,
-        topAds: IsTopAds,
-        carousel: IsCarousel,
-        tracker: ChannelTracker,
-        headerName: String
-    ) = "/ - p${position + 1} - $TWO_SQUARE_TYPE - $ITEM_TYPE - %s - %s - %s - %s - %s - %s"
-        .format(
-            topAds.toString(),
-            carousel.toString(),
-            tracker.recommendationType,
-            tracker.recomPageName,
-            tracker.buType,
-            headerName
-        )
 
     @JvmInline
     value class IsTopAds(val value: Boolean) {

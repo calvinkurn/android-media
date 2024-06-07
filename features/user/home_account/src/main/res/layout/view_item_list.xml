@@ -71,7 +71,7 @@
         android:textColor="@color/Unify_NN0"
         tools:visibility="visible"
         android:visibility="gone"
-        android:background="@drawable/circle_red"
+        android:background="@drawable/circle_red_home_account"
         android:layout_marginRight="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/unify_space_8"
         app:layout_constraintEnd_toEndOf="parent"

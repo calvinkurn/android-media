@@ -17,7 +17,6 @@ import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind
-import com.tokopedia.applink.find.DeepLinkMapperFind.navigateToAppNotifSettings
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -34,8 +33,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PATH_SELLER_PARTIAL_ORDER_FULFILLMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -256,7 +253,9 @@ object DeeplinkMainApp {
             }
         ),
         "device-notification-settings" to mutableListOf(
-            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ -> navigateToAppNotifSettings(ctx) }
+            DLP.startsWith(ApplinkConst.AppNotifSetting.DEVICE_APP_NOTIF_SETTINGS_PAGE) { ctx, uri, _, _ ->
+                ApplinkConstInternalMarketplace.DEVICE_NOTIFICATION_SETTING
+            }
         ),
         "digital" to mutableListOf(
             DLP.startsWith("order") { context: Context, deeplink: String ->
@@ -485,11 +484,11 @@ object DeeplinkMainApp {
             DLP.startsWith("order") { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             },
-            DLP.startsWith("buyer-order-extension") { _: String ->
-                ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION
+            DLP.startsWith(DeeplinkMapperOrder.Soe.Buyer.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.Soe.Buyer.getRegisteredNavigation(uri)
             },
-            DLP.startsWith("buyer-partial-order-fulfillment") { _: String ->
-                ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT
+            DLP.startsWith(DeeplinkMapperOrder.Pof.Buyer.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.Pof.Buyer.getRegisteredNavigation(uri)
             },
             DLP.startsWith("onboarding") { _: String ->
                 ApplinkConstInternalMarketplace.ONBOARDING
@@ -996,14 +995,14 @@ object DeeplinkMainApp {
             DLP.startsWith("seller-center") { _: String ->
                 DeeplinkMapperMerchant.getRegisteredSellerCenter()
             },
-            DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
-                DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+            DLP.startsWith(DeeplinkMapperOrder.Pof.Seller.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.Pof.Seller.getRegisteredNavigation(uri)
             },
             DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
                 DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
             },
-            DLP.startsWith(DeeplinkMapperOrder.SellerOrderExtensionRequest.PATH) { uri: Uri ->
-                DeeplinkMapperOrder.SellerOrderExtensionRequest.getRegisteredNavigation(uri)
+            DLP.startsWith(DeeplinkMapperOrder.Soe.Seller.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.Soe.Seller.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(

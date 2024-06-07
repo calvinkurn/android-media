@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class RechargeItemProductCardsAdapter(
     val items: List<RechargeHomepageSections.Item>,
@@ -43,7 +43,7 @@ class RechargeItemProductCardsAdapter(
                         .dimensionRatio = SQUARE_DIMEN_RATIO
                     ivRechargeHomeProductCardsItem.scaleType = ImageView.ScaleType.FIT_CENTER
                 }
-                ivRechargeHomeProductCardsItem.loadImage(element.mediaUrl)
+                ivRechargeHomeProductCardsItem.loadImageFresco(element.mediaUrl)
                 tvRechargeHomeProductCardsItemCategory.text = element.title
                 tvRechargeHomeProductCardsItemTitle.text = element.subtitle
                 tvRechargeHomeProductCardsItemPriceInfo.text = Html.fromHtml(element.label1)

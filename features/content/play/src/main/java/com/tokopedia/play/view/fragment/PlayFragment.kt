@@ -4,17 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import androidx.annotation.Nullable
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.*
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
@@ -58,6 +54,7 @@ import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.content.common.view.addKeyboardInsetsListener
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.play.view.uimodel.action.HideBottomSheet
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -704,13 +701,11 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setBackground(backgroundUrl: String) {
-        Glide.with(requireContext()).load(backgroundUrl).into(object : CustomTarget<Drawable?>() {
-            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
-
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
-                view?.background = resource
+        backgroundUrl.getBitmapImageUrl(requireContext()) {
+            view?.let { viewRef ->
+                viewRef.background = it.toDrawable(viewRef.resources)
             }
-        })
+        }
     }
 
     //region onStateChanged

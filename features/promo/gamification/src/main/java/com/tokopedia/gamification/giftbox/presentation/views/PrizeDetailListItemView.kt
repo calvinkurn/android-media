@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
 class PrizeDetailListItemView @JvmOverloads constructor(
@@ -27,9 +27,7 @@ class PrizeDetailListItemView @JvmOverloads constructor(
 
     fun setData(prizeDetailListItem: PrizeDetailListItem) {
         if (!prizeDetailListItem.imageURL.isNullOrEmpty()) {
-            Glide.with(image)
-                    .load(prizeDetailListItem.imageURL)
-                    .into(image)
+            image.loadImage(prizeDetailListItem.imageURL)
         }
         tvTitle.text = prizeDetailListItem.text
     }

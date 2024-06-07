@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
@@ -16,6 +14,7 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.All
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 
 @SuppressLint("NewApi")
 class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandUiModel>(itemView) {
@@ -88,12 +87,12 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandUiModel>(
 
         brandLogoView?.let {
             if (brand != null) {
-                loadImageToImageView(context, brand.logoUrl, it)
+                loadImageToImageView(brand.logoUrl, it)
             }
         }
         brandImageView?.let {
             if (brand != null) {
-                loadImageToImageView(context, brand.exclusiveLogoURL, it)
+                loadImageToImageView(brand.exclusiveLogoURL, it)
             }
         }
         brandNameView?.let {
@@ -103,14 +102,10 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandUiModel>(
         }
     }
 
-    private fun loadImageToImageView(context: Context?, imageUrl: String, brandView: ImageView) {
-        context?.let {
-            Glide.with(it)
-                    .load(imageUrl)
-                    .dontAnimate()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(brandView)
+    private fun loadImageToImageView(imageUrl: String, brandView: ImageView) {
+        brandView.loadImage(imageUrl) {
+            isAnimate(false)
+            useCache(false)
         }
     }
 

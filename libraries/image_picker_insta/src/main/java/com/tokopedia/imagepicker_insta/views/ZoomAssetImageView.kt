@@ -17,10 +17,10 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.OverScroller
 import androidx.core.view.ViewCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import timber.log.Timber
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -343,11 +343,15 @@ class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
         this.zoomInfo = zoomInfo
         this.asset = asset
 
-        Glide.with(this)
-            .load(asset.contentUri)
-            .fitCenter()
-            .apply(RequestOptions().override(width, height))
-            .into(this)
+        this.loadImage(asset.contentUri) {
+            fitCenter()
+            overrideSize(Resize(width, height))
+            listener(
+                onSuccess = { _, _ ->
+                    resetZoom(true)
+                }
+            )
+        }
     }
 
     private fun animatePan(

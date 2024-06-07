@@ -19,6 +19,7 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
 
     override fun productChannelHeaderClicked(data: ProductWidgetUiModel) {
         listener.onDynamicChannelClicked(data.header.applink)
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Kd2BannerSquareTracker.channelHeaderClicked(
                 data.channelModel
@@ -27,9 +28,10 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
     }
 
     override fun productImpressed(data: ProductWidgetUiModel, position: Int) {
+        // Used in the [itemProductClicked] method.
         channelModel = data.channelModel
 
-        val isProduct = data.data.map { it.tracker }.all { it.isProduct() }
+        val isProduct = data.data.first().tracker.isProduct()
 
         if (isProduct) {
             listener.getTrackingQueueObj()?.putEETracking(
@@ -64,8 +66,6 @@ class ProductTwoSquareWidgetCallback(val listener: HomeCategoryListener) : Produ
                     )
                 )
             }
-
-            channelModel = null
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 Kd2BannerSquareTracker.cardClicked(

@@ -2,9 +2,8 @@ package com.tokopedia.home.beranda.domain.gql.recommendationcard
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAdsLog
 
 data class RecommendationCard(
     @SerializedName("applink")
@@ -81,51 +80,14 @@ data class RecommendationCard(
     val wishlistUrl: String = "",
     @SerializedName("recParam")
     val recParam: String = "",
+    @SerializedName("creativeID")
+    val creativeID: String = "",
+    @SerializedName("logExtra")
+    val logExtra: String = "",
     @SerializedName("countSold")
     val countSold: Int = 0,
 ) {
 
-    fun mapToHomeRecommendationProductItem(): HomeRecommendationItemDataModel.HomeRecommendationProductItem {
-        return HomeRecommendationItemDataModel.HomeRecommendationProductItem(
-            id = id,
-            name = name,
-            imageUrl = imageUrl,
-            recommendationType = recommendationType,
-            priceInt = priceInt,
-            slashedPriceInt = slashedPriceInt,
-            freeOngkirIsActive = freeOngkir.isActive,
-            labelGroup = labelGroup.map {
-                HomeRecommendationItemDataModel.HomeRecommendationProductItem.LabelGroup(
-                    position = it.position,
-                    title = it.title,
-                    type = it.type,
-                    url = it.url,
-                )
-            },
-            categoryBreadcrumbs = categoryBreadcrumbs,
-            clusterID = clusterID,
-            isTopAds = isTopads,
-            trackerImageUrl = trackerImageUrl,
-            clickUrl = clickUrl,
-            isWishlist = isWishlist,
-            wishListUrl = wishlistUrl,
-            shop = shop.let {
-                HomeRecommendationItemDataModel.HomeRecommendationProductItem.Shop(
-                    id = it.id,
-                    applink = it.applink,
-                    city = it.city,
-                    domain = it.domain,
-                    imageUrl = it.imageUrl,
-                    name = it.name,
-                    reputation = it.reputation,
-                    url = it.url,
-                )
-            },
-            recParam = recParam
-        )
-    }
-
-    @RecomTemporary
     fun mapToHomeGlobalRecommendationProductItem(): RecommendationCardModel.ProductItem {
         return RecommendationCardModel.ProductItem(
             id = id,
@@ -159,6 +121,10 @@ data class RecommendationCard(
                 imageUrl = shop.imageUrl,
                 name = shop.name,
                 reputation = shop.reputation,
+            ),
+            recommendationAdsLog = RecommendationAdsLog(
+                creativeID = creativeID,
+                logExtra = logExtra
             )
         )
     }

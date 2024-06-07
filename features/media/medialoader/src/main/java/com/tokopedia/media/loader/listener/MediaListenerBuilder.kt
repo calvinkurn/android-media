@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.data.getFailureType
 import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.old.MediaLoaderTracker
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
+import java.io.File
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
 internal object MediaListenerBuilder {
@@ -29,10 +30,7 @@ internal object MediaListenerBuilder {
             target: Target<T>?,
             isFirstResource: Boolean
         ): Boolean {
-            when (T::class) {
-                Bitmap::class -> onLoadFailed(context, properties, startTime, e)
-                GifDrawable::class -> properties.loaderListener?.onFailed(e)
-            }
+            onLoadFailed(context, properties, startTime, e)
             return false
         }
 
@@ -45,8 +43,9 @@ internal object MediaListenerBuilder {
         ): Boolean {
             try {
                 when (T::class){
-                    Bitmap::class -> onResourceReady(context, properties, startTime, (resource as Bitmap), (target as Target<Bitmap>), dataSource)
+                    Bitmap::class -> onResourceReady(context, properties, startTime, (resource as Bitmap), (target as Target<Bitmap>), dataSource, isFirstResource)
                     GifDrawable::class -> properties.loaderListener?.onLoaded((resource as GifDrawable), dataSource(dataSource))
+                    File::class -> properties.loaderListener?.onDownload(resource as File, dataSource(dataSource))
                 }
             }catch (e: Exception) {
                 properties.loaderListener?.onFailed(MediaException(e.message))
@@ -80,7 +79,8 @@ internal object MediaListenerBuilder {
         startTime: Long,
         resource: Bitmap?,
         target: Target<Bitmap>?,
-        dataSource: DataSource?
+        dataSource: DataSource?,
+        isFirstResource: Boolean
     ): Boolean {
         val loadTime = (System.currentTimeMillis() - startTime).toString()
 
@@ -111,7 +111,7 @@ internal object MediaListenerBuilder {
             resource?.adaptiveSizeImageRequest(target)
         }
 
-        properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
+        properties.loaderListener?.onLoaded(resource, dataSource(dataSource), isFirstResource )
         return false
     }
 }
