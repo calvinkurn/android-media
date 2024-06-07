@@ -1500,7 +1500,7 @@ code_review_rule:
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /dynamic-features-customerapp_pro/travel/.*
+    - pattern: /dynamic-features-customerapp_pro/travel.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
@@ -1512,7 +1512,7 @@ code_review_rule:
         - firmanda.nugroho
         - misael.jonathan
       required_approvals: 1
-    - pattern: /libraries/travel_calendar/.*
+    - pattern: /libraries/travel_calendar.*
       reviewers:
         - fajar.nuha
         - firmanda.nugroho
@@ -2916,7 +2916,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/device_fingerprint/.*
+    - pattern: /libraries/device_fingerprint.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -2976,7 +2976,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/floating_window/.*
+    - pattern: /libraries/floating_window.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3148,7 +3148,7 @@ code_review_rule:
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /libraries/instrumentation_test/.*
+    - pattern: /libraries/instrumentation_test.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3637,7 +3637,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/unit_test/.*
+    - pattern: /libraries/unit_test.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3657,14 +3657,14 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/user_session/.*
+    - pattern: /libraries/user_session.*
       reviewers:
         - nabilla.sabbaha
         - habibi
         - rama.putra
         - yoris.prayogo
       required_approvals: 1
-    - pattern: /libraries/utils/.*
+    - pattern: /libraries/utils.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3844,7 +3844,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/imagepreviewslider/.*
+    - pattern: /libraries/imagepreviewslider.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3864,7 +3864,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/blockcanary/.*
+    - pattern: /libraries/blockcanary.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3884,7 +3884,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/annotation_proc_central/.*
+    - pattern: /libraries/annotation_proc_central.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3904,7 +3904,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/screen_recorder/.*
+    - pattern: /libraries/screen_recorder.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3924,7 +3924,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/screenshot_observer/.*
+    - pattern: /libraries/screenshot_observer.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3944,7 +3944,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/telemetry/.*
+    - pattern: /libraries/telemetry.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -3984,7 +3984,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/macrobenchmark_util/.*
+    - pattern: /libraries/macrobenchmark_util.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -4004,7 +4004,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/common_compose/.*
+    - pattern: /libraries/common_compose.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -4024,7 +4024,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/page_info_pusher/.*
+    - pattern: /libraries/page_info_pusher.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -4091,7 +4091,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/foldable/.*
+    - pattern: /libraries/foldable.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -4111,7 +4111,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /features/samples/.*
+    - pattern: /features/samples.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi
@@ -4131,7 +4131,7 @@ code_review_rule:
         - steven.fredian
         - rico.harisin
       required_approvals: 1
-    - pattern: /libraries/gqlquery_ksp_processor/.*
+    - pattern: /libraries/gqlquery_ksp_processor.*
       reviewers:
         - normansyah.putra
         - hendry.setiadi

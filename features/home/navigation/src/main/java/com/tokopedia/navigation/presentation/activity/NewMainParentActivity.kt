@@ -526,14 +526,18 @@ class NewMainParentActivity :
         globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate)
     }
 
-    override fun onHomeCoachMarkFinished() {
-        // Feed Coachmark has been deprecated, so this is expected to be empty as of now
+    override fun prepareNavigationCoachMark(inboxView: View?) {
         coachMarkJob?.cancel()
         coachMarkJob = lifecycleScope.launch {
             val mePageView = binding.dynamicNavbar.findBottomNavItemViewById(BottomNavMePageId) ?: return@launch
             mePageView.awaitLayout()
-            mePageCoachMark.get().show(mePageView)
+            mePageCoachMark.get().show(inboxView, mePageView)
         }
+    }
+
+    override fun dismissNavigationCoachMark() {
+        coachMarkJob?.cancel()
+        mePageCoachMark.get().forceDismiss()
     }
 
     override fun setForYouToHomeMenuTabSelected() {

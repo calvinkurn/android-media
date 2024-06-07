@@ -32,9 +32,6 @@
     <string name="home_tokonow_coachmark_title">Belanja kebutuhan harian, 2 jam tiba dan gratis ongkir 🚀</string>
     <string name="home_tokonow_coachmark_description">Cek yang fresh &amp; berkualitas di Tokopedia NOW!</string>
 
-    <string name="home_inbox_coach_mark_title">Notifikasi kini ada di Inbox, ya~</string>
-    <string name="home_inbox_coach_mark_description">Sekarang jadi lebih mudah dan bisa sekalian akses Chat, lho!</string>
-
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>
 
