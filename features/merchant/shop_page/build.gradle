@@ -87,8 +87,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
-    implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons

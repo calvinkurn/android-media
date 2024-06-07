@@ -3,8 +3,9 @@ package com.tokopedia.tokopoints.view.util
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopoints.R
 
 object ImageUtil {
@@ -24,13 +25,12 @@ object ImageUtil {
 
     fun loadImage(imageView: ImageView, url: String?) {
         try {
-            Glide.with(imageView.context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
-                .error(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
-                .override(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL)
-                .into(imageView)
+            imageView.loadImage(url){
+                isAnimate(false)
+                setPlaceHolder(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
+                setErrorDrawable(R.drawable.fromtkpddesign_ic_loading_image_tokopoints)
+                overrideSize(Resize(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL))
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

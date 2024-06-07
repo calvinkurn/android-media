@@ -1,7 +1,5 @@
 package com.tokopedia.recommendation_widget_common.infinite.foryou.topads
 
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.domain.model.CpmData
 
 interface BannerTopAdsListener {
@@ -12,8 +10,4 @@ interface BannerTopAdsListener {
     // TopAds
     fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int)
     fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int)
-
-    // Old TopAds
-    fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int)
-    fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int)
 }

@@ -1,13 +1,10 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import androidx.core.graphics.drawable.toDrawable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
@@ -17,8 +14,12 @@ import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.R as utilsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderPaymentModel>(itemView) {
     private var binding: HolderTransactionPaymentBinding? by viewBinding()
@@ -52,29 +53,25 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             val imageView = binding?.orderPaymentImage
             val shimmer = binding?.orderPaymentImageShimmer
             imageView?.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            Glide.with(itemView.context)
-                    .load(paymentModel.navPaymentModel.imageUrl)
-                    .centerInside()
-                    .error(com.tokopedia.utils.R.drawable.ic_loading_placeholder)
-                    .into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            imageView?.setImageDrawable(resource)
-                            shimmer?.gone()
-                        }
 
-                        override fun onLoadStarted(placeholder: Drawable?) {
-                            shimmer?.visible()
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            shimmer?.gone()
-                        }
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            shimmer?.gone()
-                        }
-                    })
-
+            paymentModel.navPaymentModel.imageUrl.getBitmapImageUrl(itemView.context, properties = {
+                setErrorDrawable(utilsR.drawable.ic_loading_placeholder)
+                centerInside()
+            }, target = MediaBitmapEmptyTarget(
+                onReady = {
+                    imageView?.setImageDrawable(it.toDrawable(itemView.resources))
+                    shimmer?.gone()
+                },
+                onLoadStarted = {
+                    shimmer?.visible()
+                },
+                onCleared = {
+                    shimmer?.gone()
+                },
+                onFailed = {
+                    shimmer?.gone()
+                }
+            ))
         }
 
         //description
@@ -88,7 +85,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
                     context.getString(R.string.transaction_item_default_status)
 
         binding?.orderPaymentStatus?.setTextColor(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_YN400)
         )
 
         itemView.setOnClickListener {

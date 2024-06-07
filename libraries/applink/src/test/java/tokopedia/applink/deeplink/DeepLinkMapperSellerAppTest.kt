@@ -552,11 +552,19 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check seller partial order fulfillment appLink then should return tokopedia internal seller partial order fulfillment in customerapp`() {
+    fun `check seller partial order fulfillment appLink old parameters then should return tokopedia internal seller partial order fulfillment in sellerapp with old and new parameters`() {
         val orderId = "123456789"
         val pofStatus = "1"
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true"
-        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, "${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true", expectedDeepLink)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS}=$pofStatus&${KEY_REDIRECT_TO_SELLER_APP}=false&${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus"
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, "${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus", expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller partial order fulfillment appLink with new parameters then should return tokopedia internal seller partial order fulfillment in sellerapp with only new parameters`() {
+        val orderId = "123456789"
+        val pofStatus = "1"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS}=$pofStatus&${KEY_REDIRECT_TO_SELLER_APP}=false"
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, "${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?${DeeplinkMapperOrder.Pof.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.Pof.INTENT_PARAM_POF_STATUS}=$pofStatus", expectedDeepLink)
     }
 
     @Test

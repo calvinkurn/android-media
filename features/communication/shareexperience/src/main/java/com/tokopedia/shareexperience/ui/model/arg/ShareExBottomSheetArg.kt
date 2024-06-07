@@ -24,6 +24,8 @@ class ShareExBottomSheetArg private constructor(
     val shopId: String,
     val campaignId: String,
     val generalId: String,
+    val contentId: String,
+    val origin: String,
 
     /**
      * Mandatory field
@@ -56,6 +58,8 @@ class ShareExBottomSheetArg private constructor(
         private var selectedChip: String? = null
         private var defaultImageUrl: String? = null
         private var metadata: Map<String, String>? = null
+        private var contentId: String? = null
+        private var origin: String? = null
 
         fun withProductId(productId: String) = apply {
             this.productId = productId
@@ -79,6 +83,14 @@ class ShareExBottomSheetArg private constructor(
 
         fun withGeneralId(generalId: String) = apply {
             this.generalId = generalId
+        }
+
+        fun withContentId(contentId: String) = apply {
+            this.contentId = contentId
+        }
+
+        fun withOrigin(origin: String) = apply {
+            this.origin = origin
         }
 
         fun withSelectedChip(selectedChip: String) = apply {
@@ -105,6 +117,8 @@ class ShareExBottomSheetArg private constructor(
                 shopId = shopId.orEmpty(),
                 campaignId = campaignId.orEmpty(),
                 generalId = generalId.orEmpty(),
+                contentId = contentId.orEmpty(),
+                origin = origin.orEmpty(),
 
                 selectedChip = selectedChip.orEmpty(),
                 defaultImageUrl = defaultImageUrl.orEmpty(),
@@ -121,6 +135,8 @@ class ShareExBottomSheetArg private constructor(
             ShareExPageTypeEnum.DISCOVERY -> campaignId
             ShareExPageTypeEnum.ORDER_DETAIL -> productId
             ShareExPageTypeEnum.GOPAYLATER_REFERRAL -> metadata[ApplinkConstInternalShare.Param.REFERRAL_CODE] ?: ""
+            ShareExPageTypeEnum.THANK_YOU_PRODUCT -> productId
+            ShareExPageTypeEnum.PLAY -> contentId
             else -> generalId
         }
     }

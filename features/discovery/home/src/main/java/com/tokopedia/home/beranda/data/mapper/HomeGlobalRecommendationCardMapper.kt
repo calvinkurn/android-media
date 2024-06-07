@@ -7,17 +7,16 @@ import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommend
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.PlayVideoWidgetResponse
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
-import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.content.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
@@ -58,7 +57,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_RECOM_CARD -> {
-                    if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
+                    if (getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
                         homeRecommendationTypeFactoryImplList.add(
                             mapToEntityCardRecommendationCard(
                                 card,
@@ -73,7 +72,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 }
 
                 TYPE_BANNER_ADS -> {
-                    if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
+                    if (getHomeRecommendationCard.layoutName != LAYOUT_NAME_LIST) {
                         val adsBannerItemResponse =
                             convertDataJsonToAdsBannerItem(card.dataStringJson)
 
@@ -334,6 +333,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
     }
 
     companion object {
+        private const val LAYOUT_NAME_LIST = "infinite_list_scroll"
+
         private const val TYPE_PRODUCT = "product"
         const val TYPE_BANNER = "banner"
         private const val TYPE_BANNER_ADS = "banner_ads"

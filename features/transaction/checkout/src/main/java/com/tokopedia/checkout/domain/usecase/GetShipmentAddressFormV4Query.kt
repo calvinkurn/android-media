@@ -194,6 +194,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     is_leasing_product
                   }
                   group_shop_v2_saf {
+                    disabled_features
                     cart_string_order
                     shop {
                       shop_id
@@ -340,6 +341,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         product_id
                         product_name
                         product_price
+                        product_min_order
+                        product_max_order
+                        product_invenage_value
+                        product_switch_invenage
                         product_original_price
                         product_wholesale_price
                         product_weight_fmt
@@ -712,6 +717,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 }
               }
               cart_type
+              confirmation_footer {
+                type
+                text
+              }
             }
           }
         }"""

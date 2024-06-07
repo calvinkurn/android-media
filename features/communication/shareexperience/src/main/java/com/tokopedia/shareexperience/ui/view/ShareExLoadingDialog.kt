@@ -15,6 +15,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDefaultBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExLiveBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExReviewBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
@@ -104,7 +105,7 @@ class ShareExLoadingDialog(
 
     private fun getRequest(): ShareExBottomSheetRequest {
         return when (arg.pageTypeEnum) {
-            ShareExPageTypeEnum.PDP -> {
+            ShareExPageTypeEnum.PDP, ShareExPageTypeEnum.THANK_YOU_PRODUCT -> {
                 ShareExProductBottomSheetRequest(
                     pageType = arg.pageTypeEnum.valueInt,
                     productId = arg.productId
@@ -133,6 +134,13 @@ class ShareExLoadingDialog(
                 ShareExProductBottomSheetRequest(
                     pageType = arg.pageTypeEnum.valueInt,
                     productId = arg.productId
+                )
+            }
+            ShareExPageTypeEnum.PLAY -> {
+                ShareExLiveBottomSheetRequest(
+                    pageType = arg.pageTypeEnum.valueInt,
+                    contentId = arg.contentId,
+                    origin = arg.origin
                 )
             }
             else -> {

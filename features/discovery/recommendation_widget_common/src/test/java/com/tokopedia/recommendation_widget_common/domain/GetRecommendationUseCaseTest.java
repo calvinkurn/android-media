@@ -59,9 +59,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                dummyProductId,
-                "",
-                true
+                dummyProductId
         );
         int requestParamsId = requestParams.getInt(GetRecommendationUseCase.USER_ID,
                 dummyPageNumber);
@@ -79,9 +77,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                dummyProductId,
-                "",
-                true
+                dummyProductId
         );
         int requestParamsPageNumber = requestParams.getInt(GetRecommendationUseCase.PAGE_NUMBER,
                 0);
@@ -101,9 +97,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                dummyProductId,
-                "",
-                true
+                dummyProductId
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.X_SOURCE,
                 "");
@@ -123,9 +117,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                dummyProductId,
-                "",
-                true
+                dummyProductId
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.X_SOURCE,
                 "");
@@ -146,9 +138,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                dummyProductId,
-                "",
-                true
+                dummyProductId
         );
         String requestXDevice = requestParams.getString(GetRecommendationUseCase.X_DEVICE,
                 "");
@@ -169,9 +159,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
                 dummyPageName,
-                dummyProductId,
-                "",
-                true
+                dummyProductId
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.PAGE_NAME,
                 "");
@@ -191,9 +179,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyPageName,
                 GetRecommendationUseCase.DEFAULT_PAGE_NAME,
-                dummyProductId,
-                "",
-                true
+                dummyProductId
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.PAGE_NAME,
                 "");

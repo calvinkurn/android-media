@@ -29,12 +29,16 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.bytedance.android.btm.api.model.BtmModel
+import com.bytedance.android.btm.api.model.PageFinder
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
@@ -492,6 +496,7 @@ open class HomeRevampFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.HomePage)
         fragmentCreatedForFirstTime = true
         context?.run {
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
@@ -892,7 +897,6 @@ open class HomeRevampFragment :
             }
         })
         trackVerticalScroll()
-        setupEmbraceBreadcrumbListener()
         setupHomePlayWidgetListener()
     }
 
@@ -904,17 +908,6 @@ open class HomeRevampFragment :
             )
         }
         hasApplogScrollListener = true
-    }
-
-    private fun setupEmbraceBreadcrumbListener() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB)) {
-            homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    trackEmbraceBreadcrumbPosition()
-                }
-            })
-        }
     }
 
     private fun setupHomePlayWidgetListener() {
@@ -967,19 +960,6 @@ open class HomeRevampFragment :
     private fun updateThematicVerticalPosition() {
         thematicBackground?.let { thematicScrollListener.invoke(it) }
         thematicForeground?.let { thematicScrollListener.invoke(it) }
-    }
-
-    private fun trackEmbraceBreadcrumbPosition() {
-        if (fragmentCurrentScrollPosition != layoutManager?.findLastVisibleItemPosition()) {
-            fragmentCurrentScrollPosition = layoutManager?.findLastVisibleItemPosition() ?: -1
-            HomeServerLogger.sendEmbraceBreadCrumb(
-                fragment = this@HomeRevampFragment,
-                isLoggedIn = userSession.isLoggedIn,
-                isCache = fragmentCurrentCacheState,
-                visitableListCount = fragmentCurrentVisitableCount,
-                scrollPosition = fragmentCurrentScrollPosition
-            )
-        }
     }
 
     private fun setupStatusBar() {
@@ -1530,13 +1510,6 @@ open class HomeRevampFragment :
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
 
-            HomeServerLogger.sendEmbraceBreadCrumb(
-                fragment = this,
-                isLoggedIn = userSession.isLoggedIn,
-                isCache = isCache,
-                visitableListCount = data.size,
-                scrollPosition = layoutManager?.findLastVisibleItemPosition()
-            )
             val takeLimit: Int = if ((
                 layoutManager?.findLastVisibleItemPosition()
                     ?: DEFAULT_BLOCK_SIZE
@@ -1706,8 +1679,7 @@ open class HomeRevampFragment :
             getThematicUtil(),
             HomeOrigamiListenerDelegate(context, this),
             Mission4SquareWidgetListenerCallback(this),
-            TwoSquareWidgetListenerCallback(this),
-            getRemoteConfig()
+            TwoSquareWidgetListenerCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2347,7 +2319,11 @@ open class HomeRevampFragment :
 
     private fun openApplink(applink: String, trackingAttribution: String) {
         if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(activity, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
+            val btmModel = BtmModel().apply {
+                this.btm = Tokopedia.HomePage.str
+                this.pageFinder = PageFinder.via(this@HomeRevampFragment)
+            }
+            RouteManager.routeWithBtmModel(activity, btmModel, appendTrackerAttributionIfNeeded(applink, trackingAttribution))
         }
     }
 

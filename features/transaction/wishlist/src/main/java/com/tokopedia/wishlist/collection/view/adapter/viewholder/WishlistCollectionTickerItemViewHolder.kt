@@ -27,14 +27,14 @@ class WishlistCollectionTickerItemViewHolder(
     private val binding: CollectionWishlistTickerItemBinding,
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: WishlistCollectionTypeLayoutData, isTickerClosed: Boolean) {
+    fun bind(item: WishlistCollectionTypeLayoutData) {
         if (WishlistCollectionUtils.isAffiliateTickerEnabled()) {
             showAffiliateTicker()
             return
         }
 
         if (item.dataObject is GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Ticker) {
-            if (item.dataObject.title.isNotEmpty() && !isTickerClosed) {
+            if (item.dataObject.title.isNotEmpty()) {
                 binding.root.visible()
                 val params = (binding.root.layoutParams as GridLayoutManager.LayoutParams).apply {
                     height = ViewGroup.LayoutParams.WRAP_CONTENT

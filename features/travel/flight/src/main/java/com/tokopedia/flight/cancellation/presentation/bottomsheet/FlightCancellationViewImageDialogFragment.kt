@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
-import com.bumptech.glide.Glide
 import com.tokopedia.flight.R
+import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.dialog_fragment_flight_cancellation_view_image.*
 import java.io.File
 
@@ -41,10 +42,7 @@ class FlightCancellationViewImageDialogFragment : DialogFragment() {
 
     private fun showImage() {
         context?.let {
-            Glide.with(it)
-                    .asBitmap()
-                    .load(File(filePath))
-                    .into(flight_cancellation_image_view)
+            flight_cancellation_image_view.loadImage(File(filePath).toUri())
         }
     }
 

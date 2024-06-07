@@ -35,6 +35,11 @@ const val CHECKOUT_QUERY = """
                 product_ids
               }
             }
+            consent {
+                show
+                title
+                text
+            }
           }
           prompt {
             type

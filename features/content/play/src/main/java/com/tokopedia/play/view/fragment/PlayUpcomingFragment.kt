@@ -6,7 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,22 +13,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.databinding.FragmentPlayUpcomingBinding
+import com.tokopedia.play.util.isEnableShareExPlay
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.type.ScreenOrientation2
@@ -65,6 +60,11 @@ import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -77,9 +77,9 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val dispatchers: CoroutineDispatchers,
     private val analytic: PlayNewAnalytic,
-    private val router: Router
+    private val router: Router,
+    private val abTestPlatform: AbTestPlatform
 ) : TkpdBaseV4Fragment(),
     ToolbarRoomViewComponent.Listener,
     PartnerInfoViewComponent.Listener,
@@ -111,6 +111,8 @@ class PlayUpcomingFragment @Inject constructor(
 
     private val orientation: ScreenOrientation2
         get() = ScreenOrientation2.get(requireActivity())
+
+    private var shareExInitializer: ShareExInitializer? = null
 
     private var _binding: FragmentPlayUpcomingBinding? = null
     private val binding: FragmentPlayUpcomingBinding get() = _binding!!
@@ -315,41 +317,21 @@ class PlayUpcomingFragment @Inject constructor(
         if (prevState?.info != currState.info) {
             currState.info.let {
                 if (it.coverUrl.isNotEmpty()) {
-                    Glide.with(this)
-                        .asBitmap()
-                        .load(it.coverUrl)
-                        .addListener(object : RequestListener<Bitmap> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Bitmap>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
+                    binding.ivUpcomingCover.loadImage(it.coverUrl) {
+                        listener(
+                            onSuccess = { resource, _ ->
+                                resource?.let { bitmapResource ->
+                                    binding.ivUpcomingCover.scaleType =
+                                        if ((bitmapResource.height > bitmapResource.width) && orientation.isCompact) {
+                                            ImageView.ScaleType.CENTER_CROP
+                                        } else {
+                                            ImageView.ScaleType.FIT_CENTER
+                                        }
+                                }
                             }
-
-                            override fun onResourceReady(
-                                resource: Bitmap?,
-                                model: Any?,
-                                target: Target<Bitmap>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                if (resource == null) return false
-
-                                binding.ivUpcomingCover.scaleType =
-                                    if (resource.height > resource.width && orientation.isCompact) {
-                                        ImageView.ScaleType.CENTER_CROP
-                                    } else {
-                                        ImageView.ScaleType.FIT_CENTER
-                                    }
-
-                                return false
-                            }
-                        })
-                        .skipMemoryCache(false)
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .into(binding.ivUpcomingCover)
+                        )
+                        setCacheStrategy(MediaCacheStrategy.AUTOMATIC)
+                    }
                 }
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)
@@ -446,7 +428,35 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun openShareBottomSheet(event: PlayUpcomingUiEvent.OpenSharingOptionEvent) {
-        shareExperienceView.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
+        if (abTestPlatform.isEnableShareExPlay()) {
+            if (shareExInitializer == null) {
+                shareExInitializer = ShareExInitializer(requireContext())
+            }
+            val label = "${ShareExTrackerArg.SHARE_ID_KEY} - ${event.channelId} - ${event.partnerId} - ${event.channelType}"
+            shareExInitializer?.openShareBottomSheet(
+                bottomSheetArg = ShareExBottomSheetArg.Builder(
+                    pageTypeEnum = ShareExPageTypeEnum.PLAY,
+                    defaultUrl = "tokopedia://play/$channelId",
+                    trackerArg = ShareExTrackerArg(
+                        utmCampaign = "",
+                        labelActionClickShareIcon = label,
+                        labelActionCloseIcon = label,
+                        labelActionClickChannel = label,
+                        labelImpressionBottomSheet = label
+                    )
+                )
+                    .withContentId(event.channelId)
+                    .withOrigin("play")
+                    .build()
+            )
+        } else {
+            shareExperienceView.showSharingOptions(
+                event.title,
+                event.coverUrl,
+                event.userId,
+                event.channelId
+            )
+        }
         if (playUpcomingViewModel.isCustomSharingAllowed) {
             analytic.impressShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value)
         }

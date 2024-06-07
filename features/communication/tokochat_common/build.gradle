@@ -75,8 +75,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewPager2
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7

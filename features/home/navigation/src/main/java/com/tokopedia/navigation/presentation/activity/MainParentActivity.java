@@ -41,6 +41,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bytedance.android.btm.api.BtmSDK;
+import com.bytedance.android.btm.api.model.PageShowParams;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -265,7 +267,6 @@ public class MainParentActivity extends BaseActivity implements
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
-    private String embracePageName = "";
 
     private LottieBottomNavbar bottomNavigation;
 
@@ -672,6 +673,13 @@ public class MainParentActivity extends BaseActivity implements
         configureNavigationBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
+        sendFragmentChangeEventToBtmSDK(fragment);
+    }
+
+    private void sendFragmentChangeEventToBtmSDK(Fragment fragment){
+        PageShowParams params = new PageShowParams();
+        params.setReuse(true);
+        BtmSDK.INSTANCE.onPageShow(fragment, true, params);
     }
 
     // MIGRATED
@@ -1444,8 +1452,6 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
-        this.embracePageName = pageTitle;
-        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         AppLogTopAds.updateAdsFragmentPageData(this, AppLogParam.PAGE_NAME, getAdsPageName());
 
         if (index != currentSelectedFragmentPosition) {
@@ -1523,7 +1529,7 @@ public class MainParentActivity extends BaseActivity implements
     //MIGRATED
     @Override
     public String currentVisibleFragment() {
-        return embracePageName;
+        return "";
     }
 
     // MIGRATED

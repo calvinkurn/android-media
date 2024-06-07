@@ -8,7 +8,6 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.CameraView
@@ -23,9 +22,11 @@ import com.tokopedia.homecredit.domain.model.ImageDetail
 import com.tokopedia.homecredit.viewModel.HomeCreditViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
 
@@ -113,7 +114,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         context?.let {
             val colorWhite = ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
             when (flashEnum) {
                 Flash.AUTO.ordinal -> {
@@ -226,10 +227,14 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         val loadFitCenter = min != 0 && max / min > 2
         if (loadFitCenter)
             imageView?.let {
-                Glide.with(requireContext()).load(data.imagePath).fitCenter().into(it)
+                it.loadImage(data.imagePath) {
+                    fitCenter()
+                }
             }
         else
-            imageView?.let { Glide.with(requireContext()).load(data.imagePath).into(it) }
+            imageView?.let {
+                it.loadImage(data.imagePath)
+            }
     }
 
     private fun reset() {

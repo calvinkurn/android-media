@@ -11,7 +11,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.getDFModuleFromDeeplink
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
-import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
@@ -52,7 +51,6 @@ open class DeepLinkDFMapperTestFixture {
             mockkObject(DeeplinkMapperUoh)
             mockkObject(DeeplinkMapperMerchant)
             mockkObject(DeeplinkMapperHome)
-            mockkObject(DeeplinkMapperAccount)
             mockkObject(DeeplinkMapperCommunication)
             mockkObject(DeeplinkMapperUser)
             mockkObject(DeeplinkMapper)

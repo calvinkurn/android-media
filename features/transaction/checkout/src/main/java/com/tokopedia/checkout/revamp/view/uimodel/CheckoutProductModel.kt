@@ -28,7 +28,9 @@ data class CheckoutProductModel(
     val weightFmt: String = "",
     val weightActual: Double = 0.0,
     val quantity: Int = 0,
+    val prevQuantity: Int = 0,
     val noteToSeller: String = "",
+    val shouldShowLottieNotes: Boolean = false,
     val imageUrl: String = "",
     val cashback: String = "",
     val preOrderDurationDay: Int = 0,
@@ -125,7 +127,15 @@ data class CheckoutProductModel(
 
     // additional feature
     val enableNoteEdit: Boolean = false,
-    val enableQtyEdit: Boolean = false
+    val enableQtyEdit: Boolean = false,
+
+    val shouldShowMinQtyError: Boolean = false,
+    val shouldShowMaxQtyError: Boolean = false,
+    val minOrder: Int = 0,
+    val maxOrder: Int = 0,
+    val invenageValue: Int = 0,
+    val switchInvenage: Int = 0,
+    val isCartTypeOcc: Boolean = true
 ) : CheckoutItem {
 
     val shouldShowBmgmInfoIcon: Boolean

@@ -124,10 +124,6 @@ class ProductSetupFragment @Inject constructor(
                     override fun getSelectedAccount(): ContentAccountUiModel {
                         return mDataSource?.getSelectedAccount().orUnknown()
                     }
-
-                    override fun getShopBadgeIfAny(): String {
-                        return mDataSource?.getSelectedAccount()?.badge.orEmpty()
-                    }
                 })
             }
             is EtalaseListBottomSheet -> {

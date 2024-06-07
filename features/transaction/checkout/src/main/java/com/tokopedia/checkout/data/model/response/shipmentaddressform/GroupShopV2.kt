@@ -8,5 +8,7 @@ data class GroupShopV2(
     @SerializedName("shop")
     val shop: Shop = Shop(),
     @SerializedName("cart_details")
-    val cartDetails: List<CartDetail> = emptyList()
+    val cartDetails: List<CartDetail> = emptyList(),
+    @SerializedName("disabled_features")
+    val disabledFeatures: ArrayList<String> = arrayListOf()
 )

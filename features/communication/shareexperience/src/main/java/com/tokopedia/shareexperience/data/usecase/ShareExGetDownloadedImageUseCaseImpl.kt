@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -33,13 +34,14 @@ class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
                         onSuccess = { bitmap, _ ->
                             if (bitmap != null) {
                                 onSuccessDownloadThumbnail(this@callbackFlow, bitmap)
-                                close()
                             }
                         },
                         onError = {
                             if (it != null) {
-                                trySend(ShareExResult.Error(it))
-                                close()
+                                launch {
+                                    send(ShareExResult.Error(it))
+                                    close()
+                                }
                             }
                         },
                     )
@@ -61,7 +63,10 @@ class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
         outputStream.close()
         // Get Uri
         val contentUri = MethodChecker.getUri(context, outputFile)
-        scope.trySend(ShareExResult.Success(contentUri))
+        scope.launch {
+            scope.send(ShareExResult.Success(contentUri))
+            scope.close()
+        }
     }
 
     private fun getImageCacheFile(): File {

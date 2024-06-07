@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.content.product.picker.di.DaggerContentProductTagSampleComponent
-import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.content.product.picker.databinding.ActivityContentProductTagSampleBinding
+import com.tokopedia.content.product.picker.di.DaggerContentProductTagSampleComponent
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
@@ -160,7 +160,6 @@ class ContentProductTagSampleActivity : BaseActivity() {
 
     private fun getArgumentBuilder(): ContentProductTagArgument.Builder {
         return ContentProductTagArgument.Builder()
-            .setShopBadge("")
             .setAuthorId(getAuthorId())
             .setAuthorType(getAuthorType())
             .setProductTagSource(getProductTagSource())

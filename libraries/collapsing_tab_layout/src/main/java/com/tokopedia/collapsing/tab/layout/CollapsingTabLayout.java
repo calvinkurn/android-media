@@ -366,7 +366,8 @@ public class CollapsingTabLayout extends TabLayout {
         shimmeringView.setVisibility(View.VISIBLE);
 
         JvmMediaLoader.loadImage(imageView, tabItemDataList.get(position).getImageUrl(),
-                (bitmap, mediaDataSource) -> {
+                properties -> null,
+                (bitmap, mediaDataSource,  isFirstResource) -> {
                     // on loaded
                     shimmeringView.setVisibility(View.GONE);
                     return null;

@@ -10,7 +10,6 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -30,9 +29,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -74,6 +70,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
@@ -127,7 +124,6 @@ import com.tokopedia.shop.common.data.model.ShopPageProductDirectPurchaseWidgetA
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
-import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopPageRemoteConfigChecker
@@ -829,22 +825,6 @@ open class ShopPageHomeFragment :
                     is Fail -> {
                         val throwable = it.throwable
                         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                        if (throwable is ShopAsyncErrorException) {
-                            val actionName = when (throwable.asyncQueryType) {
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_GET_LAYOUT_V2 -> {
-                                    ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_PAGE_GET_LAYOUT_V2
-                                }
-
-                                else -> {
-                                    ""
-                                }
-                            }
-                            sendEmbraceBreadCrumbLogger(
-                                actionName,
-                                shopId,
-                                throwable.stackTraceToString()
-                            )
-                        }
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -913,20 +893,13 @@ open class ShopPageHomeFragment :
 
     private fun loadBackgroundPatternImage() {
         context?.let {
-            Glide.with(this)
-                .asBitmap()
-                .load(homeTabBackgroundPatternImage)
-                .into(object : CustomTarget<Bitmap?>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap?>?
-                    ) {
-                        val sizeMultiplier = getBgPatternSizeMultiplier()
-                        val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
-                        setBgPatternImage(resizeBgPattern)
-                    }
-                })
+            homeTabBackgroundPatternImage.getBitmapImageUrl(it, {
+
+            }) { resource ->
+                val sizeMultiplier = getBgPatternSizeMultiplier()
+                val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
+                setBgPatternImage(resizeBgPattern)
+            }
         }
     }
 
@@ -1465,20 +1438,6 @@ open class ShopPageHomeFragment :
         viewModel?.updatedShopHomeWidgetQuantityData?.observe(viewLifecycleOwner, {
             shopHomeAdapter?.submitList(it.toList())
         })
-    }
-
-    private fun sendEmbraceBreadCrumbLogger(
-        actionName: String,
-        shopId: String,
-        stackTraceString: String
-    ) {
-        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
-            actionName,
-            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
-                shopId,
-                stackTraceString
-            )
-        )
     }
 
     private fun onSuccessGetShopProductFilterCount(

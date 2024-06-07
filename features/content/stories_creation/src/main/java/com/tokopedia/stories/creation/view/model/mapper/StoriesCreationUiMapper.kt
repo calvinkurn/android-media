@@ -22,7 +22,6 @@ class StoriesCreationUiMapper @Inject constructor(
                 id = author.id,
                 name = author.name,
                 iconUrl = author.image,
-                badge = "",
                 type = author.type,
                 hasUsername = author.hasUsername,
                 hasAcceptTnc = author.hasAcceptTnC,

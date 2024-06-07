@@ -30,7 +30,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -45,6 +44,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -1423,17 +1423,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             try {
                 context?.let {
                     thumbNailImage?.let { imgView ->
-                        Glide.with(it)
-                            .load(thumbNailImageUrl)
-                            .override(
-                                UniversalShareConst
-                                    .SizeScreenShoot
-                                    .THUMBNAIL_IMG_SCREENSHOT_WIDTH,
-                                UniversalShareConst.SizeScreenShoot.THUMBNAIL_IMG_SCREENSHOT_HEIGHT
-                            )
-                            .into(
-                                imgView
-                            )
+                        imgView.loadImage(thumbNailImageUrl) {
+                            UniversalShareConst.SizeScreenShoot.let { const ->
+                                overrideSize(
+                                    Resize(
+                                        const.THUMBNAIL_IMG_SCREENSHOT_WIDTH,
+                                        const.THUMBNAIL_IMG_SCREENSHOT_HEIGHT
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             } catch (ex: Exception) {
@@ -1451,9 +1450,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 try {
                     context?.let {
                         previewImage?.let { imgView ->
-                            Glide.with(it).load(previewImageUrl).override(UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_WIDTH, UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
-                                imgView
-                            )
+                            imgView.loadImage(previewImageUrl) {
+                                UniversalShareConst.SizeScreenShoot.let { const ->
+                                    overrideSize(
+                                        Resize(
+                                            const.PREVIEW_IMG_SCREENSHOT_WIDTH,
+                                            const.PREVIEW_IMG_SCREENSHOT_HEIGHT
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 } catch (ex: Exception) {

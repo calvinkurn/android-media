@@ -16,5 +16,6 @@ data class CheckoutData(
     var prompt: Prompt = Prompt(),
     var jsonResponse: String = "",
     var priceValidationData: PriceValidationData = PriceValidationData(),
-    var method: String = ""
+    var method: String = "",
+    var consent: ConsentData = ConsentData()
 ) : Parcelable

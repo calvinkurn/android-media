@@ -2,11 +2,13 @@ package com.tokopedia.checkout.domain.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.data.model.response.checkout.CheckoutResponse
+import com.tokopedia.checkout.data.model.response.checkout.Consent
 import com.tokopedia.checkout.data.model.response.checkout.Message
 import com.tokopedia.checkout.data.model.response.checkout.PriceValidation
 import com.tokopedia.checkout.data.model.response.checkout.PromptResponse
 import com.tokopedia.checkout.data.model.response.checkout.Tracker
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
+import com.tokopedia.checkout.domain.model.checkout.ConsentData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
@@ -31,6 +33,7 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
                 callbackSuccessUrl = checkoutDataResponse.data.callbackUrl
                 callbackFailedUrl = checkoutDataResponse.data.callbackUrl
                 method = checkoutDataResponse.data.method
+                consent = mapConsent(checkoutResponse.data.data.consent)
             } else {
                 prompt = mapPrompt(checkoutResponse.data.prompt)
             }
@@ -74,6 +77,14 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
                 text = promptResponse.buttons.firstOrNull()?.text ?: ""
                 link = promptResponse.buttons.firstOrNull()?.link ?: ""
             }
+        }
+    }
+
+    private fun mapConsent(consentResponse: Consent): ConsentData {
+        return ConsentData().apply {
+            show = consentResponse.show
+            title = consentResponse.title
+            text = consentResponse.text
         }
     }
 }

@@ -236,7 +236,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onProfileSectionClicked(eventLabel: String, applink: String) {
         TrackingProfileSection.onClickProfileSection(eventLabel, pageSource, pageSourcePath)
-        if (applink == ApplinkConst.ACCOUNT && pageSource == NavSource.ACCOUNT) {
+        if (applink == ApplinkConst.User.ACCOUNT && pageSource == NavSource.ACCOUNT) {
             activity?.onBackPressed()
         } else {
             val intent = RouteManager.getIntent(context, applink)
@@ -256,7 +256,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onProfileRegisterClicked() {
         TrackingProfileSection.onClickRegisterButton(pageSource, pageSourcePath)
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.REGISTER), REQUEST_REGISTER)
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.User.REGISTER), REQUEST_REGISTER)
     }
 
     override fun onErrorProfileRefreshClicked(position: Int) {

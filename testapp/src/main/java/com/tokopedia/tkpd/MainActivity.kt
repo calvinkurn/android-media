@@ -34,14 +34,20 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
-        AppLogAnalytics.send("testapp_event", JSONObject().also {
-            it.put("greeting","helloworld")
-            it.put("key2",2)
-            it.put("key3",2.22f)
-            it.put("key4", JSONObject().also {
-                it.put("inner_key1","value2")
-            })
-        })
+        AppLogAnalytics.send(
+            "testapp_event",
+            JSONObject().also {
+                it.put("greeting", "helloworld")
+                it.put("key2", 2)
+                it.put("key3", 2.22f)
+                it.put(
+                    "key4",
+                    JSONObject().also {
+                        it.put("inner_key1", "value2")
+                    }
+                )
+            }
+        )
         model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
 
         setContent {

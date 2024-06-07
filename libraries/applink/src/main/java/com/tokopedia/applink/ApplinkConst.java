@@ -145,13 +145,11 @@ public interface ApplinkConst {
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_COLLECTION_DETAIL = "tokopedia://wishlist/collection/{collection_id}";
-    String HOST_LOGIN = "login";
+
     String LOGIN = "tokopedia://login";
-    String ADD_PHONE = "tokopedia://add-phone";
     String PRIVACY_CENTER = "tokopedia://privacy-center";
+
     String OTP = "tokopedia://otp" + "?" + PARAM_OTP_TYPE + "={otp-type}";
-    String QR_LOGIN = "tokopedia://login/qr";
-    String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
     String OFFICIAL_STORE_CATEGORY = "tokopedia://official-store/{key_category}";
@@ -216,15 +214,12 @@ public interface ApplinkConst {
     String BRAND_LIST = "tokopedia://official-store/brand";
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String BRAND_LIST_CATEGORY = "tokopedia://official-store/brand/{category_id}";
-    String REGISTER = "tokopedia://registration";
-    String REGISTER_INIT = "tokopedia://register-init";
     String PROFILE = "tokopedia://people/{user_id}";
 
     String PROFILE_SETTINGS = "tokopedia://people/settings/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
-    String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
     String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
@@ -327,7 +322,6 @@ public interface ApplinkConst {
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts/{type}";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
-    String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
     String SETTING_ADDRESS = "tokopedia://setting/address";
@@ -367,7 +361,6 @@ public interface ApplinkConst {
     String LAYANAN_FINANSIAL = "tokopedia://layanan-finansial";
     String SALDO_INTRO = "tokopedia://saldo-intro";
 
-    String HAS_PASSWORD = "tokopedia://settings/haspassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
     String SETTING_NOTIFICATION = "tokopedia://settings/notification";
     String SETTING_NOTIF_PUSH_NOTIFICATION = "tokopedia://settings/notification/push_notification";
@@ -398,16 +391,13 @@ public interface ApplinkConst {
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
-    String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
-    String INPUT_INACTIVE_NUMBER = "tokopedia://inputinactivenumber";
-    String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
     String ADD_FINGERPRINT_ONBOARDING = "tokopedia://add-fingerprint-onboarding";
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
-    String KYC = "tokopedia://kyc?projectId=1";
+    String KYC = "tokopedia://kyc?projectId={project_id}";
 
     String GOTO_KYC = "tokopedia://goto-kyc?projectId={projectId}&source={source}&callBack={callBack}";
 
@@ -483,9 +473,6 @@ public interface ApplinkConst {
             "shop_ids={shopIds}";
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
-
-    String ACCOUNT_HOST = "account";
-    String ACCOUNT = "tokopedia://account";
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
     String TELEPHONY_MASKING = "tokopedia://telephony-masking";
@@ -497,6 +484,19 @@ public interface ApplinkConst {
 
     interface User {
         String DSAR = "tokopedia://privacy-center/dsar";
+        String ACCOUNT = "tokopedia://account";
+        String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
+        String SETTING_ACCOUNT = "tokopedia://setting/account";
+        String INPUT_INACTIVE_NUMBER = "tokopedia://inputinactivenumber";
+        String ADD_PHONE = "tokopedia://add-phone";
+        String QR_LOGIN = "tokopedia://login/qr";
+        String REGISTER = "tokopedia://registration";
+        String REGISTER_INIT = "tokopedia://register-init";
+        String RESET_PASSWORD = "tokopedia://resetpassword";
+        String HAS_PASSWORD = "tokopedia://settings/haspassword";
+        String PROFILE_COMPLETION = "tokopedia://profilecompletion";
+        String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
+
     }
 
     interface Discovery {

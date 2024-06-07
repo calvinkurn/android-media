@@ -104,7 +104,6 @@ class HomeViewModelTodoWidgetUnitTest {
     @Test
     fun `given success when refresh todo widget when using new ATF mechanism then call refresh data`() {
         val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
-        every { homeRemoteConfigController.isUsingNewAtf() } returns true
         val homeAtfUseCase = mockk<HomeAtfUseCase>(relaxed = true)
 
         getHomeUseCase.givenGetHomeDataReturn(
@@ -223,8 +222,6 @@ class HomeViewModelTodoWidgetUnitTest {
                 list = listOf(mockSuccessTodoWidgetAtf)
             )
         )
-
-        every { homeRemoteConfigController.isUsingNewAtf() } returns true
 
         homeViewModel = createHomeViewModel(
             getHomeUseCase = getHomeUseCase,

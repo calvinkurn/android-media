@@ -14,9 +14,6 @@ object RollenceKey {
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
-    const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
-    const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
-    const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
     const val HOME_MEGATAB = "megatab_ff"
     const val HOME_MISSION_SIZE_KEY = "mission_px"
     const val HOME_MISSION_SIZE_CONTROL = "control_var"
@@ -67,9 +64,6 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
-
-    // For You Rollence
-    const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
 
     // Explore Category Experiment
     const val EXPLORE_CATEGORY_DEFAULT = "control_variant"

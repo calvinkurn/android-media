@@ -740,30 +740,6 @@ class ShopPageHeaderFragment :
                     is Fail -> {
                         val throwable = result.throwable
                         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                        if (throwable is ShopAsyncErrorException) {
-                            val actionName = when (throwable.asyncQueryType) {
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1 -> {
-                                    ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_P1
-                                }
-
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET -> {
-                                    ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_HEADER_WIDGET
-                                }
-
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST -> {
-                                    ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_INITIAL_PRODUCT_LIST
-                                }
-
-                                else -> {
-                                    ""
-                                }
-                            }
-                            sendEmbraceBreadCrumbLogger(
-                                actionName,
-                                shopId,
-                                throwable.stackTraceToString()
-                            )
-                        }
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -1025,20 +1001,6 @@ class ShopPageHeaderFragment :
                 page = MiniCartAnalytics.Page.SHOP_PAGE
             )
         }
-    }
-
-    private fun sendEmbraceBreadCrumbLogger(
-        actionName: String,
-        shopId: String,
-        stackTraceString: String
-    ) {
-        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
-            actionName,
-            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
-                shopId,
-                stackTraceString
-            )
-        )
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {

@@ -23,24 +23,10 @@ class FeedDetailViewModel @Inject constructor(
 
     val headerDetail = _headerDetail.asStateFlow()
 
-    fun getHeader(
-        source: String,
-        isShowSearchbar: Boolean
-    ) {
+    fun getHeader(source: String) {
         viewModelScope.launch {
-            if (isShowSearchbar) {
-                _headerDetail.update {
-                    it.copy(
-                        isShowSearchBar = true,
-                    )
-                }
-            } else {
-                val response = repository.getTitle(source)
-                _headerDetail.update {
-                    it.copy(
-                        title = response
-                    )
-                }
+            _headerDetail.update {
+                repository.getHeader(source)
             }
         }
     }

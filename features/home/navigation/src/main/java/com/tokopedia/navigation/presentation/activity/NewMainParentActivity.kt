@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.bytedance.android.btm.api.BtmSDK
+import com.bytedance.android.btm.api.model.PageShowParams
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -82,7 +84,6 @@ import com.tokopedia.navigation.presentation.model.putQueryParams
 import com.tokopedia.navigation.presentation.model.putShouldShowGlobalNav
 import com.tokopedia.navigation.presentation.model.supportedMainFragments
 import com.tokopedia.navigation.presentation.presenter.MainParentViewModel
-import com.tokopedia.navigation.presentation.util.EmbraceNavAnalyticsProcessor
 import com.tokopedia.navigation.presentation.util.GlobalNavAnalyticsProcessor
 import com.tokopedia.navigation.presentation.util.TabSelectedListener
 import com.tokopedia.navigation.presentation.util.VisitFeedProcessor
@@ -175,7 +176,6 @@ class NewMainParentActivity :
         listOf(
             createTabSelectedListener(globalAnalyticsProcessor.get(), true, { !it }, { false }),
             createTabSelectedListener(visitFeedProcessor.get()),
-            createTabSelectedListener(EmbraceNavAnalyticsProcessor()),
             createTabSelectedListener { updateAppLogPageData(it.uniqueId, false) },
             createTabSelectedListener { sendEnterPage(it.uniqueId) },
             createTabSelectedListener { if (it.uniqueId != BottomNavHomeId) mePageCoachMark.get().forceDismiss() }
@@ -787,8 +787,15 @@ class NewMainParentActivity :
         if (model != null) onTabSelected.forEach { it.onSelected(model) }
 
         AppLogTopAds.updateAdsFragmentPageData(this, PAGE_NAME, getAdsPageName())
+        sendFragmentChangeEventToBtmSDK(fragment)
 
         return true
+    }
+
+    private fun sendFragmentChangeEventToBtmSDK(fragment: Fragment) {
+        val params = PageShowParams()
+        params.reuse = true
+        BtmSDK.onPageShow(fragment, true, params)
     }
 
     private fun checkShouldLogin(id: BottomNavItemId): Boolean {

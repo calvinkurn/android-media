@@ -1,8 +1,13 @@
 package com.tokopedia.media.loader.data
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import androidx.appcompat.content.res.AppCompatResources
+import com.bumptech.glide.TransitionOptions
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.listener.NetworkResponseListener
@@ -10,18 +15,22 @@ import com.tokopedia.media.loader.utils.FeatureToggle
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
+import java.io.File
 
 data class Properties(
     internal var data: Any? = null,
     internal var renderDelay: Long = 0L,
     internal var thumbnailUrl: String = "",
+    internal var thumbnailSize: Float? = null,
     internal var blurHash: Boolean = false,
     internal var isAnimate: Boolean = false,
     internal var isCircular: Boolean = false,
     internal var roundedRadius: Float = 0f,
     internal var signatureKey: Key? = null,
     internal var error: Int = ERROR_RES_UNIFY,
+    internal var drawableError: Drawable? = null,
     internal var placeHolder: Int = 0,
+    internal var drawablePlaceHolder: Drawable? = null,
     internal var isCache: Boolean = true,
     internal var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.RESOURCE,
     internal var overrideSize: Resize? = null,
@@ -29,6 +38,7 @@ data class Properties(
     internal var loaderListener: MediaListener? = null,
     internal var transform: Transformation<Bitmap>? = null,
     internal var transforms: List<Transformation<Bitmap>>? = null,
+    internal var transition: TransitionOptions<BitmapTransitionOptions, Bitmap>? = null,
     internal var centerCrop: Boolean = false,
     internal var centerInside: Boolean = false,
     internal var fitCenter: Boolean = false,
@@ -37,7 +47,8 @@ data class Properties(
     internal var userId: String = "",
     internal var shouldTrackNetwork: Boolean = false,
     internal var isForceClearHeaderCache: Boolean = false,
-    internal var setNetworkResponse: NetworkResponseListener? = null
+    internal var setNetworkResponse: NetworkResponseListener? = null,
+    internal var timeoutMS: Int? = null
 ) {
 
     /*
@@ -102,6 +113,11 @@ data class Properties(
         this.thumbnailUrl = url
     }
 
+    // set thumbnail size multiplier
+    fun thumbnailSize(multiplier: Float) = apply {
+        this.thumbnailSize = multiplier
+    }
+
     // an activation of blurHash (as the placeholder replacement)
     fun useBlurHash(condition: Boolean) = apply {
         this.blurHash = condition
@@ -127,14 +143,24 @@ data class Properties(
         this.signatureKey = key
     }
 
-    // set custom error drawable
+    // set custom error resource
     fun setErrorDrawable(resourceId: Int) = apply {
         this.error = resourceId
     }
 
-    // set custom placeholder drawable
+    // set custom error drawable
+    fun setErrorDrawable(drawable: Drawable) = apply {
+        this.drawableError = drawable
+    }
+
+    // set custom placeholder via asset ref
     fun setPlaceHolder(resourceId: Int) = apply {
         this.placeHolder = resourceId
+    }
+
+    // set custom placeholder via drawable object
+    fun setPlaceHolder(drawable: Drawable) = apply {
+        this.drawablePlaceHolder = drawable
     }
 
     // set cache validation
@@ -158,14 +184,23 @@ data class Properties(
     }
 
     // use custom listener for the image loader callback
+    /**
+     * onSuccessWithResource: (resource, dataSource, isFirstResource)
+     * onSuccess: (resource, dataSource)
+     * onError: (exception)
+     * onSuccessGif: (resource, dataSource)
+     */
     fun listener(
         onSuccess: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
         onError: (MediaException?) -> Unit = { _ -> },
-        onSuccessGif: (GifDrawable?, MediaDataSource?) -> Unit = { _, _ -> }
+        onSuccessGif: (GifDrawable?, MediaDataSource?) -> Unit = { _, _ -> },
+        onSuccessWithResource: (Bitmap?, MediaDataSource?, Boolean) -> Unit = { _, _, _ -> },
+        onSuccessDownload: (File?, MediaDataSource?) -> Unit = { _, _ -> }
     ) = apply {
         this.loaderListener = object : MediaListener {
-            override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
+            override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?, isFirstResource: Boolean) {
                 onSuccess(resource, dataSource)
+                onSuccessWithResource(resource, dataSource, isFirstResource)
             }
 
             override fun onFailed(error: MediaException?) {
@@ -174,6 +209,10 @@ data class Properties(
 
             override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {
                 onSuccessGif(resource, dataSource)
+            }
+
+            override fun onDownload(file: File?, dataSource: MediaDataSource?) {
+                onSuccessDownload(file, dataSource)
             }
         }
     }
@@ -210,6 +249,11 @@ data class Properties(
         this.transforms = transforms
     }
 
+    // mapping transition
+    fun transition(transition: TransitionOptions<BitmapTransitionOptions, Bitmap>?) = apply {
+        this.transition = transition
+    }
+
     // set built-in centerCrop
     fun centerCrop() = apply {
         this.centerCrop = true
@@ -233,6 +277,24 @@ data class Properties(
     // accessToken and userId used to load the secure image using [loadSecureImage]
     fun userSessionAccessToken(token: String) = apply { this.accessToken = token }
     fun userId(userId: String) = apply { this.userId = userId }
+
+    fun setTimeout(timeoutMS: Int) = apply { this.timeoutMS = timeoutMS }
+
+    fun getPlaceholderDrawable(context: Context): Drawable? {
+        return if (drawablePlaceHolder == null) {
+            AppCompatResources.getDrawable(context, placeHolder)
+        } else {
+            drawablePlaceHolder
+        }
+    }
+
+    fun getErrorDrawable(context: Context): Drawable? {
+        return if (drawableError == null) {
+            AppCompatResources.getDrawable(context, error)
+        } else {
+            drawableError
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

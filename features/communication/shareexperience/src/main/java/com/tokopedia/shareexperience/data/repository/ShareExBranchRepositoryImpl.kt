@@ -10,6 +10,7 @@ import io.branch.referral.Branch
 import io.branch.referral.util.ContentMetadata
 import io.branch.referral.util.LinkProperties
 import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShareExBranchRepositoryImpl @Inject constructor() : ShareExBranchRepository {
@@ -65,12 +66,14 @@ class ShareExBranchRepositoryImpl @Inject constructor() : ShareExBranchRepositor
         scope: ProducerScope<ShareExResult<String>>
     ): Branch.BranchLinkCreateListener {
         return Branch.BranchLinkCreateListener { url, error ->
-            if (error == null) {
-                scope.trySend(ShareExResult.Success(url))
-            } else {
-                scope.trySend(ShareExResult.Error(Throwable(error.message)))
+            scope.launch {
+                if (error == null) {
+                    scope.send(ShareExResult.Success(url))
+                } else {
+                    scope.send(ShareExResult.Error(Throwable(error.message)))
+                }
+                scope.close()
             }
-            scope.close()
         }
     }
 }

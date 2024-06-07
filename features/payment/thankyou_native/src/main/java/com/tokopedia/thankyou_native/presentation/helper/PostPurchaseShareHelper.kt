@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.helper
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
@@ -51,11 +52,13 @@ class PostPurchaseShareHelper @Inject constructor(
     }
 
     fun goToSharePostPurchase(
-        context: Context,
-        shopOrderList: List<ShopOrder>
+        activity: Activity,
+        requestCode: Int,
+        shopOrderList: List<ShopOrder>,
+        pageType: String
     ) {
         val intent = RouteManager.getIntent(
-            context,
+            activity,
             ApplinkConstInternalCommunication.POST_PURCHASE_SHARING
         )
         intent.putExtra(
@@ -66,7 +69,11 @@ class PostPurchaseShareHelper @Inject constructor(
             ApplinkConstInternalCommunication.SOURCE,
             "Thankyou"
         )
-        context.startActivity(intent)
+        intent.putExtra(
+            ApplinkConstInternalCommunication.PAGE_TYPE,
+            pageType
+        )
+        activity.startActivityForResult(intent, requestCode)
     }
 
     private fun getPostPurchaseData(shopOrderList: List<ShopOrder>): UniversalSharingPostPurchaseModel {

@@ -1,10 +1,9 @@
 package com.tokopedia.content.product.picker.ugc.view.uimodel
 
-import com.tokopedia.content.product.picker.ugc.util.AUTHOR_TYPE
 import com.tokopedia.content.common.util.forEachIndexed
+import com.tokopedia.content.product.picker.ugc.util.AUTHOR_TYPE
 import com.tokopedia.content.product.picker.ugc.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import java.lang.StringBuilder
 
 /**
  * Created By : Jonathan Darwin on August 29, 2022
@@ -74,7 +73,6 @@ class ContentProductTagArgument private constructor(
     class Builder {
 
         private val argumentMap = mutableMapOf<String, Any>(
-            KEY_SHOP_BADGE to "",
             KEY_AUTHOR_ID to "",
             KEY_AUTHOR_TYPE to "",
             KEY_PRODUCT_TAG_SOURCE to "",
@@ -85,11 +83,6 @@ class ContentProductTagArgument private constructor(
             KEY_IS_SHOW_ACTION_BAR_DIVIDER to true,
             KEY_IS_AUTO_HANDLE_BACK_PRESSED to false,
         )
-
-        fun setShopBadge(shopBadge: String): Builder {
-            argumentMap[KEY_SHOP_BADGE] = shopBadge
-            return this
-        }
 
         fun setAuthorId(authorId: String): Builder {
             argumentMap[KEY_AUTHOR_ID] = authorId

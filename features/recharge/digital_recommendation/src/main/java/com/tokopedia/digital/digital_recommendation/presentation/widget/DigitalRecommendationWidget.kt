@@ -237,11 +237,10 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                     is Success -> {
                         if (it.data.items.isNotEmpty()) {
                             hideLoading()
-                            additionalTrackingData?.userType = it.data.userType
-
-                            trackers = it.data.items
 
                             if (!::adapter.isInitialized) {
+                                additionalTrackingData?.userType = it.data.userType
+                                trackers = it.data.items
                                 adapter = BaseAdapter(
                                     DigitalUnifyCardAdapterTypeFactory(unifyListener),
                                     it.data.items.map { item -> item.unify }

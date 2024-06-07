@@ -13,23 +13,21 @@
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/shop_credibility_name"
-        >
+        app:layout_constraintTop_toTopOf="@+id/shop_credibility_name">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_credibility_ava"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
-            tools:src="@tools:sample/avatars"
-            />
+            tools:src="@tools:sample/avatars" />
 
     </com.tokopedia.stories.widget.StoriesWidgetLayout>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_badge"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="@id/shop_credibility_name"
         app:layout_constraintLeft_toRightOf="@id/stories_border"
@@ -54,7 +52,7 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginEnd="16dp"
         app:layout_goneMarginLeft="8dp"
-        app:typographyType="display_1"
+        app:typographyType="paragraph_1"
         app:typographyWeight="bold"
         tools:text="Chupacup Indonesia Rayaaa" />
 
@@ -102,13 +100,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@id/shop_credibility_last_active"
         app:layout_constraintTop_toBottomOf="@+id/shop_credibility_last_active"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="• Kota Tangerang Selatan" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_shop_credibility_location"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginStart="4dp"
         android:visibility="gone"
         app:icon_name="INFORMATION"
@@ -117,77 +115,16 @@
         app:layout_constraintTop_toTopOf="@+id/shop_credibility_location"
         tools:visibility="visible" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/shop_credibility_icon_1"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_1"
-        app:layout_constraintLeft_toLeftOf="@id/stories_border"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_1"
-        tools:icon_name="STAR" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shop_credibility_info_title_1"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/shop_credibility_stats_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintLeft_toRightOf="@id/shop_credibility_icon_1"
-        app:layout_constraintTop_toBottomOf="@id/shop_credibility_location"
-        app:layout_goneMarginStart="0dp"
-        app:typographyType="display_2"
-        tools:text="4.8" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shop_credibility_info_desc_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_1"
-        app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_1"
-        app:typographyType="display_3"
-        tools:text="rating toko" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/shop_credibility_icon_2"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
-        app:layout_constraintLeft_toLeftOf="@id/shop_credibility_icon_1"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_2"
-        tools:icon_name="CLOCK" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shop_credibility_info_title_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintBottom_toTopOf="@id/shop_credibility_info_ticker"
-        app:layout_constraintLeft_toRightOf="@id/shop_credibility_icon_2"
-        app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_title_1"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_goneMarginBottom="12dp"
-        app:layout_goneMarginStart="0dp"
-        app:typographyType="display_2"
-        tools:text="± 1 menit" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shop_credibility_info_desc_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
-        app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_2"
-        app:typographyType="display_3"
-        tools:text="pesanan diproses" />
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/shop_credibility_button_follow"
+        app:layout_constraintStart_toStartOf="@id/stories_border"
+        app:layout_constraintTop_toBottomOf="@+id/shop_credibility_location" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/shop_credibility_button_follow"
@@ -195,9 +132,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/label_follow"
-        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_1"
+        app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_stats_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shop_credibility_stats_container"
+        app:layout_constraintTop_toTopOf="@+id/shop_credibility_stats_container"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost" />
@@ -210,7 +148,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
         android:layout="@layout/view_credibility_ticker"
-        app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_desc_2"
+        app:layout_constraintTop_toBottomOf="@id/shop_credibility_stats_container"
         app:layout_goneMarginTop="8dp"
         tools:visibility="visible" />
 
