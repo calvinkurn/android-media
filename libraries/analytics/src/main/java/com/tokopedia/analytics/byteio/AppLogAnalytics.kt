@@ -592,7 +592,6 @@ object AppLogAnalytics {
      * If isOneStep is true then it will always return N-1 data
      * */
     fun getPreviousDataOfProduct(key: String, isOneStep: Boolean = false): Any? {
-        val anchor = PageName.PDP
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
@@ -606,7 +605,7 @@ object AppLogAnalytics {
                 }
             }
 
-            if (map[PAGE_NAME] == anchor ||
+            if (map[PAGE_NAME] == PageName.PDP ||
                 (map[PAGE_NAME] == PageName.SKU && _pageDataList.lastTwoPageName(idx) != PageName.PDP)
             ) {
                 start = true
