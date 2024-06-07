@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
-import com.bytedance.apm.trace.mapping.ApmPageLoadMappingTool.put
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -157,23 +156,14 @@ object AppLogAnalytics {
     }
 
     /**
-     * Use this method to generate entrance info from non-PDP page e.g. Shop, GSLP, etc
-     * Before using this, setGlobalParamsOnClick should be called first
+     * Use this method to generate entrance info from non-PDP page without VBS e.g. Shop, GSLP, etc
      * */
-    fun generateEntranceInfoCurrent(): JSONObject {
+    fun generateEntranceInfoNonPdp(data: Map<String, Any>): JSONObject {
         return JSONObject().apply {
+            for (d in data) {
+                put(d.key, d.value)
+            }
             addEnterFromInfo()
-            put(ENTRANCE_FORM, getCurrentData(ENTRANCE_FORM))
-            put(SOURCE_PAGE_TYPE, getCurrentData(SOURCE_PAGE_TYPE))
-            put(TRACK_ID, getCurrentData(TRACK_ID))
-            put(IS_AD, getCurrentData(IS_AD))
-            put(REQUEST_ID, getCurrentData(REQUEST_ID))
-            put(SOURCE_MODULE, getCurrentData(SOURCE_MODULE))
-            put(ENTER_METHOD, getCurrentData(ENTER_METHOD))
-            put(ENTER_METHOD, getCurrentData(ENTER_METHOD))
-            put(PARENT_PRODUCT_ID, getCurrentData(PARENT_PRODUCT_ID))
-            put(PARENT_TRACK_ID, getCurrentData(PARENT_TRACK_ID))
-            put(PARENT_REQUEST_ID, getCurrentData(PARENT_REQUEST_ID))
             put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
             put(SEARCH_ID, getLastData(SEARCH_ID))
             put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
@@ -561,6 +551,14 @@ object AppLogAnalytics {
             it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
             it.put("buy_type", buyType.code)
             it.put("os_name", "android")
+        }.toString()
+    }
+
+    fun getEntranceInfoNonPdp(data: Map<String, Any>, buyType: AtcBuyType): String {
+        return JSONObject().apply {
+            put(ENTRANCE_INFO, generateEntranceInfoNonPdp(data).toString())
+            put("buy_type", buyType.code)
+            put("os_name", "android")
         }.toString()
     }
 
