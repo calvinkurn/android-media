@@ -25,6 +25,9 @@ dependencies {
     //new relic sdk
     implementation rootProject.ext.miscDependencies.newRelic
 
+    // Slardar
+    implementation rootProject.ext.slardarDependencies.commonMonitor
+
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.junit
