@@ -13,6 +13,7 @@ import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.asEntranceInfoMap
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -567,6 +568,12 @@ class MasterProductCardItemViewHolder(
                 masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                     productItem.productId?.let { productId ->
                         if (productId.isNotEmpty()) {
+                            val mapEntranceInfoTracker = mutableMapOf<String, Any>()
+                            if (productItem.isEligibleToTrack()) {
+                                val productTrackModel = productItem.asProductTrackModel(productCardName)
+                                mapEntranceInfoTracker.putAll(productTrackModel.asEntranceInfoMap())
+                                AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, productItem.asTrackConfirmCart())
+                            }
                             (fragment as DiscoveryFragment).addOrUpdateItemCart(
                                 DiscoATCRequestParams(
                                     parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
@@ -576,13 +583,9 @@ class MasterProductCardItemViewHolder(
                                     shopId = if (isGeneralCartATC) productItem.shopId else null,
                                     isGeneralCartATC = isGeneralCartATC,
                                     requestingComponent = masterProductCardItemViewModel.components,
-                                    appLogParam = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
+                                    appLogParam = AppLogAnalytics.getEntranceInfoNonPdp(mapEntranceInfoTracker, AtcBuyType.ATC)
                                 )
                             )
-
-                            if (productItem.isEligibleToTrack()) {
-                                productItem.trackConfirmCartAppLog()
-                            }
                         }
                     }
                 }
@@ -591,11 +594,6 @@ class MasterProductCardItemViewHolder(
                 (fragment as DiscoveryFragment).openLoginScreen()
             }
         }
-    }
-
-    private fun DataItem.trackConfirmCartAppLog() {
-        val productTrackModel = asProductTrackModel(productCardName)
-        AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, asTrackConfirmCart())
     }
 
     companion object {

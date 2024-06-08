@@ -5,6 +5,12 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogParam.CLICK_AREA
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
+import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
+import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
+import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
@@ -98,6 +104,17 @@ object AppLogRecommendation {
         )
         additionalParam.setAdditionalToGlobalParam()
     }
+
+    fun AppLogRecommendationProductModel.asEntranceInfoMap(): Map<String, Any> =
+        mapOf(
+            ENTRANCE_FORM to entranceForm,
+            SOURCE_MODULE to sourceModule,
+            IS_AD to isAd,
+            TRACK_ID to trackId,
+            SOURCE_PAGE_TYPE to SourcePageType.PRODUCT_CARD,
+            REQUEST_ID to requestId
+        )
+
 
     private fun AppLogRecommendationCardModel.setGlobalParamOnClick() {
         AppLogAnalytics.setGlobalParamOnClick(
