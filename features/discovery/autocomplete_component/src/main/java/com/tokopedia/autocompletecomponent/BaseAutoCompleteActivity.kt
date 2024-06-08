@@ -731,6 +731,8 @@ open class BaseAutoCompleteActivity :
             getString(R.string.search_autocomplete_hint)
         }
         searchBarView.setTextViewHint(hintText)
+        val preventSearchBtnHide = !viewModel?.searchBarKeywords?.value.isNullOrEmpty()
+        searchBarView.preventSearchBtnHide(preventSearchBtnHide)
     }
 
     private fun showMps() {
