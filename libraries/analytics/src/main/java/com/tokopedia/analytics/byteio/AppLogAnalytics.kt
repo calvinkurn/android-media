@@ -5,6 +5,7 @@ import android.app.Application
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
+import com.tokopedia.analytics.byteio.AppLogParam.ATC_POINT
 import com.tokopedia.analytics.byteio.AppLogParam.AUTHOR_ID
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
@@ -123,7 +124,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, getPreviousDataOfProduct(ENTRANCE_FORM, true))
+        put(ENTRANCE_FORM, getPreviousDataOfProduct(ENTRANCE_FORM))
     }
 
     fun generateEntranceInfoJson(): JSONObject {
@@ -132,7 +133,7 @@ object AppLogAnalytics {
             it.addEntranceForm()
             it.addSourcePageType()
             it.addTrackId()
-            it.put(IS_AD, getPreviousDataOfProduct(IS_AD, true))
+            it.put(IS_AD, getPreviousDataOfProduct(IS_AD))
             it.addRequestId()
             it.addSourceModulePdp()
             it.addEnterMethodPdp()
@@ -145,12 +146,12 @@ object AppLogAnalytics {
             it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
             it.put(
                 PARENT_PRODUCT_ID,
-                getPreviousDataOfProduct(PARENT_PRODUCT_ID, true)
+                getPreviousDataOfProduct(PARENT_PRODUCT_ID)
             )
-            it.put(PARENT_TRACK_ID, getPreviousDataOfProduct(PARENT_TRACK_ID, true))
+            it.put(PARENT_TRACK_ID, getPreviousDataOfProduct(PARENT_TRACK_ID))
             it.put(
                 PARENT_REQUEST_ID,
-                getPreviousDataOfProduct(PARENT_REQUEST_ID, true)
+                getPreviousDataOfProduct(PARENT_REQUEST_ID)
             )
         }
     }
@@ -216,23 +217,23 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(SOURCE_PAGE_TYPE, getPreviousDataOfProduct(SOURCE_PAGE_TYPE, true))
+        put(SOURCE_PAGE_TYPE, getPreviousDataOfProduct(SOURCE_PAGE_TYPE))
     }
 
     internal fun JSONObject.addSourceModulePdp() {
-        put(SOURCE_MODULE, getPreviousDataOfProduct(SOURCE_MODULE, true))
+        put(SOURCE_MODULE, getPreviousDataOfProduct(SOURCE_MODULE))
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
-        put(ENTER_METHOD, getPreviousDataOfProduct(ENTER_METHOD, true))
+        put(ENTER_METHOD, getPreviousDataOfProduct(ENTER_METHOD))
     }
 
     internal fun JSONObject.addRequestId() {
-        put(REQUEST_ID, getPreviousDataOfProduct(REQUEST_ID, true))
+        put(REQUEST_ID, getPreviousDataOfProduct(REQUEST_ID))
     }
 
     internal fun JSONObject.addTrackId() {
-        put(TRACK_ID, getPreviousDataOfProduct(TRACK_ID, true))
+        put(TRACK_ID, getPreviousDataOfProduct(TRACK_ID))
     }
 
     internal fun JSONObject.addEnterMethod() {
@@ -591,7 +592,7 @@ object AppLogAnalytics {
      * Starting from N-1, this method will start searching for a key after product item, can be PDP or SKU
      * If isOneStep is true then it will always return N-1 data
      * */
-    fun getPreviousDataOfProduct(key: String, isOneStep: Boolean = false): Any? {
+    fun getPreviousDataOfProduct(key: String, isOneStep: Boolean = true): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false

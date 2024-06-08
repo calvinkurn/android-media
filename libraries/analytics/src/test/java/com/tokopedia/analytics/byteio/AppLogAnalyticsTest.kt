@@ -98,7 +98,7 @@ class AppLogAnalyticsTest {
         SUT.pushPageData(ActivityPdpTwo)
         SUT.pushPageData(ActivityBasicThree)
 
-        val actual = SUT.getPreviousDataOfProduct(PARENT_PRODUCT_ID, true)
+        val actual = SUT.getPreviousDataOfProduct(PARENT_PRODUCT_ID)
 
         assertNull(actual)
     }
@@ -110,7 +110,7 @@ class AppLogAnalyticsTest {
         SUT.putPageData(TRACK_ID, expected)
         SUT.pushPageData(ActivitySkuOne)
 
-        val actual = SUT.getPreviousDataOfProduct(TRACK_ID, true)
+        val actual = SUT.getPreviousDataOfProduct(TRACK_ID)
 
         assertEquals(expected, actual)
     }
@@ -123,7 +123,7 @@ class AppLogAnalyticsTest {
         SUT.pushPageData(ActivityPdpOne)
         SUT.pushPageData(ActivitySkuOne)
 
-        val actual = SUT.getPreviousDataOfProduct(TRACK_ID, true)
+        val actual = SUT.getPreviousDataOfProduct(TRACK_ID)
 
         assertEquals(expected, actual)
     }
