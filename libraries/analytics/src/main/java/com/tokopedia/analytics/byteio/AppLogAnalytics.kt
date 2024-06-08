@@ -616,6 +616,20 @@ object AppLogAnalytics {
         return null
     }
 
+    /**
+     * POC function for non PDP OCS/OCC case
+     * */
+    fun getPreviousDataOfProductWithAtcPoint(key: String): Any? {
+        _pageDataList.reversed().forEach { hashMap ->
+            if (hashMap.containsKey(ATC_POINT)) {
+                hashMap[key]?.let {
+                    return it
+                }
+            }
+        }
+        return null
+    }
+
     private fun ArrayList<HashMap<String, Any>>.lastTwoPageName(index: Int): String? =
         getOrNull(index - 1)?.get(PAGE_NAME)?.toString()
 
