@@ -1622,7 +1622,11 @@ public class MainParentActivity extends BaseActivity implements
 
     //MIGRATED
     @Override
-    public void onHomeCoachMarkFinished() {
+    public void prepareNavigationCoachMark(View inboxView) {
+    }
+
+    @Override
+    public void dismissNavigationCoachMark() {
     }
 
     //MIGRATED

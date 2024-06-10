@@ -44,6 +44,7 @@ import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
+import com.tokopedia.play_common.websocket.SocketDebounce
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -162,14 +163,16 @@ class PlayModule {
         @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers,
-        localCacheHandler: LocalCacheHandler
+        localCacheHandler: LocalCacheHandler,
+        socketDebounce: SocketDebounce,
     ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
             dispatchers,
             context,
-            localCacheHandler
+            localCacheHandler,
+            socketDebounce,
         )
     }
 
@@ -193,9 +196,10 @@ class PlayModule {
     fun providePlaySSE(
         @ApplicationContext appContext: Context,
         userSession: UserSessionInterface,
-        dispatchers: CoroutineDispatchers
+        dispatchers: CoroutineDispatchers,
+        socketDebounce: SocketDebounce,
     ): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, appContext)
+        PlayChannelSSEImpl(userSession, dispatchers, appContext, socketDebounce)
 
     /**
      * Sharing Experience

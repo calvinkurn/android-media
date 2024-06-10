@@ -8,7 +8,6 @@ import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
@@ -26,6 +25,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -43,7 +43,7 @@ fun parentBroViewModel(
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     dispatcher: CoroutineDispatchers = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
+    playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser(), mockk(relaxed = true)),
     productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil()),
     interactiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(DefaultHtmlTextTransformer()),

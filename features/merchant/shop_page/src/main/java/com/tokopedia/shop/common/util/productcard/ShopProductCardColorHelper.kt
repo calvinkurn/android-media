@@ -18,6 +18,7 @@ class ShopProductCardColorHelper {
     ): ProductCardColor {
         return when {
             isFestivity -> overrideToFestivityColor(makeProductCardTransparent, backgroundColor)
+            isOverrideThemeWithEmptyBackground(shouldOverrideTheme, backgroundColor) -> followDeviceThemeColor()
             shouldOverrideTheme -> overrideToShopThemeColor(makeProductCardTransparent, patternColorType, backgroundColor)
             else -> followDeviceThemeColor()
         }
@@ -70,5 +71,23 @@ class ShopProductCardColorHelper {
         }
 
         return defaultProductCardColor
+    }
+
+    /**
+     * To detect whether returned shop background is transparent or not from BE
+     * Shop considered transparent if we receive shouldOverrideTheme == true and bgColors arrays is empty from ShopHeaderLayout GQL
+     * When bgColors is empty array, there is a logic in shop page to change the backgroundColor to #FFFFFF if device theme is light, and to #121212 if device theme is dark
+     * When shop background is considered transparent then product card color should follow device theme (light/dark)
+     */
+    private fun isOverrideThemeWithEmptyBackground(
+        shouldOverrideTheme: Boolean,
+        backgroundColor: String
+    ): Boolean {
+        val lightBackgroundColor = "#FFFFFF"
+        val darkBackgroundColor = "#121212"
+        val adjustedBackgroundColor =
+            backgroundColor == lightBackgroundColor || backgroundColor == darkBackgroundColor
+        val isOverrideThemeWithEmptyBackground = shouldOverrideTheme && adjustedBackgroundColor
+        return isOverrideThemeWithEmptyBackground
     }
 }
