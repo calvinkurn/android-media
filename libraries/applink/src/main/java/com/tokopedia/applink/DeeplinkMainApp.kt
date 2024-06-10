@@ -51,6 +51,7 @@ import com.tokopedia.applink.model.StartsWith
 import com.tokopedia.applink.model.or
 import com.tokopedia.applink.notifsetting.DeeplinkMapperNotifSetting
 import com.tokopedia.applink.notifsetting.NotifSettingType
+import com.tokopedia.applink.navigation.DeeplinkMapperMainNavigation
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
@@ -492,6 +493,11 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("onboarding") { _: String ->
                 ApplinkConstInternalMarketplace.ONBOARDING
+            }
+        ),
+        "me-page" to mutableListOf(
+            DLP.matchPattern("") { deepLink: String ->
+                DeeplinkMapperMainNavigation.getRegisteredNavigation(deepLink)
             }
         ),
         "medali" to mutableListOf(

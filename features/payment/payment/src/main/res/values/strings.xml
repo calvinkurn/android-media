@@ -13,6 +13,7 @@
     <string name="toppay_title">Pembayaran</string>
     <string name="toppay_title_content_desc">Pembayaran nomor %s</string>
     <string name="toppay_error_login">Proses pembayaran gagal, mohon ulangi lagi</string>
+    <string name="toppay_cc_loader_text">Pembayaran lagi diverifikasi...</string>
 
     <string name="fingerprint_label_desc_default">Posisikan permukaan sidik jari anda dengan tepat dan pastikan sensor berfungsi</string>
 </resources>

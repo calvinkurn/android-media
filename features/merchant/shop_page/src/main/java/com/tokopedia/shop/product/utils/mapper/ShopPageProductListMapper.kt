@@ -84,7 +84,7 @@ object ShopPageProductListMapper {
                 it.isShowFreeOngkir = freeOngkir.isActive
                 it.freeOngkirPromoIcon = freeOngkir.imgUrl
                 it.etalaseId = etalaseId
-                it.badge = badge.map { badge -> ShopBadgeUiModel(title = badge.title, imageUrl = badge.imageUrl, show = true) }
+                it.badge = badge.map { badge->  ShopBadgeUiModel(title = badge.title, imageUrl = badge.imageUrl, show = true) }
                 it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.etalaseType = etalaseType
                 it.stock = stock.toLong()

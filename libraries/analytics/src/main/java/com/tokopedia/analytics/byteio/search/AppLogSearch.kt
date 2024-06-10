@@ -70,6 +70,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITIO
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_HISTORY
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_RESULT
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_SUG
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
@@ -89,6 +90,7 @@ object AppLogSearch {
         DEFAULT_SEARCH_KEYWORD,
         SUG_RECOM,
         SEARCH_SUG,
+        SEARCH_HISTORY
     )
 
     object Event {
@@ -428,7 +430,7 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH_RESULT_CLICK, searchResult.json())
 
         with(searchResult) {
-            AppLogAnalytics.setGlobalParams(
+            AppLogAnalytics.setGlobalParamOnClick(
                 trackId = trackId,
                 requestId = imprId,
             )
@@ -539,7 +541,7 @@ object AppLogSearch {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, product.json())
 
         with(product) {
-            AppLogAnalytics.setGlobalParams(
+            AppLogAnalytics.setGlobalParamOnClick(
                 entranceForm = entranceForm.str,
                 enterMethod = null,
                 sourceModule = null,

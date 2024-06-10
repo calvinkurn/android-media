@@ -57,6 +57,7 @@
     <string name="path_content_browse_local" translatable="false">/search</string>
     <string name="path_content_browse_category_inspiration" translatable="false">/browse/inspirational</string>
     <string name="path_content_browse_search_result" translatable="false">/search-result</string>
+    <string name="path_content_stories_settings" translatable="false">/settings</string>
 
     <string name="host_product_preview" translatable="false">product-preview</string>
     <string name="path_product_preview" translatable="false">/.*\</string>

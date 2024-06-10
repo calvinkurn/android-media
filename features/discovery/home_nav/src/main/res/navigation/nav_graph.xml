@@ -23,6 +23,10 @@
             android:name="@string/main_nav_args_source_path_key"
             app:argType="string"
             android:defaultValue=""/>
+        <argument
+            android:name="@string/main_nav_args_is_acting_as_account_page_key"
+            app:argType="boolean"
+            android:defaultValue="false"/>
 
     </fragment>
 
