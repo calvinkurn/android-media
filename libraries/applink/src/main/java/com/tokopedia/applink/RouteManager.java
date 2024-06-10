@@ -615,10 +615,14 @@ public class RouteManager {
     }
 
     private static String appendSourceBtmToken(@Nullable String link, @Nullable BtmModel model) {
-        boolean isBtmDisabled = !RouteManagerFeatureFlag.isBtmEnabled();
-        if (link == null || link.isEmpty() || isBtmDisabled) return link;
-        Uri uri = appendSourceBtmToken(Uri.parse(link), model);
-        return uri.toString();
+        try {
+            boolean isBtmDisabled = !RouteManagerFeatureFlag.isBtmEnabled();
+            if (link == null || link.isEmpty() || isBtmDisabled) return link;
+            Uri uri = appendSourceBtmToken(Uri.parse(link), model);
+            return uri.toString();
+        } catch (Exception e) {
+            return link;
+        }
     }
 
 }
