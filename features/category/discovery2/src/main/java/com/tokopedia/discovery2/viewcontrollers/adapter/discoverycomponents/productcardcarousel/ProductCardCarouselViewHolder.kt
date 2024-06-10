@@ -67,9 +67,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         mProductCarouselComponentViewModel?.let {
             getSubComponent().inject(it)
         }
-        if (mDiscoveryRecycleAdapter.itemCount == 0 || mProductCarouselComponentViewModel?.getProductList().isNullOrEmpty()) {
-            addShimmer()
-        }
         mProductCarouselRecyclerView.show()
         carouselEmptyState?.hide()
         errorHolder.gone()
@@ -295,18 +292,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         }
     }
 
-    private fun addShimmer() {
-        val list: ArrayList<ComponentsItem> = ArrayList()
-        list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
-        list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
-        mDiscoveryRecycleAdapter.setDataList(list)
-
-        shimmerSaleTimer.show()
-        saleTimer.invisible()
-    }
-
     private fun handleErrorState() {
-        addShimmer()
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
         mixLeftBannerCard.hide()
         shimmerSaleTimer.invisible()
