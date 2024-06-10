@@ -93,7 +93,6 @@ ext {
     robolectricVersion = "4.9"
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
-    embraceVersion = '5.22.0'
     newRelicVersion = '7.0.0'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
@@ -335,8 +334,6 @@ ext {
             dataStorePreferences  : "androidx.datastore:datastore-preferences:$dataStoreVersion",
             googleTink            : "com.google.crypto.tink:tink-android:$googleTinkVersion",
             protobufLite          : "com.google.protobuf:protobuf-javalite:$protobufLiteVersion",
-            embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
-            embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
             window                : "androidx.window:window:$windowVersion",
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
             localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
@@ -426,7 +423,6 @@ ext {
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
-            leakPublisher : "com.gojek.android.local:library-leak-publisher:866fb8ad",
             chuckMqtt       : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion",
             chuckMqttNoop   : "com.gojek.courier:chuck-mqtt-no-ops:$gojekCourierVersion"
     ]
@@ -557,6 +553,14 @@ ext {
         encrypt           : "com.bytedance.frameworks.core:encrypt:$frameworkCoreEncryptVersion",
         baseLibsUtility   : "com.bytedance.frameworks.baselib:utility:$baseLibsUtilityVersion",
         bdNetworkTag      : "com.ss.android.ugc.quota:BDNetworkTag:$bdNetworkTagVersion"
+    ]
+
+    btmVersion = "2.0.4.i18n-rc.0-toko"
+
+    btmDependencies = [
+            btmApi      : "com.bytedance.android.btm:btm-api:$btmVersion",
+            btmImpl     : "com.bytedance.android.btm:btm-impl:$btmVersion",
+            lazyData    : "com.ss.android.ugc.aweme:lazydata:0.0.1-alpha.32"
     ]
 
     msSdkDependencies = [

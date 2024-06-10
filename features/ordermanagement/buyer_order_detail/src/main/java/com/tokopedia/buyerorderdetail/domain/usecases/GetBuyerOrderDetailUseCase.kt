@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -25,18 +24,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
-    }.onCompletion {
-        logCompletionBreadcrumb(params, it)
-    }
-
-    private fun logCompletionBreadcrumb(params: GetBuyerOrderDetailParams, throwable: Throwable?) {
-        runCatching {
-            if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Success: $params")
-            } else {
-                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Error: ${throwable.stackTraceToString()}")
-            }
-        }
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {

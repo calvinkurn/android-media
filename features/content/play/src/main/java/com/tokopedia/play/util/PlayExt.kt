@@ -6,6 +6,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.shareexperience.domain.util.ShareExConstants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -33,8 +35,8 @@ internal inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
  * since position 5 has index position of 4
  */
 internal fun ViewPager2.findFragmentByPosition(
-        fragmentManager: FragmentManager,
-        pos: Int,
+    fragmentManager: FragmentManager,
+    pos: Int
 ): Fragment? {
     return fragmentManager.findFragmentByTag("f$pos")
 }
@@ -46,8 +48,8 @@ internal fun ViewPager2.findCurrentFragment(fragmentManager: FragmentManager): F
 private const val MEASURE_TIMEOUT_IN_MS: Long = 500
 
 internal suspend inline fun measureWithTimeout(
-        timeout: Long = MEASURE_TIMEOUT_IN_MS,
-        crossinline measureFn: suspend () -> Unit
+    timeout: Long = MEASURE_TIMEOUT_IN_MS,
+    crossinline measureFn: suspend () -> Unit
 ) = withTimeout(timeout) {
     measureFn()
 }
@@ -70,8 +72,8 @@ data class CachedState<T>(val prevValue: T? = null, val value: T) {
     }
 }
 
-internal fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
-    var cachedValue : T? = null
+internal fun <T : Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+    var cachedValue: T? = null
     return map {
         val prevValue = cachedValue
         cachedValue = it
@@ -79,6 +81,13 @@ internal fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     }
 }
 
-internal fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
+internal fun <T : Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
     value = value.fn()
+}
+
+fun AbTestPlatform.isEnableShareExPlay(): Boolean {
+    return this.getString(
+        ShareExConstants.Rollence.ROLLANCE_SHARE_EX_PLAY,
+        ""
+    ) == ShareExConstants.Rollence.ROLLANCE_SHARE_EX_PLAY
 }

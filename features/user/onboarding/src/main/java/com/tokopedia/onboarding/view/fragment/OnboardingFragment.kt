@@ -232,7 +232,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
             launchCatchError(
                     block = {
                         finishOnBoarding()
-                        val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
+                        val intent = getIntentforApplink(it, ApplinkConst.User.REGISTER)
                         intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
                         startActivityForResult(intent, REQUEST_REGISTER)
                     },

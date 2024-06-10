@@ -1,7 +1,6 @@
 package com.tokopedia.favorite.view.adapter
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -12,24 +11,21 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.utils.ImageLoader
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import java.util.*
 import kotlin.collections.ArrayList
-import com.tokopedia.topads.sdk.R.drawable
+import com.tokopedia.topads.sdk.R as topadssdkR
+import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * @author by erry on 30/01/17.
@@ -105,42 +101,30 @@ class TopAdsShopAdapter(
 
     private fun setShopCover(holder: ViewHolder, shopItem: TopAdsShopItem) {
         if (shopItem.shopCoverUrl == null) {
-            holder.shopCover.setImageResource(com.tokopedia.abstraction.R.drawable.ic_loading_toped)
+            holder.shopCover.setImageResource(abstractionR.drawable.ic_loading_toped)
         } else {
-            Glide.with(context!!)
-                    .load(shopItem.shopCoverEcs)
-                    .dontAnimate()
-                    .placeholder(drawable.loading_page_topads)
-                    .error(drawable.error_drawable)
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .override(SHOP_COVER_WIDTH, SHOP_COVER_HEIGHT)
-                    .listener(object : RequestListener<Drawable?> {
-                        override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
-                            return false
+            holder.shopCover.loadImage(shopItem.shopCoverEcs) {
+                setPlaceHolder(topadssdkR.drawable.loading_page_topads)
+                setErrorDrawable(topadssdkR.drawable.error_drawable)
+                useCache(false)
+                overrideSize(Resize(SHOP_COVER_WIDTH, SHOP_COVER_HEIGHT))
+                listener(
+                    onSuccessWithResource = {_, _, isFirstResource ->
+                        val coverUrl = shopItem.shopCoverUrl
+                        if (coverUrl != null
+                            && coverUrl.contains(PATH_VIEW)
+                            && !isFirstResource) {
+                            impressionImageLoadedListener.onImageLoaded(
+                                className,
+                                coverUrl,
+                                shopItem.shopId,
+                                shopItem.shopName,
+                                shopItem.shopImageUrl
+                            )
                         }
-
-                        override fun onResourceReady(resource: Drawable?,
-                                                     model: Any,
-                                                     target: Target<Drawable?>,
-                                                     dataSource: DataSource,
-                                                     isFirstResource: Boolean): Boolean {
-                            val coverUrl = shopItem.shopCoverUrl
-                            if (coverUrl != null
-                                    && coverUrl.contains(PATH_VIEW)
-                                    && !isFirstResource) {
-                                impressionImageLoadedListener.onImageLoaded(
-                                        className,
-                                        coverUrl,
-                                        shopItem.shopId,
-                                        shopItem.shopName,
-                                        shopItem.shopImageUrl
-                                )
-                            }
-                            return false
-                        }
-                    })
-                    .into(holder.shopCover)
+                    }
+                )
+            }
         }
     }
 

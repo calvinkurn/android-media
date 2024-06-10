@@ -9,12 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_DURATION_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_FAQ_RESOURCE_ID
@@ -82,9 +82,7 @@ class TokoNowEducationalInfoBottomSheet :
                 setTwentyFourHours(tpTwentyFourHours, context)
                 setTermAndConditions(tpTermsAndConditions, context)
 
-                Glide.with(context)
-                    .load(BACKGROUND_BOTTOMSHEET)
-                    .into(ivBackgroundImage)
+                ivBackgroundImage.loadImage(BACKGROUND_BOTTOMSHEET)
 
                 setButton()
             }

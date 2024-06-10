@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.content.product.picker.test.R
 import com.tokopedia.content.product.picker.producttag.di.ContentProductTagTestInjector
+import com.tokopedia.content.product.picker.test.R
 import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
@@ -79,7 +79,6 @@ class ContentProductTagTestActivity : AppCompatActivity() {
         val argument = ContentProductTagArgument.mapFromString(intent.getStringExtra(EXTRA_ARGUMENT).orEmpty())
 
         return ContentProductTagArgument.Builder()
-            .setShopBadge(argument.shopBadge)
             .setAuthorId(argument.authorId)
             .setAuthorType(argument.authorType)
             .setProductTagSource(argument.productTagSource)

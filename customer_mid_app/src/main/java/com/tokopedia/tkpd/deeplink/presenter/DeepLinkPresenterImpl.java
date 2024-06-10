@@ -357,7 +357,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openLoginByQr(Uri uriData) {
-        RouteManager.route(context, ApplinkConst.QR_LOGIN + "?" + uriData.getQuery());
+        RouteManager.route(context, ApplinkConst.User.QR_LOGIN + "?" + uriData.getQuery());
     }
 
     private void openNativeThankYouPage(List<String> linkSegment, Bundle defaultBundle) {

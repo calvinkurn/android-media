@@ -35,13 +35,6 @@ object HomeMockValueHelper {
         remoteConfig.setString(RemoteConfigKey.HOME_REMOVE_PAGINATION, MOCK_DISABLE_REMOVE_PAGINATION)
     }
 
-    fun setupAtfRefactorConfig(isNewAtfMechanism: Boolean = false) {
-        val remoteConfig = FirebaseRemoteConfigImpl(
-            InstrumentationRegistry.getInstrumentation().context
-        )
-        remoteConfig.setString(RemoteConfigKey.HOME_ATF_REFACTORING, isNewAtfMechanism.toString())
-    }
-
     fun setupDynamicChannelQueryRemoteConfig(
         isUsingQueryV2: Boolean = true
     ) {

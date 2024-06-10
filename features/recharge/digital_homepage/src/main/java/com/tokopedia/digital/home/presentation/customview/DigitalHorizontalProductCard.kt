@@ -1,19 +1,15 @@
 package com.tokopedia.digital.home.presentation.customview
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.databinding.LayoutDigitalHorizontalProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.unifycomponents.BaseCustomView
 
@@ -57,29 +53,18 @@ class DigitalHorizontalProductCard @JvmOverloads constructor(
     private fun setupProductImage() {
         with(binding.tgHorizontalCardProductImage) {
             if (imageUrl.isNotEmpty()) {
-                Glide.with(context)
-                    .asBitmap()
-                    .load(imageUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            imageRatio = resource.width.toDouble() / resource.height.toDouble()
+                imageUrl.getBitmapImageUrl(context) { resource ->
+                    imageRatio = resource.width.toDouble() / resource.height.toDouble()
 
-                            binding.tgHorizontalCardProductImage.setImageBitmap(resource)
+                    binding.tgHorizontalCardProductImage.setImageBitmap(resource)
 
-                            val newWidth = measureContentHeight()
-                            val newHeight = newWidth / imageRatio
+                    val newWidth = measureContentHeight()
+                    val newHeight = newWidth / imageRatio
 
-                            layoutParams.width = newWidth
-                            layoutParams.height = newHeight.toInt()
-                            requestLayout()
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                        }
-                    })
+                    layoutParams.width = newWidth
+                    layoutParams.height = newHeight.toInt()
+                    requestLayout()
+                }
             }
 
             viewTreeObserver.addOnGlobalLayoutListener(object :

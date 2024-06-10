@@ -16,5 +16,7 @@ data class Data(
     @SerializedName("price_validation")
     val priceValidation: PriceValidation = PriceValidation(),
     @SerializedName("method")
-    val method: String = ""
+    val method: String = "",
+    @SerializedName("consent")
+    val consent: Consent = Consent()
 )

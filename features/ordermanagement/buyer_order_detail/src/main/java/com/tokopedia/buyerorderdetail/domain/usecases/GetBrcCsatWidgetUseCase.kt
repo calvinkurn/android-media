@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetResponse
@@ -29,8 +28,6 @@ class GetBrcCsatWidgetUseCase @Inject constructor(
             emit(GetBrcCsatWidgetRequestState.Complete.Success(sendRequest(params).resolutionGetCsatFormV4))
         }.catch {
             emit(GetBrcCsatWidgetRequestState.Complete.Error(it))
-        }.onCompletion {
-            logCompletionBreadcrumb(params, it)
         }
 
     private fun createRequestParam(params: GetBrcCsatWidgetRequestParams): Map<String, Any> {
@@ -47,19 +44,6 @@ class GetBrcCsatWidgetUseCase @Inject constructor(
             createRequestParam(params),
             getCacheStrategy(params.shouldCheckCache)
         )
-    }
-
-    private fun logCompletionBreadcrumb(
-        params: GetBrcCsatWidgetRequestParams,
-        throwable: Throwable?
-    ) {
-        runCatching {
-            if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetBrcCsatWidgetUseCase - Success: $params")
-            } else {
-                EmbraceMonitoring.logBreadcrumb("GetBrcCsatWidgetUseCase - Error: ${throwable.stackTraceToString()}")
-            }
-        }
     }
 
     companion object {

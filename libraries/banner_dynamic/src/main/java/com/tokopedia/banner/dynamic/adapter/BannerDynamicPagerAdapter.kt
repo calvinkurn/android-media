@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.cardview.widget.CardView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.banner.dynamic.R
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 
 /**
  * @author by furqan on 13/09/2019
@@ -56,13 +57,11 @@ class BannerDynamicPagerAdapter(bannerImageUrls: List<String>,
             )
         }
         try {
-            Glide.with(holder.itemView.context)
-                    .load(bannerImageUrls[position])
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .centerCrop()
-                    .into(holder.bannerImage)
+            holder.bannerImage.loadImage(bannerImageUrls[position]) {
+                setCacheStrategy(MediaCacheStrategy.DATA)
+                overrideSize(Resize(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL))
+                centerCrop()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

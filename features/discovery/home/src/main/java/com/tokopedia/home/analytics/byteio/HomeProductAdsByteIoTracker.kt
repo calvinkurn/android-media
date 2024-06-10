@@ -5,10 +5,10 @@ import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.analytics.byteio.topads.models.AdsLogRealtimeClickModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
-internal fun sendEventShow(context: Context, element: HomeRecommendationItemDataModel) {
+internal fun sendEventShow(context: Context, element: RecommendationCardModel) {
     if (element.recommendationProductItem.isTopAds) {
         AppLogTopAds.sendEventShow(
             context,
@@ -17,7 +17,7 @@ internal fun sendEventShow(context: Context, element: HomeRecommendationItemData
     }
 }
 
-internal fun sendEventShowOver(context: Context, element: HomeRecommendationItemDataModel, maxPercentage: Int) {
+internal fun sendEventShowOver(context: Context, element: RecommendationCardModel, maxPercentage: Int) {
     if(element.recommendationProductItem.isTopAds) {
         AppLogTopAds.sendEventShowOver(
             context,
@@ -26,7 +26,7 @@ internal fun sendEventShowOver(context: Context, element: HomeRecommendationItem
     }
 }
 
-internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: HomeRecommendationItemDataModel.HomeRecommendationProductItem?, refer: String) {
+internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: RecommendationCardModel.ProductItem?, refer: String) {
     element?.let {
         if (it.isTopAds) {
             AppLogTopAds.sendEventRealtimeClick(
@@ -37,7 +37,7 @@ internal fun sendEventRealtimeClickAdsByteIo(context: Context, element: HomeReco
     }
 }
 
-internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAdsLogShowModel(): AdsLogShowModel {
+internal fun RecommendationCardModel.ProductItem.asAdsLogShowModel(): AdsLogShowModel {
     return AdsLogShowModel(
         adsValue = recommendationAdsLog.creativeID.toLongOrZero(),
         logExtra = recommendationAdsLog.logExtra,
@@ -48,7 +48,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
     )
 }
 
-internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAdsLogShowOverModel(sizePercent: Int): AdsLogShowOverModel {
+internal fun RecommendationCardModel.ProductItem.asAdsLogShowOverModel(sizePercent: Int): AdsLogShowOverModel {
     return AdsLogShowOverModel(
         adsValue = recommendationAdsLog.creativeID.toLongOrZero(),
         logExtra = recommendationAdsLog.logExtra,
@@ -60,7 +60,7 @@ internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAds
     )
 }
 
-internal fun HomeRecommendationItemDataModel.HomeRecommendationProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
+internal fun RecommendationCardModel.ProductItem.asAdsLogRealtimeClickModel(refer: String): AdsLogRealtimeClickModel {
     return AdsLogRealtimeClickModel(
         refer,
         adsValue = recommendationAdsLog.creativeID.toLongOrZero(),

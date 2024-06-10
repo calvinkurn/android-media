@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
@@ -176,7 +177,7 @@ class BuyerOrderDetailNavigator(
             ApplinkConstInternalOrder.PARAM_ORDER_ID to orderId
         )
         val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,
+            DeeplinkMapperOrder.Soe.Buyer.INTERNAL_APP_LINK,
             params
         )
         val intent = RouteManager.getIntent(fragment.context, appLink).apply {
@@ -187,11 +188,9 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToPartialOrderFulfillment(orderId: String) {
-        val params = mapOf(
-            ApplinkConstInternalOrder.PARAM_ORDER_ID to orderId
-        )
+        val params = mapOf(DeeplinkMapperOrder.Soe.INTENT_PARAM_ORDER_ID to orderId)
         val appLink = UriUtil.buildUriAppendParams(
-            ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT,
+            DeeplinkMapperOrder.Pof.Buyer.INTERNAL_APP_LINK,
             params
         )
         val intent = RouteManager.getIntent(fragment.context, appLink)

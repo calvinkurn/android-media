@@ -8,5 +8,6 @@ data class CheckoutButtonPaymentModel(
     val quantity: Int = 0,
     var loading: Boolean = false,
     val useInsurance: Boolean = false,
-    val useDirectPayment: Boolean = false
+    val useDirectPayment: Boolean = false,
+    val terms: String = ""
 ) : CheckoutItem

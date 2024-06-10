@@ -62,6 +62,7 @@ import com.tokopedia.play.ui.explorewidget.PlayChannelRecommendationFragment
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.isChanged
+import com.tokopedia.play.util.isEnableShareExPlay
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -201,6 +202,13 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.CHANNEL_KEY
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.SHARE_ID_KEY
+import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -211,7 +219,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.play_common.R as commonR
+import com.tokopedia.play_common.R as play_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by jegul on 29/11/19
@@ -226,7 +235,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
     private val router: Router,
-    private val commentAnalytics: ContentCommentAnalytics.Creator
+    private val commentAnalytics: ContentCommentAnalytics.Creator,
+    private val abTestPlatform: AbTestPlatform
 ) :
     TkpdBaseV4Fragment(),
     PlayMoreActionBottomSheet.Listener,
@@ -299,7 +309,7 @@ class PlayUserInteractionFragment @Inject constructor(
         ActivityResultHelper(this)
     })
 
-    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
+    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(unifyprinciplesR.dimen.spacing_lvl3) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -391,6 +401,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val components = mutableListOf<UiComponent<PlayViewerNewUiState>>()
 
     private val eventBus = EventBus<Any>()
+
+    private var shareExInitializer: ShareExInitializer? = null
 
     private var _binding: FragmentPlayInteractionBinding? = null
     private val binding: FragmentPlayInteractionBinding
@@ -715,7 +727,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     binding = productFeaturedBinding,
                     bus = eventBus,
                     scope = viewLifecycleOwner.lifecycleScope,
-                    dispatchers = dispatchers,
+                    dispatchers = dispatchers
                 )
             )
         }
@@ -1089,7 +1101,7 @@ class PlayUserInteractionFragment @Inject constructor(
                                     .build()
                             )
                             getString(
-                                commonR.string.play_custom_error_handler_msg,
+                                play_commonR.string.play_custom_error_handler_msg,
                                 getTextFromUiString(event.errMessage),
                                 errCode
                             )
@@ -1117,7 +1129,36 @@ class PlayUserInteractionFragment @Inject constructor(
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
                     is OpenSharingOptionEvent -> {
-                        shareExperienceView?.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
+                        if (abTestPlatform.isEnableShareExPlay()) {
+                            if (shareExInitializer == null) {
+                                shareExInitializer = ShareExInitializer(requireContext())
+                            }
+                            val label = "$SHARE_ID_KEY - ${event.channelId} - ${event.partnerId} - ${event.channelType}"
+                            val labelActionClick = "$CHANNEL_KEY - $SHARE_ID_KEY - ${event.channelId} - ${event.partnerId} - ${event.channelType}"
+                            shareExInitializer?.openShareBottomSheet(
+                                bottomSheetArg = ShareExBottomSheetArg.Builder(
+                                    pageTypeEnum = ShareExPageTypeEnum.PLAY,
+                                    defaultUrl = "tokopedia://play/$channelId",
+                                    trackerArg = ShareExTrackerArg(
+                                        utmCampaign = "Content-$SHARE_ID_KEY-play-${event.channelId}",
+                                        labelActionClickShareIcon = label,
+                                        labelActionCloseIcon = label,
+                                        labelActionClickChannel = labelActionClick,
+                                        labelImpressionBottomSheet = label
+                                    )
+                                )
+                                    .withContentId(event.channelId)
+                                    .withOrigin("play")
+                                    .build()
+                            )
+                        } else {
+                            shareExperienceView?.showSharingOptions(
+                                event.title,
+                                event.coverUrl,
+                                event.userId,
+                                event.channelId
+                            )
+                        }
                     }
                     is OpenSelectedSharingOptionEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
@@ -1145,7 +1186,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
                             message = getString(R.string.play_failed_follow),
-                            actionText = getString(commonR.string.play_interactive_retry),
+                            actionText = getString(play_commonR.string.play_interactive_retry),
                             clickListener = {
                                 newAnalytic.clickRetryToasterPopUp(channelId, channelType = playViewModel.channelType.value)
                                 playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)

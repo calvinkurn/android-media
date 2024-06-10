@@ -16,6 +16,8 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
+import com.bytedance.android.btm.api.BtmSDK
+import com.bytedance.android.btm.api.model.PageShowParams
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -374,6 +376,8 @@ class SearchActivity :
             SearchTabPosition.TAB_SECOND_POSITION ->
                 SearchTracking.eventSearchResultTabClick(shopTabTitle)
         }
+        val fragmentItem = viewPagerAdapter?.getRegisteredFragmentAtPosition(position)
+        fragmentItem?.let { BtmSDK.onPageShow(it, true, PageShowParams().apply { reuse = true }) }
     }
 
     private fun configureTabLayout() {
@@ -533,7 +537,6 @@ class SearchActivity :
         if (firstPageFragment is BackToTopView) {
             firstPageFragment.backToTop()
         }
-
         AppLogAnalytics.putPageData(PAGE_NAME, GOODS_SEARCH)
     }
 
@@ -542,7 +545,6 @@ class SearchActivity :
         if (secondPageFragment is BackToTopView) {
             secondPageFragment.backToTop()
         }
-
         AppLogAnalytics.putPageData(PAGE_NAME, STORE_SEARCH)
     }
 

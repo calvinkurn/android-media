@@ -74,8 +74,6 @@ class SellerApp : Application() {
                     get() = remoteConfig?.getString(REMOTE_CONFIG_SCALYR_KEY_LOG) ?: ""
                 override val newRelicConfig: String
                     get() = remoteConfig?.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG) ?: ""
-                override val embraceConfig: String
-                    get() = remoteConfig?.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG) ?: ""
             }
         )
     }
@@ -83,7 +81,6 @@ class SellerApp : Application() {
     companion object {
         private val REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr"
         private val REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_v3_new_relic"
-        private val REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace"
         private var ENCRYPTION_KEY = String(
             charArrayOf(
                 113.toChar(),

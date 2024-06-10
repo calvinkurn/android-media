@@ -19,6 +19,10 @@ import com.tokopedia.tokochat.config.util.TokoChatErrorLogger.ErrorType.ERROR_PA
 import com.tokopedia.tokochat.config.util.TokoChatErrorLogger.PAGE.TOKOCHAT
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.data.MediaException
+import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.tokochat.common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.unifycomponents.toPx
@@ -29,6 +33,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 class TokoChatViewUtil @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -85,7 +90,7 @@ class TokoChatViewUtil @Inject constructor(
     ) {
         try {
             if (imageView != null) {
-                directLoadImageOnUiThread(context, imageView, inputStream, onError, onDirectLoad)
+                directLoadImageOnUiThread(imageView, inputStream, onError, onDirectLoad)
             } else {
                 onError()
             }
@@ -97,55 +102,29 @@ class TokoChatViewUtil @Inject constructor(
     }
 
     private fun directLoadImageOnUiThread(
-        context: Context,
         imageView: ImageView,
         inputStream: InputStream,
         onError: () -> Unit,
         onDirectLoad: () -> Unit
     ) {
         Handler(Looper.getMainLooper()).post {
-            Glide.with(context)
-                .asBitmap()
-                .placeholder(com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble_gradient)
-                .error(com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble_gradient)
-                .load(inputStream.readBytes())
-                .transform(CenterCrop(), RoundedCorners(EIGHT_DP.toPx()))
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .listener(getRequestListenerByteArray(inputStream, onError, onDirectLoad))
-                .into(imageView)
-        }
-    }
-
-    private fun getRequestListenerByteArray(
-        inputStream: InputStream,
-        onError: () -> Unit,
-        onDirectLoad: () -> Unit
-    ): RequestListener<Bitmap> {
-        return object : RequestListener<Bitmap> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                onError()
-                closeInputStream(inputStream)
-                e?.let {
-                    logError(it, ::onLoadFailed.name)
-                }
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Bitmap?,
-                model: Any?,
-                target: Target<Bitmap>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                onDirectLoad()
-                closeInputStream(inputStream)
-                return false
+            imageView.loadImage(inputStream.readBytes()) {
+                setPlaceHolder(tokochat_commonR.drawable.tokochat_bg_image_bubble_gradient)
+                setErrorDrawable(tokochat_commonR.drawable.tokochat_bg_image_bubble_gradient)
+                transforms(listOf(CenterCrop(), RoundedCorners(EIGHT_DP.toPx())))
+                listener(
+                    onSuccess = { _, _ ->
+                        onDirectLoad()
+                        closeInputStream(inputStream)
+                    },
+                    onError = { e ->
+                        onError()
+                        closeInputStream(inputStream)
+                        e?.let {
+                            logError(it, MediaListener::onFailed.name)
+                        }
+                    }
+                )
             }
         }
     }

@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
@@ -131,9 +133,6 @@ class WishlistCollectionFragment :
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
     }
-    private val wishlistCollectionPref: WishlistCollectionPrefs? by lazy {
-        activity?.let { WishlistCollectionPrefs(it) }
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -204,6 +203,7 @@ class WishlistCollectionFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Wishlist)
         WishlistCollectionAnalytics.sendWishListHomePageOpenedEvent(userSession.isLoggedIn, userSession.userId)
         checkLogin()
         initTrackingQueue()
@@ -357,7 +357,7 @@ class WishlistCollectionFragment :
     }
 
     private fun addRecommendationScrollListener() {
-        if(hasApplogScrollListener) return
+        if (hasApplogScrollListener) return
         binding?.rvWishlistCollection?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
@@ -402,8 +402,6 @@ class WishlistCollectionFragment :
                     finishRefresh()
                     if (result.data.status == OK) {
                         showRvWishlistCollection()
-                        wishlistCollectionPref?.getHasClosed()
-                            ?.let { collectionAdapter.setTickerHasClosed(it) }
 
                         // check empty state
                         if (result.data.data.isEmptyState) {
@@ -746,8 +744,8 @@ class WishlistCollectionFragment :
     }
 
     override fun onCloseTicker() {
-        wishlistCollectionPref?.setHasClosed(true)
-        collectionAdapter.setTickerHasClosed(true)
+        collectionViewModel.closeTicker(true)
+        collectionAdapter.removeTicker()
         WishlistCollectionAnalytics.sendClickXOnIntroductionSectionEvent()
     }
 

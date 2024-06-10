@@ -16,10 +16,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.FollowWidget
 import com.tokopedia.mvcwidget.FollowWidgetType
 import com.tokopedia.mvcwidget.R
@@ -129,9 +129,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
 
         if (!followWidget.iconURL.isNullOrEmpty()) {
-            Glide.with(icon)
-                .load(followWidget.iconURL)
-                .into(icon)
+            icon.loadImage(followWidget.iconURL)
         }
         btnFirst.setOnClickListener {
             if (context is AppCompatActivity) {
@@ -167,9 +165,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                 val tvMessage = item.findViewById<Typography>(R.id.tvMessage)
                 tvMessage.text = memberShipItem.description
                 if (!memberShipItem.imageURL.isNullOrEmpty()) {
-                    Glide.with(image)
-                        .load(memberShipItem.imageURL)
-                        .into(image)
+                    image.loadImage(memberShipItem.imageURL)
                 }
                 itemViewList.add(item)
             }

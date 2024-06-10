@@ -2,6 +2,8 @@ package com.tokopedia.analytics.byteio
 
 import android.app.Activity
 import android.app.Application
+import com.bytedance.android.btm.api.BtmSDK
+import com.bytedance.android.btm.api.model.BtmModel
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
@@ -233,6 +235,16 @@ object AppLogAnalytics {
             AppLog.onEventV3(event, params)
             Timber.d("($TAG) sending event ($event), value: ${params.toString(2)}")
         }
+    }
+
+    fun sendWithBtmModel(event: String, btmModel: BtmModel?, params: JSONObject) {
+        if (btmModel != null) {
+            val btmParams = BtmSDK.createReportParams(btmModel.btm, btmModel.pageFinder)
+            btmParams.forEach { (key, value) ->
+                params.put(key, value)
+            }
+        }
+        send(event, params)
     }
 
     @JvmStatic

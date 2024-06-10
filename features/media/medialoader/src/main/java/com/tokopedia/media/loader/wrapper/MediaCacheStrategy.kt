@@ -19,6 +19,16 @@ enum class MediaCacheStrategy {
                 AUTOMATIC -> DiskCacheStrategy.AUTOMATIC
             }
         }
+
+        fun mapTo(cacheStrategy: DiskCacheStrategy): MediaCacheStrategy {
+            return when (cacheStrategy) {
+                DiskCacheStrategy.ALL -> ALL
+                DiskCacheStrategy.NONE -> NONE
+                DiskCacheStrategy.DATA -> DATA
+                DiskCacheStrategy.RESOURCE -> RESOURCE
+                else -> AUTOMATIC
+            }
+        }
     }
 
 }

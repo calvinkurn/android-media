@@ -11,4 +11,6 @@ chmod +x tokoremotex/before_exec.sh
 ./tokoremotex/before_exec.sh sellerapp
 """ >> .remoteX/custom/custom_before_exec.sh
 fi
-./remote -ci ./gradlew packageLiveDevDebugUniversalApk -p sellerapp --stacktrace
+./remote ./gradlew packageLiveDevDebugUniversalApk -p sellerapp --stacktrace
+./start.sh pull -d sellerapp/build/outputs
+adb install sellerapp/build/outputs/apk_from_bundle/liveDevDebug/sellerapp-live-dev-debug-universal.apk

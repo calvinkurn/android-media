@@ -2,15 +2,13 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.home.beranda.data.mapper.HomeGlobalRecommendationCardMapper
+import com.tokopedia.home.beranda.domain.gql.query.GetHomeRecommendationCardQuery
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.byteio.RefreshType
-import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-@RecomTemporary
 class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<GetHomeRecommendationCardResponse>,
     private val homeRecommendationCardMapper: HomeGlobalRecommendationCardMapper
@@ -53,15 +51,10 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
             putString(PARAM_LAYOUTS, LAYOUTS_VALUE)
             putString(PARAM_SOURCE_TYPE, paramSource)
             putString(PARAM_LOCATION, location)
-            putString(PRODUCT_CARD_VERSION, getProductCardVersion())
+            putString(PRODUCT_CARD_VERSION, PRODUCT_CARD_VERSION_V5)
             putInt(REFRESH_TYPE, refreshType.value)
             putString(BYTEDANCE_SESSION_ID, bytedanceSessionId)
         }.parameters
-    }
-
-    private fun getProductCardVersion(): String {
-        val isReimagine = ProductCardExperiment.isReimagine()
-        return if(isReimagine) PRODUCT_CARD_VERSION_V5 else ""
     }
 
     companion object {

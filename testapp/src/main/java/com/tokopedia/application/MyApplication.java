@@ -18,6 +18,7 @@ import com.bytedance.mobsec.metasec.ov.MSManager;
 import com.bytedance.mobsec.metasec.ov.MSManagerUtils;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
+import com.tokopedia.analytics.btm.InitBtmSdk;
 import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
@@ -239,8 +240,12 @@ public class MyApplication extends BaseMainApplication
         TokoChatConnection.init(this, false);
 
         UserSession userSession = new UserSession(this);
-
         initMsSDK();
+        initBTMSDK();
+    }
+
+    private void initBTMSDK(){
+        InitBtmSdk.INSTANCE.init(this);
     }
 
     private void initMsSDK(){
