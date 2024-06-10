@@ -31,10 +31,7 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
             val prevViewModel = this.discoveryBaseViewModel
             if (prevViewModel != null) {
                 if (prevViewModel != discoveryBaseViewModel) {
-                    var needToRemoveObserver = false
-                    if (prevViewModel.detachedBindingAdapterPosition != -1) {
-                        needToRemoveObserver = true
-                    }
+                    val needToRemoveObserver = prevViewModel.detachedBindingAdapterPosition != -1
                     if (needToRemoveObserver) {
                         removeObservers(lifecycleOwner)
                         prevViewModel.onDetachToViewHolder()
