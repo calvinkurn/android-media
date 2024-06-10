@@ -104,28 +104,28 @@ class ProgressibleTabIndicatorView @JvmOverloads constructor(
         widthAnimator?.cancel()
         progressAnimator?.cancel()
 
-        widthAnimator = ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_WIDTH, SELECTED_TAB_INDICATOR_MAX_WIDTH)
-        widthAnimator?.duration = ANIMATE_PROGRESSBAR_WIDTH_DURATION_MILLIS
-        widthAnimator?.interpolator = UnifyMotion.EASE_IN_OUT
-        widthAnimator?.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
+        widthAnimator = ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_WIDTH, SELECTED_TAB_INDICATOR_MAX_WIDTH).apply {
+            duration = ANIMATE_PROGRESSBAR_WIDTH_DURATION_MILLIS
+            interpolator = UnifyMotion.EASE_IN_OUT
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Int
 
-            val updatedLayoutParams = layoutParams
-            layoutParams?.width = value.toPx()
-            layoutParams = updatedLayoutParams
-        }
-
-        widthAnimator?.addListener(onEnd = {
-            progressAnimator = ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_PROGRESS, SELECTED_TAB_INDICATOR_MAX_PROGRESS)
-            progressAnimator?.duration = ANIMATE_PROGRESSBAR_PROGRESS_DURATION_MILLIS
-            progressAnimator?.interpolator = LinearInterpolator()
-            progressAnimator?.addUpdateListener { animation ->
-                progress = animation.animatedValue as Int
+                val updatedLayoutParams = layoutParams
+                layoutParams?.width = value.toPx()
+                layoutParams = updatedLayoutParams
             }
-            progressAnimator?.start()
-        })
 
-        widthAnimator?.start()
+            addListener(onEnd = {
+                progressAnimator = ValueAnimator.ofInt(SELECTED_TAB_INDICATOR_MIN_PROGRESS, SELECTED_TAB_INDICATOR_MAX_PROGRESS)
+                progressAnimator?.duration = ANIMATE_PROGRESSBAR_PROGRESS_DURATION_MILLIS
+                progressAnimator?.interpolator = LinearInterpolator()
+                progressAnimator?.addUpdateListener { animation ->
+                    progress = animation.animatedValue as Int
+                }
+                progressAnimator?.start()
+            })
+            start()
+        }
     }
 
     @SuppressLint("UnifyComponentUsage")
