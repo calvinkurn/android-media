@@ -1431,7 +1431,8 @@ class PlayViewModel @AssistedInject constructor(
             connectWebSocket(
                 channelId = channelId,
                 socketCredential = getSocketCredential(),
-                warehouseId = _warehouseInfo.value.warehouseId
+                warehouseId = _warehouseInfo.value.warehouseId,
+                isRetry = false,
             )
 
             playChannelWebSocket.listenAsFlow()
@@ -1441,8 +1442,13 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun connectWebSocket(channelId: String, warehouseId: String, socketCredential: SocketCredential) {
-        playChannelWebSocket.connect(channelId, warehouseId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER)
+    private fun connectWebSocket(
+        channelId: String,
+        warehouseId: String,
+        socketCredential: SocketCredential,
+        isRetry: Boolean,
+    ) {
+        playChannelWebSocket.connect(channelId, warehouseId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER, isRetry)
     }
 
     private fun stopWebSocket() {
@@ -1759,7 +1765,12 @@ class PlayViewModel @AssistedInject constructor(
                 if (reason is WebSocketClosedReason.Error) {
                     playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
 
-                    connectWebSocket(channelId, warehouseId = _warehouseInfo.value.warehouseId, getSocketCredential())
+                    connectWebSocket(
+                        channelId = channelId,
+                        warehouseId = _warehouseInfo.value.warehouseId,
+                        socketCredential = getSocketCredential(),
+                        isRetry = true,
+                    )
                 }
             }
         }

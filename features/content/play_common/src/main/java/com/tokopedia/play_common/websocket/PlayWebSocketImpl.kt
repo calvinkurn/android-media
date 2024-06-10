@@ -13,8 +13,16 @@ import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.*
-import okhttp3.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import okio.ByteString
 import java.util.concurrent.TimeUnit
 
@@ -26,7 +34,8 @@ class PlayWebSocketImpl(
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
     @ApplicationContext private val context: Context,
-    private val localCacheHandler: LocalCacheHandler
+    private val localCacheHandler: LocalCacheHandler,
+    private val socketDebounce: SocketDebounce,
 ) : PlayWebSocket {
 
     private val client: OkHttpClient
@@ -111,16 +120,26 @@ class PlayWebSocketImpl(
         }
     }
 
-    override fun connect(channelId: String, warehouseId: String, gcToken: String, source: String) {
-        close()
-        val url = generateUrl(channelId, warehouseId, gcToken)
-        mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
+    override fun connect(
+        channelId: String,
+        warehouseId: String,
+        gcToken: String,
+        source: String,
+        isRetry: Boolean,
+    ) {
+        if (isRetry) {
+            socketDebounce.debounce {
+                connect(channelId, warehouseId, gcToken, source)
+            }
+        } else {
+            connect(channelId, warehouseId, gcToken, source)
+        }
     }
 
     override fun close() {
         try {
             mWebSocket?.close(1000, "Closing Socket")
+            socketDebounce.close()
         } catch (e: Throwable) { }
     }
 
@@ -130,6 +149,18 @@ class PlayWebSocketImpl(
 
     override fun send(message: String) {
         mWebSocket?.send(message)
+    }
+
+    private fun connect(
+        channelId: String,
+        warehouseId: String,
+        gcToken: String,
+        source: String,
+    ) {
+        close()
+        val url = generateUrl(channelId, warehouseId, gcToken)
+        mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
+        webSocketLogger.init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
     }
 
     private fun generateUrl(channelId: String, warehouseId: String, gcToken: String): String {

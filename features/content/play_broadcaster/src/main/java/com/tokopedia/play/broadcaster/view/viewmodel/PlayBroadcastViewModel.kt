@@ -990,7 +990,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (!isActive) return@launch
             connectWebSocket(
                 channelId = channelId,
-                socketCredential = getSocketCredential()
+                socketCredential = getSocketCredential(),
+                isRetry = false,
             )
 
             playBroadcastWebSocket.listenAsFlow()
@@ -1003,8 +1004,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     /**
      * In bro, warehouse Id is always 0 (OOC) dunno later
      */
-    private fun connectWebSocket(channelId: String, socketCredential: GetSocketCredentialResponse.SocketCredential) {
-        playBroadcastWebSocket.connect(channelId, "0", socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_BROADCASTER)
+    private fun connectWebSocket(
+        channelId: String,
+        socketCredential: GetSocketCredentialResponse.SocketCredential,
+        isRetry: Boolean,
+    ) {
+        playBroadcastWebSocket.connect(
+            channelId,
+            "0",
+            socketCredential.gcToken,
+            WEB_SOCKET_SOURCE_PLAY_BROADCASTER,
+            isRetry,
+        )
     }
 
     private fun closeWebSocket() {
@@ -1019,7 +1030,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (response) {
             is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message)
             is WebSocketAction.Closed -> if (response.reason is WebSocketClosedReason.Error) {
-                connectWebSocket(channelId, getSocketCredential())
+                connectWebSocket(
+                    channelId = channelId,
+                    socketCredential = getSocketCredential(),
+                    isRetry = true
+                )
             }
         }
     }
@@ -1906,6 +1921,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleBroadcasterPause() {
         viewModelScope.launchCatchError(block = {
             broadcastTimer.pause()
+            closeWebSocket()
             updateChannelStatus(PlayChannelStatusType.Pause)
         }) {
             logger.logBroadcastError(it)
