@@ -4,6 +4,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ramadan_ekstra_customerapp_splash" />
+            android:src="@drawable/div_system_splash_bg_main" />
     </item>
 </layer-list>
