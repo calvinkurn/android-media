@@ -54,6 +54,7 @@ import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.remoteconfig.libra.LibraAbTest;
 import com.tokopedia.seller.active.common.features.sellerfeedback.SellerFeedbackScreenshot;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -117,6 +118,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
         initRemoteConfig();
+        initLibra();
         initCacheManager();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -391,4 +393,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         new DevOptNotificationManager(this).start();
     }
 
+    private void initLibra() {
+        LibraAbTest.init(this);
+    }
 }
