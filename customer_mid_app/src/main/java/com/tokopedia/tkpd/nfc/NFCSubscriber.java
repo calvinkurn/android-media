@@ -85,8 +85,8 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                                 checkActivity(activity, intent -> {
                                     if(nfcAdapter.isEnabled()) {
                                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_MUTABLE);
                                         }else{
                                             pendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
                                         }
