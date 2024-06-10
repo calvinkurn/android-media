@@ -66,7 +66,7 @@ class AdsLogShowTest {
 
         verify(atLeast = 1) {
             AppLogTopAds.sendEventShow(context, showOverModel)
-            AppLog.onEventV3(AdsLogConst.Event.REALTIME_CLICK, showJSONObject)
+            AppLog.onEventV3(AdsLogConst.Event.SHOW, showJSONObject)
         }
 
         showJSONObject.assertShowSRP(showOverModel)
@@ -101,7 +101,7 @@ class AdsLogShowTest {
 
         verify(atLeast = 1) {
             AppLogTopAds.sendEventShow(context, showModel)
-            AppLog.onEventV3(AdsLogConst.Event.REALTIME_CLICK, showJSONObject)
+            AppLog.onEventV3(AdsLogConst.Event.SHOW, showJSONObject)
         }
 
         showJSONObject.assertShowOutsideSRP(showModel)
