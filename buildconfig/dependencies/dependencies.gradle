@@ -515,8 +515,8 @@ ext {
     ]
 
     commonMonitorVersion = "5.0.20.4.overseas"
-    npthVersion = "3.1.7.oversea-rc.67"
-    npthCoreVersion = "3.1.7.oversea-rc.67"
+    npthVersion = "3.1.7.oversea-rc.93"
+    npthCoreVersion = "3.1.7.oversea-rc.93"
 
     slardarDependencies = [
             commonMonitor : "com.bytedance.frameworks.core:commonmonitor:$commonMonitorVersion",
