@@ -8,6 +8,7 @@ interface ProductWidgetListener {
     fun productChannelHeaderClicked(data: ProductWidgetUiModel)
     fun retryWidget()
 
-    fun productImpressed(data: ProductWidgetUiModel, position: Int)
+    fun productContainerImpressed(data: ProductWidgetUiModel, position: Int)
+    fun itemProductImpressed(data: ItemProductWidgetUiModel, position: Int)
     fun itemProductClicked(data: ItemProductWidgetUiModel, position: Int)
 }
