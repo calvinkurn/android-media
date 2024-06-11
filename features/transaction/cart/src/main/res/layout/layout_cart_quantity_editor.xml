@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/quantity_editor_min"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="4dp"
+        app:icon_name="REMOVE_16" />
+
+    <EditText
+        android:id="@+id/quantity_editor_qty"
+        android:layout_width="28dp"
+        android:layout_height="32dp"
+        android:background="@null"
+        android:gravity="center"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:maxLines="1"
+        android:textSize="12sp"
+        tools:text="10"
+        tools:ignore="LabelFor" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/quantity_editor_plus"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="4dp"
+        app:icon_name="ADD_16" />
+
+</merge>
