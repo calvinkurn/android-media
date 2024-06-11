@@ -4,12 +4,11 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethodPdp
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PARENT_PRODUCT_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
-import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
+import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
-import kotlin.math.exp
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -77,7 +76,7 @@ class AppLogAnalyticsTest {
     private fun JSONObject.getOrNull(key: String): Any? = runCatching { get(key) }.getOrNull()
 
     @Test
-    fun `when getPreviousDataFrom should get the value before PDP`() {
+    fun `when getPreviousDataOfProduct should get the value before PDP`() {
         val expected = "source_module"
         SUT.pushPageData(ActivityBasicOne)
         SUT.putPageData(SOURCE_MODULE, expected)
@@ -85,13 +84,13 @@ class AppLogAnalyticsTest {
         SUT.pushPageData(ActivityBasicTwo)
         SUT.pushPageData(ActivityBasicThree)
 
-        val actual = SUT.getPreviousDataFrom(PageName.PDP, SOURCE_MODULE)
+        val actual = SUT.getPreviousDataOfProduct(SOURCE_MODULE)
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when getPreviousDataFrom should get the value before PDP - 1`() {
+    fun `when getPreviousDataOfProduct should get the value before PDP - 1`() {
         SUT.pushPageData(ActivityBasicOne)
         SUT.putPageData(PARENT_PRODUCT_ID, "parent_id0")
         SUT.pushPageData(ActivityPdpOne)
@@ -99,9 +98,34 @@ class AppLogAnalyticsTest {
         SUT.pushPageData(ActivityPdpTwo)
         SUT.pushPageData(ActivityBasicThree)
 
-        val actual = SUT.getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true)
+        val actual = SUT.getPreviousDataOfProduct(PARENT_PRODUCT_ID)
 
         assertNull(actual)
+    }
+
+    @Test
+    fun `when getPreviousDataOfProduct should get the value before SKU - 1`() {
+        val expected = "track123"
+        SUT.pushPageData(ActivityBasicOne)
+        SUT.putPageData(TRACK_ID, expected)
+        SUT.pushPageData(ActivitySkuOne)
+
+        val actual = SUT.getPreviousDataOfProduct(TRACK_ID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getPreviousDataOfProduct with PDP SKU should get the value before PDP - 1`() {
+        val expected = "track123"
+        SUT.pushPageData(ActivityBasicOne)
+        SUT.putPageData(TRACK_ID, expected)
+        SUT.pushPageData(ActivityPdpOne)
+        SUT.pushPageData(ActivitySkuOne)
+
+        val actual = SUT.getPreviousDataOfProduct(TRACK_ID)
+
+        assertEquals(expected, actual)
     }
 
 }

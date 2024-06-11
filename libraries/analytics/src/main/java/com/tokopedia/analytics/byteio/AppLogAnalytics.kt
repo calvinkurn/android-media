@@ -7,6 +7,7 @@ import com.bytedance.android.btm.api.model.BtmModel
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
+import com.tokopedia.analytics.byteio.AppLogParam.ATC_POINT
 import com.tokopedia.analytics.byteio.AppLogParam.AUTHOR_ID
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
@@ -125,7 +126,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, getPreviousDataFrom(PageName.PDP, ENTRANCE_FORM, true))
+        put(ENTRANCE_FORM, getPreviousDataOfProduct(ENTRANCE_FORM))
     }
 
     fun generateEntranceInfoJson(): JSONObject {
@@ -134,7 +135,7 @@ object AppLogAnalytics {
             it.addEntranceForm()
             it.addSourcePageType()
             it.addTrackId()
-            it.put(IS_AD, getPreviousDataFrom(PageName.PDP, IS_AD, true))
+            it.put(IS_AD, getPreviousDataOfProduct(IS_AD))
             it.addRequestId()
             it.addSourceModulePdp()
             it.addEnterMethodPdp()
@@ -145,9 +146,34 @@ object AppLogAnalytics {
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
             it.put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
             it.put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
-            it.put(PARENT_PRODUCT_ID, getPreviousDataFrom(PageName.PDP, PARENT_PRODUCT_ID, true))
-            it.put(PARENT_TRACK_ID, getPreviousDataFrom(PageName.PDP, PARENT_TRACK_ID, true))
-            it.put(PARENT_REQUEST_ID, getPreviousDataFrom(PageName.PDP, PARENT_REQUEST_ID, true))
+            it.put(
+                PARENT_PRODUCT_ID,
+                getPreviousDataOfProduct(PARENT_PRODUCT_ID)
+            )
+            it.put(PARENT_TRACK_ID, getPreviousDataOfProduct(PARENT_TRACK_ID))
+            it.put(
+                PARENT_REQUEST_ID,
+                getPreviousDataOfProduct(PARENT_REQUEST_ID)
+            )
+        }
+    }
+
+    /**
+     * Use this method to generate entrance info from non-PDP page without VBS e.g. Shop, GSLP, etc
+     * */
+    fun generateEntranceInfoNonPdp(data: Map<String, Any>): JSONObject {
+        return JSONObject().apply {
+            for (d in data) {
+                put(d.key, d.value)
+            }
+            addEnterFromInfo()
+            put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
+            put(SEARCH_ID, getLastData(SEARCH_ID))
+            put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
+            put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+            put(FIRST_TRACK_ID, AppLogFirstTrackId.firstTrackId)
+            put(FIRST_SOURCE_PAGE, AppLogFirstTrackId.firstSourcePage)
+            addSourceContentId()
         }
     }
 
@@ -193,23 +219,23 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(SOURCE_PAGE_TYPE, getPreviousDataFrom(PageName.PDP, SOURCE_PAGE_TYPE, true))
+        put(SOURCE_PAGE_TYPE, getPreviousDataOfProduct(SOURCE_PAGE_TYPE))
     }
 
     internal fun JSONObject.addSourceModulePdp() {
-        put(SOURCE_MODULE, getPreviousDataFrom(PageName.PDP, SOURCE_MODULE, true))
+        put(SOURCE_MODULE, getPreviousDataOfProduct(SOURCE_MODULE))
     }
 
     internal fun JSONObject.addEnterMethodPdp() {
-        put(ENTER_METHOD, getPreviousDataFrom(PageName.PDP, ENTER_METHOD, true))
+        put(ENTER_METHOD, getPreviousDataOfProduct(ENTER_METHOD))
     }
 
     internal fun JSONObject.addRequestId() {
-        put(REQUEST_ID, getPreviousDataFrom(PageName.PDP, REQUEST_ID, true))
+        put(REQUEST_ID, getPreviousDataOfProduct(REQUEST_ID))
     }
 
     internal fun JSONObject.addTrackId() {
-        put(TRACK_ID, getPreviousDataFrom(PageName.PDP, TRACK_ID, true))
+        put(TRACK_ID, getPreviousDataOfProduct(TRACK_ID))
     }
 
     internal fun JSONObject.addEnterMethod() {
@@ -541,6 +567,14 @@ object AppLogAnalytics {
         }.toString()
     }
 
+    fun getEntranceInfoNonPdp(data: Map<String, Any>, buyType: AtcBuyType): String {
+        return JSONObject().apply {
+            put(ENTRANCE_INFO, generateEntranceInfoNonPdp(data).toString())
+            put("buy_type", buyType.code)
+            put("os_name", "android")
+        }.toString()
+    }
+
     fun getEntranceInfoForCheckout(buyType: AtcBuyType, cartIds: List<String>): String {
         return JSONObject().also {
             it.put("funnel", buyType.funnel)
@@ -567,10 +601,10 @@ object AppLogAnalytics {
     }
 
     /**
-     * Starting from N-1, this method will start searching for a key after the current item is the anchor
+     * Starting from N-1, this method will start searching for a key after product item, can be PDP or SKU
      * If isOneStep is true then it will always return N-1 data
      * */
-    fun getPreviousDataFrom(anchor: String, key: String, isOneStep: Boolean = false): Any? {
+    fun getPreviousDataOfProduct(key: String, isOneStep: Boolean = true): Any? {
         if (_pageDataList.isEmpty()) return null
         var idx = _pageDataList.lastIndex
         var start = false
@@ -584,12 +618,31 @@ object AppLogAnalytics {
                 }
             }
 
-            if (map[PAGE_NAME] == anchor) {
+            if (map[PAGE_NAME] == PageName.PDP ||
+                (map[PAGE_NAME] == PageName.SKU && _pageDataList.lastTwoPageName(idx) != PageName.PDP)
+            ) {
                 start = true
             }
             idx--
         }
         return null
     }
+
+    /**
+     * POC function for non PDP OCS/OCC case
+     * */
+    fun getPreviousDataOfProductWithAtcPoint(key: String): Any? {
+        _pageDataList.reversed().forEach { hashMap ->
+            if (hashMap.containsKey(ATC_POINT)) {
+                hashMap[key]?.let {
+                    return it
+                }
+            }
+        }
+        return null
+    }
+
+    private fun ArrayList<HashMap<String, Any>>.lastTwoPageName(index: Int): String? =
+        getOrNull(index - 1)?.get(PAGE_NAME)?.toString()
 
 }

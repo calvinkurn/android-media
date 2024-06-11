@@ -290,6 +290,8 @@ object AppLogParam {
         get() = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
     const val IS_MAIN_PARENT = "is_main_parent_activity"
     const val SOURCE_CONTENT_ID = "source_content_id"
+
+    const val ATC_POINT = "atc_point"
 }
 
 data class ButtonShowAnalyticData(
