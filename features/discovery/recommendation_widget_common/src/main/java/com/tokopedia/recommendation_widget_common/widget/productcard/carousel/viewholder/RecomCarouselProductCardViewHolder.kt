@@ -3,12 +3,16 @@ package com.tokopedia.recommendation_widget_common.widget.productcard.carousel.v
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselProductCardDataModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -54,6 +58,14 @@ class RecomCarouselProductCardViewHolder (view: View,
 
     private fun setupListener(context: Context, element: RecomCarouselProductCardDataModel) {
         productCardView?.run {
+            addOnImpression1pxListener(element.recomItem.appLogImpressHolder) {
+                AppLogRecommendation.sendProductShowAppLog(
+                    element.recomItem.asProductTrackModel(
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                        additionalParam = element.appLogAdditionalParam
+                    )
+                )
+            }
             addOnImpressionListener(element.recomItem) {
                 if(element.recomItem.isTopAds){
                     TopAdsUrlHitter(context).hitImpressionUrl(
@@ -75,9 +87,15 @@ class RecomCarouselProductCardViewHolder (view: View,
                     element.listener?.onViewDetachedFromWindow(element.recomItem, bindingAdapterPosition, maxPercentage)
                 }
             })
-            setOnClickListener(object: ProductCardClickListener {
+            setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
-                    if(element.recomItem.isTopAds){
+                    AppLogRecommendation.sendProductClickAppLog(
+                        element.recomItem.asProductTrackModel(
+                            entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                            additionalParam = element.appLogAdditionalParam
+                        )
+                    )
+                    if (element.recomItem.isTopAds) {
                         TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             element.recomItem.clickUrl,

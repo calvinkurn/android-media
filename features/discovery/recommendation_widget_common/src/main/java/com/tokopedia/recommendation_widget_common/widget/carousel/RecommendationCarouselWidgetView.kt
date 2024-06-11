@@ -403,7 +403,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                         listener = this))
             }
         }
-        val productDataList = carouselData.recommendationData.recommendationItemList.toRecomCarouselItems(listener = this)
+        val productDataList = carouselData.recommendationData.recommendationItemList.toRecomCarouselItems(listener = this, appLogAdditionalParam = carouselData.appLogAdditionalParam)
         cardList.addAll(productDataList)
         if (cardList.size != 0) {
             if (carouselData.recommendationData.seeMoreAppLink.isNotEmpty()) {
@@ -664,7 +664,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                                 recommendationData = it,
                                 filterData = mapToAnnotateChip(it),
                                 state = STATE_READY,
-                                isUsingWidgetViewModel = true
+                                isUsingWidgetViewModel = true,
                             )
                         )
                     } else {

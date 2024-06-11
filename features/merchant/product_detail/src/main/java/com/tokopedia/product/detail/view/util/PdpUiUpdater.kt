@@ -900,29 +900,38 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         removeComponent(data.pageName)
     }
 
-    fun updateComparisonDataModel(data: RecommendationWidget) {
+    fun updateComparisonDataModel(
+        p1: ProductInfoP1?,
+        data: RecommendationWidget
+    ) {
         val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
+        val additionalParam = getAppLogAdditionalParam(p1)
         if (recomModel != null) {
             updateData(data.pageName) {
-                (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.run {
-                    recommendationWidget = data
-                }
+                (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.copy(
+                    recommendationWidget = data,
+                    appLogAdditionalParam = additionalParam
+                )?.let { mapOfData[data.pageName] = it }
             }
         } else {
             updateData(data.pageName) {
                 mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
                     "",
                     data.pageName,
-                    data
+                    data,
+                    additionalParam
                 )
             }
         }
     }
 
-    fun updateComparisonBpcDataModel(data: RecommendationWidget, anchorProductId: String) {
+    fun updateComparisonBpcDataModel(
+        p1: ProductInfoP1?,
+        data: RecommendationWidget,
+    ) {
         updateData(data.pageName) {
             val source = RecommendationWidgetSource.PDP(
-                anchorProductId = anchorProductId
+                anchorProductId = p1?.basic?.productID.orEmpty()
             )
             mapOfData[data.pageName] = PdpRecommendationWidgetDataModel(
                 recommendationWidgetModel = RecommendationWidgetModel(
@@ -933,7 +942,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     ),
                     trackingModel = RecommendationWidgetTrackingModel(
                         androidPageName = source.eventCategory
-                    )
+                    ),
+                    appLogAdditionalParam = getAppLogAdditionalParam(p1)
                 )
             )
         }

@@ -3,19 +3,22 @@ package com.tokopedia.recommendation_widget_common.widget.comparison.comparedite
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonComparedWidgetBinding
 import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
 import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
-import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonViewHolder
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -48,6 +51,14 @@ class ComparisonWidgetComparedItemViewHolder(
         if (comparisonModel.isClickable) {
             binding?.productCardView?.setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
+                    // ByteIO tracker
+                    AppLogRecommendation.sendProductClickAppLog(
+                        comparisonModel.recommendationItem.asProductTrackModel(
+                            entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                            additionalParam = comparisonListModel.appLogAdditionalParam,
+                        )
+                    )
+
                     if (comparisonModel.recommendationItem.isTopAds) {
                         val product = comparisonModel.recommendationItem
                         TopAdsUrlHitter(context).hitClickUrl(
@@ -96,6 +107,13 @@ class ComparisonWidgetComparedItemViewHolder(
             }
         })
         binding?.productCardView?.addOnImpressionListener(comparisonModel) {
+            AppLogRecommendation.sendProductShowAppLog(
+                comparisonModel.recommendationItem.asProductTrackModel(
+                    entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                    additionalParam = comparisonListModel.appLogAdditionalParam,
+                )
+            )
+
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
                 TopAdsUrlHitter(context).hitImpressionUrl(

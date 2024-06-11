@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.comparison_bpc.util
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.recommendation_widget_common.R
@@ -24,6 +25,7 @@ object ComparisonBpcWidgetMapper {
     suspend fun mapToComparisonWidgetModel(
         recommendationWidget: RecommendationWidget,
         recommendationTrackingModel: RecommendationWidgetTrackingModel,
+        appLogAdditionalParam: AppLogAdditionalParam,
         context: Context
     ): Pair<ComparisonBpcItemModel?, List<Visitable<ComparisonBpcTypeFactory>>> {
         val recommendationItems = recommendationWidget.recommendationItemList
@@ -52,7 +54,8 @@ object ComparisonBpcWidgetMapper {
                 recommendationItem = it.value,
                 trackingModel = recommendationTrackingModel,
                 anchorProductId = recommendationItems.getOrNull(0)?.productId.orZero().toString(),
-                widgetTitle = recommendationWidget.title
+                widgetTitle = recommendationWidget.title,
+                appLogAdditionalParam = appLogAdditionalParam
             )
         }
         val productAnchor = productList.firstOrNull()

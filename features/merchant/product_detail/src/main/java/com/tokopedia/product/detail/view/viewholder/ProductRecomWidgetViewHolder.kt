@@ -50,7 +50,8 @@ class ProductRecomWidgetViewHolder(
                 recomWidget.bind(
                     carouselData = RecommendationCarouselData(
                         recommendationData = it,
-                        state = RecommendationCarouselData.STATE_READY
+                        state = RecommendationCarouselData.STATE_READY,
+                        appLogAdditionalParam = listener.getAppLogAdditionalParam()
                     ),
                     adapterPosition = adapterPosition,
                     basicListener = this,

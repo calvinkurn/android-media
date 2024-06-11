@@ -29,46 +29,6 @@ class InfiniteRecommendationViewModelTest {
     )
 
     @Test
-    fun `fetch recommendation success return components and hasNext`() {
-        val title = "This is Title"
-
-        val response = listOf(
-            RecommendationWidget(
-                title = title,
-                recommendationItemList = listOf(
-                    RecommendationItem()
-                ),
-                hasNext = true,
-                currentPage = 1
-            )
-        )
-        val params = GetRecommendationRequestParam()
-
-        coEvery {
-            getRecommendationUseCase.getData(params)
-        } returns response
-
-        viewModel.init(AppLogAdditionalParam.None, true)
-        viewModel.fetchComponents(params)
-
-        val components = viewModel.components.value
-        Assert.assertTrue(components != null)
-        Assert.assertTrue(components!!.isNotEmpty())
-
-        val firstComponent = components.first()
-        val secondComponent = components[1]
-        Assert.assertTrue(firstComponent is InfiniteSeparatorUiModel)
-        Assert.assertTrue(secondComponent is InfiniteTitleUiModel)
-//        val titleModel = firstComponent as InfiniteTitleUiModel
-//        Assert.assertTrue(titleModel.title == title)
-
-        val lastComponent = components.last()
-        Assert.assertTrue(lastComponent is InfiniteLoadingUiModel)
-
-        Assert.assertTrue(components.size == 4)
-    }
-
-    @Test
     fun `fetch recommendation success return components without title and hasNext`() {
         val title = "This is Title"
 
@@ -88,7 +48,7 @@ class InfiniteRecommendationViewModelTest {
             getRecommendationUseCase.getData(params)
         } returns response
 
-        viewModel.init(AppLogAdditionalParam.None, false)
+        viewModel.init(AppLogAdditionalParam.None)
         viewModel.fetchComponents(params)
 
         val components = viewModel.components.value
@@ -106,7 +66,7 @@ class InfiniteRecommendationViewModelTest {
             getRecommendationUseCase.getData(params)
         } returns emptyList()
 
-        viewModel.init(AppLogAdditionalParam.None, false)
+        viewModel.init(AppLogAdditionalParam.None)
         viewModel.fetchComponents(params)
 
         val components = viewModel.components.value

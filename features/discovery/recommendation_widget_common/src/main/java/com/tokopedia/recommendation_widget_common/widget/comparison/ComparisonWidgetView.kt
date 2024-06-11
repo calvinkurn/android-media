@@ -14,6 +14,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -109,6 +112,8 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
         trackingQueue: TrackingQueue?,
         isAnchorClickable: Boolean? = null,
         comparisonColorConfig: ComparisonColorConfig = ComparisonColorConfig(),
+        appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
+        shopId: String? = null,
     ) {
         this.adsViewListener = adsViewListener
         this.adsItemClickListener = adsItemClickListener
@@ -123,7 +128,8 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                         context,
                         this@ComparisonWidgetView.isAnchorClickable,
                         comparisonColorConfig,
-                        shouldUseReimagineCard
+                        shouldUseReimagineCard,
+                        appLogAdditionalParam
                     )
 
                 if (this@ComparisonWidgetView.adapter == null) {
@@ -160,6 +166,13 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                         )
                         rv_comparison_widget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_comparison_widget?.adapter = adapter
+                        rv_comparison_widget?.addHorizontalTrackListener(
+                            SlideTrackObject(
+                                moduleName = recommendationWidget.pageName,
+                                barName = recommendationWidget.pageName,
+                                shopId = shopId.orEmpty(),
+                            )
+                        )
                         btn_collapse?.setOnClickListener {
                             val tracking = ProductRecommendationTracking.getClickSpecDetailTracking(
                                 eventClick = recommendationTrackingModel.eventClick,

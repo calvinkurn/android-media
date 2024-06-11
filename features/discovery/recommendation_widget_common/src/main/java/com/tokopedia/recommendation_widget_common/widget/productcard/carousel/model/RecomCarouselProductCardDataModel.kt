@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
@@ -12,10 +13,11 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.common.Reco
  * Created by yfsx on 5/3/21.
  */
 data class RecomCarouselProductCardDataModel(
-        val productModel: ProductCardModel,
-        val recomItem: RecommendationItem,
-        val componentName: String = "",
-        val listener: RecomCommonProductCardListener? = null
+    val productModel: ProductCardModel,
+    val recomItem: RecommendationItem,
+    val componentName: String = "",
+    val listener: RecomCommonProductCardListener? = null,
+    val appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None
 ): Visitable<CommonRecomCarouselCardTypeFactory>, RecomCarouselDiffUtilComparable {
     override fun type(typeFactory: CommonRecomCarouselCardTypeFactory): Int {
         return typeFactory.type(this)

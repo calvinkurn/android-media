@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -17,7 +18,8 @@ object ComparisonWidgetMapper {
         context: Context,
         isAnchorClickable: Boolean,
         comparisonColorConfig: ComparisonColorConfig,
-        shouldReimagineCardEnabled: Boolean
+        shouldReimagineCardEnabled: Boolean,
+        appLogAdditionalParam: AppLogAdditionalParam
     ): ComparisonListModel {
         val recommendationItems = recommendationWidget.recommendationItemList
         val specsConfig = buildSpecsConfig(recommendationItems, context)
@@ -56,6 +58,7 @@ object ComparisonWidgetMapper {
                 collapsedHeight = collapsedHeight,
             ),
             comparisonColorConfig = comparisonColorConfig,
+            appLogAdditionalParam = appLogAdditionalParam,
         )
     }
 

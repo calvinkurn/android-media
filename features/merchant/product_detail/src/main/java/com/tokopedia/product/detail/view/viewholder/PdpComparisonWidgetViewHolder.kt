@@ -37,19 +37,19 @@ class PdpComparisonWidgetViewHolder(
     }
 
     override fun bind(element: PdpComparisonWidgetDataModel) {
-
         binding.comparisonWidget.setComparisonWidgetData(
-                element.recommendationWidget,
+            element.recommendationWidget,
             this@PdpComparisonWidgetViewHolder,
             this@PdpComparisonWidgetViewHolder,
             this@PdpComparisonWidgetViewHolder,
-                RecommendationTrackingModel(
-                        eventClick = ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        androidPageName = PDP_PAGE_NAME,
-                        headerTitle = element.recommendationWidget.title,
-                        eventCategory = PDP_PAGE_NAME
-                ),
-                listener.getFragmentTrackingQueue()
+            RecommendationTrackingModel(
+                    eventClick = ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    androidPageName = PDP_PAGE_NAME,
+                    headerTitle = element.recommendationWidget.title,
+                    eventCategory = PDP_PAGE_NAME
+            ),
+            listener.getFragmentTrackingQueue(),
+            appLogAdditionalParam = element.appLogAdditionalParam,
         )
         this.componentTrackDataModel = getComponentTrackData(element)
     }
@@ -94,5 +94,4 @@ class PdpComparisonWidgetViewHolder(
 
     private fun getComponentTrackData(element: PdpComparisonWidgetDataModel?) = ComponentTrackDataModel(element?.type
             ?: "", element?.name ?: "", adapterPosition + 1)
-
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.layout.ProductConstraintLayout
@@ -40,7 +41,7 @@ class ComparisonBpcWidgetItemViewHolder(
 
             bpcSpecsView.setSpecsInfo(element.specsModel)
             productCardView.setProductModel(element.productCardModel)
-            productCardView.setOnClickListener(object: ProductCardClickListener {
+            productCardView.setOnClickListener(object : ProductCardClickListener {
                 override fun onClick(v: View) {
                     if (element.recommendationItem.isTopAds) {
                         val product = element.recommendationItem
@@ -52,7 +53,7 @@ class ComparisonBpcWidgetItemViewHolder(
                             product.imageUrl
                         )
                     }
-                    listener.onProductCardClicked(element.recommendationItem, element.trackingModel, element.anchorProductId)
+                    listener.onProductCardClicked(element.recommendationItem, element.trackingModel, element.anchorProductId, element.appLogAdditionalParam)
                 }
 
                 override fun onAreaClicked(v: View) {
@@ -76,7 +77,7 @@ class ComparisonBpcWidgetItemViewHolder(
                     element.recommendationItem.sendShowOverAdsByteIo(itemView.context, maxPercentage)
                 }
             })
-            productCardView.addOnImpressionListener(element) {
+            productCardView.addOnImpressionListener(element.recommendationItem) {
                 if (element.recommendationItem.isTopAds) {
                     val product = element.recommendationItem
                     TopAdsUrlHitter(context).hitImpressionUrl(
@@ -88,6 +89,9 @@ class ComparisonBpcWidgetItemViewHolder(
                     )
                 }
                 listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId, element.widgetTitle)
+            }
+            productCardView.addOnImpression1pxListener(element.recommendationItem.appLogImpressHolder) {
+                listener.onProductCardByteIoView(element.recommendationItem, element.appLogAdditionalParam)
             }
         }
     }

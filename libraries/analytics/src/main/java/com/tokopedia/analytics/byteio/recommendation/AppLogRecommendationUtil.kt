@@ -13,6 +13,9 @@ object AppLogRecommendationConst {
     const val SOURCE_MODULE_ADS = "ads"
     const val SOURCE_MODULE_VERTICAL_FORMAT = "%s_%s_outer_flow"
     const val SOURCE_MODULE_HORIZONTAL_FORMAT = "%s_%s_outer_%s_module"
+
+    // Steal the Look
+    const val LIST_NAME_STEAL_THE_LOOK_FORMAT = "style_card_%d"
 }
 
 object CardName {

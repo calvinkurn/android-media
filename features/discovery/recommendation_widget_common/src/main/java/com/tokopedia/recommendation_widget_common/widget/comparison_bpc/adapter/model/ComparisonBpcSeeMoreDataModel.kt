@@ -8,6 +8,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
  * Created by Frenzel
  */
 data class ComparisonBpcSeeMoreDataModel(
+    val recomPageName: String,
     val trackingModel: RecommendationWidgetTrackingModel,
     val productAnchor: ComparisonBpcItemModel?
 ) : Visitable<ComparisonBpcTypeFactory> {
