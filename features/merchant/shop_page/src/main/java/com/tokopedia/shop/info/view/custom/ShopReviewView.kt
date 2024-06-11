@@ -10,10 +10,18 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.info.domain.entity.ShopReview
 import com.tokopedia.shop.info.view.fragment.ReviewViewPagerItemFragment
 import com.tokopedia.shop_widget.customview.ProgressibleTabIndicatorView
 import com.tokopedia.unifycomponents.toPx
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class ShopReviewView @JvmOverloads constructor(
     context: Context,
@@ -27,16 +35,23 @@ class ShopReviewView @JvmOverloads constructor(
 
     companion object {
         private const val DOT_INDICATOR_VERTICAL_MARGIN = 16
+        private const val AUTO_SWIPE_INTERVAL_MILLIS = 6500L
     }
 
     private var onReviewImageClick: (ShopReview.Review, Int) -> Unit = { _, _ -> }
     private var onReviewImageViewAllClick: (ShopReview.Review) -> Unit = {}
     private var onReviewSwiped: (Int) -> Unit = {}
+    private var reviewCount: Int = 0
+    private var viewpager: ViewPager2? = null
+    private var viewPagerAdapter: ReviewViewPagerAdapter? = null
+    private val autoScrollJob = SupervisorJob()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + autoScrollJob)
 
     fun renderReview(lifecycle: Lifecycle, fragment: Fragment, review: ShopReview) {
         removeAllViews()
 
-        val viewpager = createViewpager()
+        this.reviewCount = review.reviews.size
+        viewpager = createViewpager()
         addView(viewpager)
 
         val tabIndicator = if (review.reviews.size == Int.ONE) {
@@ -47,7 +62,7 @@ class ShopReviewView @JvmOverloads constructor(
             tabIndicator
         }
 
-        setupViewPager(viewpager, review, fragment, lifecycle, tabIndicator)
+        setupViewPager(viewpager ?: return, review, fragment, lifecycle, tabIndicator)
     }
 
     private fun setupViewPager(
@@ -59,8 +74,8 @@ class ShopReviewView @JvmOverloads constructor(
     ) {
         val fragments = createFragments(review.reviews)
 
-        val pagerAdapter = ReviewViewPagerAdapter(fragment, fragments)
-        viewPager.adapter = pagerAdapter
+        viewPagerAdapter = ReviewViewPagerAdapter(fragment, fragments)
+        viewPager.adapter = viewPagerAdapter
 
         addViewPagerPageChangeListener(viewPager, review.reviews.size, lifecycle, tabIndicator)
     }
@@ -71,28 +86,21 @@ class ShopReviewView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         tabIndicator: ProgressibleTabIndicatorView?
     ) {
+        tabIndicator?.initWithLifecycle(
+            tabIndicatorCount = reviewCount,
+            lifecycle = lifecycle
+        )
+
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
                 onReviewSwiped(position)
 
-                tabIndicator?.showTabIndicatorWithLifecycle(
-                    tabIndicatorCount = reviewCount,
-                    lifecycle = lifecycle,
-                    selectedPosition = position,
-                    onProgressFinish = {
-                        val currentItemPosition = viewPager.currentItem
-                        val isLastItem = currentItemPosition == reviewCount - Int.ONE
-                        val nextItem = currentItemPosition + Int.ONE
+                stopAutoScroll()
+                startAutoScroll()
 
-                        if (isLastItem) {
-                            viewPager.currentItem = Int.ZERO
-                        } else {
-                            viewPager.setCurrentItem(nextItem, true)
-                        }
-                    }
-                )
+                tabIndicator?.setIndicatorActive(selectedIndex = position)
             }
         })
     }
@@ -150,5 +158,33 @@ class ShopReviewView @JvmOverloads constructor(
     ) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = fragments.size
         override fun createFragment(position: Int) = fragments[position]
+    }
+
+    fun startAutoScroll() {
+        coroutineScope.launch {
+            while (isActive) {
+                delay(AUTO_SWIPE_INTERVAL_MILLIS)
+                val itemCount = viewPagerAdapter?.itemCount ?: 0
+
+                if (itemCount > 0) {
+                    val currentItemPosition = viewpager?.currentItem.orZero()
+                    val isLastItem = currentItemPosition == reviewCount - Int.ONE
+                    val nextItem = currentItemPosition + Int.ONE
+
+                    if (isLastItem) {
+                        viewpager?.currentItem = Int.ZERO
+                    } else {
+                        viewpager?.setCurrentItem(nextItem, true)
+                    }
+                }
+            }
+        }
+    }
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        stopAutoScroll()
+    }
+    fun stopAutoScroll() {
+        autoScrollJob.cancelChildren()
     }
 }
