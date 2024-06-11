@@ -154,7 +154,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="qty_editor_product_bmgm, label_quantity_error_bmgm, button_change_note_bmgm" />
+        app:constraint_referenced_ids="qty_editor_product_bmgm, label_quantity_error_bmgm, button_change_note_bmgm, iv_product_image_frame_bmgm" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_add_ons_section_title_bmgm"
