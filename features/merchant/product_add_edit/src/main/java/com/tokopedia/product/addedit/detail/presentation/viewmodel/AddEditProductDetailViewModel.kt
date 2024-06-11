@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.detail.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -350,6 +351,10 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductNameInputError.value = true
         } else if (containsEmoji(productNameInput)) {
             val errorMessage = provider.getProductNameEmojiMessage()
+            errorMessage?.let { productNameMessage = it }
+            mIsProductNameInputError.value = true
+        } else if(isAllSpecialCharacter(productNameInput)){
+            val errorMessage = provider.getProductNameSpecialCharacterMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
         } else {
@@ -982,5 +987,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
         }
         return resultCleaner
+    }
+
+    private fun isAllSpecialCharacter(input: String): Boolean {
+        val regexAlphaNumeric = Regex("[^a-zA-Z0-9]")
+        val regexNumeric = Regex(".*\\d.*")
+        val regexAlphabetic = Regex(".*[a-zA-Z].*")
+        return !(regexNumeric.matches(input) || regexAlphabetic.matches(input)) && !regexAlphaNumeric.matches(input)
     }
 }

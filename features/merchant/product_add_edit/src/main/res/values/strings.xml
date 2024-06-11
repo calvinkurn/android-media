@@ -58,6 +58,7 @@
     <string name="error_empty_product_name">Nama produk tidak boleh kosong</string>
     <string name="error_product_name_minimum_length">Nama produk minimum 25 karakter</string>
     <string name="error_product_name_contains_emoji">Nama produk tidak boleh menggunakan emoji</string>
+    <string name="error_product_name_all_special_character">Nama Produk harus memiliki huruf atau angka</string>
     <string name="error_product_name_exist">Oops, nama produk ini sudah digunakan. Coba cari nama lain, ya!</string>
     <string name="error_product_name_banned">Nama produk tidak bisa digunakan. Coba cari nama lain, ya!</string>
     <string name="error_product_description">Deskripsi produk harus diisi</string>
