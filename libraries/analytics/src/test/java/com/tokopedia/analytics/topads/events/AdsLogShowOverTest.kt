@@ -7,6 +7,7 @@ import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.analytics.byteio.topads.AppLogTopAds
+import com.tokopedia.analytics.byteio.topads.models.AdsLogShowModel
 import com.tokopedia.analytics.byteio.topads.models.AdsLogShowOverModel
 import com.tokopedia.analytics.topads.assertShowOverOutsideSRP
 import com.tokopedia.analytics.topads.assertShowOverSRP
@@ -17,9 +18,11 @@ import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class AdsLogShowOverTest {
 
@@ -38,7 +41,7 @@ class AdsLogShowOverTest {
     }
 
     @Test
-    fun `given show model, then convert to json object and send show event to App Log in SRP `() {
+    fun `given show over model, then convert to json object and send show over event to App Log in SRP `() {
         val showOverModel = spyk(AdsLogShowOverModel(
             adsValue = 123456,
             logExtra = "{rit:123456}",
@@ -74,7 +77,7 @@ class AdsLogShowOverTest {
     }
 
     @Test
-    fun `given show over model, then convert to json object and send show event to App Log in outside SRP `() {
+    fun `given show over model, then convert to json object and send show over event to App Log in outside SRP `() {
         val showOverModel = spyk(AdsLogShowOverModel(
             adsValue = 123456,
             logExtra = "{rit:123456}",
@@ -107,5 +110,62 @@ class AdsLogShowOverTest {
         }
 
         showOverJSONObject.assertShowOverOutsideSRP(showOverModel)
+    }
+
+    @Test
+    fun `when show over event is triggered, the size percentage should not be zero`() {
+        var sizePercentage = "45"
+
+        val showModel = spyk(AdsLogShowModel(
+            adsValue = 123457,
+            logExtra = "{rit:123457}",
+            adExtraData = AdsLogShowModel.AdExtraData(
+                productId = "987654621",
+                productName = "samsung galaxy s23 ultra",
+            )
+        ))
+
+        every {
+            GlobalConfig.isAllowDebuggingTools()
+        } returns true
+
+        val showJSONObject = showModel.toJSONObject(context)
+
+        AppLogTopAds.sendEventShow(context, showModel)
+
+        verify(atLeast = 1) {
+            AppLogTopAds.sendEventShow(context, showModel)
+            AppLog.onEventV3(AdsLogConst.Event.SHOW, showJSONObject)
+        }
+
+        val showOverModel = spyk(AdsLogShowOverModel(
+            adsValue = 123457,
+            logExtra = "{rit:123457}",
+            adExtraData = AdsLogShowOverModel.AdExtraData(
+                productId = "987654621",
+                productName = "samsung galaxy s23 ultra",
+                sizePercent = sizePercentage
+            )
+        ))
+
+        val showOverJSONObject = showOverModel.toJSONObject(context)
+
+        AppLogTopAds.sendEventShowOver(context, showOverModel)
+
+        verify(atLeast = 1) {
+            AppLogTopAds.sendEventShowOver(context, showOverModel)
+            AppLog.onEventV3(AdsLogConst.Event.SHOW, showOverJSONObject)
+        }
+
+        val adExtraData = showOverJSONObject[AdsLogConst.Param.AD_EXTRA_DATA] as JSONObject
+
+        val actualSizePercentage = adExtraData[AdsLogConst.Param.SIZE_PERCENT]
+
+        assert(actualSizePercentage != 0)
+
+        sizePercentage = "0"
+
+        //then after sizePercentage is triggered, size percentage should be 0
+        assertEquals(sizePercentage, "0")
     }
 }
