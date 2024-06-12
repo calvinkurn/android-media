@@ -33,7 +33,7 @@ open class ProductConstraintLayout :
     private var viewDetachedFromWindows = true
     private var debugTextView: TextView? = null
 
-    private val rectf: Rect by lazy { Rect() }
+    val rectf: Rect by lazy { Rect() }
     private val screen: Rect by lazy { Rect(0, actionBarHeight, getScreenWidth(), getScreenHeight()) }
 
     constructor(context: Context) : super(context) {
