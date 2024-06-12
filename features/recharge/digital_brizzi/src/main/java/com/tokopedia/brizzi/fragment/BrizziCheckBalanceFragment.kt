@@ -26,6 +26,7 @@ import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
 import com.tokopedia.common_electronic_money.util.CardUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.security.checkActivity
 import id.co.bri.sdk.Brizzi
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -253,21 +254,23 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
                         }.show()
             } else {
                 if (userSession.isLoggedIn) {
-                    it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_MUTABLE)
-                    } else {
-                        PendingIntent.getActivity(it, 0, it.intent, 0)
-                    }
-                    brizziInstance.nfcAdapter.enableForegroundDispatch(it, pendingIntent,
+                    it.checkActivity { intent ->
+                        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            PendingIntent.getActivity(it, 0, intent, PendingIntent.FLAG_MUTABLE)
+                        } else {
+                            PendingIntent.getActivity(it, 0, intent, 0)
+                        }
+                        brizziInstance.nfcAdapter.enableForegroundDispatch(it, pendingIntent,
                             arrayOf<IntentFilter>(), null)
-                    nfcDisabledView.visibility = View.GONE
+                        nfcDisabledView.visibility = View.GONE
 
-                    if (eTollUpdateBalanceResultView.visibility == View.GONE) {
-                        emoneyAnalytics.onEnableNFC(getOperatorName(ISSUER_ID_BRIZZI))
-                        tapETollCardView.visibility = View.VISIBLE
-                    } else {
-                        //do nothing
+                        if (eTollUpdateBalanceResultView.visibility == View.GONE) {
+                            emoneyAnalytics.onEnableNFC(getOperatorName(ISSUER_ID_BRIZZI))
+                            tapETollCardView.visibility = View.VISIBLE
+                        } else {
+                            //do nothing
+                        }
                     }
                 } else {
                     navigateToLoginPage()

@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.nfc;
 
+import static com.tokopedia.utils.security.ActivityIntentCheckerKt.checkActivity;
+
 import android.app.Activity;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -19,6 +21,8 @@ import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
+
+import kotlin.Unit;
 
 public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
@@ -78,16 +82,18 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                         @Override
                         public void onPermissionGranted() {
                             try {
-                                if (nfcAdapter.isEnabled()) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        pendingIntent = PendingIntent.getActivity(activity, 0,
-                                                activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_MUTABLE);
-                                    }else{
-                                        pendingIntent = PendingIntent.getActivity(activity, 0,
-                                                activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                                checkActivity(activity, intent -> {
+                                    if(nfcAdapter.isEnabled()) {
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_MUTABLE);
+                                        }else{
+                                            pendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
+                                        }
+                                        nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
                                     }
-                                    nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
-                                }
+                                    return Unit.INSTANCE;
+                                });
                             } catch (SecurityException e) {
                                 FirebaseCrashlytics.getInstance().recordException(e);
                             }

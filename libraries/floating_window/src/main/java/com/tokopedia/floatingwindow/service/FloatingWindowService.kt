@@ -51,9 +51,9 @@ internal class FloatingWindowService : Service() {
             putExtra(INTENT_COMMAND, INTENT_COMMAND_EXIT)
         }
 
-        val exitPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val exitPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getService(
-                    this, CODE_EXIT_INTENT, exitIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                    this, CODE_EXIT_INTENT, exitIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         } else {
             PendingIntent.getService(
