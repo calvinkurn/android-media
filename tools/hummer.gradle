@@ -50,7 +50,7 @@ if (isBitsRepo()) {
     def env = getEnvironment()
     def buildType = getBuildType()
     def tier = getTier()
-    def jobName = "jobName=${System.getenv('WORKFLOW_JOB_NAME')}".toString()
+    def jobName = "jobName=${System.getenv('WORKFLOW_JOB_DISPLAY_NAME')}".toString()
     def isCiBuild = jobName ? "CI" : "LOCAL"
     def appName = gradle.startParameter.projectDir?.name ?: ""
     def gradleVersion = "gradleVersion=${project.getGradle().getGradleVersion()}".toString()
