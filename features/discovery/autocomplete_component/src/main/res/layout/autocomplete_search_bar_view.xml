@@ -122,13 +122,20 @@
         android:layout_height="0dp"
         android:gravity="center_vertical"
         android:paddingStart="0dp"
-        android:paddingEnd="16dp"
+        android:paddingEnd="8dp"
         android:text="@string/search_cta_text"
         android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/searchTextView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/endGuideLine"
         app:layout_constraintTop_toTopOf="@+id/searchTextView"
         app:typographyWeight="bold"
         tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/endGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="8dp"/>
 </merge>

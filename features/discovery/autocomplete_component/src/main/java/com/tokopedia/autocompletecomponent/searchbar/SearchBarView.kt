@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logger.ServerLogger
@@ -75,6 +76,7 @@ class SearchBarView(
     private var mSavedState: SavedState? = null
     private var searchParameter = SearchParameter()
 
+    private var preventSearchBtnHide = false
     private var copyText = false
     private var compositeSubscription: CompositeSubscription? = null
     private var queryListener: QueryListener? = null
@@ -247,6 +249,23 @@ class SearchBarView(
         }
     }
 
+    private fun setSearchButtonVisibility(isKeywordEmpty: Boolean) {
+        val searchBtn = binding?.tvSearchCta
+        if (isSearchBtnEnabled && searchBtn != null) {
+            val keyword = searchParameter.getSearchQuery()
+            val hint = searchParameter.get(SearchApiConst.HINT)
+            val keywordHint = keyword + hint
+            when {
+                preventSearchBtnHide -> searchBtn.visible()
+                keywordHint.isBlank() -> {
+                    searchBtn.isVisible = !isKeywordEmpty
+                }
+
+                else -> searchBtn.visible()
+            }
+        }
+    }
+
     private fun configureSearchIcon() {
         val binding = binding ?: return
         if (isSearchBtnEnabled) {
@@ -387,6 +406,7 @@ class SearchBarView(
             binding.autocompleteClearButton.gone()
             showVoiceButton(true)
         }
+        setSearchButtonVisibility(isKeywordEmpty = !hasText)
     }
 
     fun setMPSEnabled(isMPSEnabled: Boolean) {
@@ -476,6 +496,7 @@ class SearchBarView(
 
         lastQuery = searchParameter.getSearchQuery()
         showSearch()
+        setSearchButtonVisibility(lastQuery.isNullOrBlank())
         return param
     }
 
@@ -591,6 +612,10 @@ class SearchBarView(
         setHintIfExists(mSavedState?.hint, mSavedState?.placeholder)
 
         super.onRestoreInstanceState(mSavedState?.superState)
+    }
+
+    fun preventSearchBtnHide(prevent: Boolean) {
+        this.preventSearchBtnHide = prevent
     }
 
     internal class SavedState : BaseSavedState {
