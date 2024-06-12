@@ -585,7 +585,7 @@ ext {
             abTestApt               : "com.bytedance.dataplatform:abtest_apt:0.5.1"
     ]
 
-    bytedanceFrescoVersion = "1.13.5.1"
+    bytedanceFrescoVersion = "1.13.9.48"
 
     bytedanceFrescoDependencies = [
             fresco            : "com.bytedance.fresco:fresco:$bytedanceFrescoVersion",

@@ -8,7 +8,7 @@ import org.json.JSONObject
 object FrescoLogger {
 
     fun loggerSlardarFresco() {
-        FrescoMonitor.addImageTraceListener(object : ImageTraceListener {
+        FrescoMonitor.setImageTraceListener(object : ImageTraceListener {
             override fun onImageLoaded(
                 isSucceed: Boolean,
                 requestId: String?,
