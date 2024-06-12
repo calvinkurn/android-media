@@ -176,8 +176,14 @@ class NewMainParentActivity :
         listOf(
             createTabSelectedListener(globalAnalyticsProcessor.get(), true, { !it }, { false }),
             createTabSelectedListener(visitFeedProcessor.get()),
-            createTabSelectedListener { updateAppLogPageData(it.uniqueId, false) },
-            createTabSelectedListener { sendEnterPage(it.uniqueId) },
+            createTabSelectedListener {
+                val currentFragmentTag = getCurrentActiveFragment()?.tag ?: return@createTabSelectedListener
+                val tabId = BottomNavItemId(currentFragmentTag)
+                if (it.uniqueId != tabId) {
+                    updateAppLogPageData(it.uniqueId, false)
+                    sendEnterPage(it.uniqueId)
+                }
+            },
             createTabSelectedListener { if (it.uniqueId != BottomNavHomeId) mePageCoachMark.get().forceDismiss() }
         )
     }
@@ -655,6 +661,7 @@ class NewMainParentActivity :
         showSelectedPage()
 
         setupBottomNavigation()
+        handleFirstAppLogSendIfHome()
     }
 
     private fun executeFirstTimeEvent(): Boolean {
@@ -918,6 +925,13 @@ class NewMainParentActivity :
                 }
             }
         })
+    }
+
+    private fun handleFirstAppLogSendIfHome() {
+        val tabId = getTabIdFromIntent()
+        if (tabId != BottomNavHomeId) return
+        updateAppLogPageData(tabId, true)
+        sendEnterPage(tabId)
     }
 
     private fun onItemReselected(model: BottomNavBarUiModel, isJumper: Boolean) {
