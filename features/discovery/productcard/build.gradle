@@ -58,6 +58,11 @@ dependencies {
     implementation rootProject.ext.dbDependencies.sqliteFramework
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.robolectric
+    testImplementation rootProject.ext.testDependencies.testCore
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+
     androidTestImplementation rootProject.ext.miscDependencies.multiDex
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
