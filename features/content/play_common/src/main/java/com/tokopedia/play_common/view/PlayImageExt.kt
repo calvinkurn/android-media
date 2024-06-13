@@ -12,13 +12,12 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
-fun ImageView.loadImage(url: String, listener: ImageLoaderStateListener? = null){
+fun ImageView.loadImage(url: String, listener: ImageLoaderStateListener? = null) {
     this.loadImage(url) {
         listener(
             onSuccess = { _, _ ->
@@ -56,9 +55,9 @@ private fun parseColor(colorHex: String): Int {
 suspend fun Context.getBitmapFromUrl(
     url: String,
     size: Size? = null,
-    cacheStrategy: DiskCacheStrategy = DiskCacheStrategy.NONE,
-): Bitmap? = suspendCancellableCoroutine { cont ->
-    CoroutineScope(Dispatchers.IO).launch {
+    cacheStrategy: DiskCacheStrategy = DiskCacheStrategy.NONE
+): Bitmap? = withContext(Dispatchers.IO) {
+    suspendCancellableCoroutine { cont ->
         url.getBitmapFromUrl(this@getBitmapFromUrl, properties = {
             size?.let {
                 overrideSize(Resize(size.width, size.height))
