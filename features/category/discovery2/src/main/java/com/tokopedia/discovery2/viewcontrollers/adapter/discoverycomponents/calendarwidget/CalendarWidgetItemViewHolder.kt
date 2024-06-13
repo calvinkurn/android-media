@@ -49,6 +49,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
+import java.util.Date
 import kotlin.math.roundToInt
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -276,8 +277,15 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val calendarButtonParent: CardView = itemView.findViewById(R.id.calendar_button_parent)
         val calendarFullImage: ImageUnify = itemView.findViewById(R.id.calendar_full_image)
         dataItem.apply {
+            if (isShowCTAButton(this)
+            ) {
+                calendarButtonParent.show()
+            } else {
+                calendarButtonParent.hide()
+            }
             val useFullImage = !calendarImageUrl.isNullOrEmpty()
             if (useFullImage) {
+                calendarCardUnify.cardType = TYPE_CLEAR
                 calendarFullImage.show()
                 setImageAdjustViewBoundPost(calendarFullImage, calendarImageUrl!!, dataItem)
 
@@ -290,8 +298,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 
             } else { // no full image, do logic as usual
                 itemView.minimumHeight = 0
-
                 calendarFullImage.gone()
+                if (boxColor?.isNotEmpty() == true && itemView.context.isDarkMode().not()) {
+                    calendarCardUnify.cardType = TYPE_BORDER
+                } else {
+                    calendarCardUnify.cardType = TYPE_CLEAR
+                }
                 if (imageUrl.isNullOrEmpty()) {
                     calendarImage.gone()
                 } else {
@@ -309,7 +321,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarTitleImage.hide()
                 }
             } // end if no full image
-
+            // if background color is not empty, card border should be clear
             if (Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
                 renderExpiredImageView(true, calendarImage)
                 if (useFullImage) {
@@ -397,12 +409,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                         unifyprinciplesR.color.Unify_NN950
                     )
                 )
-                // if background color is not empty, card border should be clear
-                if (boxColor?.isNotEmpty() == true || useFullImage) {
-                    calendarCardUnify.cardType = TYPE_CLEAR
-                } else {
-                    calendarCardUnify.cardType = TYPE_BORDER
-                }
                 // content BG
                 calendarParent.setBackgroundColor(
                     getColorBackendOrDefault(
@@ -498,15 +504,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 else -> {
                     calendarDate.setType(Typography.BODY_3)
                 }
-            }
-
-            if (buttonApplink.isNullOrEmpty() && !Utils.isFutureSale(
-                    startDate ?: "", TIMER_DATE_FORMAT
-                )
-            ) {
-                calendarButtonParent.hide()
-            } else {
-                calendarButtonParent.show()
             }
         }
     }
@@ -722,6 +719,20 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         } else {
             imageView.colorFilter = null;
             imageView.imageAlpha = 255;
+        }
+    }
+
+    private fun isShowCTAButton(dataItem: DataItem?): Boolean {
+        val startDate = Utils.parseData(dataItem?.startDate, TIMER_DATE_FORMAT)
+        val endDate = Utils.parseData(dataItem?.endDate, TIMER_DATE_FORMAT)
+        val currentSystemTime = java.util.Calendar.getInstance().time
+        return if (endDate != null && startDate != null) {
+            when {
+                endDate < currentSystemTime || startDate < currentSystemTime -> true
+                else -> false
+            }
+        } else {
+            false
         }
     }
 
