@@ -83,12 +83,34 @@ class CalendarWidgetCarouselViewModel(
     }
 
     private suspend fun setCalendarList() {
-        getCalendarList()?.let {
+        val calendarList = getCalendarList()
+        val calendarSize = calendarList?.size ?: 0
+        calendarList?.let {
             if (it.isNotEmpty()) {
                 calendarLoadError.value = false
                 maxHeight = maxOf(reSyncProductCardHeight(it), maxHeight)
                 it.forEach { item ->
-                    item.data?.firstOrNull()?.maxHeight = maxHeight
+                    val dataItem = item.data?.firstOrNull()
+                    dataItem?.maxHeight = maxHeight
+                    // WORKAROUND, because backend does not supply calendar Layout.
+                    var calendarLayout = item.properties?.calendarLayout ?: ""
+                    if (calendarLayout.isEmpty()) {
+                        calendarLayout = when (calendarSize) {
+                            1 -> {
+                                Constant.Calendar.SINGLE
+                            }
+                            2 -> {
+                                Constant.Calendar.DOUBLE
+                            }
+                            3 -> {
+                                Constant.Calendar.TRIPLE
+                            }
+                            else -> {
+                                Constant.Calendar.CAROUSEL
+                            }
+                        }
+                        item.properties?.calendarLayout = calendarLayout
+                    }
                 }
                 calendarCarouselList.value = addLoadMore(it)
                 syncData.value = true
@@ -105,10 +127,12 @@ class CalendarWidgetCarouselViewModel(
                 calendarCardModelArray.add(dataItem)
             }
         }
+        val prop = list.firstOrNull()?.properties
         return calendarCardModelArray.getMaxHeightForCarouselView(
             application.applicationContext,
             Dispatchers.Default,
-            list.firstOrNull()?.properties?.calendarLayout
+            prop?.calendarLayout,
+            prop?.calendarType
         )
     }
 

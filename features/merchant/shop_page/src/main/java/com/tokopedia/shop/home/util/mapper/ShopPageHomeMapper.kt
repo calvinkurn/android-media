@@ -132,6 +132,9 @@ object ShopPageHomeMapper {
         occButtonText: String = "",
         widgetName: String = "",
         isOverrideTheme: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isFestivity: Boolean,
         atcButtonText: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
@@ -149,6 +152,14 @@ object ShopPageHomeMapper {
                 ?: ""
         )
 
+        val colorMode = productCardColorHelper.determineProductCardColorMode(
+            isFestivity = isFestivity,
+            shouldOverrideTheme = isOverrideTheme,
+            patternColorType = patternColorType,
+            backgroundColor = backgroundColor,
+            makeProductCardTransparent = true
+        )
+
         val baseProductCardModel = if (isHasOCCButton) {
             ProductCardModel(
                 productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -164,7 +175,15 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                forceLightModeColor = isOverrideTheme
+                shopBadgeList = shopHomeProductViewModel.shopBadgeList.map { badge ->
+                    ProductCardModel.ShopBadge(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl,
+                        isShown = badge.show
+                    )
+                },
+                forceLightModeColor = isOverrideTheme,
+                colorMode = colorMode
             )
         } else {
             ProductCardModel(
@@ -178,8 +197,16 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
+                shopBadgeList = shopHomeProductViewModel.shopBadgeList.map { badge ->
+                    ProductCardModel.ShopBadge(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl,
+                        isShown = badge.show
+                    )
+                },
                 hasAddToCartButton = isHasATC,
-                forceLightModeColor = isOverrideTheme
+                forceLightModeColor = isOverrideTheme,
+                colorMode = colorMode
             )
         }
         return if (isShopPersonalizationWidgetEnableDirectPurchase(
@@ -605,7 +632,8 @@ object ShopPageHomeMapper {
                             widgetResponse,
                             widgetLayout,
                             isOverrideTheme,
-                            colorSchema
+                            colorSchema,
+                            shopId
                         )
                     }
 
@@ -720,14 +748,16 @@ object ShopPageHomeMapper {
         widgetResponse: ShopLayoutWidget.Widget,
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        shopId: String
     ) = ShopHomePersoProductComparisonUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
-        isFestivity = widgetLayout?.isFestivity.orFalse()
+        isFestivity = widgetLayout?.isFestivity.orFalse(),
+        shopId = shopId,
     )
 
     private fun mapToShowcaseListUiModel(
@@ -1245,6 +1275,13 @@ object ShopPageHomeMapper {
                     this.recParam = it.recParam
                     this.recSessionId = appLog.sessionId
                     this.requestId = appLog.requestId
+                    this.shopBadgeList = listOf(
+                        ShopBadgeUiModel(
+                            title = it.badge.title,
+                            imageUrl = it.badge.imageUrl,
+                            show = true
+                        )
+                    )
                 }
             }
         }

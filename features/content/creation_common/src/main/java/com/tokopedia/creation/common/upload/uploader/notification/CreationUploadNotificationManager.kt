@@ -8,7 +8,6 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.ForegroundInfo
-import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.model.CreationUploadData
@@ -16,6 +15,8 @@ import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
 import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapFromUrl
 import kotlinx.coroutines.withContext
 import com.tokopedia.resources.common.R as resourcescommonR
 
@@ -89,11 +90,9 @@ abstract class CreationUploadNotificationManager(
 
         withContext(dispatchers.io) {
             try {
-                val bitmap = Glide.with(context)
-                    .asBitmap()
-                    .load(uploadData.notificationCover)
-                    .submit(COVER_PREVIEW_SIZE, COVER_PREVIEW_SIZE)
-                    .get()
+                val bitmap = uploadData.notificationCover.getBitmapFromUrl(context) {
+                    overrideSize(Resize(COVER_PREVIEW_SIZE, COVER_PREVIEW_SIZE))
+                }
 
                 notificationBuilder.setLargeIcon(bitmap)
             }

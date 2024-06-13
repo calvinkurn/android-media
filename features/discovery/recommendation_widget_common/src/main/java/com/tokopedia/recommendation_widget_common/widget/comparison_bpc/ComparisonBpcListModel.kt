@@ -6,6 +6,7 @@ import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 
 data class ComparisonBpcListModel(
+    val pageName: String = "",
     val listData: List<Visitable<ComparisonBpcTypeFactory>> = listOf(),
     val trackingModel: RecommendationWidgetTrackingModel = RecommendationWidgetTrackingModel(),
     val itemsToShow: Int = DEFAULT_ITEM_TO_SHOW,

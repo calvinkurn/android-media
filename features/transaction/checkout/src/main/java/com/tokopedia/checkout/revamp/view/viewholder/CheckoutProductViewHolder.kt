@@ -13,9 +13,15 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.text.color
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.checkout.R
@@ -33,22 +39,26 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.nest.components.quantityeditor.QtyField
+import com.tokopedia.nest.components.quantityeditor.QtyState
+import com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductRevampBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
-import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheet
-import com.tokopedia.purchase_platform.common.feature.note.CartNoteBottomSheetData
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -75,14 +85,44 @@ class CheckoutProductViewHolder(
 
     private var delayChangeCheckboxAddOnState: Job? = null
 
+    init {
+        productBinding.qtyEditorProduct.apply {
+            isExpand = true
+            expandState.value = true
+            enableManualInput.value = true
+            configState.value = configState.value.copy(
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
+            )
+        }
+        bmgmBinding.qtyEditorProductBmgm.apply {
+            isExpand = true
+            expandState.value = true
+            enableManualInput.value = true
+            configState.value = configState.value.copy(
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
+            )
+        }
+        bundleBinding.qtyEditorProductBundle.apply {
+            isExpand = true
+            expandState.value = true
+            enableManualInput.value = true
+            configState.value = configState.value.copy(
+                qtyField = QtyField(cursorColor = unifyprinciplesR.color.Unify_NN1000)
+            )
+        }
+    }
+
     fun bind(product: CheckoutProductModel) {
         renderErrorAndWarningGroup(product)
         if (product.isBundlingItem) {
             renderBundleItem(product)
+            setNoteAnimationResource(bundleBinding.buttonChangeNoteLottieBundle)
         } else if (product.isBMGMItem) {
             renderBMGMItem(product)
+            setNoteAnimationResource(bmgmBinding.buttonChangeNoteLottieBmgm)
         } else {
             renderProductItem(product)
+            setNoteAnimationResource(productBinding.buttonChangeNoteLottie)
         }
         renderErrorProduct(product)
     }
@@ -167,6 +207,8 @@ class CheckoutProductViewHolder(
 
         renderAddOnProductBundle(product)
         renderAddOnGiftingProductBundle(product)
+        renderNotes(product, bundleBinding.buttonChangeNoteBundle, bundleBinding.buttonChangeNoteLottieBundle)
+        renderQuantity(product, bundleBinding.qtyEditorProductBundle, bundleBinding.labelQuantityErrorBundle)
     }
 
     private fun hideProductViews() {
@@ -176,14 +218,16 @@ class CheckoutProductViewHolder(
             tvProductName.isVisible = false
             tvProductVariant.isVisible = false
             tvProductPrice.isVisible = false
-            dividerProductPriceNotes.isVisible = false
-            icProductNotesEdit.isVisible = false
-            tvProductNotesEdit.isVisible = false
+            buttonChangeNote.isVisible = false
             tvProductNotes.isVisible = false
             tvProductAddOnsSectionTitle.isVisible = false
             tvProductAddOnsSeeAll.isVisible = false
             llAddonProductItems.isVisible = false
             buttonGiftingAddonProduct.isVisible = false
+            qtyEditorProduct.isVisible = false
+            labelQuantityError.isVisible = false
+            buttonChangeNote.isVisible = false
+            buttonChangeNoteLottie.isVisible = false
         }
     }
 
@@ -238,8 +282,12 @@ class CheckoutProductViewHolder(
         val priceInRp =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
                 .removeDecimalSuffix()
-        val qty = product.quantity
-        productBinding.tvProductPrice.text = "$qty x $priceInRp"
+        if (product.isCartTypeOcc) {
+            productBinding.tvProductPrice.text = priceInRp
+        } else {
+            val qty = product.quantity
+            productBinding.tvProductPrice.text = "$qty x $priceInRp"
+        }
         productBinding.tvProductPrice.isVisible = true
 
         if (product.noteToSeller.isNotEmpty()) {
@@ -249,50 +297,161 @@ class CheckoutProductViewHolder(
             productBinding.tvProductNotes.isVisible = false
         }
 
-        renderProductNotesEdit(product)
+        renderNotes(product, productBinding.buttonChangeNote, productBinding.buttonChangeNoteLottie)
+        renderQuantity(product, productBinding.qtyEditorProduct, productBinding.labelQuantityError)
         renderAddOnProduct(product)
         renderAddOnGiftingProduct(product)
     }
 
-    private fun renderProductNotesEdit(product: CheckoutProductModel) {
+    private fun renderNotes(product: CheckoutProductModel, buttonChangeNote: ImageUnify, notesLottie: LottieAnimationView) {
         if (product.enableNoteEdit) {
-            productBinding.dividerProductPriceNotes.isVisible = true
-            productBinding.icProductNotesEdit.isVisible = true
-            productBinding.tvProductNotesEdit.isVisible = true
-            if (product.noteToSeller.isNotEmpty()) {
-                productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
-                productBinding.icProductNotesEdit.contentDescription =
-                    binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
+            buttonChangeNote.show()
+            if (product.shouldShowLottieNotes) {
+                notesLottie.visible()
+                listener.onShowLottieNotes(
+                    buttonChangeNote,
+                    notesLottie,
+                    bindingAdapterPosition
+                )
             } else {
-                productBinding.icProductNotesEdit.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
-                productBinding.icProductNotesEdit.contentDescription =
-                    binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
+                notesLottie.gone()
             }
-            productBinding.icProductNotesEdit.setOnClickListener {
-                onEditNote(product)
+            buttonChangeNote.setOnClickListener {
+                listener.onNoteClicked(product, bindingAdapterPosition)
             }
-            productBinding.tvProductNotesEdit.setOnClickListener {
-                onEditNote(product)
+            if (product.noteToSeller.isNotBlank()) {
+                renderNotesFilled(buttonChangeNote)
+            } else {
+                renderNotesEmpty(buttonChangeNote)
             }
-        } else {
-            productBinding.dividerProductPriceNotes.isVisible = false
-            productBinding.icProductNotesEdit.isVisible = false
-            productBinding.tvProductNotesEdit.isVisible = false
         }
     }
 
-    private fun onEditNote(product: CheckoutProductModel) {
-        val cartNoteBottomSheet = CartNoteBottomSheet.newInstance(
-            CartNoteBottomSheetData(
-                productName = product.name,
-                productImage = product.imageUrl,
-                variant = product.variant
-            )
-        )
-        cartNoteBottomSheet.setListener {
-            listener.onEditProductNote(it, bindingAdapterPosition)
+    private fun renderQuantity(product: CheckoutProductModel, qtyEditorProduct: QuantityEditorView, labelQuantityError: Typography) {
+        if (product.enableQtyEdit) {
+            if (product.isError) {
+                qtyEditorProduct.gone()
+                return
+            } else {
+                qtyEditorProduct.show()
+            }
+
+            val maxQty = if (product.invenageValue < product.maxOrder) {
+                product.invenageValue
+            } else {
+                product.maxOrder
+            }
+            showHideQuantityError(product, labelQuantityError)
+
+            qtyEditorProduct.apply {
+                onFocusChanged = { focus ->
+                    val currentFocus = qtyState.value
+                    if (currentFocus is QtyState.Focus && !focus.isFocused) {
+                        val newQty = qtyValue.value
+                        listener.onCheckoutItemQuantityChanged(product, newQty)
+                        hideKeyboard()
+                        listener.clearAllFocus()
+                    }
+                    qtyState.value = if (focus.isFocused) QtyState.Focus else QtyState.Enabled
+                    if (focus.isFocused) {
+                        listener.onClickInputQty()
+                    }
+                }
+                keyboardOptions.value = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                )
+                keyboardActions.value = KeyboardActions(
+                    onDone = {
+                        hideKeyboard()
+                        listener.clearAllFocus()
+                    }
+                )
+                qtyValue.value = product.quantity
+                configState.value = configState.value.copy(
+                    minInt = product.minOrder,
+                    maxInt = maxQty,
+                    qtyField = configState.value.qtyField.copy(
+                        maxLine = 1
+                    ),
+                    qtyMinusButton = configState.value.qtyMinusButton.copy(
+                        onClick = {
+                            if (position != RecyclerView.NO_POSITION) {
+                                listener.onQtyMinusButtonClicked()
+                            }
+                        }
+                    ),
+                    qtyPlusButton = configState.value.qtyPlusButton.copy(
+                        onClick = {
+                            if (position != RecyclerView.NO_POSITION) {
+                                listener.onQtyPlusButtonClicked()
+                            }
+                        }
+                    )
+                )
+
+                onValueChanged = { qty ->
+                    if (qtyState.value !is QtyState.Focus) {
+                        if (qty != 0) {
+                            listener.onCheckoutItemQuantityChanged(product, qty)
+                        }
+                    } else {
+                        qtyValue.value = qty
+                    }
+                }
+            }
         }
-        cartNoteBottomSheet.show(listener.getHostFragmentManager(), CartNoteBottomSheet.TAG)
+    }
+
+    private fun showHideQuantityError(product: CheckoutProductModel, labelQuantityError: Typography) {
+        if (product.shouldShowMaxQtyError || product.shouldShowMinQtyError) {
+            labelQuantityError.show()
+            labelQuantityError.setPadding(
+                0,
+                0,
+                0,
+                MARGIN_16.dpToPx(itemView.context.resources.displayMetrics)
+            )
+            if (product.shouldShowMaxQtyError) {
+                val maxQty = if (product.invenageValue < product.maxOrder) {
+                    product.invenageValue
+                } else {
+                    product.maxOrder
+                }
+                labelQuantityError.text = String.format(
+                    itemView.context.resources.getString(R.string.checkout_max_quantity_error),
+                    maxQty
+                )
+            }
+            if (product.shouldShowMinQtyError) {
+                labelQuantityError.text = String.format(
+                    itemView.context.resources.getString(R.string.checkout_min_quantity_error),
+                    product.minOrder
+                )
+            }
+        } else {
+            labelQuantityError.gone()
+        }
+    }
+
+    private fun renderNotesEmpty(buttonChangeNote: ImageUnify) {
+        buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note)
+        buttonChangeNote.contentDescription =
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_empty_content_desc)
+    }
+
+    private fun renderNotesFilled(buttonChangeNote: ImageUnify) {
+        buttonChangeNote.setImageResource(purchase_platformcommonR.drawable.ic_pp_add_note_completed)
+        buttonChangeNote.contentDescription =
+            binding.root.context.getString(purchase_platformcommonR.string.cart_button_notes_filled_content_desc)
+    }
+
+    private fun setNoteAnimationResource(notesLottie: LottieAnimationView) {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            notesLottie.setAnimation(R.raw.anim_checkout_note_dark)
+        } else {
+            notesLottie.setAnimation(R.raw.anim_checkout_note)
+        }
     }
 
     private fun hideBundleViews() {
@@ -311,6 +470,10 @@ class CheckoutProductViewHolder(
             tvProductAddOnsSeeAllBundle.isVisible = false
             llAddonProductItemsBundle.isVisible = false
             buttonGiftingAddonProductBundle.isVisible = false
+            qtyEditorProductBundle.isVisible = false
+            labelQuantityErrorBundle.isVisible = false
+            buttonChangeNoteBundle.isVisible = false
+            buttonChangeNoteLottieBundle.isVisible = false
         }
     }
 
@@ -403,6 +566,8 @@ class CheckoutProductViewHolder(
         renderAdjustableFirstItemMarginBmgm()
         renderAdjustableSeparatorMarginBmgm()
 
+        renderNotes(product, bmgmBinding.buttonChangeNoteBmgm, bmgmBinding.buttonChangeNoteLottieBmgm)
+        renderQuantity(product, bmgmBinding.qtyEditorProductBmgm, bmgmBinding.labelQuantityErrorBmgm)
         renderAddOnBMGM(product)
         renderAddOnGiftingProductBmgm(product)
     }
@@ -420,6 +585,10 @@ class CheckoutProductViewHolder(
             tvProductAddOnsSeeAllBmgm.hide()
             llAddonProductItemsBmgm.hide()
             buttonGiftingAddonProductBmgm.hide()
+            qtyEditorProductBmgm.hide()
+            labelQuantityErrorBmgm.hide()
+            buttonChangeNoteBmgm.hide()
+            buttonChangeNoteLottieBmgm.hide()
         }
     }
 
@@ -1159,5 +1328,6 @@ class CheckoutProductViewHolder(
         private const val EPHARMACY_ICON_SIZE = 12
         private const val MARGIN_TOP_BMGM_CARD = 24
         private const val MARGIN_TOP_BMGM_WITH_HEADER_CARD = 12
+        private const val MARGIN_16 = 16
     }
 }

@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -58,6 +57,7 @@ import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.preloadImage
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -184,9 +184,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
     fun preloadAssets() {
         context?.let {
             val w = directGiftView.dpToPx(56).toInt()
-            Glide.with(it)
-                .load(R.drawable.gf_glowing_ovo)
-                .preload()
+            (R.drawable.gf_glowing_ovo).preloadImage(it)
         }
     }
 

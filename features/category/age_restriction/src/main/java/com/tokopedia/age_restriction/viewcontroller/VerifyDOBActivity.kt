@@ -11,17 +11,20 @@ import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
+import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
+import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
+import com.tokopedia.travelcalendar.view.convertString
 import kotlinx.android.synthetic.main.layout_activity_dob.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 
 class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
 
     private var selectedDate: Date? = null
-    private var travelCalenderSheet: TravelCalendarBottomSheet? = null
+    private var travelCalenderSheet: SinglePickCalendarWidget? = null
     private lateinit var verifyDobModel: VerifyDOBViewModel
 
     private var now = Calendar.getInstance()
@@ -105,7 +108,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             }
         } else {
             group.visibility = View.VISIBLE
-            changeButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+            changeButtonColor(unifyprinciplesR.color.Unify_NN200)
             tv_update_dob.isClickable = false
             tv_update_dob.isFocusable = false
         }
@@ -152,25 +155,27 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         ed_edit_dob.isClickable = false
         iv_arrow_down.isClickable = false
         if (travelCalenderSheet == null) {
-            travelCalenderSheet = TravelCalendarBottomSheet.Builder()
-                    .setTitle(getString(R.string.ar_text_select_dob))
-                    .setMinDate(startdate!!)
-                    .setMaxDate(endDate)
-                    .setSelectedDate(endDate!!)
-                    .build()
-            travelCalenderSheet?.setListener(object : TravelCalendarBottomSheet.ActionListener {
-                override fun onClickDate(dateSelected: Date) {
+            travelCalenderSheet = SinglePickCalendarWidget.newInstance(startdate!!.convertString(
+                TRAVEL_CAL_YYYY_MM_DD
+            ), endDate!!.convertString(
+                TRAVEL_CAL_YYYY_MM_DD
+            ),endDate!!.convertString(
+                TRAVEL_CAL_YYYY_MM_DD
+            ))
+            travelCalenderSheet?.setListener(object : SinglePickCalendarWidget.ActionListener {
+
+                override fun onDateSelected(dateSelected: Date) {
                     ed_edit_dob.text = SimpleDateFormat("dd MMMM yyyy", Locale("in", "ID")).format(dateSelected)
                     selectedDate = dateSelected
                     hideProgressBar()
                     ed_edit_dob.isClickable = true
                     iv_arrow_down.isClickable = true
-                    changeButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                    changeButtonColor(unifyprinciplesR.color.Unify_GN500)
                     tv_update_dob.isClickable = true
                     tv_update_dob.isFocusable = true
                 }
             })
-            travelCalenderSheet?.setDismissListener {
+            travelCalenderSheet?.setOnDismissListener {
                 hideProgressBar()
                 ed_edit_dob.isClickable = true
                 iv_arrow_down.isClickable = true

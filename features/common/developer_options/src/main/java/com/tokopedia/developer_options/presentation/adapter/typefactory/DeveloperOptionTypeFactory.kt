@@ -30,6 +30,7 @@ import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificati
 import com.tokopedia.developer_options.presentation.model.OkHttpTimeoutUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
+import com.tokopedia.developer_options.presentation.model.PercentViewUiModel
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
 import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
@@ -45,7 +46,6 @@ import com.tokopedia.developer_options.presentation.model.SharedPreferencesEdito
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
-import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
 import com.tokopedia.developer_options.presentation.model.TopAdsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggingUiModel
@@ -100,7 +100,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ViewAnalyticsLogUiModel): Int
     fun type(uiModel: ViewIrisLogUiModel): Int
     fun type(uiModel: LeakCanaryUiModel): Int
-    fun type(uiModel: StrictModeLeakPublisherUiModel): Int
     fun type(uiModel: RemoteConfigEditorUiModel): Int
     fun type(uiModel: RouteManagerUiModel): Int
     fun type(uiModel: LoggingToServerUiModel): Int
@@ -127,6 +126,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: DevOptsAuthorizationUiModel): Int
     fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int
     fun type(uiModel: BannerEnvironmentUiModel): Int
+    fun type(uiModel: PercentViewUiModel): Int
     fun type(uiModel: BranchLinkUiModel): Int
     fun type(uiModel: FpiMonitoringUiModel): Int
     fun type(uiModel: UserIdUiModel): Int

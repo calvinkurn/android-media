@@ -27,6 +27,18 @@ import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
+import com.tokopedia.loginregister.login_sdk.data.ClientInfo
+import com.tokopedia.loginregister.login_sdk.data.SdkAuthorizeResponse
+import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
+import com.tokopedia.loginregister.login_sdk.data.SdkConsentResponse
+import com.tokopedia.loginregister.login_sdk.data.TermPrivacy
+import com.tokopedia.loginregister.login_sdk.data.UserInfo
+import com.tokopedia.loginregister.login_sdk.data.ValidateClientData
+import com.tokopedia.loginregister.login_sdk.data.ValidateClientResponse
+import com.tokopedia.loginregister.login_sdk.usecase.AuthorizeSdkUseCase
+import com.tokopedia.loginregister.login_sdk.usecase.LoginSdkConsentUseCase
+import com.tokopedia.loginregister.login_sdk.usecase.ValidateClientUseCase
 import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -45,6 +57,7 @@ import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
@@ -82,6 +95,12 @@ class LoginEmailPhoneViewModelTest {
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
     val getShopStatusUseCase = mockk<GetShopStatusUseCase>(relaxed = true)
+
+    val getUserInfoAndSaveSessionUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
+
+    val authorizeSdkUseCase = mockk<AuthorizeSdkUseCase>(relaxed = true)
+    val validateClientUseCase = mockk<ValidateClientUseCase>(relaxed = true)
+    val loginSdkConsentUseCase = mockk<LoginSdkConsentUseCase>(relaxed = true)
 
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -145,7 +164,11 @@ class LoginEmailPhoneViewModelTest {
             loginTokenUseCase,
             tickerInfoUseCase,
             getAdminTypeUseCase,
+            getUserInfoAndSaveSessionUseCase,
             loginTokenV2UseCase,
+            loginSdkConsentUseCase,
+            validateClientUseCase,
+            authorizeSdkUseCase,
             generatePublicKeyUseCase,
             dynamicBannerUseCase,
             registerCheckFingerprintUseCase,
@@ -1308,6 +1331,73 @@ class LoginEmailPhoneViewModelTest {
         runBlocking {
             assert(!viewModel.isFingerprintRegistered())
         }
+    }
+
+    @Test
+    fun `getConsent - success`() {
+        val userInfo = UserInfo("yes", "", "", "")
+        val clientInfo = ClientInfo("", "", "", true)
+        val termPrivacy = TermPrivacy("", "", "", "")
+        val sdkConsentData = SdkConsentData(true, userInfo, clientInfo, termPrivacy, listOf(), true, "")
+        val resp = SdkConsentResponse(sdkConsentData)
+        coEvery { loginSdkConsentUseCase(any()) } returns resp
+        viewModel.getConsent("123", "email", "id")
+        assert(viewModel.sdkConsent.getOrAwaitValue() is Success)
+    }
+
+    @Test
+    fun `getConsent - fail`() {
+        coEvery { loginSdkConsentUseCase(any()) } throws exception
+        viewModel.getConsent("123", "email", "id")
+
+        assert(viewModel.sdkConsent.getOrAwaitValue() is Fail)
+    }
+
+    @Test
+    fun `validateClient - Success`() {
+        val validateClientData = ValidateClientData(true, "", "test")
+        val resp = ValidateClientResponse(validateClientData)
+        coEvery { validateClientUseCase(any()) } returns resp
+        viewModel.validateClient("123", "zzz", "", "")
+
+        assert((viewModel.validateClient.getOrAwaitValue() as Success).data.status)
+    }
+
+    @Test
+    fun `validateClient - Fail`() {
+        coEvery { validateClientUseCase(any()) } throws exception
+        viewModel.validateClient("123", "zzz", "", "")
+
+        assert((viewModel.validateClient.getOrAwaitValue() is Fail))
+    }
+
+    @Test
+    fun `authorizeSdk - Api Success, isSuccess = true`() {
+        val data = AuthorizeData("asd123", 1111, true, "", "")
+        val resp = SdkAuthorizeResponse(data)
+        coEvery { authorizeSdkUseCase(any()) } returns resp
+        viewModel.authorizeSdk("123", "zzz", "")
+
+        assert((viewModel.authorizeResponse.getOrAwaitValue() as Success).data.isSuccess)
+    }
+
+    @Test
+    fun `authorizeSdk - Api Success, isSuccess = false`() {
+        val err = "error_1"
+        val data = AuthorizeData("asd123", 1111, false, "", err)
+        val resp = SdkAuthorizeResponse(data)
+        coEvery { authorizeSdkUseCase(any()) } returns resp
+        viewModel.authorizeSdk("123", "zzz", "")
+
+        assert((viewModel.authorizeResponse.getOrAwaitValue() as Fail).throwable.message == err)
+    }
+
+    @Test
+    fun `authorizeSdk - Api Fail`() {
+        coEvery { authorizeSdkUseCase(any()) } throws exception
+        viewModel.authorizeSdk("123", "zzz", "")
+
+        assert((viewModel.authorizeResponse.getOrAwaitValue() is Fail))
     }
 
     @Test

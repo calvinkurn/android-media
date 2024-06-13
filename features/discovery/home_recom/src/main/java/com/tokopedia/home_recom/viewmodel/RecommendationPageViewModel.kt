@@ -118,8 +118,7 @@ open class RecommendationPageViewModel @Inject constructor(
                             pageNumber = 1,
                             productIds = listOf(productId),
                             pageName = "recom_1,recom_2,recom_3",
-                            queryParam = queryParam,
-                            hasNewProductCardEnabled = true
+                            queryParam = queryParam
                         )
                         getRecommendationUseCase.createObservable(params).toBlocking().first()
                     }) {

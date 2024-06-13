@@ -27,7 +27,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -103,7 +106,8 @@ class FeedBaseFragment :
     TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
     FragmentListener,
-    AppLogInterface {
+    AppLogInterface,
+    IAdsLog {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -252,7 +256,7 @@ class FeedBaseFragment :
             }
         }
         super.onCreate(savedInstanceState)
-
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Feed)
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
@@ -318,6 +322,10 @@ class FeedBaseFragment :
     override fun getScreenName(): String = "Feed Fragment"
 
     override fun getPageName(): String {
+        return PageName.FEED
+    }
+
+    override fun getAdsPageName(): String {
         return PageName.FEED
     }
 
@@ -413,8 +421,6 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
-
-        binding.viewBlockInteraction.setOnTouchListener { _, _ -> true }
 
         binding.containerFeedTopNav.btnFeedBrowse.doOnLayout {
             val centerX = it.width / 2
@@ -873,9 +879,7 @@ class FeedBaseFragment :
                     }
                 )
                 .setListener(object : ImmersiveFeedOnboarding.Listener {
-                    override fun onStarted() {
-                        binding.viewBlockInteraction.show()
-                    }
+                    override fun onStarted() {}
 
                     override fun onCompleteCreateContentOnboarding() {
                         feedMainViewModel.setHasShownCreateContent()
@@ -891,7 +895,6 @@ class FeedBaseFragment :
 
                     override fun onFinished(isForcedDismiss: Boolean) {
                         if (!isForcedDismiss) feedMainViewModel.setReadyToShowOnboarding()
-                        binding.viewBlockInteraction.hide()
                     }
                 }).build()
 

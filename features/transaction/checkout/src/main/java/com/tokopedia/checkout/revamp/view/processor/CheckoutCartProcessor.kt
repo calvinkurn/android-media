@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view.processor
 
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartPaymentRequest
@@ -20,11 +21,13 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
+import com.tokopedia.checkout.revamp.view.payment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.revamp.view.uimodel.OriginalCheckoutPaymentData
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -466,19 +469,79 @@ class CheckoutCartProcessor @Inject constructor(
         val paymentData = payment?.data?.paymentWidgetData?.firstOrNull()
         if (paymentData != null) {
             val selectedTenure = paymentData.installmentPaymentData.selectedTenure
+            var currPaymentGatewayCode = paymentData.gatewayCode
+            var currPaymentMetadata = paymentData.metadata
+            val selectedInstallment = payment.tenorList?.firstOrNull { it.tenure == selectedTenure }
+            if (selectedInstallment != null) {
+                currPaymentGatewayCode = selectedInstallment.gatewayCode
+                try {
+                    val metadata = JsonParser().parse(currPaymentMetadata)
+                    val jsonObject = metadata.asJsonObject
+                    val expressCheckoutParams =
+                        jsonObject.getAsJsonObject(UpdateCartPaymentRequest.EXPRESS_CHECKOUT_PARAM)
+                    jsonObject.addProperty(
+                        UpdateCartPaymentRequest.GATEWAY_CODE,
+                        selectedInstallment.gatewayCode
+                    )
+                    expressCheckoutParams.addProperty(
+                        UpdateCartPaymentRequest.INSTALLMENT_TERM,
+                        selectedInstallment.tenure.toString()
+                    )
+                    currPaymentMetadata = metadata.toString()
+                } catch (e: RuntimeException) {
+                    Timber.d(e)
+                }
+            }
             return UpdateCartPaymentRequest(
-                paymentData.gatewayCode,
+                currPaymentGatewayCode,
                 selectedTenure,
                 payment.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.optionId ?: "",
-                paymentData.metadata
+                currPaymentMetadata
             )
         }
         return UpdateCartPaymentRequest()
     }
 
+    fun generateModifiedCheckoutItems(checkoutItems: List<CheckoutItem>, prevCheckoutItems: List<CheckoutItem>): List<CheckoutItem> {
+        val modifiedCheckoutItems = ArrayList<CheckoutItem>()
+        val prevCheckoutProducts = prevCheckoutItems.filterIsInstance(CheckoutProductModel::class.java)
+        for (checkoutItem in checkoutItems) {
+            when (checkoutItem) {
+                is CheckoutProductModel -> {
+                    val currPairingCheckoutItem = prevCheckoutProducts.firstOrNull { it.cartId == checkoutItem.cartId }
+                    val newCheckoutItem = checkoutItem.copy(
+                        shouldShowMaxQtyError = currPairingCheckoutItem?.shouldShowMaxQtyError ?: false,
+                        shouldShowMinQtyError = currPairingCheckoutItem?.shouldShowMinQtyError ?: false
+                    )
+                    modifiedCheckoutItems.add(newCheckoutItem)
+                }
+
+                is CheckoutPaymentModel -> {
+                    val prevCheckoutPayment = prevCheckoutItems.payment()?.data?.paymentWidgetData?.firstOrNull()
+                    val selectedTenure = prevCheckoutPayment?.installmentPaymentData?.selectedTenure
+                    val newCheckoutPaymentItem = checkoutItem.copy(
+                        originalData = OriginalCheckoutPaymentData(
+                            gatewayCode = prevCheckoutPayment?.gatewayCode ?: "",
+                            tenureType = selectedTenure ?: 0,
+                            optionId = prevCheckoutItems.payment()?.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == selectedTenure }?.optionId ?: "",
+                            metadata = prevCheckoutPayment?.metadata ?: ""
+                        )
+                    )
+                    modifiedCheckoutItems.add(newCheckoutPaymentItem)
+                }
+
+                else -> {
+                    modifiedCheckoutItems.add(checkoutItem)
+                }
+            }
+        }
+        return modifiedCheckoutItems
+    }
+
     companion object {
         const val UPDATE_CART_SOURCE_CHECKOUT = "checkout"
         const val UPDATE_CART_SOURCE_NOTES = "update_notes"
+        const val UPDATE_CART_SOURCE_QUANTITY = "update_quantity"
         const val UPDATE_CART_SOURCE_PAYMENT = "update_payment"
         const val UPDATE_CART_SOURCE_CHECKOUT_OPEN_PROMO = "saf_coupon_list"
     }

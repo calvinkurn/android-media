@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
+import com.bumptech.glide.load.model.GlideUrl
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.data.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.data.DEFAULT_ICON_SIZE
@@ -67,7 +68,9 @@ fun ImageView.loadAsGif(
         .isGif(true)
 )
 
-fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
+fun ImageView.loadImage(
+    bitmap: Bitmap?,
+    properties: Properties.() -> Unit = {}) = call(bitmap, Properties().apply(properties))
 
 fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
@@ -130,6 +133,20 @@ inline fun ImageView.loadImage(
     crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
     .apply(properties))
+
+inline fun ImageView.loadImage(
+    byteArray: ByteArray,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(
+    byteArray, Properties()
+        .apply(properties))
+
+inline fun ImageView.loadImage(
+    glideUrl: GlideUrl,
+    crossinline properties: Properties.() -> Unit = {}
+) = call(
+    glideUrl, Properties()
+        .apply(properties))
 
 inline fun ImageView.loadImageFitCenter(
     url: String?,

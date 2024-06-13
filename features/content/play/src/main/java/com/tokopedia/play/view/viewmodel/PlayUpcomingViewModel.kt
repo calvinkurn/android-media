@@ -430,7 +430,9 @@ class PlayUpcomingViewModel @Inject constructor(
                         title = _channelDetail.value.channelInfo.title,
                         coverUrl = _channelDetail.value.channelInfo.coverUrl,
                         userId = userSession.userId,
-                        channelId = mChannelId
+                        channelId = mChannelId,
+                        partnerId = partnerId.toString(),
+                        channelType = channelType.value
                     )
                 )
             } else if (!isScreenshot) {
@@ -482,23 +484,23 @@ class PlayUpcomingViewModel @Inject constructor(
     fun startSSE(channelId: String) {
         sseJob?.cancel()
         sseJob = viewModelScope.launch {
-            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken)
+            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken, isRetry = false)
             playChannelSSE.listen().collect {
                 when (it) {
                     is SSEAction.Message -> handleSSEMessage(it.message, channelId)
                     is SSEAction.Close -> {
-                        connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken)
+                        connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken, isRetry = true)
                     }
                 }
             }
         }
     }
 
-    private fun connectSSE(channelId: String, pageSource: String, gcToken: String) {
-        playChannelSSE.connect(channelId, pageSource, gcToken)
+    private fun connectSSE(channelId: String, pageSource: String, gcToken: String, isRetry: Boolean) {
+        playChannelSSE.connect(channelId, pageSource, gcToken, isRetry)
     }
 
-    private fun stopSSE() {
+    fun stopSSE() {
         sseJob?.cancel()
         playChannelSSE.close()
     }

@@ -52,6 +52,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.security.checkActivity
 import timber.log.Timber
 import java.io.IOException
 import java.lang.reflect.InvocationTargetException
@@ -467,21 +468,23 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 alert.show()
             } else {
                 if (userSession.isLoggedIn) {
-                    it.intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        PendingIntent.getActivity(it, 0, it.intent, PendingIntent.FLAG_MUTABLE)
-                    } else {
-                        PendingIntent.getActivity(it, 0, it.intent, 0)
-                    }
-                    nfcAdapter.enableForegroundDispatch(it, pendingIntent,
+                    it.checkActivity { intent ->
+                        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            PendingIntent.getActivity(it, 0, intent, PendingIntent.FLAG_MUTABLE)
+                        } else {
+                            PendingIntent.getActivity(it, 0, intent, 0)
+                        }
+                        nfcAdapter.enableForegroundDispatch(it, pendingIntent,
                             arrayOf<IntentFilter>(), null)
-                    nfcDisabledView.visibility = View.GONE
+                        nfcDisabledView.visibility = View.GONE
 
-                    if (eTollUpdateBalanceResultView.visibility == View.GONE) {
-                        emoneyAnalytics.onEnableNFC(getOperatorName(issuerActive))
-                        tapETollCardView.visibility = View.VISIBLE
-                    } else {
-                        //do nothing
+                        if (eTollUpdateBalanceResultView.visibility == View.GONE) {
+                            emoneyAnalytics.onEnableNFC(getOperatorName(issuerActive))
+                            tapETollCardView.visibility = View.VISIBLE
+                        } else {
+                            //do nothing
+                        }
                     }
                 } else {
                     navigateToLoginPage()

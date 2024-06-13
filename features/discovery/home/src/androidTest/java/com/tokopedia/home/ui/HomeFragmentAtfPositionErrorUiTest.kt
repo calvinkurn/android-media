@@ -14,7 +14,6 @@ import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeAtfPositionErrorResponseConfig
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
-import com.tokopedia.home.ui.HomeMockValueHelper.setupAtfRefactorConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.test.application.annotations.UiTest
@@ -45,7 +44,6 @@ class HomeFragmentAtfPositionErrorUiTest {
             setupGraphqlMockResponse(HomeAtfPositionErrorResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
-            setupAtfRefactorConfig(false)
             super.beforeActivityLaunched()
         }
     }

@@ -196,10 +196,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
 
         stubComponent(
             componentAdditionalInfo = null,
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = false
         )
 
@@ -217,7 +214,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -250,10 +247,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
                 totalProductData = TotalProductData(),
                 redirection = null
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = false
         )
 
@@ -271,7 +265,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -310,10 +304,6 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
             componentItems = componentItems
         )
 
-        stubNextPageAvailable(
-            hasNextPage = false
-        )
-
         stubLoadMore(
             hasLoaded = true
         )
@@ -328,7 +318,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -367,10 +357,6 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
             componentItems = componentItems
         )
 
-        stubNextPageAvailable(
-            hasNextPage = false
-        )
-
         stubLoadMore(
             hasLoaded = true
         )
@@ -385,7 +371,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -422,10 +408,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = true
         )
 
@@ -443,7 +426,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -482,10 +465,6 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
             componentItems = componentItems
         )
 
-        stubNextPageAvailable(
-            hasNextPage = false
-        )
-
         stubLoadMore(
             hasLoaded = true
         )
@@ -500,7 +479,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
 
         // compare to the expected result
         viewModel.noMorePages
-            .verifyValueEquals(Unit)
+            .verifyValueEquals(true)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -533,10 +512,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
                 totalProductData = TotalProductData(),
                 redirection = null
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = true
         )
 
@@ -589,10 +565,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = true
         )
 
@@ -645,10 +618,7 @@ class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixtur
                 totalProductData = TotalProductData(),
                 redirection = redirection
             ),
-            componentItems = componentItems
-        )
-
-        stubNextPageAvailable(
+            componentItems = componentItems,
             hasNextPage = true
         )
 

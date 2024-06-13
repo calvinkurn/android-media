@@ -17,7 +17,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.IAdsLog
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
@@ -62,8 +65,8 @@ import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ShopListFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
-):
+    private val viewModelFactory: ViewModelProvider.Factory
+) :
     TkpdBaseV4Fragment(),
     ShopListener,
     EmptyStateListener,
@@ -72,7 +75,8 @@ internal class ShopListFragment @Inject constructor(
     ChooseAddressListener,
     SortFilterBottomSheet.Callback,
     BackToTopView,
-    AppLogInterface by ShopPageNameDelegate() {
+    AppLogInterface by ShopPageNameDelegate(),
+    IAdsLog {
 
     companion object {
         private const val SHOP = "shop"
@@ -81,11 +85,11 @@ internal class ShopListFragment @Inject constructor(
         @JvmStatic
         fun newInstance(
             classLoader: ClassLoader,
-            fragmentFactory: FragmentFactory,
+            fragmentFactory: FragmentFactory
         ): ShopListFragment {
             return fragmentFactory.instantiate(
                 classLoader,
-                ShopListFragment::class.java.name,
+                ShopListFragment::class.java.name
             ) as ShopListFragment
         }
     }
@@ -100,14 +104,19 @@ internal class ShopListFragment @Inject constructor(
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
-                FilterEventTracking.Event.CLICK_SEARCH_RESULT,
-                FilterEventTracking.Category.FILTER_SHOP,
-                "",
-                FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
+            FilterEventTracking.Event.CLICK_SEARCH_RESULT,
+            FilterEventTracking.Category.FILTER_SHOP,
+            "",
+            FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
         )
     }
 
     private var binding by autoClearedNullable<SearchResultShopFragmentLayoutBinding>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.ShopSearchResult)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = SearchResultShopFragmentLayoutBinding.inflate(inflater, container, false)
@@ -121,6 +130,14 @@ internal class ShopListFragment @Inject constructor(
         observeViewModelData()
 
         searchShopViewModel?.onViewCreated()
+    }
+
+    override fun getPageName(): String {
+        return AppLogSearch.ParamValue.STORE_SEARCH
+    }
+
+    override fun getAdsPageName(): String {
+        return AppLogSearch.ParamValue.STORE_SEARCH
     }
 
     private fun initViews() {
@@ -205,13 +222,16 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeSearchShopLiveData() {
-        searchShopViewModel?.getSearchShopLiveData()?.observe(viewLifecycleOwner, Observer {
-            updateAdapter(it)
-        })
+        searchShopViewModel?.getSearchShopLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                updateAdapter(it)
+            }
+        )
     }
 
     private fun updateAdapter(searchShopLiveData: State<List<Visitable<*>>>?) {
-        when(searchShopLiveData) {
+        when (searchShopLiveData) {
             is State.Loading -> {
                 showRefreshLayout()
                 updateList(searchShopLiveData)
@@ -227,7 +247,7 @@ internal class ShopListFragment @Inject constructor(
                 showRetryLayout(searchShopLiveData)
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -293,9 +313,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeGetDynamicFilterEvent() {
-        searchShopViewModel?.getDynamicFilterEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessGetDynamicFilter ->
-            handleEventGetDynamicFilter(isSuccessGetDynamicFilter)
-        })
+        searchShopViewModel?.getDynamicFilterEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { isSuccessGetDynamicFilter ->
+                handleEventGetDynamicFilter(isSuccessGetDynamicFilter)
+            }
+        )
     }
 
     private fun handleEventGetDynamicFilter(isSuccessGetDynamicFilter: Boolean) {
@@ -307,22 +330,27 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingOpenFilterPageEvent() {
-        searchShopViewModel?.getOpenFilterPageTrackingEventLiveData()?.observe(viewLifecycleOwner, Observer {
-            FilterTracking.eventOpenFilterPage(filterTrackingData)
-        })
+        searchShopViewModel?.getOpenFilterPageTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                FilterTracking.eventOpenFilterPage(filterTrackingData)
+            }
+        )
     }
 
     private fun observeOpenFilterPageEvent() {
-        searchShopViewModel?.getOpenFilterPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessOpenFilterPage ->
-            handleEventOpenFilterPage(isSuccessOpenFilterPage)
-        })
+        searchShopViewModel?.getOpenFilterPageEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { isSuccessOpenFilterPage ->
+                handleEventOpenFilterPage(isSuccessOpenFilterPage)
+            }
+        )
     }
 
     private fun handleEventOpenFilterPage(isSuccessOpenFilterPage: Boolean) {
         if (isSuccessOpenFilterPage) {
             openFilterPage()
-        }
-        else {
+        } else {
             activity?.let { activity ->
                 NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(activity.getString(R.string.error_filter_data_not_ready))))
             }
@@ -337,10 +365,10 @@ internal class ShopListFragment @Inject constructor(
         }
 
         sortFilterBottomSheet?.show(
-                requireFragmentManager(),
-                searchShopViewModel?.getSearchParameter().convertValuesToString(),
-                searchShopViewModel?.dynamicFilterModel,
-                this
+            requireFragmentManager(),
+            searchShopViewModel?.getSearchParameter().convertValuesToString(),
+            searchShopViewModel?.dynamicFilterModel,
+            this
         )
     }
 
@@ -354,15 +382,21 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeShopCountLiveData() {
-        searchShopViewModel?.getShopCountLiveData()?.observe(viewLifecycleOwner, Observer {
-            sortFilterBottomSheet?.setResultCountText(String.format(getString(R.string.shop_apply_filter), it))
-        })
+        searchShopViewModel?.getShopCountLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                sortFilterBottomSheet?.setResultCountText(String.format(getString(R.string.shop_apply_filter), it))
+            }
+        )
     }
 
     private fun observeTrackingShopItemImpressionEvent() {
-        searchShopViewModel?.getShopItemImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
-            trackEventShopItemImpression(trackingObjectList)
-        })
+        searchShopViewModel?.getShopItemImpressionTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { trackingObjectList ->
+                trackEventShopItemImpression(trackingObjectList)
+            }
+        )
     }
 
     private fun trackEventShopItemImpression(trackingObjectList: ArrayList<Any>) {
@@ -371,9 +405,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingProductPreviewImpressionEvent() {
-        searchShopViewModel?.getProductPreviewImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
-            trackEventProductPreviewImpression(trackingObjectList)
-        })
+        searchShopViewModel?.getProductPreviewImpressionTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { trackingObjectList ->
+                trackEventProductPreviewImpression(trackingObjectList)
+            }
+        )
     }
 
     private fun trackEventProductPreviewImpression(trackingObjectList: ArrayList<Any>) {
@@ -382,16 +419,18 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observePerformanceMonitoringEvent() {
-        searchShopViewModel?.getSearchShopFirstPagePerformanceMonitoringEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isStartPerformanceMonitoring ->
-            triggerPerformanceMonitoring(isStartPerformanceMonitoring)
-        })
+        searchShopViewModel?.getSearchShopFirstPagePerformanceMonitoringEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { isStartPerformanceMonitoring ->
+                triggerPerformanceMonitoring(isStartPerformanceMonitoring)
+            }
+        )
     }
 
     private fun triggerPerformanceMonitoring(isStartPerformanceMonitoring: Boolean) {
         if (isStartPerformanceMonitoring) {
             startPerformanceMonitoring()
-        }
-        else {
+        } else {
             stopPerformanceMonitoring()
         }
     }
@@ -407,9 +446,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeRoutePageEvent() {
-        searchShopViewModel?.getRoutePageEventLiveData()?.observe(viewLifecycleOwner, EventObserver { applink ->
-            route(applink)
-        })
+        searchShopViewModel?.getRoutePageEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { applink ->
+                route(applink)
+            }
+        )
     }
 
     private fun route(applink: String) {
@@ -421,9 +463,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingImpressionShopRecommendation() {
-        searchShopViewModel?.getShopRecommendationItemImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
-            trackEventImpressionShopRecommendation(trackingObjectList)
-        })
+        searchShopViewModel?.getShopRecommendationItemImpressionTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { trackingObjectList ->
+                trackEventImpressionShopRecommendation(trackingObjectList)
+            }
+        )
     }
 
     private fun trackEventImpressionShopRecommendation(trackingObjectList: ArrayList<Any>) {
@@ -432,9 +477,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingImpressionShopRecommendationProduct() {
-        searchShopViewModel?.getShopRecommendationProductPreviewImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
-            trackEventImpressionShopRecommendationProductPreview(trackingObjectList)
-        })
+        searchShopViewModel?.getShopRecommendationProductPreviewImpressionTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { trackingObjectList ->
+                trackEventImpressionShopRecommendationProductPreview(trackingObjectList)
+            }
+        )
     }
 
     private fun trackEventImpressionShopRecommendationProductPreview(trackingObjectList: ArrayList<Any>) {
@@ -443,9 +491,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingClickShopItem() {
-        searchShopViewModel?.getClickShopItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItem ->
-            trackEventClickShopItem(shopItem)
-        })
+        searchShopViewModel?.getClickShopItemTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { shopItem ->
+                trackEventClickShopItem(shopItem)
+            }
+        )
     }
 
     private fun trackEventClickShopItem(shopDataItem: ShopDataView.ShopItem) {
@@ -454,9 +505,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingClickNotActiveShop() {
-        searchShopViewModel?.getClickNotActiveShopItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItem ->
-            trackEventClickNotActiveShop(shopItem)
-        })
+        searchShopViewModel?.getClickNotActiveShopItemTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { shopItem ->
+                trackEventClickNotActiveShop(shopItem)
+            }
+        )
     }
 
     private fun trackEventClickNotActiveShop(shopDataItem: ShopDataView.ShopItem) {
@@ -465,9 +519,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingClickShopRecommendation() {
-        searchShopViewModel?.getClickShopRecommendationItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItem ->
-            trackEventClickShopRecommendation(shopItem)
-        })
+        searchShopViewModel?.getClickShopRecommendationItemTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver { shopItem ->
+                trackEventClickShopRecommendation(shopItem)
+            }
+        )
     }
 
     private fun trackEventClickShopRecommendation(shopDataItem: ShopDataView.ShopItem) {
@@ -476,9 +533,12 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeQuickFilterLiveData() {
-        searchShopViewModel?.getSortFilterItemListLiveData()?.observe(viewLifecycleOwner, Observer {
-            showQuickFilterView(it)
-        })
+        searchShopViewModel?.getSortFilterItemListLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                showQuickFilterView(it)
+            }
+        )
     }
 
     private fun showQuickFilterView(sortFilterItemList: List<SortFilterItem>?) {
@@ -497,34 +557,49 @@ internal class ShopListFragment @Inject constructor(
     }
 
     private fun observeTrackingClickQuickFilterEvent() {
-        searchShopViewModel?.getClickQuickFilterTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            val userId = searchShopViewModel?.getUserId() ?: "0"
-            SearchTracking.trackEventClickQuickFilter(it.option.key, it.option.value, it.isSelected, userId)
-        })
+        searchShopViewModel?.getClickQuickFilterTrackingEventLiveData()?.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val userId = searchShopViewModel?.getUserId() ?: "0"
+                SearchTracking.trackEventClickQuickFilter(it.option.key, it.option.value, it.isSelected, userId)
+            }
+        )
     }
 
     private fun observeRefreshLayoutVisibility() {
-        searchShopViewModel?.getRefreshLayoutIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
-            binding?.swipeRefreshLayoutSearchShop?.showWithCondition(it)
-        })
+        searchShopViewModel?.getRefreshLayoutIsVisibleLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding?.swipeRefreshLayoutSearchShop?.showWithCondition(it)
+            }
+        )
     }
 
     private fun observeShimmeringLayoutVisibility() {
-        searchShopViewModel?.getShimmeringQuickFilterIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
-            binding?.shimmeringViewShopQuickFilter?.root?.showWithCondition(it)
-        })
+        searchShopViewModel?.getShimmeringQuickFilterIsVisibleLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding?.shimmeringViewShopQuickFilter?.root?.showWithCondition(it)
+            }
+        )
     }
 
     private fun observeQuickFilterVisibility() {
-        searchShopViewModel?.getQuickFilterIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
-            binding?.searchShopQuickSortFilter?.showWithCondition(it)
-        })
+        searchShopViewModel?.getQuickFilterIsVisibleLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding?.searchShopQuickSortFilter?.showWithCondition(it)
+            }
+        )
     }
 
     private fun observeActiveFilterCount() {
-        searchShopViewModel?.getActiveFilterCountLiveData()?.observe(viewLifecycleOwner, Observer {
-            binding?.searchShopQuickSortFilter?.indicatorCounter = it
-        })
+        searchShopViewModel?.getActiveFilterCountLiveData()?.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding?.searchShopQuickSortFilter?.indicatorCounter = it
+            }
+        )
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -536,7 +611,7 @@ internal class ShopListFragment @Inject constructor(
 
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        if(isVisibleToUser) AppLogSearch.updateSearchPageData(this)
+        if (isVisibleToUser) AppLogSearch.updateSearchPageData(this)
     }
 
     private fun trackScreen() {
@@ -601,9 +676,9 @@ internal class ShopListFragment @Inject constructor(
         val activeFilterOptionList = searchShopViewModel?.getActiveFilterOptionListForEmptySearch() ?: return mutableListOf()
 
         return OptionHelper.combinePriceFilterIfExists(
-                    activeFilterOptionList,
-                    context?.resources?.getString(R.string.empty_state_selected_filter_price_name) ?: ""
-            )
+            activeFilterOptionList,
+            context?.resources?.getString(R.string.empty_state_selected_filter_price_name) ?: ""
+        )
     }
 
     override fun backToTop() {
@@ -612,15 +687,18 @@ internal class ShopListFragment @Inject constructor(
 
     override fun configure(shouldRemove: Boolean) {
         binding?.let {
-            if (shouldRemove) removeQuickFilterElevation(it.searchShopQuickSortFilter)
-            else applyQuickFilterElevation(context, it.searchShopQuickSortFilter)
+            if (shouldRemove) {
+                removeQuickFilterElevation(it.searchShopQuickSortFilter)
+            } else {
+                applyQuickFilterElevation(context, it.searchShopQuickSortFilter)
+            }
         }
     }
 
     private fun observeGeneralSearchTracking() {
         searchShopViewModel
-                ?.generalSearchTrackingLiveData
-                ?.observe(viewLifecycleOwner, SearchTracking::trackEventGeneralSearchShop)
+            ?.generalSearchTrackingLiveData
+            ?.observe(viewLifecycleOwner, SearchTracking::trackEventGeneralSearchShop)
     }
 
     override fun onLocalizingAddressSelected() {

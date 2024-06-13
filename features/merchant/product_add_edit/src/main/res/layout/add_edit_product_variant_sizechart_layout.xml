@@ -24,6 +24,18 @@
         app:layout_constraintTop_toBottomOf="@+id/dividerVariantPhoto"
         app:typographyType="heading_5" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographySizechartTitleRequired"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="2dp"
+        android:text="@string/label_variant_sizechart_title_required"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintStart_toEndOf="@id/typographySizechartTitle"
+        app:layout_constraintTop_toTopOf="@id/typographySizechartTitle"
+        app:layout_constraintBottom_toBottomOf="@id/typographySizechartTitle"
+        app:typographyType="heading_5" />
     <LinearLayout
         android:id="@+id/cardSizechart"
         android:layout_width="64dp"
@@ -68,18 +80,33 @@
 
     </LinearLayout>
 
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typographySizechartDescription"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="@string/label_variant_sizechart_description"
         android:textColor="@color/Unify_NN950_68"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardSizechart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardSizechart"
         app:layout_constraintTop_toBottomOf="@+id/typographySizechartTitle"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographySizechartRequired"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_variant_sizechart_required"
+        android:textColor="@color/Unify_RN500"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/cardSizechart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardSizechart"
+        app:layout_constraintTop_toBottomOf="@+id/typographySizechartDescription"
         app:typographyType="body_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

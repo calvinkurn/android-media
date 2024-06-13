@@ -34,6 +34,7 @@ import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificati
 import com.tokopedia.developer_options.presentation.model.OkHttpTimeoutUiModel
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
+import com.tokopedia.developer_options.presentation.model.PercentViewUiModel
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
 import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
@@ -49,7 +50,6 @@ import com.tokopedia.developer_options.presentation.model.SharedPreferencesEdito
 import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 import com.tokopedia.developer_options.presentation.model.MockDynamicWidgetUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
-import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
 import com.tokopedia.developer_options.presentation.model.TopAdsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggingUiModel
@@ -97,6 +97,7 @@ import com.tokopedia.developer_options.presentation.viewholder.NetworkLogOnNotif
 import com.tokopedia.developer_options.presentation.viewholder.OkHttpTimeoutViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.OpenScreenRecorderViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.PdpDevViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.PercentVisibleViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.PlayWebSocketSseLoggingViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.RandomizeTokenViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.RemoteConfigEditorViewHolder
@@ -112,7 +113,6 @@ import com.tokopedia.developer_options.presentation.viewholder.SharedPreferences
 import com.tokopedia.developer_options.presentation.viewholder.ShopIdViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.MockDynamicWidgetViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ShowApplinkOnToastViewHolder
-import com.tokopedia.developer_options.presentation.viewholder.StrictModeLeakPublisherViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.SystemNonSystemAppsViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.TopAdsLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.TopchatWebSocketLoggingViewHolder
@@ -178,7 +178,6 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewAnalyticsLogUiModel): Int = ViewAnalyticsLogViewHolder.LAYOUT
     override fun type(uiModel: ViewIrisLogUiModel): Int = ViewIrisLogViewHolder.LAYOUT
     override fun type(uiModel: LeakCanaryUiModel): Int = LeakCanaryViewHolder.LAYOUT
-    override fun type(uiModel: StrictModeLeakPublisherUiModel): Int = StrictModeLeakPublisherViewHolder.LAYOUT
     override fun type(uiModel: RemoteConfigEditorUiModel): Int = RemoteConfigEditorViewHolder.LAYOUT
     override fun type(uiModel: RouteManagerUiModel): Int = RouteManagerViewHolder.LAYOUT
     override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
@@ -209,6 +208,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
     override fun type(uiModel: FpiMonitoringUiModel): Int = EnableFpiMonitoringViewHolder.LAYOUT
     override fun type(uiModel: BannerEnvironmentUiModel): Int = BannerEnvironmentViewHolder.LAYOUT
+    override fun type(uiModel: PercentViewUiModel): Int = PercentVisibleViewHolder.LAYOUT
 
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
@@ -248,7 +248,6 @@ class DeveloperOptionTypeFactoryImpl(
             ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
             ViewServerLogViewHolder.LAYOUT -> ViewServerLogViewHolder(view)
             LeakCanaryViewHolder.LAYOUT -> LeakCanaryViewHolder(view)
-            StrictModeLeakPublisherViewHolder.LAYOUT -> StrictModeLeakPublisherViewHolder(view)
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
             RouteManagerViewHolder.LAYOUT -> RouteManagerViewHolder(view)
             LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)
@@ -279,6 +278,7 @@ class DeveloperOptionTypeFactoryImpl(
             BannerEnvironmentViewHolder.LAYOUT -> BannerEnvironmentViewHolder(view)
             SSOAuthorizationViewHolder.LAYOUT -> SSOAuthorizationViewHolder(view, ssoListener)
             OkHttpTimeoutViewHolder.LAYOUT -> OkHttpTimeoutViewHolder(view)
+            PercentVisibleViewHolder.LAYOUT -> PercentVisibleViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

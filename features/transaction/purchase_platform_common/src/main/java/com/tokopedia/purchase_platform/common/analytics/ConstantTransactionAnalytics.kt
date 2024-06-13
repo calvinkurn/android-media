@@ -461,6 +461,16 @@ object ConstantTransactionAnalytics {
         const val VIEW_VARIANT_EDITOR = "view variant editor"
         const val CLICK_VARIANT_EDITOR = "click variant editor"
         const val CLICK_SIMPAN_VARIANT_BOTTOM_SHEET = "click - simpan on global variant bottomsheet"
+
+        // checkout - notes & quantity editor
+        const val CHECKOUT_CLICK_NOTE_ICON = "click note icon"
+        const val CHECKOUT_CLICK_SIMPAN_ON_NOTE_ICON = "click simpan on notes"
+        const val CHECKOUT_CLICK_QTY_EDITOR_BUTTON_PLUS = "click button +"
+        const val CHECKOUT_CLICK_QTY_EDITOR_BUTTON_MINUS = "click button -"
+        const val CHECKOUT_CLICK_QTY_EDITOR_INPUT_TEXT = "click input quantity"
+        const val CHECKOUT_VIEW_CONSENT_POP_UP = "view consent pop up"
+        const val CHECKOUT_CLICK_CEK_LAGI_CONSENT_POP_UP = "click cek lagi consent pop up"
+        const val CHECKOUT_CLICK_BAYAR_CONSENT_POP_UP = "click bayar consent pop up"
     }
 
     object EventLabel {
@@ -662,5 +672,15 @@ object ConstantTransactionAnalytics {
         const val VIEW_VARIANT_EDITOR = "50683"
         const val CLICK_VARIANT_EDITOR = "50684"
         const val CLICK_SIMPAN_VARIANT_BOTTOM_SHEET = "50685"
+
+        // checkout - notes & quantity editor
+        const val CLICK_NOTES_ICON = "51039"
+        const val CLICK_SIMPAN_NOTES = "51040"
+        const val CLICK_QTY_EDITOR_BUTTON_PLUS = "51041"
+        const val CLICK_QTY_EDITOR_BUTTON_MINUS = "51042"
+        const val CLICK_QTY_EDITOR_INPUT_TEXT = "51043"
+        const val VIEW_CONSENT_POP_UP = "51044"
+        const val CLICK_CEK_LAGI_CONSENT_POP_UP = "51045"
+        const val CLICK_BAYAR_CONSENT_POP_UP = "51046"
     }
 }

@@ -59,6 +59,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityD
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShopCredibilityUiData.Companion.asUiData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
@@ -500,19 +501,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
                     shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
-                    infoShopData = if (context == null) {
-                        listOf()
-                    } else {
-                        getTwoShopInfoHieararchy(
-                            context,
-                            it.shopSpeed,
-                            it.shopChatSpeed.toLongOrZero(),
-                            it.shopInfo.activeProduct.toLongOrZero(),
-                            it.shopInfo.createdInfo.shopCreated,
-                            it.shopRating,
-                            it.shopFinishRate
-                        )
-                    }
+                    infoShopData = it.shopInfo.shopCredibility.stats.asUiData()
                     tickerDataResponse = it.shopInfo.tickerData
                 }
             }
@@ -911,29 +900,38 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         removeComponent(data.pageName)
     }
 
-    fun updateComparisonDataModel(data: RecommendationWidget) {
+    fun updateComparisonDataModel(
+        p1: ProductInfoP1?,
+        data: RecommendationWidget
+    ) {
         val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
+        val additionalParam = getAppLogAdditionalParam(p1)
         if (recomModel != null) {
             updateData(data.pageName) {
-                (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.run {
-                    recommendationWidget = data
-                }
+                (mapOfData[data.pageName] as? PdpComparisonWidgetDataModel)?.copy(
+                    recommendationWidget = data,
+                    appLogAdditionalParam = additionalParam
+                )?.let { mapOfData[data.pageName] = it }
             }
         } else {
             updateData(data.pageName) {
                 mapOfData[data.pageName] = PdpComparisonWidgetDataModel(
                     "",
                     data.pageName,
-                    data
+                    data,
+                    additionalParam
                 )
             }
         }
     }
 
-    fun updateComparisonBpcDataModel(data: RecommendationWidget, anchorProductId: String) {
+    fun updateComparisonBpcDataModel(
+        p1: ProductInfoP1?,
+        data: RecommendationWidget,
+    ) {
         updateData(data.pageName) {
             val source = RecommendationWidgetSource.PDP(
-                anchorProductId = anchorProductId
+                anchorProductId = p1?.basic?.productID.orEmpty()
             )
             mapOfData[data.pageName] = PdpRecommendationWidgetDataModel(
                 recommendationWidgetModel = RecommendationWidgetModel(
@@ -944,7 +942,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     ),
                     trackingModel = RecommendationWidgetTrackingModel(
                         androidPageName = source.eventCategory
-                    )
+                    ),
+                    appLogAdditionalParam = getAppLogAdditionalParam(p1)
                 )
             )
         }

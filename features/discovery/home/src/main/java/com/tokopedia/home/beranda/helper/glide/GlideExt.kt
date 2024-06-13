@@ -1,24 +1,16 @@
 package com.tokopedia.home.beranda.helper.glide
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.home.R
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaDataSource
+import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_THEMATIC_CARD_VIEW = "home_thematic_card"
@@ -35,10 +27,10 @@ fun ImageView.loadGif(url: String) = loadAsGif(url)
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null) {
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        listener({ resource, dataSource ->
+        listener(onSuccessWithResource = { resource, dataSource, isFirstResource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring, fpmItemLabel)
-            listener?.onLoaded(resource, dataSource)
-        }, {
+            listener?.onLoaded(resource, dataSource, isFirstResource)
+        }, onError = {
             GlideErrorLogHelper().logError(context, it, url)
             listener?.onFailed(it)
         })
@@ -48,34 +40,16 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaL
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = "") {
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
 
-    Glide.with(context)
-        .load(url)
-        .format(DecodeFormat.PREFER_ARGB_8888)
-        .centerCrop()
-        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-        .transform(CenterCrop(), RoundedCorners(roundedRadius))
-        .listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                return false
+    this.loadImage(url) {
+        decodeFormat(MediaDecodeFormat.PREFER_ARGB_8888)
+        centerCrop()
+        transforms(listOf(CenterCrop(), RoundedCorners(roundedRadius)))
+        listener(
+            onSuccess = { _, dataSource ->
+                handleOnResourceReady(dataSource, null, performanceMonitoring, fpmItemLabel)
             }
-
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                handleOnResourceReady(MediaDataSource.mapTo(dataSource), null, performanceMonitoring, fpmItemLabel)
-                return false
-            }
-        })
-        .into(this)
+        )
+    }
 }
 
 fun ImageView.loadMiniImage(

@@ -23,8 +23,6 @@ import com.tokopedia.play.analytic.PlayDimensionTrackingHelper
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.share.PlayShareExperienceImpl
-import com.tokopedia.play_common.websocket.PlayWebSocket
-import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
@@ -44,8 +42,13 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.PlayWebSocketImpl
+import com.tokopedia.play_common.websocket.SocketDebounce
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -105,9 +108,11 @@ class PlayModule {
 
     @Provides
     @PlayScope
-    internal fun provideAddToCartUseCase(graphqlUseCase: GraphqlUseCase,
-                                         atcMapper: AddToCartDataMapper,
-                                         chosenAddressHelper: ChosenAddressRequestHelper): AddToCartUseCase {
+    internal fun provideAddToCartUseCase(
+        graphqlUseCase: GraphqlUseCase,
+        atcMapper: AddToCartDataMapper,
+        chosenAddressHelper: ChosenAddressRequestHelper
+    ): AddToCartUseCase {
         return AddToCartUseCase(graphqlUseCase, atcMapper, chosenAddressHelper)
     }
 
@@ -158,14 +163,16 @@ class PlayModule {
         @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers,
-        localCacheHandler: LocalCacheHandler
+        localCacheHandler: LocalCacheHandler,
+        socketDebounce: SocketDebounce,
     ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
             dispatchers,
             context,
-            localCacheHandler
+            localCacheHandler,
+            socketDebounce,
         )
     }
 
@@ -181,7 +188,6 @@ class PlayModule {
     @Provides
     fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
 
-
     /**
      * SSE
      */
@@ -190,9 +196,10 @@ class PlayModule {
     fun providePlaySSE(
         @ApplicationContext appContext: Context,
         userSession: UserSessionInterface,
-        dispatchers: CoroutineDispatchers
+        dispatchers: CoroutineDispatchers,
+        socketDebounce: SocketDebounce,
     ): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, appContext)
+        PlayChannelSSEImpl(userSession, dispatchers, appContext, socketDebounce)
 
     /**
      * Sharing Experience
@@ -228,5 +235,11 @@ class PlayModule {
     @Provides
     fun provideActivityResultRegistry(activity: AppCompatActivity): ActivityResultRegistry {
         return activity.activityResultRegistry
+    }
+
+    @Provides
+    @PlayScope
+    fun provideABTestPlatform(): AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 }

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuFrameBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener) :
     RecyclerView.Adapter<RechargeItemFavoriteAdapter.DigitalItemFavoriteViewHolder>() {
@@ -31,7 +31,7 @@ class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>
     class DigitalItemFavoriteViewHolder(val binding: LayoutDigitalHomeCategoryItemSubmenuFrameBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
             with(binding) {
-                categoryFrameImage.cardImage.loadImage(element.mediaUrl)
+                categoryFrameImage.cardImage.loadImageFresco(element.mediaUrl)
                 categoryFrameName.text = element.title
                 binding.root.setOnClickListener {
                     onItemBindListener.onRechargeSectionItemClicked(element)

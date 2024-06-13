@@ -12,16 +12,12 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieTask
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.media.loader.loadImage
 import java.util.zip.ZipInputStream
 
 class GiftBoxTapTapView : GiftBoxDailyView {
@@ -164,45 +160,37 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         }
 
         if (glowImageUrl != null) {
-            Glide.with(this)
-                .load(glowImageUrl)
-                .dontAnimate()
-                .timeout(GLIDE_TIME_OUT)
-                .error(R.drawable.gf_gift_white_waktu)
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            imageBoxWhite.loadImage(glowImageUrl) {
+                isAnimate(false)
+                setTimeout(GLIDE_TIME_OUT)
+                setErrorDrawable(R.drawable.gf_gift_white_waktu)
+                listener(
+                    onSuccess = { _, _ ->
                         incrementAndSendCallback()
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    },
+                    onError = {
                         incrementAndSendCallback()
-                        return false
                     }
-                })
-                .into(imageBoxWhite)
+                )
+            }
         } else {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
         if (glowImageShadowUrl != null) {
-            Glide.with(this)
-                .load(glowImageShadowUrl)
-                .dontAnimate()
-                .timeout(GLIDE_TIME_OUT)
-                .error(R.drawable.gf_gift_glow)
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            imageBoxGlow.loadImage(glowImageShadowUrl) {
+                isAnimate(false)
+                setTimeout(GLIDE_TIME_OUT)
+                setErrorDrawable(R.drawable.gf_gift_glow)
+                listener(
+                    onSuccess = { _, _ ->
                         incrementAndSendCallback()
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    },
+                    onError = {
                         incrementAndSendCallback()
-                        return false
                     }
-                })
-                .into(imageBoxGlow)
+                )
+            }
         } else {
             TOTAL_ASYNC_IMAGES -= 1
         }
@@ -210,15 +198,11 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         // Bg Image
         fun handleSuccessOfDownloadImage(bmp: Bitmap?) {
             try {
-                val rp = if (bmp != null) {
-                    Glide.with(this)
-                        .load(bmp)
-                } else {
-                    Glide.with(this)
-                        .load(R.drawable.gf_gift_bg)
+                imageBg.loadImage(bmp) {
+                    setErrorDrawable(R.drawable.gf_gift_bg)
+                    setPlaceHolder(R.drawable.gf_gift_bg)
                 }
-                rp.dontAnimate()
-                    .into(imageBg)
+
                 incrementAndSendCallback()
             } catch (ex: Exception) {
                 ex.printStackTrace()
@@ -227,10 +211,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
         fun handleFailureOfDownloadImage() {
             try {
-                Glide.with(this)
-                    .load(R.drawable.gf_gift_bg)
-                    .dontAnimate()
-                    .into(imageBg)
+                imageBg.loadImage(R.drawable.gf_gift_bg)
 
                 incrementAndSendCallback()
             } catch (ex: Exception) {
@@ -258,23 +239,18 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         )
         viewModel.downloadImage(bgUrl, imageLiveData)
 
-        Glide.with(this)
-            .load(imageFrontUrl)
-            .dontAnimate()
-            .timeout(GLIDE_TIME_OUT)
-            .error(R.drawable.gf_gift_green_front)
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+        imageBoxFront.loadImage(imageFrontUrl) {
+            setTimeout(GLIDE_TIME_OUT)
+            setErrorDrawable(R.drawable.gf_gift_green_front)
+            listener(
+                onError = {
                     incrementAndSendCallback()
-                    return false
-                }
-
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                },
+                onSuccess = { _, _ ->
                     incrementAndSendCallback()
-                    return false
                 }
-            })
-            .into(imageBoxFront)
+            )
+        }
 
         // Download lid images
         fun handleSuccessOfImageListDownload(images: List<Bitmap>?) {

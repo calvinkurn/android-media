@@ -129,6 +129,16 @@
                     android:layout_marginEnd="@dimen/unify_space_4"
                     android:layout_width="@dimen/unify_space_12"
                     android:layout_height="@dimen/unify_space_12"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_search_cta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/search_cta_text"
+                    android:visibility="gone"
+                    app:typographyWeight="bold"
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

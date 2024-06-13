@@ -51,7 +51,6 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_IRIS_SAVE_LOG = "View Iris Save Log"
         const val KEYWORD_VIEW_IRIS_SEND_LOG = "View Iris Send Log"
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
-        const val KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY = "Enable Strict Mode"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
         const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
@@ -93,6 +92,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
         const val KEYWORD_BANNER_ENVIRONMENT = "Switch banner environment"
+        const val KEYWORD_PERCENT_VIEW = "Percent Visible View"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
@@ -130,6 +130,7 @@ class DeveloperOptionAdapter(
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
         TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
         BannerEnvironmentUiModel(listOf(KEYWORD_BANNER_ENVIRONMENT)),
+        PercentViewUiModel(listOf(KEYWORD_PERCENT_VIEW)),
         ForceDarkModeUiModel(listOf(KEYWORD_FORCE_DARK_MODE)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         TranslatorUiModel(
@@ -190,7 +191,6 @@ class DeveloperOptionAdapter(
             )
         ),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
-        StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
         DeprecatedApiSwitcherToasterUiModel(listOf(KEYWORD_DEPRECATED_API_SWITCHER_TOASTER)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         LoggingToServerUiModel(
@@ -285,7 +285,7 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        // no-op
+        removeWidget(LeakCanaryUiModel::class.java)
     }
 
     private fun removeMainAppItems() {

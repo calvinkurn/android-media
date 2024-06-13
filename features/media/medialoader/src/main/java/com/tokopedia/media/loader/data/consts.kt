@@ -40,6 +40,7 @@ typealias MediaException = GlideException
 
 const val DEFAULT_ROUNDED = 5.0f
 const val DEFAULT_ICON_SIZE = 300
+const val DEFAULT_TIMEOUT = 10_000 // 10 sec (same as OkHttpClient default timeout)
 
 // uses for secure image loader
 internal const val HEADER_KEY_AUTH = "Accounts-Authorization"

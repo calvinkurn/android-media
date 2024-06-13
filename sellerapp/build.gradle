@@ -1,8 +1,6 @@
 apply from: "$rootProject.projectDir/buildconfig/kotlin/application-signable.gradle"
 apply plugin: 'com.google.firebase.crashlytics'
-if(project.hasProperty('enableEmbraceSa')) {
-    apply plugin: 'embrace-swazzler'
-}
+
 apply plugin: 'newrelic'
 apply plugin: 'io.hansel.preprocessor'
 
@@ -38,7 +36,6 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
@@ -267,13 +264,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsOnBoarding)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
 
-    implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.accountlinking)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.fcm_common)
-    implementation projectOrAar(rootProject.ext.features.profileCompletion)
+    implementation projectOrAar(rootProject.ext.features.accountprofile)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
 
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
@@ -309,8 +305,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -377,7 +371,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
     implementation projectOrAar(rootProject.ext.libraries.keys)
-    implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
 
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.startupRuntime
@@ -399,7 +392,6 @@ dependencies {
     }
 
     implementation rootProject.ext.ktorDependencies.ktorSerializationJson
-    debugImplementation project.ext.debugToolsDependencies.leakCanary
     debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {

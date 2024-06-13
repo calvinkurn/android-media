@@ -24,6 +24,10 @@ class ItemProductWidgetViewHolder(
         binding?.card?.setOnClickListener {
             productWidgetListener.itemProductClicked(element, bindingAdapterPosition)
         }
+
+        binding?.root?.addOnImpression1pxListener(element.impression) {
+            productWidgetListener.itemProductImpressed(element, bindingAdapterPosition)
+        }
     }
 
     companion object {

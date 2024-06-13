@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.detail.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -52,7 +53,6 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameU
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
-import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.constant.ShopStatusLevelDef
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
@@ -279,6 +279,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun containsEmoji(input: String): Boolean {
+        val emojiRegex = Regex("[\\p{So}]")
+        return emojiRegex.containsMatchIn(input)
+    }
     private fun isInputValid(): Boolean {
         // by default the product photos are never empty
         val isProductPhotoError = mIsProductPhotoError.value ?: false
@@ -336,9 +340,21 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductNameInput(productNameInput: String) {
-        if (productNameInput.isEmpty()) {
+        if (productNameInput.trim().isEmpty()) {
             // show product error when product name is empty
             val errorMessage = provider.getEmptyProductNameErrorMessage()
+            errorMessage?.let { productNameMessage = it }
+            mIsProductNameInputError.value = true
+        } else if (productNameInput.trim().length < 25) {
+            val errorMessage = provider.getProductNameMinimumCharErrorMessage()
+            errorMessage?.let { productNameMessage = it }
+            mIsProductNameInputError.value = true
+        } else if (containsEmoji(productNameInput)) {
+            val errorMessage = provider.getProductNameEmojiMessage()
+            errorMessage?.let { productNameMessage = it }
+            mIsProductNameInputError.value = true
+        } else if(isAllSpecialCharacter(productNameInput)){
+            val errorMessage = provider.getProductNameSpecialCharacterMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
         } else {
@@ -971,5 +987,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
         }
         return resultCleaner
+    }
+
+    private fun isAllSpecialCharacter(input: String): Boolean {
+        val regexAlphaNumeric = Regex("[^a-zA-Z0-9]")
+        val regexNumeric = Regex(".*\\d.*")
+        val regexAlphabetic = Regex(".*[a-zA-Z].*")
+        return !(regexNumeric.matches(input) || regexAlphabetic.matches(input)) && !regexAlphaNumeric.matches(input)
     }
 }

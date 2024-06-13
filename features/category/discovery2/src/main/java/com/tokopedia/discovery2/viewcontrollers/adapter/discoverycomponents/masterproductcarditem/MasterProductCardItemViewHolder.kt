@@ -7,9 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.ClickAreaType
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.asEntranceInfoMap
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
+import com.tokopedia.analytics.byteio.topads.AppLogTopAds
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -17,6 +23,7 @@ import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.isOldProductCardType
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asTrackConfirmCart
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
 import com.tokopedia.discovery2.data.DataItem
@@ -30,9 +37,11 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.productcard.ATCNonVariantListener
+import com.tokopedia.productcard.ProductCardClickListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.layout.ProductConstraintLayout
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -40,8 +49,13 @@ import timber.log.Timber
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener, AppLogRecTriggerInterface {
+class MasterProductCardItemViewHolder(
+    itemView: View,
+    val fragment: Fragment
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner),
+    ATCNonVariantListener,
+    AppLogRecTriggerInterface
+{
 
     private var masterProductCardItemViewModel: MasterProductCardItemViewModel? = null
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -96,9 +110,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
                 )
             }
-            masterProductCardListView?.setOnClickListener {
-                handleUIClick(it)
-            }
+            masterProductCardListView?.setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    handleUIClick(v)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.SELLER_NAME)
+                }
+
+                override fun onAreaClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.COVER)
+                }
+            })
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -126,8 +154,30 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     )
                 }
             }
-            masterProductCardGridView?.setOnClickListener {
-                handleUIClick(it)
+            masterProductCardGridView?.setOnClickListener(object: ProductCardClickListener {
+                override fun onClick(v: View) {
+                    handleUIClick(v)
+                }
+
+                override fun onSellerInfoClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.SELLER_NAME)
+                }
+
+                override fun onAreaClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.AREA)
+                }
+
+                override fun onProductImageClicked(v: View) {
+                    sendAdsRealtimeClickByteIo(AdsLogConst.Refer.COVER)
+                }
+            })
+        }
+    }
+
+    private fun sendAdsRealtimeClickByteIo(refer: String) {
+        dataItem?.let {
+            if (it.isTopads == true) {
+                AppLogTopAds.sendEventRealtimeClick(itemView.context, it.asAdsLogRealtimeClickModel(refer))
             }
         }
     }
@@ -188,6 +238,18 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
         lifecycleOwner?.let { lifecycle ->
             masterProductCardItemViewModel?.getDataItemValue()?.observe(lifecycle) { data ->
+                if (masterProductCardListView !=  null) {
+                    masterProductCardListView?.setVisibilityPercentListener(
+                        isTopAds = data.isTopads.orFalse(),
+                        eventListener = createVisibilityPercentCallback(data)
+                    )
+                } else {
+                    masterProductCardGridView?.setVisibilityPercentListener(
+                        isTopAds = data.isTopads.orFalse(),
+                        eventListener = createVisibilityPercentCallback(data)
+                    )
+                }
+
                 dataItem = data
             }
             masterProductCardItemViewModel?.getProductModelValue()?.observe(lifecycle) { data ->
@@ -416,7 +478,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem?.let {
             if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(productCardName)
+                    it.asProductTrackModel(productCardName),
+                    ClickAreaType.PRODUCT
                 )
             }
         }
@@ -505,6 +568,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                     productItem.productId?.let { productId ->
                         if (productId.isNotEmpty()) {
+                            val mapEntranceInfoTracker = mutableMapOf<String, Any>()
+                            if (productItem.isEligibleToTrack()) {
+                                val productTrackModel = productItem.asProductTrackModel(productCardName)
+                                mapEntranceInfoTracker.putAll(productTrackModel.asEntranceInfoMap())
+                                AppLogRecommendation.sendConfirmCartAppLog(productTrackModel, productItem.asTrackConfirmCart())
+                            }
                             (fragment as DiscoveryFragment).addOrUpdateItemCart(
                                 DiscoATCRequestParams(
                                     parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
@@ -513,7 +582,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                     quantity = quantity,
                                     shopId = if (isGeneralCartATC) productItem.shopId else null,
                                     isGeneralCartATC = isGeneralCartATC,
-                                    requestingComponent = masterProductCardItemViewModel.components
+                                    requestingComponent = masterProductCardItemViewModel.components,
+                                    appLogParam = AppLogAnalytics.getEntranceInfoNonPdp(mapEntranceInfoTracker, AtcBuyType.ATC)
                                 )
                             )
                         }
@@ -542,5 +612,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun isEligibleToTrack(): Boolean {
         return dataItem?.isEligibleToTrackRecTrigger(masterProductCardItemViewModel?.getComponentName().orEmpty()).orFalse()
+    }
+
+    private fun createVisibilityPercentCallback(data: DataItem) = object : ProductConstraintLayout.OnVisibilityPercentChanged {
+        override fun onShow() {
+            if (data.isTopads.orFalse()) {
+                AppLogTopAds.sendEventShow(itemView.context, data.asAdsLogShowModel())
+            }
+        }
+
+        override fun onShowOver(maxPercentage: Int) {
+            if (data.isTopads.orFalse()) {
+                AppLogTopAds.sendEventShowOver(itemView.context, data.asAdsLogShowOverModel(maxPercentage))
+            }
+        }
     }
 }

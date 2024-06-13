@@ -14,10 +14,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.listener.AdsItemClickListener
+import com.tokopedia.recommendation_widget_common.listener.AdsViewListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.parseColorHex
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
@@ -41,6 +46,9 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
     private var shouldUseReimagineCard: Boolean = true
 
     private var userSessionInterface = UserSession(context)
+
+    private var adsViewListener: AdsViewListener? = null
+    private var adsItemClickListener: AdsItemClickListener? = null
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.IO
@@ -98,11 +106,18 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
     fun setComparisonWidgetData(
         recommendationWidget: RecommendationWidget,
         comparisonWidgetInterface: ComparisonWidgetInterface,
+        adsViewListener: AdsViewListener,
+        adsItemClickListener: AdsItemClickListener,
         recommendationTrackingModel: RecommendationTrackingModel,
         trackingQueue: TrackingQueue?,
         isAnchorClickable: Boolean? = null,
         comparisonColorConfig: ComparisonColorConfig = ComparisonColorConfig(),
+        appLogAdditionalParam: AppLogAdditionalParam = AppLogAdditionalParam.None,
+        shopId: String? = null,
     ) {
+        this.adsViewListener = adsViewListener
+        this.adsItemClickListener = adsItemClickListener
+
         launch {
             try {
                 isAnchorClickable?.let { this@ComparisonWidgetView.isAnchorClickable = it }
@@ -113,7 +128,8 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                         context,
                         this@ComparisonWidgetView.isAnchorClickable,
                         comparisonColorConfig,
-                        shouldUseReimagineCard
+                        shouldUseReimagineCard,
+                        appLogAdditionalParam
                     )
 
                 if (this@ComparisonWidgetView.adapter == null) {
@@ -144,10 +160,19 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                             trackingQueue = trackingQueue,
                             userSessionInterface = userSessionInterface,
                             recommendationTrackingModel = recommendationTrackingModel,
-                            shouldUseReimagineCard = shouldUseReimagineCard
+                            shouldUseReimagineCard = shouldUseReimagineCard,
+                            adsItemClickListener = adsItemClickListener,
+                            adsViewListener = adsViewListener
                         )
                         rv_comparison_widget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_comparison_widget?.adapter = adapter
+                        rv_comparison_widget?.addHorizontalTrackListener(
+                            SlideTrackObject(
+                                moduleName = recommendationWidget.pageName,
+                                barName = recommendationWidget.pageName,
+                                shopId = shopId.orEmpty(),
+                            )
+                        )
                         btn_collapse?.setOnClickListener {
                             val tracking = ProductRecommendationTracking.getClickSpecDetailTracking(
                                 eventClick = recommendationTrackingModel.eventClick,
@@ -172,7 +197,9 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                             trackingQueue = trackingQueue,
                             userSessionInterface = userSessionInterface,
                             recommendationTrackingModel = recommendationTrackingModel,
-                            shouldUseReimagineCard = shouldUseReimagineCard
+                            shouldUseReimagineCard = shouldUseReimagineCard,
+                            adsItemClickListener = adsItemClickListener,
+                            adsViewListener = adsViewListener
                         )
                         rv_compared_item?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_compared_item?.adapter = comparedAdapter
@@ -224,6 +251,8 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
         if (isExpandingState()) {
             rootView.viewTreeObserver.removeOnScrollChangedListener(this.specOnScrollChangedListener)
             this.specOnScrollChangedListener = null
+            this.adsViewListener = null
+            this.adsItemClickListener = null
         }
     }
 }

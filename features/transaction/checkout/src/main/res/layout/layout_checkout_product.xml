@@ -38,6 +38,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_product_image_frame"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
+        tools:visibility="gone"
         tools:text="Kaos Adidas Camo Tongue Tee White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XSbjsf bjsfbjRed, XS" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -69,7 +70,6 @@
         android:gravity="center_vertical"
         android:lines="1"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toStartOf="@id/divider_product_price_notes"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
@@ -77,72 +77,85 @@
         app:layout_constraintWidth_default="wrap"
         app:typographyType="display_3"
         app:typographyWeight="bold"
+        tools:visibility="gone"
         tools:text="1 x Rp200.0001 x Rp200.0001 x Rp200.0001 x Rp200.000" />
-
-    <View
-        android:id="@+id/divider_product_price_notes"
-        android:layout_width="1dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="8dp"
-        android:background="@color/Unify_NN500"
-        app:layout_constraintBottom_toBottomOf="@id/ic_product_notes_edit"
-        app:layout_constraintEnd_toStartOf="@id/ic_product_notes_edit"
-        app:layout_constraintStart_toEndOf="@id/tv_product_price"
-        app:layout_constraintTop_toTopOf="@id/ic_product_notes_edit" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ic_product_notes_edit"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toStartOf="@id/tv_product_notes_edit"
-        app:layout_constraintStart_toEndOf="@id/divider_product_price_notes"
-        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_info_top"
-        app:srcCompat="@drawable/ic_pp_add_note_completed" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_notes_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="4dp"
-        android:paddingEnd="0dp"
-        android:text="Catatan"
-        android:textColor="@color/Unify_GN500"
-        app:layout_constraintBottom_toBottomOf="@id/ic_product_notes_edit"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
-        app:layout_constraintStart_toEndOf="@id/ic_product_notes_edit"
-        app:layout_constraintTop_toTopOf="@id/ic_product_notes_edit"
-        app:typographyType="display_3"
-        app:typographyWeight="bold" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_checkout_product_price_note"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tv_product_price,divider_product_price_notes,ic_product_notes_edit,tv_product_notes_edit" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_notes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_variant"
-        app:layout_constraintStart_toStartOf="@+id/tv_product_name"
-        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_price_note"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_product_price"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_price"
         app:typographyType="paragraph_3"
         app:typographyWeight="reguler"
         tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan! afadf asfsaf safas safasfsaf asfasf safasf"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_checkout_product_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tv_product_notes" />
+
+    <com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
+        android:id="@+id/qty_editor_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_notes" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_quantity_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/qty_editor_product"
+        app:layout_constraintTop_toBottomOf="@id/qty_editor_product"
+        app:typographyType="display_3"
+        tools:text="Min. beli 2" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/button_change_note"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@id/qty_editor_product"
+        app:layout_constraintTop_toTopOf="@id/qty_editor_product"
+        app:layout_constraintBottom_toBottomOf="@id/qty_editor_product"
+        app:srcCompat="@drawable/ic_pp_add_note"
+        android:visibility="gone"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/button_change_note_lottie"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/qty_editor_product"
+        app:layout_constraintTop_toTopOf="@id/qty_editor_product"
+        app:layout_constraintBottom_toBottomOf="@id/qty_editor_product"
+        app:lottie_autoPlay="false"
+        app:lottie_rawRes="@raw/anim_checkout_note_dark" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_checkout_product_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="iv_product_image_frame,tv_product_price,tv_product_notes" />
+        app:constraint_referenced_ids="iv_product_image_frame,tv_product_price,tv_product_notes,label_quantity_error" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_add_ons_section_title"

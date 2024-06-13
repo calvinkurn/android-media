@@ -60,7 +60,7 @@
             android:layout_marginTop="@dimen/tp_margin_large"
             android:layout_marginEnd="@dimen/tp_margin_medium"
             android:layout_marginRight="@dimen/tp_margin_medium"
-            android:background="@drawable/bg_button_green"
+            android:background="@drawable/fromtkpddesign_bg_button_green"
             android:gravity="center"
             android:padding="@dimen/tp_padding_medium"
             android:text="@string/tp_label_exchange_point"

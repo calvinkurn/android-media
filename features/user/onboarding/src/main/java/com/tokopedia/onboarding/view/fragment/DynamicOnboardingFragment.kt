@@ -236,7 +236,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val defferedDeeplinkPath = TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
             val page = RouteManager.getIntent(it, appLink)
             if (defferedDeeplinkPath.isEmpty()) {
-                if (appLink == ApplinkConst.REGISTER || appLink == ApplinkConst.LOGIN) {
+                if (appLink == ApplinkConst.User.REGISTER || appLink == ApplinkConst.LOGIN) {
                     page.putExtra(ApplinkConstInternalUserPlatform.PARAM_CALLBACK_REGISTER, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
                     startActivityForResult(page, REQUEST_NEXT_PAGE)
                 } else if (appLink !=  ApplinkConst.HOME) {

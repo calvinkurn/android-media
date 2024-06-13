@@ -396,18 +396,18 @@ class AddEditProductDetailViewModelTest {
     }
 
     /**
-    @Test
-    fun `validateProductNameInput should valid when product name isn't empty`() {
-        val stringResMessage = "Tips: Jenis Produk + Merek Produk + Keterangan Tambahan"
+     @Test
+     fun `validateProductNameInput should valid when product name isn't empty`() {
+     val stringResMessage = "Tips: Jenis Produk + Merek Produk + Keterangan Tambahan"
 
-        runValidationAndProvideMessage(provider::getProductNameTips, stringResMessage) {
-            viewModel.validateProductNameInput("Baju")
-        }
+     runValidationAndProvideMessage(provider::getProductNameTips, stringResMessage) {
+     viewModel.validateProductNameInput("Baju")
+     }
 
-        val isError = viewModel.isProductNameInputError.getOrAwaitValue()
-        Assert.assertTrue(!isError && viewModel.productNameMessage.isNotBlank() && viewModel.productNameMessage == stringResMessage)
-    }
-    */
+     val isError = viewModel.isProductNameInputError.getOrAwaitValue()
+     Assert.assertTrue(!isError && viewModel.productNameMessage.isNotBlank() && viewModel.productNameMessage == stringResMessage)
+     }
+     */
 
     @Test
     fun `validateProductNameInput should invalid when product name is empty`() {
@@ -460,7 +460,7 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runTest {
-        val productNameInput = "indomilk"
+        val productNameInput = "indomilk coklat strawbery import jepang"
 
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
@@ -1266,25 +1266,24 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `updateProductPhotos with expected edit picture`(){
-        //params
+    fun `updateProductPhotos with expected edit picture`() {
+        // params
         val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "a/0/tkpd/102014.jpg")
         val originalImage = arrayListOf("", "a/0/tkpd/102013.jpg", "")
 
-        //data existing
+        // data existing
         val list = listOf(
             PictureInputModel(picID = "1", urlOriginal = "a/0/tkpd/102012.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
             PictureInputModel(picID = "2", urlOriginal = "a/0/tkpd/102014.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
         )
         val sampleProductPhotos = list
 
-        //target
-        val targetImageUrlOrPathList = arrayListOf("thumb 1","a/0/tkpd/102013.jpg", "thumb 2")
+        // target
+        val targetImageUrlOrPathList = arrayListOf("thumb 1", "a/0/tkpd/102013.jpg", "thumb 2")
         val objectTarget = DetailInputModel().apply {
             this.pictureList = list
             this.imageUrlOrPathList = targetImageUrlOrPathList
         }
-
 
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
         val actual = viewModel.updateProductPhotos(imagePickerResult, originalImage)
@@ -1292,20 +1291,20 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `updateProductPhotos with expected all new image`(){
-        //params
+    fun `updateProductPhotos with expected all new image`() {
+        // params
         val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg", "", "a/tkpd/102014.jpg")
         val originalImage = arrayListOf("", "a/0/tkpd/102013.jpg", "")
 
-        //data existing
+        // data existing
         val list = listOf(
             PictureInputModel(picID = "1", urlOriginal = "a/0/tkpd/102020.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
             PictureInputModel(picID = "2", urlOriginal = "a/0/tkpd/102021.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
         )
         val sampleProductPhotos = list
 
-        //target
-        val targetImageUrlOrPathList = arrayListOf("a/0/tkpd/102012.jpg","a/0/tkpd/102013.jpg", "a/tkpd/102014.jpg")
+        // target
+        val targetImageUrlOrPathList = arrayListOf("a/0/tkpd/102012.jpg", "a/0/tkpd/102013.jpg", "a/tkpd/102014.jpg")
         val objectTarget = DetailInputModel().apply {
             this.pictureList = emptyList()
             this.imageUrlOrPathList = targetImageUrlOrPathList
@@ -1778,7 +1777,7 @@ class AddEditProductDetailViewModelTest {
             viewModel.validateProductNameInput("")
         }
         runValidationAndProvideMessage(provider::getProductNameTips, null) {
-            viewModel.validateProductNameInput("toped")
+            viewModel.validateProductNameInput("indomilk coklat strawbery import jepang")
         }
 
         runValidationAndProvideMessage(provider::getEmptyWholeSaleQuantityErrorMessage, null) {
@@ -2340,7 +2339,7 @@ class AddEditProductDetailViewModelTest {
             provider.getTitleValidationErrorNegative()
         } returns errorMessageNegative
 
-        viewModel.validateProductNameInput("dummy")
+        viewModel.validateProductNameInput("dummy dummy dummy dummy dummy dummy")
 
         coVerify {
             getProductTitleValidationUseCase.getDataModelOnBackground()

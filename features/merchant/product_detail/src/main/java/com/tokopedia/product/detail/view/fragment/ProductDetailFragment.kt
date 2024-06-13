@@ -37,6 +37,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogFirstTrackId
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -49,8 +51,6 @@ import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.perf.bindFpsTracer
-import com.tokopedia.analytics.performance.util.EmbraceKey
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -526,6 +526,9 @@ open class ProductDetailFragment :
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
+    private val handler by lazyThreadSafetyNone {
+        Handler(Looper.getMainLooper())
+    }
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ProductDetailViewModel::class.java]
@@ -872,7 +875,6 @@ open class ProductDetailFragment :
         if (productId != null || (productKey != null && shopDomain != null)) {
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-                EmbraceMonitoring.startMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
                 viewModel.getProductP1(
                     ProductParams(
                         productId = productId,
@@ -892,6 +894,7 @@ open class ProductDetailFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        BtmApi.registerBtmPageOnCreate(this, Tokopedia.Pdp)
         if (savedInstanceState != null) {
             doActivityResult =
                 savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
@@ -934,12 +937,6 @@ open class ProductDetailFragment :
         firstOpenPage = true
         super.onCreate(savedInstanceState)
 
-        ProductDetailServerLogger.logBreadCrumbFirstOpenPage(
-            productId,
-            shopDomain,
-            productKey,
-            context
-        )
         assignDeviceId()
         loadData()
         registerCallback(mediator = this)
@@ -1302,7 +1299,6 @@ open class ProductDetailFragment :
         )
         if (isUserLocationChanged) {
             refreshPage()
-            ProductDetailServerLogger.logBreadCrumbAddressChanged(context)
         }
     }
 
@@ -1924,7 +1920,7 @@ open class ProductDetailFragment :
         applink: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
-        AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(recommendationWidget.pageName))
+        AppLogAnalytics.setGlobalParamOnClick(enterMethod = AppLogParam.ENTER_METHOD_FMT_PAGENAME.format(recommendationWidget.pageName))
         ProductDetailTracking.Click.eventClickSeeMoreRecomWidget(
             recommendationWidget,
             pageName,
@@ -3077,11 +3073,6 @@ open class ProductDetailFragment :
                     } else {
                         success = true
                         onSuccessAtc(it.data)
-                        ProductDetailServerLogger.logBreadCrumbAtc(
-                            isSuccess = true,
-                            errorMessage = it.data.getAtcErrorMessage() ?: "",
-                            atcType = buttonActionType
-                        )
                     }
                     cartId = it.data.data.cartId
                 }, {
@@ -3118,21 +3109,11 @@ open class ProductDetailFragment :
                 t.message.orEmpty(),
                 ctaText = getString(productdetailcommonR.string.pdp_common_oke)
             )
-            ProductDetailServerLogger.logBreadCrumbAtc(
-                false,
-                t.message ?: "",
-                buttonActionType
-            )
         } else {
             val errorMessage = getErrorMessage(t)
             view?.showToasterError(
                 errorMessage,
                 ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-            )
-            ProductDetailServerLogger.logBreadCrumbAtc(
-                isSuccess = false,
-                errorMessage = errorMessage,
-                atcType = buttonActionType
             )
         }
     }
@@ -3159,11 +3140,6 @@ open class ProductDetailFragment :
                 pdpUiUpdater = PdpUiUpdater(ProductDetailMapper.hashMapLayout(it.data))
                 viewModel.getProductInfoP1?.let { dataP1 ->
                     onSuccessGetDataP1(dataP1)
-                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-                        isSuccess = true,
-                        cacheState = viewModel.getProductInfoP1?.cacheState,
-                        isCampaign = viewModel.getProductInfoP1?.isCampaign.orFalse()
-                    )
                     ProductDetailServerLogger.logNewRelicP1Success(
                         productId = productId,
                         cacheState = viewModel.getProductInfoP1?.cacheState,
@@ -3188,17 +3164,22 @@ open class ProductDetailFragment :
             additionalAppLogParam = getAppLogAdditionalParam()
         )
         getRecyclerView()?.addOneTimeGlobalLayoutListener {
-            infiniteRecommManager?.let {
-                val hasInfinite = viewModel.getProductInfoP1?.hasInfiniteRecommendation ?: false
-                if (hasInfinite && concatAdapter?.adapters?.size != 2) {
-                    concatAdapter?.addAdapter(it.adapter)
-                    it.requestParam = GetRecommendationRequestParam(
-                        pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
-                        productIds = listOf(productId.orEmpty()),
-                        queryParam = viewModel.getP1()?.infiniteRecommendationQueryParam.orEmpty()
-                    )
+            handler.postDelayed({
+                infiniteRecommManager?.let {
+                    val hasInfinite = viewModel.getProductInfoP1?.hasInfiniteRecommendation ?: false
+                    if (hasInfinite && concatAdapter?.adapters?.size != 2) {
+                        concatAdapter?.addAdapter(it.adapter)
+                    }
+
+                    if (hasInfinite) {
+                        it.requestParam = GetRecommendationRequestParam(
+                            pageName = viewModel.getP1()?.infiniteRecommendationPageName.orEmpty(),
+                            productIds = listOf(productId.orEmpty()),
+                            queryParam = viewModel.getP1()?.infiniteRecommendationQueryParam.orEmpty()
+                        )
+                    }
                 }
-            }
+            }, 100L)
         }
     }
 
@@ -3229,13 +3210,6 @@ open class ProductDetailFragment :
         val pdpLayout = viewModel.getProductInfoP1
 
         renderPageError(errorModel)
-        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-            isSuccess = false,
-            errorMessage = errorModel.errorMessage,
-            errorCode = errorModel.errorCode,
-            cacheState = pdpLayout?.cacheState,
-            isCampaign = pdpLayout?.isCampaign.orFalse()
-        )
     }
 
     private fun isPdpCacheableError(): Boolean {
@@ -3275,14 +3249,6 @@ open class ProductDetailFragment :
         ) {
             onSwipeRefresh()
         }.show()
-
-        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-            isSuccess = false,
-            errorMessage = errorModel.errorMessage,
-            errorCode = errorModel.errorCode,
-            cacheState = pdpLayout?.cacheState,
-            isCampaign = pdpLayout?.isCampaign.orFalse()
-        )
     }
 
     private fun observeP2Login() {
@@ -3316,13 +3282,6 @@ open class ProductDetailFragment :
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
             AppLogPdp.sendPDPEnterPage(viewModel.getProductDetailTrack())
             getProductDetailActivity()?.stopMonitoringP2Data()
-            ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
-                isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
-            )
-
-            getRecyclerView()?.addOneTimeGlobalLayoutListener {
-                EmbraceMonitoring.stopMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
-            }
         }
     }
 
@@ -5081,10 +5040,6 @@ open class ProductDetailFragment :
     }
 
     private fun hitAtc(button: AvailableButton) {
-        if (button.atcKey == ProductDetailCommonConstant.ATC_BUTTON) {
-            EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
-        }
-
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->
@@ -5213,7 +5168,7 @@ open class ProductDetailFragment :
 
     private fun ProductShopCredibilityDataModel.toShopPrefetchData(): ShopPrefetchData {
         val averageShopRatingId = context?.getString(R.string.pdp_product_average_review).orEmpty()
-        val shopRating = infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value
+        val shopRating = infoShopData.firstOrNull { it.value.contains(averageShopRatingId) }?.value
         val castedShopRating = try {
             shopRating.toFloatOrZero()
         } catch (e: Exception) {

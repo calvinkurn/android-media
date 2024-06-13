@@ -47,8 +47,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -80,6 +78,11 @@ dependencies {
     implementation rootProject.ext.ttnetDependencies.baseLibsTtnet
     implementation rootProject.ext.ttnetDependencies.boringSsl
     implementation rootProject.ext.ttnetDependencies.cppShared
+
+    // btmsdk
+    api rootProject.ext.btmDependencies.btmApi
+    implementation rootProject.ext.btmDependencies.lazyData
+    implementation rootProject.ext.btmDependencies.btmImpl
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore

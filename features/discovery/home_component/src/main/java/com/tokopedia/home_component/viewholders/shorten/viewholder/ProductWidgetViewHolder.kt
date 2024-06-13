@@ -99,11 +99,9 @@ class ProductWidgetViewHolder(
     }
 
     private fun widgetImpressionListener(model: ProductWidgetUiModel) {
-        itemView.addOnImpressionListener(model.impression, object : ViewHintListener {
-            override fun onViewHint() {
-                listener.productImpressed(model, bindingAdapterPosition)
-            }
-        })
+        itemView.addOnImpressionListener(model.channelModel) {
+            listener.productContainerImpressed(model, bindingAdapterPosition)
+        }
     }
 
     companion object {

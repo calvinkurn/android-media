@@ -6,6 +6,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.BmGmData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.BmGmTierProduct
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ConfirmationFooterResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
@@ -34,6 +35,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.CheckoutCoachmarkPlusData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ChosenPayment
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
+import com.tokopedia.checkout.domain.model.cartshipmentform.DisabledFeatures
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
@@ -200,6 +202,7 @@ class ShipmentMapper @Inject constructor() {
             additionalFeature = mapAdditionalFeatures(shipmentAddressFormDataResponse.additionalFeatures)
             paymentWidget = mapPaymentWidget(shipmentAddressFormDataResponse.paymentWidget)
             cartType = shipmentAddressFormDataResponse.cartType
+            terms = mapTermsAndCondition(shipmentAddressFormDataResponse.confirmationFooter)
         }
     }
 
@@ -466,6 +469,10 @@ class ShipmentMapper @Inject constructor() {
                     addOnProduct =
                         mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
                     campaignId = product.campaignId
+                    productMinOrder = product.productMinOrder
+                    productMaxOrder = product.productMaxOrder
+                    productInvenageValue = product.productInvenageValue
+                    productSwitchInvenage = product.productSwitchInvenage
                 }
                 productListResult.add(productResult)
             }
@@ -600,7 +607,8 @@ class ShipmentMapper @Inject constructor() {
             GroupShopV2(
                 it.cartStringOrder,
                 shop,
-                products
+                products,
+                mapDisabledFeatures(it.disabledFeatures)
             )
         } to if (hasErrorProduct) firstProductErrorIndex else -1
     }
@@ -1416,6 +1424,19 @@ class ShipmentMapper @Inject constructor() {
         return additionalFeature
     }
 
+    private fun mapDisabledFeatures(disabledFeatures: List<String>): DisabledFeatures {
+        val disabledFeature = DisabledFeatures()
+        for (feature in disabledFeatures) {
+            if (feature.equals(DisabledFeatures.QTY_EDIT, ignoreCase = true)) {
+                disabledFeature.isQtyEditDisabledFeatures = true
+            }
+            if (feature.equals(DisabledFeatures.NOTE_EDIT, ignoreCase = true)) {
+                disabledFeature.isNoteEditDisabledFeatures = true
+            }
+        }
+        return disabledFeature
+    }
+
     private fun mapPaymentWidget(response: PaymentWidgetResponse): PaymentWidget {
         return PaymentWidget(
             metadata = response.metadata,
@@ -1428,6 +1449,14 @@ class ShipmentMapper @Inject constructor() {
                 response.chosenPayment.metadata
             )
         )
+    }
+
+    private fun mapTermsAndCondition(confirmationFooter: List<ConfirmationFooterResponse>): String {
+        var terms = ""
+        confirmationFooter.forEach {
+            if (it.type == TYPE_TERMS_CONDITION) terms = it.text
+        }
+        return terms
     }
 
     companion object {
@@ -1450,6 +1479,8 @@ class ShipmentMapper @Inject constructor() {
 
         const val BMGM_ITEM_DEFAULT = 0
         const val BMGM_ITEM_HEADER = 1
+
+        const val TYPE_TERMS_CONDITION = "TCShipmentInsuranceAndProtection"
 
         val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf(
             CheckoutViewModel.DG_ID,

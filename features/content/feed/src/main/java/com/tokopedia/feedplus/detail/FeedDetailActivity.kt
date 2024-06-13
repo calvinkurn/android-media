@@ -106,7 +106,6 @@ class FeedDetailActivity : BaseActivity() {
     }
 
     private fun setupView() {
-        val isShowSearchBar = intent.data?.getBooleanQueryParameter(KEY_SHOW_SEARCH_BAR, false) ?: false
         val source = intent.data?.getQueryParameter(KEY_QUERY_SOURCE) ?: TAB_TYPE_CDP
         val extrasData = Bundle().apply {
             putString(ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID, postId)
@@ -138,7 +137,7 @@ class FeedDetailActivity : BaseActivity() {
 
         binding.feedDetailHeader.onBackClicked { finish() }
 
-        viewModel.getHeader(source, isShowSearchBar)
+        viewModel.getHeader(source)
     }
 
     private fun observeHeader() {
@@ -152,8 +151,7 @@ class FeedDetailActivity : BaseActivity() {
                             binding.feedDetailHeader.setFeedSearchBar {
                                 analytic.clickSearchBar()
 
-                                val intent = router.getIntent(this@FeedDetailActivity, ApplinkConstInternalContent.INTERNAL_FEED_LOCAL_BROWSE)
-                                intent.putExtra(FeedLocalSearchActivity.TAG_PLACEHOLDER_PARAM, it.searchBarPlaceholder)
+                                val intent = router.getIntent(this@FeedDetailActivity, it.applink)
                                 startActivity(intent)
                             }
                         }
@@ -245,6 +243,5 @@ class FeedDetailActivity : BaseActivity() {
 
     companion object {
         private const val KEY_QUERY_SOURCE = "source"
-        private const val KEY_SHOW_SEARCH_BAR = "show_search_bar"
     }
 }

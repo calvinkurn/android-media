@@ -28,9 +28,8 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
-import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.SubmitOrderResult
-import com.tokopedia.analytics.byteio.pdp.AppLogPdp
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -41,8 +40,8 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
@@ -83,10 +82,10 @@ import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListen
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
 import com.tokopedia.thankyou_native.presentation.views.listener.FlashSaleWidgetListener
+import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListenerImpl
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MixTopComponentListenerCallback
 import com.tokopedia.thankyou_native.presentation.views.listener.ThankYouBaseInterface
-import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListenerImpl
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -102,14 +101,12 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_base_layout.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import org.json.JSONArray
 import javax.inject.Inject
 
 open class ThankYouBaseFragment :
@@ -223,18 +220,13 @@ open class ThankYouBaseFragment :
             getBottomContentRecyclerView()?.adapter = bottomContentAdapter
             if (isV2Enabled) {
                 getBottomContentRecyclerView()?.setPadding(0, DisplayMetricUtils.getStatusBarHeight(context), 0, 0)
+            } else {
+                bindThanksPageDataToUI(thanksPageData)
             }
 
             startAnimate()
             observeViewModel()
             addHeader()
-
-            Handler().postDelayed({
-
-
-//                showOnBoardingShare()
-            }, 5000)
-
             getFeatureRecommendationData()
             addRecommendation(getRecommendationContainer())
             getTopTickerData()
@@ -247,6 +239,8 @@ open class ThankYouBaseFragment :
                     this::hideTopAdsHeadlineView
                 )
             }
+
+            registerBtmPage()
         }
     }
 
@@ -485,7 +479,7 @@ open class ThankYouBaseFragment :
 
         thanksPageDataViewModel.bottomContentVisitableList.observe(viewLifecycleOwner) {
             bottomContentAdapter.setItems(it)
-            bottomContentAdapter.notifyItemChanged(it.size - 1)
+            bottomContentAdapter.notifyDataSetChanged()
         }
 
         thanksPageDataViewModel.bannerLiveData.observe(viewLifecycleOwner) {
@@ -959,32 +953,7 @@ open class ThankYouBaseFragment :
         setIllustrationVisibility(true)
         context?.let {
             try {
-                if (ivIllustrationView?.context?.isValidGlideContext() == true) {
-                    GlideApp.with(it)
-                        .load(imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .listener(object : RequestListener<Drawable?> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable?>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                showCharacterAnimation()
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable?>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
-                        }).into(ivIllustrationView)
-                }
+                ivIllustrationView.loadImage(imageUrl)
             } catch (e: Throwable) {
             }
         }
@@ -1067,6 +1036,18 @@ open class ThankYouBaseFragment :
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun registerBtmPage() {
+        when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+            is MarketPlaceThankPage -> {
+                BtmApi.registerBtmPageOnCreate(this, Tokopedia.PgThankYou)
+            }
+
+            is DigitalThankPage -> {
+                BtmApi.registerBtmPageOnCreate(this, Tokopedia.DgThankYou)
             }
         }
     }

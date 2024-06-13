@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.helper
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 
 /**
  * Created by yfsx on 3/10/21.
@@ -42,4 +41,3 @@ fun isHomeTokonowCoachmarkShown(context: Context): Boolean {
             PREF_KEY_HOME_TOKONOW_COACHMARK, Context.MODE_PRIVATE)
     return sharedPrefs.getBoolean(PREF_KEY_HOME_TOKONOW_COACHMARK, false)
 }
-

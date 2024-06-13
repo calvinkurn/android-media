@@ -73,6 +73,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.feedCommon)
+    implementation projectOrAar(rootProject.ext.features.shareexperience)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
@@ -101,8 +102,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.window
-
-    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

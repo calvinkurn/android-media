@@ -27,6 +27,8 @@ import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.btm.BtmApi
+import com.tokopedia.analytics.btm.Tokopedia
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
@@ -54,6 +56,7 @@ import com.tokopedia.feed.common.comment.PageSource
 import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.feed.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.feed.common.comment.ui.ContentCommentBottomSheet
+import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
@@ -93,7 +96,6 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
-import com.tokopedia.feed.component.product.FeedProductPaging
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -1925,7 +1927,7 @@ class FeedFragment :
             activityId,
             if (isTopAds) taggedProductList else emptyList(),
             sourceType,
-            trackerData?.mediaType.orEmpty(),
+            trackerData?.mediaType.orEmpty()
         )
 
         feedPostViewModel.fetchCartCount()
@@ -1944,12 +1946,12 @@ class FeedFragment :
         }
     }
 
-    override fun onFeedProductNextPage(activityId: String, sourceType : ContentTaggedProductUiModel.SourceType) {
+    override fun onFeedProductNextPage(activityId: String, sourceType: ContentTaggedProductUiModel.SourceType) {
         feedPostViewModel.fetchFeedProduct(
             activityId = activityId,
             sourceType = sourceType,
             isNextPage = true,
-            mediaType = currentTrackerData?.mediaType.orEmpty(),
+            mediaType = currentTrackerData?.mediaType.orEmpty()
         )
     }
 

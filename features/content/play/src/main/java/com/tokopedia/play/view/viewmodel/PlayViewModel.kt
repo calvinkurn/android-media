@@ -64,7 +64,6 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
@@ -1432,7 +1431,8 @@ class PlayViewModel @AssistedInject constructor(
             connectWebSocket(
                 channelId = channelId,
                 socketCredential = getSocketCredential(),
-                warehouseId = _warehouseInfo.value.warehouseId
+                warehouseId = _warehouseInfo.value.warehouseId,
+                isRetry = false,
             )
 
             playChannelWebSocket.listenAsFlow()
@@ -1442,8 +1442,13 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun connectWebSocket(channelId: String, warehouseId: String, socketCredential: SocketCredential) {
-        playChannelWebSocket.connect(channelId, warehouseId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER)
+    private fun connectWebSocket(
+        channelId: String,
+        warehouseId: String,
+        socketCredential: SocketCredential,
+        isRetry: Boolean,
+    ) {
+        playChannelWebSocket.connect(channelId, warehouseId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER, isRetry)
     }
 
     private fun stopWebSocket() {
@@ -1760,7 +1765,12 @@ class PlayViewModel @AssistedInject constructor(
                 if (reason is WebSocketClosedReason.Error) {
                     playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
 
-                    connectWebSocket(channelId, warehouseId = _warehouseInfo.value.warehouseId, getSocketCredential())
+                    connectWebSocket(
+                        channelId = channelId,
+                        warehouseId = _warehouseInfo.value.warehouseId,
+                        socketCredential = getSocketCredential(),
+                        isRetry = true,
+                    )
                 }
             }
         }
@@ -2437,7 +2447,9 @@ class PlayViewModel @AssistedInject constructor(
                         title = _channelDetail.value.channelInfo.title,
                         coverUrl = _channelDetail.value.channelInfo.coverUrl,
                         userId = userId,
-                        channelId = channelId
+                        channelId = channelId,
+                        partnerId = partnerId.toString(),
+                        channelType = channelType.value
                     )
                 )
             } else if (!isScreenshot) {
@@ -2960,13 +2972,18 @@ class PlayViewModel @AssistedInject constructor(
                 val message = if (reminderType == PlayWidgetReminderType.Reminded) UiString.Resource(R.string.play_explore_widget_reminded) else UiString.Resource(R.string.play_explore_widget_unreminded)
                 _uiEvent.emit(ShowInfoEvent(message))
                 if (result) {
-                    _exploreWidget.update { exploreWidget -> exploreWidget.copy(data = exploreWidget.data.map {
-                        widget -> if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
-                            widget.copy(reminderType = reminderType)
-                        } else {
-                            widget
-                        }
-                    }) }
+                    _exploreWidget.update { exploreWidget ->
+                        exploreWidget.copy(
+                            data = exploreWidget.data.map {
+                                    widget ->
+                                if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
+                                    widget.copy(reminderType = reminderType)
+                                } else {
+                                    widget
+                                }
+                            }
+                        )
+                    }
                 } else {
                     throw MessageErrorException()
                 }

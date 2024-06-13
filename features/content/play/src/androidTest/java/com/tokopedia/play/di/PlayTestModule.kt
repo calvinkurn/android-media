@@ -38,8 +38,11 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.play_common.websocket.SocketDebounce
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -172,8 +175,8 @@ class PlayTestModule(
      */
     @PlayScope
     @Provides
-    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, mContext)
+    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, socketDebounce: SocketDebounce): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers, mContext, socketDebounce)
 
     /**
      * Sharing Experience
@@ -204,6 +207,12 @@ class PlayTestModule(
     @Provides
     fun provideActivityResultRegistry(): ActivityResultRegistry {
         return resultRegistry
+    }
+
+    @Provides
+    @PlayScope
+    fun provideABTestPlatform(): AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     @PlayScope

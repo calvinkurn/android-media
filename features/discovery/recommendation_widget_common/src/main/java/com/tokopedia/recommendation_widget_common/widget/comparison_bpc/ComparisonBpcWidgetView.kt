@@ -9,13 +9,22 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD_FMT_PAGENAME
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogAdditionalParam
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.databinding.ViewComparisonBpcWidgetBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.ComparisonBpcWidgetAdapter
+import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.model.ComparisonBpcSeeMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.adapter.typefactory.ComparisonBpcTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.tracking.ComparisonBpcAnalyticListener
@@ -31,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 /**
  * Created by frenzel on 27/03/23
@@ -50,14 +60,7 @@ class ComparisonBpcWidgetView :
     )
 
     companion object {
-        val LAYOUT = com.tokopedia.recommendation_widget_common.R.layout.view_comparison_bpc_widget
-    }
-
-    init {
-        binding = ViewComparisonBpcWidgetBinding.inflate(LayoutInflater.from(context), this)
-        try {
-            lifecycleOwner = findViewTreeLifecycleOwner() ?: context as LifecycleOwner
-        } catch (_: Exception) { }
+        val LAYOUT = recommendation_widget_commonR.layout.view_comparison_bpc_widget
     }
 
     private val masterJob = SupervisorJob()
@@ -70,18 +73,31 @@ class ComparisonBpcWidgetView :
 
     private var lifecycleOwner: LifecycleOwner? = null
 
+    init {
+        binding = ViewComparisonBpcWidgetBinding.inflate(LayoutInflater.from(context), this)
+        try {
+            lifecycleOwner = findViewTreeLifecycleOwner() ?: context as LifecycleOwner
+        } catch (_: Exception) { }
+    }
+
     override val layoutId: Int
         get() = LAYOUT
 
     override fun bind(model: RecommendationComparisonBpcModel) {
-        setupRecyclerView()
+        setupRecyclerView(model.recommendationWidget)
         setComparisonWidgetData(model.recommendationWidget, model)
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(model: RecommendationWidget) {
         binding?.run {
             rvComparisonBpcWidget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             rvComparisonBpcWidget.adapter = adapter
+            rvComparisonBpcWidget.addHorizontalTrackListener(
+                SlideTrackObject(
+                    moduleName = model.pageName,
+                    barName = model.pageName,
+                )
+            )
             if (rvComparisonBpcWidget.itemDecorationCount == 0) {
                 rvComparisonBpcWidget.addItemDecoration(ComparisonBpcWidgetDecoration())
             }
@@ -100,6 +116,7 @@ class ComparisonBpcWidgetView :
                     val mappedModel = ComparisonBpcWidgetMapper.mapToComparisonWidgetModel(
                         recommendationWidget,
                         comparisonBpcModel.trackingModel,
+                        comparisonBpcModel.appLogAdditionalParam,
                         context
                     )
 
@@ -110,7 +127,13 @@ class ComparisonBpcWidgetView :
                         gone()
                         return@launch
                     }
-                    adapter.submitList(ComparisonBpcListModel(listData = comparisonListModel, trackingModel = comparisonBpcModel.trackingModel, productAnchor = productAnchor))
+                    adapter.submitList(
+                        ComparisonBpcListModel(
+                            pageName = recommendationWidget.pageName,
+                            listData = comparisonListModel,
+                            trackingModel = comparisonBpcModel.trackingModel,
+                            productAnchor = productAnchor)
+                    )
                 }
             }
         } catch (_: Exception) {
@@ -127,9 +150,13 @@ class ComparisonBpcWidgetView :
         }
     }
 
-    override fun onViewAllCardClicked(trackingModel: RecommendationWidgetTrackingModel, productAnchorId: String) {
+    override fun onViewAllCardClicked(element: ComparisonBpcSeeMoreDataModel) {
         adapter.showNextPage()
-        ComparisonBpcWidgetTracking.sendClickSeeAll(trackingModel.androidPageName, userSession.userId, productAnchorId)
+        AppLogAnalytics.setGlobalParamOnClick(
+            enterMethod = ENTER_METHOD_FMT_PAGENAME.format(element.recomPageName)
+        )
+
+        ComparisonBpcWidgetTracking.sendClickSeeAll(element.trackingModel.androidPageName, userSession.userId, element.productAnchor?.anchorProductId.orEmpty())
     }
 
     override fun onProductCardImpressed(recommendationItem: RecommendationItem, trackingModel: RecommendationWidgetTrackingModel, anchorProductId: String, widgetTitle: String) {
@@ -143,13 +170,39 @@ class ComparisonBpcWidgetView :
         )
     }
 
-    override fun onProductCardClicked(recommendationItem: RecommendationItem, trackingModel: RecommendationWidgetTrackingModel, anchorProductId: String) {
+    override fun onProductCardByteIoView(
+        recommendationItem: RecommendationItem,
+        appLogAdditionalParam: AppLogAdditionalParam
+    ) {
+        AppLogRecommendation.sendProductShowAppLog(
+            recommendationItem.asProductTrackModel(
+                entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                additionalParam = appLogAdditionalParam
+            )
+        )
+    }
+
+    override fun onProductCardClicked(
+        recommendationItem: RecommendationItem,
+        trackingModel: RecommendationWidgetTrackingModel,
+        anchorProductId: String,
+        appLogAdditionalParam: AppLogAdditionalParam
+    ) {
+        // GTM
         ComparisonBpcWidgetTracking.sendClick(
             trackingModel.androidPageName,
             userSession.userId,
             recommendationItem,
             anchorProductId
         )
+        // ByteIO
+        AppLogRecommendation.sendProductClickAppLog(
+            recommendationItem.asProductTrackModel(
+                entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
+                additionalParam = appLogAdditionalParam
+            )
+        )
+
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.adapter
 
 import androidx.fragment.app.FragmentManager
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
@@ -16,6 +17,7 @@ import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.unifycomponents.ImageUnify
 
 interface CheckoutAdapterListener {
 
@@ -55,7 +57,13 @@ interface CheckoutAdapterListener {
 
     fun onImpressionAddOnGiftingProductLevel(productId: String)
 
-    fun onEditProductNote(note: String, position: Int)
+    fun onNoteClicked(product: CheckoutProductModel, bindingAdapterPosition: Int)
+
+    fun onShowLottieNotes(
+        buttonChangeNote: ImageUnify,
+        buttonChangeNoteLottie: LottieAnimationView,
+        bindingAdapterPosition: Int
+    )
 
     fun openAddOnGiftingOrderLevelBottomSheet(order: CheckoutOrderModel)
 
@@ -181,4 +189,14 @@ interface CheckoutAdapterListener {
     fun onPaymentAction(payment: CheckoutPaymentModel)
 
     fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee)
+
+    fun onCheckoutItemQuantityChanged(product: CheckoutProductModel, value: Int)
+
+    fun clearAllFocus()
+
+    fun onQtyMinusButtonClicked()
+
+    fun onQtyPlusButtonClicked()
+
+    fun onClickInputQty()
 }

@@ -22,10 +22,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation rootProject.ext.unifyDependencies.carousel

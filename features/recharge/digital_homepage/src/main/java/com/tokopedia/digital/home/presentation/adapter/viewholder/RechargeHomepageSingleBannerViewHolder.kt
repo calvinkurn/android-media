@@ -13,7 +13,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loaderfresco.loadImageFresco
 
 /**
  * @author by resakemal on 21/06/20.
@@ -41,7 +41,7 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: Rech
                         }
                 )
 
-                viewRechargeHomeSingleBannerImage.loadImage(item.mediaUrl)
+                viewRechargeHomeSingleBannerImage.loadImageFresco(item.mediaUrl)
                 viewRechargeHomeSingleBannerImage.setOnClickListener {
                     listener.onRechargeSectionItemClicked(item)
                 }

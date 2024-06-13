@@ -1,6 +1,8 @@
 package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.topads.AdsLogConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
@@ -9,6 +11,9 @@ import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.recommendation_widget_common.byteio.sendRealtimeClickAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowAdsByteIo
+import com.tokopedia.recommendation_widget_common.byteio.sendShowOverAdsByteIo
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
@@ -38,12 +43,45 @@ class CartRecentViewViewHolder(
                 metadata = element.recommendationWidgetMetadata,
                 listener = object : RecommendationWidgetListener {
 
+                    override fun onViewAttachedToWindow(
+                        position: Int,
+                        item: RecommendationItem
+                    ) {
+                        item.sendShowAdsByteIo(itemView.context)
+                    }
+
+                    override fun onViewDetachedFromWindow(
+                        position: Int,
+                        item: RecommendationItem,
+                        visiblePercentage: Int
+                    ) {
+                        item.sendShowOverAdsByteIo(itemView.context, visiblePercentage)
+                    }
+
                     override fun onProductClick(
                         position: Int,
                         item: RecommendationItem
                     ): Boolean {
                         listener?.onRecentViewProductClicked(position, item)
                         return true
+                    }
+
+                    override fun onAreaClicked(position: Int, item: RecommendationItem) {
+                        item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.AREA)
+                    }
+
+                    override fun onProductImageClicked(
+                        position: Int,
+                        item: RecommendationItem
+                    ) {
+                        item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.COVER)
+                    }
+
+                    override fun onSellerInfoClicked(
+                        position: Int,
+                        item: RecommendationItem
+                    ) {
+                        item.sendRealtimeClickAdsByteIo(itemView.context, AdsLogConst.Refer.SELLER_NAME)
                     }
 
                     override fun onProductImpress(

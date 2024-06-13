@@ -15,15 +15,15 @@ internal fun ValueAnimator.animatedValue() = (animatedValue as? Float) ?: DEFAUL
 
 internal fun onAnimationEndListener(onAnimationEnd: (Animator) -> Unit) =
     object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator) { }
+        override fun onAnimationStart(animation: Animator) {}
 
         override fun onAnimationEnd(animation: Animator) {
             onAnimationEnd(animation)
         }
 
-        override fun onAnimationCancel(animation: Animator) { }
+        override fun onAnimationCancel(animation: Animator) {}
 
-        override fun onAnimationRepeat(animation: Animator) { }
+        override fun onAnimationRepeat(animation: Animator) {}
     }
 
 internal fun searchBarMicroInteractionAnimator(

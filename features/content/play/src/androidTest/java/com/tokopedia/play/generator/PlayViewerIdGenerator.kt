@@ -155,7 +155,8 @@ class PlayViewerIdGenerator {
                     newAnalytic = mockk(relaxed = true),
                     analyticManager = mockk(relaxed = true),
                     router = mockk(relaxed = true),
-                    commentAnalytics = mockk(relaxed = true)
+                    commentAnalytics = mockk(relaxed = true),
+                    abTestPlatform = mockk(relaxed = true)
                 )
             },
             PlayBottomSheetFragment::class.java to {
@@ -175,7 +176,7 @@ class PlayViewerIdGenerator {
                     pipSessionStorage = mockk(relaxed = true),
                     playLog = mockk(relaxed = true),
                     router = mockk(relaxed = true),
-                    queryParamStorage = mockk(relaxed = true),
+                    queryParamStorage = mockk(relaxed = true)
                 )
             }
         )

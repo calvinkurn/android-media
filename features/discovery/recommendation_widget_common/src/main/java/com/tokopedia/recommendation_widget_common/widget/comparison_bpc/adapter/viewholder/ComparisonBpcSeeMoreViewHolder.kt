@@ -17,7 +17,7 @@ class ComparisonBpcSeeMoreViewHolder(
     override fun bind(element: ComparisonBpcSeeMoreDataModel) {
         itemView.findViewById<CardUnify2>(R.id.comparison_bpc_see_more_card).animateOnPress = CardUnify2.ANIMATE_OVERLAY
         itemView.setOnClickListener {
-            listener.onViewAllCardClicked(element.trackingModel, element.productAnchor?.anchorProductId.orEmpty())
+            listener.onViewAllCardClicked(element)
         }
     }
     companion object {

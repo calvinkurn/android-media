@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.media.loader.getBitmapFromUrl
 import com.tokopedia.media.picker.utils.internal.retryOperator
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -67,11 +68,7 @@ class BitmapConverterRepositoryImpl @Inject constructor(
     }
 
     private fun urlToBitmap(url: String): Bitmap? {
-        return Glide.with(context)
-            .asBitmap()
-            .load(url)
-            .submit()
-            .get()
+        return url.getBitmapFromUrl(context)
     }
 
     private fun getFileName(path: String): String {

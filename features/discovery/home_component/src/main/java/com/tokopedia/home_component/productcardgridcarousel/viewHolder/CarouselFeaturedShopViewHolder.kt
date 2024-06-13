@@ -3,7 +3,6 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.DrawableRes
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.ContentFeaturedShopBigContentBinding
@@ -11,6 +10,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
@@ -95,11 +95,10 @@ class CarouselFeaturedShopViewHolder (
     private fun setShopLogo(imageUrl: String){
         binding?.featuredShopProductLogoShop?.let {
             it.shouldShowWithAction(imageUrl.isNotBlank()) {
-                Glide.with(itemView)
-                    .load(imageUrl)
-                    .circleCrop()
-                    .placeholder(R.drawable.placeholder_rounded_grey)
-                    .into(it)
+                it.loadImage(imageUrl) {
+                    isCircular(true)
+                    setPlaceHolder(R.drawable.placeholder_rounded_grey)
+                }
             }
         }
     }

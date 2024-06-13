@@ -541,7 +541,6 @@ class AddEditProductDetailFragment :
 
         // product photo validation
         productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
-
         // product price validation
         val productPriceInput = productPriceField?.getEditableValue().toString().replace(".", "")
         viewModel.validateProductPriceInput(productPriceInput)
@@ -1029,10 +1028,11 @@ class AddEditProductDetailFragment :
                 }
             }
         }
-
+        if (detailInputModel.productName.isNotEmpty()) {
+            viewModel.setProductNameInput(detailInputModel.productName)
+        }
         // product sku
         productSkuField?.textFieldInput?.setText(detailInputModel.sku)
-
         // product showcases
         viewModel.updateProductShowCases(ArrayList(detailInputModel.productShowCases))
         val productShowCases = viewModel.productShowCases.map { it.showcaseName }

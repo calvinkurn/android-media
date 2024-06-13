@@ -1,13 +1,17 @@
 package com.tokopedia.media.loader.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import com.tokopedia.media.loader.data.DEFAULT_TIMEOUT
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.module.GlideRequest
+import java.io.File
 import java.util.Locale
 
 private val handler by lazy(LazyThreadSafetyMode.NONE) {
@@ -16,8 +20,8 @@ private val handler by lazy(LazyThreadSafetyMode.NONE) {
     }
 }
 
-internal fun <T> GlideRequest<T>.mediaLoad(properties: Properties): GlideRequest<T> {
-    return if (properties.data is String) {
+internal fun <T> GlideRequest<T>.mediaLoad(properties: Properties, isDownload: Boolean = false): GlideRequest<T> {
+    return if (properties.data is String && !isDownload) {
         load(properties.generateUrl())
     } else {
         load(properties.data)
@@ -53,4 +57,17 @@ internal fun <T> GlideRequest<T>.loadLookup(context: Context, resId: Int): Glide
         ) // Look up the dynamic resource in the split namespace.
         .build()
     return load(uri)
+}
+
+internal fun GlideRequest<Bitmap>.transition(properties: Properties): GlideRequest<Bitmap> {
+    properties.transition?.let {
+        this.transition(it)
+    }
+    return this
+}
+
+@SuppressLint("CheckResult")
+internal fun <T> GlideRequest<T>.timeout(properties: Properties): GlideRequest<T> {
+    timeout(properties.timeoutMS ?: DEFAULT_TIMEOUT)
+    return this
 }

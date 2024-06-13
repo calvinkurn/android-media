@@ -13,7 +13,8 @@ data class ShopHomePersoProductComparisonUiModel(
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val recommendationWidget: RecommendationWidget? = null,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val shopId: String = "",
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
 

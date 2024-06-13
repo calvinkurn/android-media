@@ -4,7 +4,7 @@ import android.app.Application
 
 object DevMonitoringExtension {
 
-    fun initLeakCanary(enable: Boolean = true, isEnableStrictMode: Boolean = false, application: Application) {
+    fun initLeakCanary(enable: Boolean = true) {
         /* no-op */
     }
 }
