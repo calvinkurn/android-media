@@ -56,9 +56,12 @@
     <string name="detail_label_product_name">Nama produk</string>
     <string name="label_add_product_name_tips">Tips: Jenis Produk + Merek Produk + Keterangan Tambahan</string>
     <string name="error_empty_product_name">Nama produk tidak boleh kosong</string>
+    <string name="error_product_name_minimum_length">Nama produk minimum 25 karakter</string>
+    <string name="error_product_name_contains_emoji">Nama produk tidak boleh menggunakan emoji</string>
+    <string name="error_product_name_all_special_character">Nama Produk harus memiliki huruf atau angka</string>
     <string name="error_product_name_exist">Oops, nama produk ini sudah digunakan. Coba cari nama lain, ya!</string>
     <string name="error_product_name_banned">Nama produk tidak bisa digunakan. Coba cari nama lain, ya!</string>
-
+    <string name="error_product_description">Deskripsi produk harus diisi</string>
     <!-- add edit product category -->
     <string name="add_product_category_header">Kategori</string>
     <string name="action_choose_other_category">Pilih kategori lainnya</string>
@@ -581,5 +584,9 @@
     <string name="product_add_edit_single_product_variant_dialog_delete">Hapus Varian</string>
     <string name="product_add_edit_label_coachmark_variant_removed">Harga, Stok, Berat, dan SKU akan mengikuti data dari varian yang sudah kamu hapus. Cek lagi, ya.</string>
     <string name="product_add_edit_label_toaster_variant_removed">Tipe varian behasil dihapus.</string>
+    <string name="label_variant_sizechart_required">Panduan ukuran harus diisi</string>
+    <string name="label_variant_sizechart_title_required">*\n</string>
+    <string name="text_required">*</string>
+    <string name="error_size_chart_empty">Sizechart harus diisi.</string>
 
 </resources>

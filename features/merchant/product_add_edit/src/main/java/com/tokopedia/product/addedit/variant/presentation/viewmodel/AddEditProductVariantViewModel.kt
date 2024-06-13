@@ -82,6 +82,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     private var selectedVariantDetails = mutableListOf<VariantDetail>()
     private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<MutableList<UnitValue>>()
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<MutableList<UnitValue>>()
+    val pictureSizeChart = MutableLiveData<PictureVariantInputModel?>()
 
     var productInputModel = MutableLiveData<ProductInputModel>()
     var hasDTStock = Transformations.map(productInputModel) {
@@ -108,7 +109,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         addSource(mSelectedVariantUnitValuesLevel1) {
             val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty().orTrue()
             val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty().orTrue()
-            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
+            this.value = isInputValid(
+                isVariantUnitValuesLevel1Empty,
+                isVariantUnitValuesLevel2Empty,
+                isSingleVariantTypeIsSelected)
         }
         addSource(mSelectedVariantUnitValuesLevel2) {
             val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty().orTrue()

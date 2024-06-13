@@ -15,18 +15,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescriptionRequired"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_required"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintStart_toEndOf="@id/tvDescription"
+        app:layout_constraintTop_toTopOf="@id/tvDescription"
+        app:layout_constraintBottom_toBottomOf="@id/tvDescription"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/textFieldDescription"
         android:contentDescription="@string/content_desc_textFieldDescription"
         android:theme="@style/TextDarkMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDescription"
-        app:text_field_counter="@integer/max_product_desc_length"
-        app:text_field_input_type="text"
-        app:text_field_label="@string/label_description_placeholder" />
+        app:unify_text_field_counter="@integer/max_product_desc_length"
+        app:unify_text_field_input_type="text"
+        app:unify_text_field_label="@string/label_description_placeholder" />
 
     <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
         android:id="@+id/layoutDescriptionTips"

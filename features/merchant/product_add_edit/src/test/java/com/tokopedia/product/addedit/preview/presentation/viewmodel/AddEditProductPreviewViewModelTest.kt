@@ -6,7 +6,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PREFIX_CACHE
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -37,7 +36,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import junit.framework.Assert
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -128,20 +126,21 @@ class AddEditProductPreviewViewModelTest : AddEditProductPreviewViewModelTestFix
 
     @Test
     fun `When validate product input model Expect return error message`() {
+        val productInputModel = ProductInputModel()
         val detailInputModel = DetailInputModel()
-
         detailInputModel.categoryId = "123"
         detailInputModel.imageUrlOrPathList = listOf()
-        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel = detailInputModel
+        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(productInputModel))
 
-        detailInputModel.categoryId = "0"
-        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel.categoryId = "0"
+        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(productInputModel))
 
-        detailInputModel.categoryId = ""
-        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel.categoryId = ""
+        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(productInputModel))
 
-        detailInputModel.imageUrlOrPathList = listOf("one", "two", "three", "four", "five", "six")
-        assertEquals(resourceProvider.getInvalidPhotoCountErrorMessage(), viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel.imageUrlOrPathList = listOf("one", "two", "three", "four", "five", "six")
+        assertEquals(resourceProvider.getInvalidPhotoCountErrorMessage(), viewModel.validateProductInput(productInputModel))
 
         every {
             resourceProvider.getInvalidCategoryIdErrorMessage()
@@ -155,18 +154,18 @@ class AddEditProductPreviewViewModelTest : AddEditProductPreviewViewModelTestFix
             resourceProvider.getInvalidPhotoReachErrorMessage()
         } returns null
 
-        detailInputModel.categoryId = "123"
-        detailInputModel.imageUrlOrPathList = listOf()
-        assertEquals("", viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel.categoryId = "123"
+        productInputModel.detailInputModel.imageUrlOrPathList = listOf()
+        assertEquals("", viewModel.validateProductInput(productInputModel))
 
-        detailInputModel.categoryId = "0"
-        assertEquals("", viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel.categoryId = "0"
+        assertEquals("", viewModel.validateProductInput(productInputModel))
 
-        detailInputModel.categoryId = ""
-        assertEquals("", viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel.categoryId = ""
+        assertEquals("", viewModel.validateProductInput(productInputModel))
 
-        detailInputModel.imageUrlOrPathList = listOf("one", "two", "three", "four", "five", "six")
-        assertEquals("", viewModel.validateProductInput(detailInputModel))
+        productInputModel.detailInputModel.imageUrlOrPathList = listOf("one", "two", "three", "four", "five", "six")
+        assertEquals("", viewModel.validateProductInput(productInputModel))
     }
 
     @Test

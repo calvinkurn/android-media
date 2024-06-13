@@ -74,7 +74,7 @@ import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.unifycomponents.DividerUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -84,6 +84,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
+import com.tokopedia.product.addedit.R as productaddeditR
 import com.tokopedia.seller_migration_common.R as seller_migration_commonR
 
 @FlowPreview
@@ -98,7 +99,7 @@ class AddEditProductDescriptionFragment :
     private var containerAddEditDescriptionFragmentNoInputVariant: ViewGroup? = null
     private var containerAddEditDescriptionFragmentInputVariant: ViewGroup? = null
     private var textViewAddVideo: Typography? = null
-    private var textFieldDescription: TextFieldUnify? = null
+    private var textFieldDescription: TextFieldUnify2? = null
     private var tvNoVariantDescription: Typography? = null
     private var tvEditVariant: Typography? = null
     private var tvAddVariant: Typography? = null
@@ -280,7 +281,6 @@ class AddEditProductDescriptionFragment :
         btnNext = view.findViewById(R.id.btnNext)
         btnSave = view.findViewById(R.id.btnSave)
     }
-
     override fun onResume() {
         super.onResume()
         btnNext?.isLoading = false
@@ -409,17 +409,27 @@ class AddEditProductDescriptionFragment :
     private fun setupSubmitButton() {
         btnNext?.setOnClickListener {
             btnNext?.isLoading = true
-            moveToShipmentActivity()
+            if (textFieldDescription.getText().trim().isEmpty()) {
+                textFieldDescription?.isInputError = true
+                textFieldDescription?.setMessage(getString(productaddeditR.string.error_product_description))
+            } else {
+                moveToShipmentActivity()
+            }
         }
 
         btnSave?.setOnClickListener {
-            btnSave?.isLoading = true
-            val isAdding = descriptionViewModel.isAddMode
-            val isDrafting = descriptionViewModel.isDraftMode
-            if (isAdding && !isDrafting) {
-                submitInput()
+            if (textFieldDescription.getText().trim().isEmpty()) {
+                textFieldDescription?.isInputError = true
+                textFieldDescription?.setMessage(getString(productaddeditR.string.error_product_description))
             } else {
-                submitInputEdit()
+                btnSave?.isLoading = true
+                val isAdding = descriptionViewModel.isAddMode
+                val isDrafting = descriptionViewModel.isDraftMode
+                if (isAdding && !isDrafting) {
+                    submitInput()
+                } else {
+                    submitInputEdit()
+                }
             }
         }
     }
@@ -447,16 +457,16 @@ class AddEditProductDescriptionFragment :
 
         val maxChar = context?.resources?.getInteger(R.integer.max_product_desc_length).orZero()
         textFieldDescription?.setCounter(maxChar)
-        textFieldDescription?.textFieldInput?.apply {
+        textFieldDescription?.editText?.apply {
             isSingleLine = false
             imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             afterTextChanged {
                 if (it.length >= maxChar) {
                     textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
-                    textFieldDescription?.setError(true)
+                    textFieldDescription?.isInputError = true
                 } else {
                     textFieldDescription?.setMessage("")
-                    textFieldDescription?.setError(false)
+                    textFieldDescription?.isInputError = false
                 }
                 validateDescriptionText(it)
             }
@@ -652,7 +662,7 @@ class AddEditProductDescriptionFragment :
 
     private fun updateDescriptionFieldErrorMessage(message: String) {
         textFieldDescription?.setMessage(message)
-        textFieldDescription?.setError(message.isNotEmpty())
+        textFieldDescription?.isInputError = message.isNotEmpty()
         btnSave?.isEnabled = message.isEmpty()
     }
 
